@@ -1,0 +1,73 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*) {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	opacity: 0;
+	z-index: 999;
+	position: fixed;
+	visibility: hidden;
+	pointer-events: none;
+	background-color: rgba(0, 0, 0, 0.5);
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+:host([active]) {
+	opacity: 1;
+	visibility: visible;
+	pointer-events: auto;
+}
+
+div  {
+	margin: 0;
+	padding: 0;
+	width: auto;
+	color: black;
+	display: flex;
+	z-index: 1000;
+	overflow: auto;
+	font-size: 14px;
+	max-width: 50vw;
+	max-height: 50vh;
+	min-width: 220px;
+	position: absolute;
+	border-radius: 8px;
+	align-items: stretch;
+	flex-direction: column;
+	background-color: #FFFFFF;
+	box-shadow: 3px 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+div ::slotted(:not(hr))
+{
+	gap: 12px;
+	border: none;
+	display: flex;
+	color: inherit;
+	flex-basis: 16px;
+	border-radius: 4px;
+	padding: 10px 16px;
+	font-size: inherit;
+	align-items: center;
+	white-space: nowrap;
+	text-decoration: none;
+	background-color: transparent;
+}
+
+div ::slotted(hr)
+{
+	padding: 0;
+	flex-basis: 2px;
+	margin: 8px 16px;
+	border: 1px solid #EEEEEE;
+}
+
+div ::slotted(:not(hr):hover)
+{
+	background-color: var(--hovered, #FFFACD);
+	padding-left: 20px;
+}

@@ -27,16 +27,18 @@
 a, button
 {
 	gap: 12px;
-	padding: 10px 16px;
+	border: none;
 	display: flex;
 	color: inherit;
 	flex-basis: 16px;
+	border-radius: 4px;
 	font-size: inherit;
+	padding: 10px 16px;
 	align-items: center;
 	white-space: nowrap;
 	text-decoration: none;
+	background-color: transparent;
 	justify-content: space-between;
-	border-radius: 4px;
 	transition: background-color 0.2s ease, padding 0.2s ease;
 }
 

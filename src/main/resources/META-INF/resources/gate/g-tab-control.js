@@ -18,6 +18,7 @@ template.innerHTML = `
 	background-color: var(--main3);
 	border: 1px outset var(--main4);
 	grid-template-rows: auto 1fr;
+
 }
 
 label
@@ -33,7 +34,11 @@ label
 }
 
 section {
+	min-width: 0;
 	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
 }
 
 label::before
@@ -61,7 +66,6 @@ header
 {
 	gap: 12px;
 	display: none;
-	flex: 1 1 auto;
 	padding : 18px;
 	align-items: stretch;
 	flex-direction: column;
@@ -185,7 +189,9 @@ header > ::slotted(:not(:first-child))
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-image: var(--loading);
-}</style>`;
+}
+
+</style>`;
 /* global customElements */
 
 import GBlock from './g-block.js';

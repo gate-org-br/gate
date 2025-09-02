@@ -1,13 +1,15 @@
 {
 	"elements": {
 		"g-icon": {},
+		"g-navbar": {},
 		"g-tab-control": {},
 		"slot": {
 			"attributes": {
 				"name": {}
 			}
 		},
-		"g-coolbar": {}
+		"g-coolbar": {},
+		"g-more-menu": {}
 	},
 	"attributes": {
 		"part": {

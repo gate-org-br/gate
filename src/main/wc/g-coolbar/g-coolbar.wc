@@ -1,5 +1,13 @@
 <template>
+	<a id="show" href='#'>
+		<g-icon>&#x3018;</g-icon>
+	</a>
 	<div>
 		<slot></slot>
 	</div>
+	<g-more-menu>
+		<slot name='more'>
+
+		</slot>
+	</g-more-menu>
 </template>

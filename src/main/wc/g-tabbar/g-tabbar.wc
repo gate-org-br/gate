@@ -6,11 +6,9 @@
 		<g-icon>&#x2265;</g-icon>
 	</a>
 
-	<div id='overlay'>
-		<div id='more'>
-			<slot name='sidemenu'>
+	<g-more-menu>
+		<slot name='more'>
 
-			</slot>
-		</div>
-	</div>
+		</slot>
+	</g-more-menu>
 </template>

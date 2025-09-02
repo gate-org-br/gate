@@ -1,8 +1,16 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<a id="show" href='#'>
+		<g-icon>&#x3018;</g-icon>
+	</a>
 	<div>
 		<slot></slot>
 	</div>
+	<g-more-menu>
+		<slot name='more'>
+
+		</slot>
+	</g-more-menu>
  <style data-element="g-coolbar">*
 {
 	box-sizing: border-box;
@@ -26,12 +34,12 @@ div
 	padding: 8px;
 	flex-grow: 1;
 	display: flex;
-	overflow-x: auto;
+	overflow-x: hidden;
 	white-space: nowrap;
 	flex-direction: row-reverse;
 }
 
-::slotted(:is(a, button, .g-command))
+div > ::slotted(:is(a, button, .g-command))
 {
 	gap: 8px;
 	width: 120px;
@@ -51,89 +59,89 @@ div
 	justify-content: space-between;
 }
 
-::slotted(a:hover),
-::slotted(button:hover),
-::slotted(.g-command:hover)
+div > ::slotted(a),
+div > ::slotted(button),
+div > ::slotted(.g-command)
 {
 	background-color: #D0D0D0;
 }
 
-::slotted(a:focus),
-::slotted(button:focus),
-::slotted(.g-command:focus)
+div > ::slotted(a:focus),
+div > ::slotted(button:focus),
+div > ::slotted(.g-command:focus)
 {
 	outline: 4px solid var(--hovered);
 }
 
-::slotted(a.primary),
-::slotted(button.primary),
-::slotted(.g-command.primary)
+div > ::slotted(a.primary),
+div > ::slotted(button.primary),
+div > ::slotted(.g-command.primary)
 {
 	color: white;
 	border: none;
 	background-color: #2A6B9A;
 }
 
-::slotted(a.primary:hover),
-::slotted(button.primary:hover),
-::slotted(.g-command.primary:hover)
+div > ::slotted(a.primary:hover),
+div > ::slotted(button.primary:hover),
+div > ::slotted(.g-command.primary:hover)
 {
 	background-color: #25608A;
 }
 
-::slotted(a.alternative),
-::slotted(button.alternative),
-::slotted(.g-command.alternative)
+div > ::slotted(a.alternative),
+div > ::slotted(button.alternative),
+div > ::slotted(.g-command.alternative)
 {
 	color: white;
 	border: none;
 	background-color: #009E60;
 }
 
-::slotted(a.alternative:hover),
-::slotted(button.alternative:hover),
-::slotted(.g-command.alternative:hover)
+div > ::slotted(a.alternative:hover),
+div > ::slotted(button.alternative:hover),
+div > ::slotted(.g-command.alternative:hover)
 {
 	background-color: #008E56;
 }
 
-::slotted(a.tertiary),
-::slotted(button.tertiary),
-::slotted(.g-command.tertiary)
+div > ::slotted(a.tertiary),
+div > ::slotted(button.tertiary),
+div > ::slotted(.g-command.tertiary)
 {
 	background-color: var(--main1);
 	border: 1px solid var(--main6);
 }
 
-::slotted(a.tertiary:hover),
-::slotted(button.tertiary:hover),
-::slotted(.g-command.tertiary:hover)
+div > ::slotted(a.tertiary:hover),
+div > ::slotted(button.tertiary:hover),
+div > ::slotted(.g-command.tertiary:hover)
 {
 	border: 1px solid black;
 }
 
-::slotted(a.danger),
-::slotted(button.danger),
-::slotted(.g-command.danger)
+div > ::slotted(a.danger),
+div > ::slotted(button.danger),
+div > ::slotted(.g-command.danger)
 {
 	color: white;
 	border: none;
 	background-color: #AA2222;
 }
 
-::slotted(a.danger:hover),
-::slotted(button.danger:hover),
-::slotted(.g-command.danger:hover)
+div > ::slotted(a.danger:hover),
+div > ::slotted(button.danger:hover),
+div > ::slotted(.g-command.danger:hover)
 {
 	background-color: #882222;
 }
 
-::slotted([hidden="true"])
+div > ::slotted([hidden="true"])
 {
 	display: none;
 }
 
-::slotted(hr)
+div > ::slotted(hr)
 {
 	border: none;
 	flex-grow: 100000;
@@ -199,11 +207,62 @@ div
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-image: var(--loading);
+}
+
+#show {
+	padding: 0px;
+	display: none;
+	margin: 8px 0;
+	font-size: 2em;
+	color: #0000AA;
+	flex-basis: 16px;
+	border-radius: 5px;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+	background-color: transparent;
+}
+
+#show:hover {
+	background-color: var(--hovered);
+}
+
+g-more-menu > ::slotted(a.primary),
+g-more-menu > ::slotted(button.primary),
+g-more-menu > ::slotted(.g-command.primary)
+{
+	color: #000088;
+}
+
+g-more-menu > ::slotted(a.alternative),
+g-more-menu > ::slotted(button.alternative),
+g-more-menu > ::slotted(.g-command.alternative)
+{
+	color: #008800;
+}
+
+g-more-menu > ::slotted(a.danger),
+g-more-menu > ::slotted(button.danger),
+g-more-menu > ::slotted(.g-command.danger)
+{
+	color: #880000;
+}
+
+g-more-menu > ::slotted(a.tertiary),
+g-more-menu > ::slotted(button.tertiary),
+g-more-menu > ::slotted(.g-command.tertiary)
+{
+	color: #444444;
 }</style>`;
 /* global customElements */
 
 import loading from './loading.js';
 import WindowListenerHTMLElement from './window-listener-html-element.js';
+const POSITIONS = ["southwest", "southeast", "northwest", "northeast"];
+
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`g-coolbar *[slot='more'] g-icon { order: -1 }`);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
 export default class GCoolbar extends WindowListenerHTMLElement
 {
@@ -212,6 +271,13 @@ export default class GCoolbar extends WindowListenerHTMLElement
 		super();
 		this.attachShadow({mode: 'open'});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		new ResizeObserver(() => this.#update()).observe(this);
+
+
+		const show = this.shadowRoot.getElementById("show");
+		const more = this.shadowRoot.querySelector("g-more-menu");
+		show.addEventListener("click", event => more.show(event.clientX, event.clientY, 0, ...POSITIONS));
 	}
 
 	get disabled()
@@ -232,6 +298,22 @@ export default class GCoolbar extends WindowListenerHTMLElement
 		super.connectedCallback();
 		loading(this.parentNode);
 		this.setAttribute("size", this.children.length);
+	}
+
+	#update()
+	{
+		const children = Array.from(this.children);
+		const div = this.shadowRoot.querySelector('div');
+
+		children.forEach(item => item.removeAttribute('slot'));
+
+		for (let child = this.lastElementChild;
+			child && div.scrollWidth > div.clientWidth;
+			child = child.previousElementSibling)
+			child.setAttribute('slot', 'more');
+
+		this.shadowRoot.getElementById("show").style.display =
+			children.some(e => e.hasAttribute("slot")) ? "flex" : "none";
 	}
 }
 

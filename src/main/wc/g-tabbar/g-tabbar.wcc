@@ -1,6 +1,6 @@
 /* global customElements */
 
-import anchor from './anchor.js';
+import  './g-more-menu.js';
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
@@ -8,7 +8,7 @@ const sheet = new CSSStyleSheet();
 sheet.replaceSync(`g-tabbar g-icon { order: -1 }`);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
-const POSITIONS = ["northeast", "southeast", "northwest", "southwest"];
+const POSITIONS = ["southwest", "southeast", "northwest", "northeast"];
 
 customElements.define("g-tabbar", class extends HTMLElement
 {
@@ -39,23 +39,8 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 
 		const show = this.shadowRoot.getElementById("show");
-		const more = this.shadowRoot.getElementById("more");
-		const overlay = this.shadowRoot.getElementById("overlay");
-
-		show.addEventListener("click", event =>
-		{
-			const x = event.clientX;
-			const y = event.clientY;
-			const target = {getBoundingClientRect: () => ({x, y, left: x, top: y, right: x, bottom: y, width: 0, height: 0})};
-			anchor(more, target, 0, ...POSITIONS).then(e =>
-			{
-				overlay.classList.add("active");
-				more.style.top = `${e.location.y}px`;
-				more.style.left = `${e.location.x}px`;
-			});
-		});
-
-		overlay.addEventListener("click", () => overlay.classList.remove('active'));
+		const more = this.shadowRoot.querySelector("g-more-menu");
+		show.addEventListener("click", event => more.show(event.clientX, event.clientY, 0, ...POSITIONS));
 	}
 
 	connectedCallback()
@@ -90,7 +75,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 		for (let child = this.lastElementChild;
 			child && header.scrollWidth > header.clientWidth;
 			child = child.previousElementSibling)
-			child.setAttribute('slot', 'sidemenu');
+			child.setAttribute('slot', 'more');
 
 		this.shadowRoot.getElementById("show").style.display =
 			children.some(e => e.hasAttribute("slot")) ? "flex" : "none";

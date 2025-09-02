@@ -14,6 +14,7 @@ template.innerHTML = `
 
 :host(*) {
 	width: 100%;
+	min-width: 0;
 	display: grid;
 	font-size: 10px;
 	border: 1px solid #EEEEEE;
@@ -21,6 +22,7 @@ template.innerHTML = `
 }
 
 #code-pane {
+	min-width: 0;
 	padding: 10px;
 	overflow: auto;
 	border-bottom: 1px solid #ccc;
@@ -34,6 +36,7 @@ template.innerHTML = `
 
 #html-pane {
 	gap: 10px;
+	min-width: 0;
 	padding: 10px;
 	display: flex;
 	flex-direction: column;

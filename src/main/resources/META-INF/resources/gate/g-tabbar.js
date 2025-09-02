@@ -7,13 +7,11 @@ template.innerHTML = `
 		<g-icon>&#x2265;</g-icon>
 	</a>
 
-	<div id='overlay'>
-		<div id='more'>
-			<slot name='sidemenu'>
+	<g-more-menu>
+		<slot name='more'>
 
-			</slot>
-		</div>
-	</div>
+		</slot>
+	</g-more-menu>
  <style data-element="g-tabbar">* {
 	box-sizing: border-box;
 }
@@ -108,7 +106,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 #show {
 	margin: 8px;
 	padding: 6px;
-	display: flex;
+	display: none;
 	font-size: 2em;
 	color: #000088;
 	flex-basis: 60px;
@@ -147,76 +145,10 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 :host(.inline) header ::slotted(.g-command)::after {
 	left: 32px;
 	max-width: calc(100% - 40px);
-}
-
-#overlay {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	opacity: 0;
-	z-index: 999;
-	position: fixed;
-	visibility: hidden;
-	pointer-events: none;
-	background-color: rgba(0, 0, 0, 0.5);
-	transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-#overlay.active {
-	opacity: 1;
-	visibility: visible;
-	pointer-events: auto;
-}
-
-#more  {
-	margin: 0;
-	padding: 0;
-	width: auto;
-	color: black;
-	display: flex;
-	z-index: 1000;
-	overflow: auto;
-	font-size: 14px;
-	max-width: 50vw;
-	max-height: 50vh;
-	min-width: 220px;
-	position: absolute;
-	border-radius: 8px;
-	align-items: stretch;
-	flex-direction: column;
-	background-color: #FFFFFF;
-	box-shadow: 3px 10px 15px rgba(0, 0, 0, 0.1);
-}
-
-#more ::slotted(:not(hr))
-{
-	gap: 12px;
-	display: flex;
-	color: inherit;
-	flex-basis: 16px;
-	border-radius: 4px;
-	padding: 10px 16px;
-	font-size: inherit;
-	align-items: center;
-	white-space: nowrap;
-	text-decoration: none;
-}
-
-#more ::slotted(hr)
-{
-	border: none;
-	flex-basis: 16px;
-}
-
-#more ::slotted(:not(hr):hover)
-{
-	background-color: var(--hovered, #FFFACD);
-	padding-left: 20px;
 }</style>`;
 /* global customElements */
 
-import anchor from './anchor.js';
+import  './g-more-menu.js';
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
@@ -224,7 +156,7 @@ const sheet = new CSSStyleSheet();
 sheet.replaceSync(`g-tabbar g-icon { order: -1 }`);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
-const POSITIONS = ["northeast", "southeast", "northwest", "southwest"];
+const POSITIONS = ["southwest", "southeast", "northwest", "northeast"];
 
 customElements.define("g-tabbar", class extends HTMLElement
 {
@@ -255,23 +187,8 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 
 		const show = this.shadowRoot.getElementById("show");
-		const more = this.shadowRoot.getElementById("more");
-		const overlay = this.shadowRoot.getElementById("overlay");
-
-		show.addEventListener("click", event =>
-		{
-			const x = event.clientX;
-			const y = event.clientY;
-			const target = {getBoundingClientRect: () => ({x, y, left: x, top: y, right: x, bottom: y, width: 0, height: 0})};
-			anchor(more, target, 0, ...POSITIONS).then(e =>
-			{
-				overlay.classList.add("active");
-				more.style.top = `${e.location.y}px`;
-				more.style.left = `${e.location.x}px`;
-			});
-		});
-
-		overlay.addEventListener("click", () => overlay.classList.remove('active'));
+		const more = this.shadowRoot.querySelector("g-more-menu");
+		show.addEventListener("click", event => more.show(event.clientX, event.clientY, 0, ...POSITIONS));
 	}
 
 	connectedCallback()
@@ -306,7 +223,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 		for (let child = this.lastElementChild;
 			child && header.scrollWidth > header.clientWidth;
 			child = child.previousElementSibling)
-			child.setAttribute('slot', 'sidemenu');
+			child.setAttribute('slot', 'more');
 
 		this.shadowRoot.getElementById("show").style.display =
 			children.some(e => e.hasAttribute("slot")) ? "flex" : "none";
