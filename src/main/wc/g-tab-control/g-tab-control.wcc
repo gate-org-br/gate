@@ -84,11 +84,16 @@ customElements.define('g-tab-control', class extends HTMLElement
 			return;
 		}
 
-		links.filter(e => !e.nextElementSibling
-				|| e.nextElementSibling.tagName !== "DIV")
-			.forEach(e => this.insertBefore(document.createElement("div"),
-					e.nextElementSibling)
-					.classList.add("content"));
+		links.filter(link => !link.nextElementSibling
+				|| link.nextElementSibling.tagName !== "DIV")
+			.forEach(link =>
+			{
+				const page = document.createElement("div");
+				page.classList.add("content");
+				if (link.hasAttribute("data-page-style"))
+					page.style = link.getAttribute("data-page-style");
+				link.after(page);
+			});
 
 		var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
 		pages.forEach(e => e.setAttribute("slot", "body"));

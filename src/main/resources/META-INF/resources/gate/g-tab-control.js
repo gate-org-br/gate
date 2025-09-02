@@ -14,6 +14,7 @@ template.innerHTML = `
 
 :host(*)
 {
+	min-width: 0;
 	display: grid;
 	background-color: var(--main3);
 	border: 1px outset var(--main4);
@@ -35,6 +36,7 @@ label
 
 section {
 	min-width: 0;
+	min-height: 0;
 	display: flex;
 	align-items: stretch;
 	flex-direction: column;
@@ -46,16 +48,6 @@ label::before
 	content: '\\2265';
 }
 
-:host(:first-child)
-{
-	margin-top: 0
-}
-
-:host(:last-child)
-{
-	margin-bottom: 0
-}
-
 header
 {
 	display: flex;
@@ -65,8 +57,11 @@ header
 ::slotted(div)
 {
 	gap: 12px;
+	min-width: 0;
+	min-height: 0;
 	display: none;
 	padding : 18px;
+	overflow-y: auto;
 	align-items: stretch;
 	flex-direction: column;
 	background-color: white;
@@ -278,11 +273,16 @@ customElements.define('g-tab-control', class extends HTMLElement
 			return;
 		}
 
-		links.filter(e => !e.nextElementSibling
-				|| e.nextElementSibling.tagName !== "DIV")
-			.forEach(e => this.insertBefore(document.createElement("div"),
-					e.nextElementSibling)
-					.classList.add("content"));
+		links.filter(link => !link.nextElementSibling
+				|| link.nextElementSibling.tagName !== "DIV")
+			.forEach(link =>
+			{
+				const page = document.createElement("div");
+				page.classList.add("content");
+				if (link.hasAttribute("data-page-style"))
+					page.style = link.getAttribute("data-page-style");
+				link.after(page);
+			});
 
 		var pages = Array.from(this.children).filter(e => e.tagName === "DIV");
 		pages.forEach(e => e.setAttribute("slot", "body"));
