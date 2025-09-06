@@ -6,6 +6,7 @@ SELECT
     Uzer.password,
     Uzer.email AS email,
     Uzer.Role$id AS "role.id",
+    Uzer.activity AS activity,
     NULL AS "auth.id",
     NULL AS "auth.module",
     NULL AS "auth.screen",
@@ -18,6 +19,7 @@ WHERE
     Uzer.username = ? OR Uzer.email = ?
 UNION SELECT 
     Uzer.id,
+    NULL,
     NULL,
     NULL,
     NULL,
@@ -38,6 +40,7 @@ WHERE
    Uzer.username = ? OR Uzer.email = ?
 UNION SELECT 
     Uzer.id AS id,
+    NULL,
     NULL,
     NULL,
     NULL,

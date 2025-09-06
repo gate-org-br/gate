@@ -2,10 +2,9 @@ package gate.converter.custom;
 
 import gate.constraint.Constraint;
 import gate.constraint.Length;
-import gate.error.ConversionException;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
-import gate.security.hash.MD5;
+import gate.security.hash.BCrypt;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,7 +13,7 @@ import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MD5Converter implements Converter
+public class BCryptConverter implements Converter
 {
 
 	@Override
@@ -26,15 +25,15 @@ public class MD5Converter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "MD5 Hash";
+		return "BCrypt Hash";
 	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Length.Implementation(32));
-		constraints.add(new Pattern.Implementation("^[A-Fa-f0-9]{32}$"));
+		constraints.add(new Length.Implementation(60));
+		constraints.add(new Pattern.Implementation("^\\$2[abyxy]?\\$[0-9]{2}\\$[A-Za-z0-9./]{53}$"));
 		return constraints;
 	}
 
@@ -63,7 +62,7 @@ public class MD5Converter implements Converter
 		{
 			string = string.trim();
 			if (!string.isEmpty())
-				return MD5.of(string);
+				return BCrypt.of(string);
 		}
 		return null;
 	}
@@ -72,14 +71,14 @@ public class MD5Converter implements Converter
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : MD5.of(value);
+		return rs.wasNull() ? null : BCrypt.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : MD5.of(value);
+		return rs.wasNull() ? null : BCrypt.of(value);
 	}
 
 	@Override

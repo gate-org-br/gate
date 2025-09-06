@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.LocalDateTime;
 
 @WebServlet("/Auth")
 public class Auth extends HttpServlet
@@ -26,6 +27,9 @@ public class Auth extends HttpServlet
 	@Inject
 	@Current
 	Authenticator authenticator;
+
+	@Inject
+	GateControl control;
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,6 +47,8 @@ public class Auth extends HttpServlet
 				User user = authenticator.getUser(new ScreenServletRequest(httpServletRequest));
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
+
+				control.update(user, LocalDateTime.now());
 				writer.write(credentials.fromSubject(user.getId()));
 			} catch (AuthenticationException ex)
 			{

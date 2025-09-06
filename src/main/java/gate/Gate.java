@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Locale;
 
@@ -75,6 +76,9 @@ public class Gate extends HttpServlet
 	@Current
 	Instance<User> userInstance;
 
+	@Inject
+	GateControl control;
+
 	static
 	{
 		Locale.setDefault(Locale.of("pt", "BR"));
@@ -107,6 +111,7 @@ public class Gate extends HttpServlet
 				if (user.getId() != null)
 				{
 					event.fire(new LogoffEvent(user));
+					control.update(user, LocalDateTime.now());
 					response.addHeader("Set-Cookie", CookieFactory.delete());
 					String logoutUri = authenticator.logoutUri(request);
 					if (logoutUri != null)
@@ -137,6 +142,7 @@ public class Gate extends HttpServlet
 				if (user != null)
 				{
 					event.fireAsync(new LoginEvent(user));
+					control.update(user, LocalDateTime.now());
 					response.addHeader("Set-Cookie",
 						CookieFactory.create(credentials.fromSubject(user.getId())));
 				}

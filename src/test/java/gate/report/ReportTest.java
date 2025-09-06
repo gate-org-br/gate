@@ -112,13 +112,12 @@ public class ReportTest
 		report.addLineBreak();
 
 		Grid<User> grid = report.addGrid(User.class,
-				List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
-						new User().setId(ID.valueOf(2)).setName("Bar")))
-				.setCaption("USERS: 2");
+			List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
+				new User().setId(ID.valueOf(2)).setName("Bar")))
+			.setCaption("USERS: 2");
 
 		grid.add().body(User::getName).head("ID");
 		grid.add().body(User::getName).head("Name");
-		grid.add().body(User::getCellPhone).head("CellPhone");
 		grid.setLimit(2);
 
 		report.compact();
@@ -141,44 +140,44 @@ public class ReportTest
 		report.addLineBreak();
 
 		report.addList()
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.style()
-				.listStyleType(Style.ListStyleType.DECIMAL);
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.style()
+			.listStyleType(Style.ListStyleType.DECIMAL);
 
 		report.addList()
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.style()
-				.listStyleType(Style.ListStyleType.LOWER_ALPHA);
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.style()
+			.listStyleType(Style.ListStyleType.LOWER_ALPHA);
 
 		report.addList()
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.add("Item")
-				.style()
-				.listStyleType(Style.ListStyleType.DISC);
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.style()
+			.listStyleType(Style.ListStyleType.DISC);
 
 		report.addList()
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add("Item")
+			.add(report.addList()
 				.add("Item")
 				.add("Item")
 				.add("Item")
 				.add("Item")
 				.add(report.addList()
-						.add("Item")
-						.add("Item")
-						.add("Item")
-						.add("Item")
-						.add(report.addList()
-								.add("Item")
-								.add("Item")
-								.add("Item")
-								.add("Item")));
+					.add("Item")
+					.add("Item")
+					.add("Item")
+					.add("Item")));
 
 		PDF doc = new PDF(report);
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream())

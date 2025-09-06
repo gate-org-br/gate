@@ -3,15 +3,16 @@ package gate;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.ConstraintViolationException;
+import gate.error.InvalidCredentialsException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.io.Token;
-import gate.messaging.MessageException;
 import gate.messaging.Messenger;
+import gate.type.ID;
 import gate.type.mime.MimeMail;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -21,6 +22,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
+import java.time.Instant;
+import java.util.Date;
+import javax.crypto.SecretKey;
 
 @MultipartConfig
 @WebServlet("/ResetPassword")
@@ -35,9 +39,11 @@ public class ResetPassword extends HttpServlet
 
 	private static final long serialVersionUID = 1L;
 
+	private static final SecretKey SECRET = Jwts.SIG.HS256.key().build();
+
 	@Override
 	public void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response)
-			throws ServletException, IOException
+		throws ServletException, IOException
 	{
 		response.setCharacterEncoding("UTF-8");
 		httpServletRequest.setCharacterEncoding("UTF-8");
@@ -53,10 +59,10 @@ public class ResetPassword extends HttpServlet
 
 				if (user.getEmail() == null)
 					throw new BadRequestException(
-							"Você não definiu um email para o qual seu token possa ser enviado");
+						"Você não definiu um email para o qual seu token possa ser enviado");
 
 				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
-						"Utilize este token para redefinir sua senha: " + Token.create(user)));
+					"Utilize este token para redefinir sua senha: " + createToken(user)));
 
 			} catch (BadRequestException | InvalidUsernameException ex)
 			{
@@ -72,7 +78,7 @@ public class ResetPassword extends HttpServlet
 
 	@Override
 	public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse response)
-			throws ServletException, IOException
+		throws ServletException, IOException
 	{
 		response.setCharacterEncoding("UTF-8");
 		httpServletRequest.setCharacterEncoding("UTF-8");
@@ -85,7 +91,7 @@ public class ResetPassword extends HttpServlet
 			{
 				if (request.getAuthorization() instanceof BearerAuthorization authorization)
 				{
-					User user = Token.parse(authorization.token());
+					User user = parseToken(authorization.token());
 					control.update(user, request.getBody().trim());
 				} else
 					throw new BadRequestException("Credentials not supplied");
@@ -100,6 +106,33 @@ public class ResetPassword extends HttpServlet
 				writer.write("Erro de sistema");
 			}
 		}
+	}
+
+	public static User parseToken(String string) throws InvalidCredentialsException
+	{
+		try
+		{
+			Claims claims = Jwts.parser()
+				.verifyWith(SECRET)
+				.build()
+				.parseSignedClaims(string)
+				.getPayload();
+
+			return new User().setId(ID.valueOf(claims.get("id", String.class)));
+		} catch (RuntimeException ex)
+		{
+			throw new InvalidCredentialsException(ex.getMessage());
+		}
+	}
+
+	public static String createToken(User user)
+	{
+		String credentials = Jwts.builder()
+			.claim("id", user.getId().toString())
+			.expiration(Date.from(Instant.now().plusSeconds(600)))
+			.signWith(SECRET).compact();
+
+		return credentials;
 	}
 
 }

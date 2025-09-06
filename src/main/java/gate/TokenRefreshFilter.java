@@ -1,5 +1,6 @@
 package gate;
 
+import gate.http.BearerAuthorization;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
@@ -14,13 +15,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Set;
 
 @WebFilter(value = "/*", asyncSupported = true)
-public class CookieRefreshFilter implements Filter
+public class TokenRefreshFilter implements Filter
 {
 
 	@Inject
 	Credentials credentials;
+
+	private static final Set<String> STATIC_EXTENSIONS = Set.of(
+		".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".ico",
+		".svg", ".woff", ".woff2", ".ttf", ".eot"
+	);
 
 	@Override
 	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain)
@@ -33,19 +40,27 @@ public class CookieRefreshFilter implements Filter
 		if (servletRequest instanceof HttpServletRequest httpServletRequest
 			&& servletResponse instanceof HttpServletResponse httpServletResponse)
 		{
-			try
+			String uri = httpServletRequest.getRequestURI().toLowerCase();
+			if (!STATIC_EXTENSIONS.stream().anyMatch(ext -> uri.endsWith(ext)))
 			{
-				ScreenServletRequest screenServletRequest
-					= new ScreenServletRequest(httpServletRequest);
 
-				if (screenServletRequest.getAuthorization() instanceof CookieAuthorization cookie)
+				try
+				{
+					ScreenServletRequest screenServletRequest
+						= new ScreenServletRequest(httpServletRequest);
+
+					if (screenServletRequest.getAuthorization() instanceof CookieAuthorization cookie)
+						httpServletResponse.addHeader("Set-Cookie",
+							CookieFactory.create(credentials.refresh(cookie.token())));
+					else if (screenServletRequest.getAuthorization() instanceof BearerAuthorization bearer)
+						httpServletResponse.addHeader("X-Access-Token", credentials.refresh(bearer.token()));
+
+				} catch (RuntimeException ex)
+				{
 					httpServletResponse.addHeader("Set-Cookie",
-						CookieFactory.create(credentials.refresh(cookie.token())));
+						CookieFactory.create(CookieFactory.delete()));
+				}
 
-			} catch (RuntimeException ex)
-			{
-				httpServletResponse.addHeader("Set-Cookie",
-					CookieFactory.create(CookieFactory.delete()));
 			}
 		}
 

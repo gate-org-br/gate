@@ -11,7 +11,7 @@ import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.sql.update.Update;
 import gate.type.ID;
-import gate.type.MD5;
+import gate.security.hash.MD5;
 import jakarta.enterprise.context.Dependent;
 
 @Dependent

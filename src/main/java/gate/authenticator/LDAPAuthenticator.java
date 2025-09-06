@@ -9,7 +9,7 @@ import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.type.MD5;
+import gate.security.hash.MD5;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
 import javax.naming.AuthenticationException;

@@ -8,7 +8,7 @@ import gate.error.InvalidPasswordException;
 import gate.error.NotFoundException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.type.MD5;
+import gate.security.hash.MD5;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;

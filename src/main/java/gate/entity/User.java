@@ -6,11 +6,9 @@ import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.*;
-import gate.type.mime.MimeData;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,16 +54,6 @@ public class User implements Serializable
 	private String password;
 
 	@Required
-	@Maxlength(64)
-	@Description("Os campos NOVA SENHA devem ser preenchidos com o mesmo texto de no máximo 64 caracteres.")
-	private transient String change;
-
-	@Required
-	@Maxlength(64)
-	@Description("Os campos NOVA SENHA devem ser preenchidos com o mesmo texto de no máximo 64 caracteres.")
-	private transient String repeat;
-
-	@Required
 	@Maxlength(128)
 	@Name("Nome do Usuário")
 	@Description("O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.")
@@ -80,43 +68,17 @@ public class User implements Serializable
 	@Description("Define o perfil do usuário.")
 	private Role role;
 
-	private List<Auth> auths;
-
-	@Maxlength(1024)
-	@Name("Comentários sobre o Usuário")
-	@Description("O campo description deve ser preenchido com, no máximo, 1024 CARACTERES.")
-	private String description;
-
-	@Maxlength(24)
-	@Name("Telefone Celular do Usuário")
-	@Description("O campo Telefone Celular deve ser preenchido com, no máximo, 24 CARACTERES.")
-	private Phone cellPhone;
-
-	@Maxlength(24)
-	@Name("Telefone Fixo do Usuário")
-	@Description("O campo Telefone Fixo deve ser preenchido com, no máximo, 24 CARACTERES.")
-	private Phone phone;
-
-	@Name("Foto do Usuário")
-	private MimeData photo;
-
-	@Name("Data de Nascimento")
-	private LocalDate birthdate;
-
-	@Name("CPF")
-	private CPF CPF;
-
-	@Name("Sexo")
-	private Sex sex;
+	@Required
+	@Name("Data de Cadastro")
+	@Description("Data de cadastro do usuário.")
+	private LocalDateTime creation;
 
 	@Required
 	@Name("Data de Cadastro")
 	@Description("Data de cadastro do usuário.")
-	private LocalDateTime registration;
+	private LocalDateTime activity;
 
-	@Maxlength(32)
-	@Name("Código do usuário")
-	private String code;
+	private List<Auth> auths;
 
 	private List<Func> funcs;
 
@@ -130,28 +92,6 @@ public class User implements Serializable
 	public User setAuths(List<Auth> auths)
 	{
 		this.auths = auths;
-		return this;
-	}
-
-	public String getCode()
-	{
-		return code;
-	}
-
-	public User setCode(String code)
-	{
-		this.code = code;
-		return this;
-	}
-
-	public String getRepeat()
-	{
-		return repeat;
-	}
-
-	public User setRepeat(String confirm)
-	{
-		this.repeat = confirm;
 		return this;
 	}
 
@@ -247,12 +187,32 @@ public class User implements Serializable
 		return this;
 	}
 
+	public LocalDateTime getCreation()
+	{
+		return creation;
+	}
+
+	public void setCreation(LocalDateTime creation)
+	{
+		this.creation = creation;
+	}
+
+	public LocalDateTime getActivity()
+	{
+		return activity;
+	}
+
+	public void setActivity(LocalDateTime activity)
+	{
+		this.activity = activity;
+	}
+
 	@Override
 	public boolean equals(Object obj)
 	{
 
 		return obj instanceof User
-				&& Objects.equals(this.getId(), ((User) obj).getId());
+			&& Objects.equals(this.getId(), ((User) obj).getId());
 	}
 
 	@Override
@@ -261,87 +221,10 @@ public class User implements Serializable
 		return id == null ? 0 : id.getValue();
 	}
 
-	public String getChange()
-	{
-		return change;
-	}
-
-	public User setChange(String change)
-	{
-		this.change = change;
-		return this;
-	}
-
 	@Override
 	public String toString()
 	{
 		return name == null ? "Indefinido" : name;
-	}
-
-	public CPF getCPF()
-	{
-		return CPF;
-	}
-
-	public User setCPF(CPF CPF)
-	{
-		this.CPF = CPF;
-		return this;
-	}
-
-	public LocalDateTime getRegistration()
-	{
-		return registration;
-	}
-
-	public User setRegistration(LocalDateTime registration)
-	{
-		this.registration = registration;
-		return this;
-	}
-
-	public String getDescription()
-	{
-		return description;
-	}
-
-	public User setDescription(String description)
-	{
-		this.description = description;
-		return this;
-	}
-
-	public Phone getCellPhone()
-	{
-		return cellPhone;
-	}
-
-	public User setCellPhone(Phone cellPhone)
-	{
-		this.cellPhone = cellPhone;
-		return this;
-	}
-
-	public Phone getPhone()
-	{
-		return phone;
-	}
-
-	public LocalDate getBirthdate()
-	{
-		return birthdate;
-	}
-
-	public User setBirthdate(LocalDate birthdate)
-	{
-		this.birthdate = birthdate;
-		return this;
-	}
-
-	public User setPhone(Phone phone)
-	{
-		this.phone = phone;
-		return this;
 	}
 
 	public boolean isDisabled()
@@ -349,33 +232,11 @@ public class User implements Serializable
 		return Boolean.FALSE.equals(active) || getRole().isDisabled();
 	}
 
-	public MimeData getPhoto()
-	{
-		return photo;
-	}
-
-	public User setPhoto(MimeData photo)
-	{
-		this.photo = photo;
-		return this;
-	}
-
-	public Sex getSex()
-	{
-		return sex;
-	}
-
-	public User setSex(Sex sex)
-	{
-		this.sex = sex;
-		return this;
-	}
-
 	public Stream<Auth> computedAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream(),
-				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream()),
-						getRole().computedAuthStream())) : Stream.empty();
+			Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream()),
+				getRole().computedAuthStream())) : Stream.empty();
 	}
 
 	public List<Auth> getComputedAuths()
@@ -391,17 +252,17 @@ public class User implements Serializable
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-				.noneMatch(e -> e.blocked(module, screen, action))
-				&& computedAuthStream()
-						.anyMatch(e -> e.granted(module, screen, action));
+			.noneMatch(e -> e.blocked(module, screen, action))
+			&& computedAuthStream()
+				.anyMatch(e -> e.granted(module, screen, action));
 	}
 
 	public boolean checkSpecificAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-				.noneMatch(e -> e.blocked(module, screen, action))
-				&& computedAuthStream()
-						.anyMatch(e -> e.equals(module, screen, action));
+			.noneMatch(e -> e.blocked(module, screen, action))
+			&& computedAuthStream()
+				.anyMatch(e -> e.equals(module, screen, action));
 	}
 
 	public User unwrap()

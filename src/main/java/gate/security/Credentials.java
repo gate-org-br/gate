@@ -11,6 +11,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,7 +48,9 @@ public class Credentials
 				.getPayload()
 				.entrySet()
 				.stream()
-				.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
+				.collect(JsonObject::new, (c, e) -> c.put(e.getKey(),
+				JsonElement.of(e.getValue())),
+					JsonObject::putAll);
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
@@ -58,25 +62,31 @@ public class Credentials
 
 	public String fromSubject(ID id)
 	{
+		final var now = Instant.now();
 		return Jwts.builder()
 			.subject(id.toString())
-			.expiration(Date.from(Instant.now().plusSeconds(3600)))
+			.issuedAt(Date.from(now))
+			.expiration(Date.from(now.plusSeconds(3600)))
 			.signWith(secret)
 			.compact();
 	}
 
-	public ID toSubject(String token)
+	public Subject toSubject(String token)
 		throws InvalidUsernameException,
 		HierarchyException, UnauthorizedException
 	{
 		try
 		{
-			return ID.valueOf(Jwts.parser()
+			var payload = Jwts.parser()
 				.verifyWith(secret)
 				.build()
 				.parseSignedClaims(token)
-				.getPayload()
-				.get("sub", String.class));
+				.getPayload();
+
+			var iat = payload.getIssuedAt().toInstant().atZone(ZoneOffset.UTC)
+				.toLocalDateTime();
+
+			return new Subject(iat, ID.valueOf(payload.getSubject()));
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
@@ -88,6 +98,12 @@ public class Credentials
 
 	public String refresh(String token)
 	{
-		return fromSubject(toSubject(token));
+		return fromSubject(toSubject(token).id());
 	}
+
+	public record Subject(LocalDateTime iat, ID id)
+		{
+
+	}
+
 }

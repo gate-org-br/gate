@@ -3,11 +3,13 @@ package gate;
 import gate.entity.User;
 import gate.error.HierarchyException;
 import gate.error.InvalidUsernameException;
+import gate.security.hash.BCrypt;
 import gate.sql.Link;
 import gate.type.Hierarchy;
 import gate.type.ID;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.Dependent;
+import java.time.LocalDateTime;
 
 @Dependent
 public class GateControl extends gate.base.Control
@@ -56,6 +58,24 @@ public class GateControl extends gate.base.Control
 			user.setRole(roles.stream().filter(user.getRole()::equals).findAny()
 				.orElseThrow(() -> new HierarchyException("User role not found")));
 			return user;
+		}
+	}
+
+	public void update(User user, LocalDateTime activity)
+	{
+		try (Link link = Link.of("Gate");
+			GateDao dao = new GateDao(link))
+		{
+			dao.update(user, activity);
+		}
+	}
+	
+	public void update(User user, BCrypt password)
+	{
+		try (Link link = Link.of("Gate");
+			GateDao dao = new GateDao(link))
+		{
+			dao.update(user, password);
 		}
 	}
 }

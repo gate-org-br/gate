@@ -4,13 +4,13 @@ import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.DefaultPasswordException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.error.InvalidPasswordException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.type.MD5;
+import gate.security.hash.BCrypt;
+import gate.security.hash.MD5;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
@@ -53,11 +53,15 @@ public class DatabaseAuthenticator implements Authenticator
 
 		User user = control.select(authorization.username());
 
-		if (MD5.digest(user.getUsername()).toString()
-			.equals(user.getPassword()))
-			throw new DefaultPasswordException();
+		if (user.getPassword().length() == 32)
+		{
+			if (!MD5.of(user.getPassword())
+				.verify(authorization.password()))
+				throw new InvalidPasswordException();
+			control.update(user, BCrypt.digest(authorization.password()));
 
-		if (!MD5.digest(authorization.password()).toString().equals(user.getPassword()))
+		} else if (!BCrypt.of(user.getPassword())
+			.verify(authorization.password()))
 			throw new InvalidPasswordException();
 
 		return user;

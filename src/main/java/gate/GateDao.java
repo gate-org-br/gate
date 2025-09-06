@@ -4,10 +4,15 @@ import gate.entity.Auth;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.InvalidUsernameException;
+import gate.error.NotFoundException;
+import gate.security.hash.BCrypt;
 import gate.sql.Cursor;
 import gate.sql.Link;
+import gate.sql.condition.Condition;
 import gate.sql.fetcher.Fetcher;
+import gate.sql.update.Update;
 import gate.type.ID;
+import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,56 +29,76 @@ class GateDao extends gate.base.Dao
 	public User select(ID id) throws InvalidUsernameException
 	{
 		return getLink().from(getClass().getResource("select(ID).sql"))
-				.parameters(id, id, id)
-				.fetch(new UzerFetcher())
-				.orElseThrow(InvalidUsernameException::new);
+			.parameters(id, id, id)
+			.fetch(new UzerFetcher())
+			.orElseThrow(InvalidUsernameException::new);
 	}
 
 	public User select(String username) throws InvalidUsernameException
 	{
 		return getLink().from(getClass().getResource("select(String).sql"))
-				.parameters(username, username, username, username, username, username)
-				.fetch(new UzerFetcher())
-				.orElseThrow(InvalidUsernameException::new);
+			.parameters(username, username, username, username, username, username)
+			.fetch(new UzerFetcher())
+			.orElseThrow(InvalidUsernameException::new);
+	}
+
+	public void update(User user, LocalDateTime activity)
+	{
+		Update.table("Uzer")
+			.set("activity", activity)
+			.where(Condition.of("id").eq(user.getId()))
+			.build()
+			.connect(getLink())
+			.orElseThrow(NotFoundException::new);
+	}
+
+	public void update(User user, BCrypt password)
+	{
+		Update.table("Uzer")
+			.set("password", password)
+			.where(Condition.of("id").eq(user.getId()))
+			.build()
+			.connect(getLink())
+			.orElseThrow(NotFoundException::new);
 	}
 
 	public List<Role> getRoles()
 	{
 		return getLink()
-				.from(getClass().getResource("getRoles().sql"))
-				.constant()
-				.fetch(cursor ->
+			.from(getClass().getResource("getRoles().sql"))
+			.constant()
+			.fetch(cursor ->
+			{
+				List<Role> roles = new ArrayList<>();
+				if (cursor.next())
 				{
-					List<Role> roles = new ArrayList<>();
-					if (cursor.next())
+					do
 					{
-						do
-						{
-							Role role = new Role();
-							role.setId(cursor.getValue(ID.class, "id"));
-							role.setActive(cursor.getValue(Boolean.class, "active"));
-							role.setMaster(cursor.getValue(Boolean.class, "master"));
-							role.setRolename(cursor.getValue(String.class, "rolename"));
-							role.setName(cursor.getValue(String.class, "name"));
-							role.setEmail(cursor.getValue(String.class, "email"));
-							role.getRole().setId(cursor.getValue(ID.class, "role.id"));
-							role.getManager().setId(cursor.getValue(ID.class, "manager.id"));
-							role.getManager().setName(cursor.getValue(String.class, "manager.name"));
+						Role role = new Role();
+						role.setId(cursor.getValue(ID.class, "id"));
+						role.setActive(cursor.getValue(Boolean.class, "active"));
+						role.setMaster(cursor.getValue(Boolean.class, "master"));
+						role.setRolename(cursor.getValue(String.class, "rolename"));
+						role.setName(cursor.getValue(String.class, "name"));
+						role.setEmail(cursor.getValue(String.class, "email"));
+						role.getRole().setId(cursor.getValue(ID.class, "role.id"));
+						role.getManager().setId(cursor.getValue(ID.class, "manager.id"));
+						role.getManager().setName(cursor.getValue(String.class, "manager.name"));
 
-							while (cursor.next() && cursor.getValue(ID.class, "id").equals(role.getId()))
-								role.getAuths().add(new Auth()
-										.setId(cursor.getValue(ID.class, "auth.id"))
-										.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"))
-										.setAccess(cursor.getValue(Auth.Access.class, "auth.access"))
-										.setModule(cursor.getValue(String.class, "auth.module"))
-										.setScreen(cursor.getValue(String.class, "auth.screen"))
-										.setAction(cursor.getValue(String.class, "auth.action")));
+						while (cursor.next() && cursor.getValue(ID.class, "id").equals(role.getId()))
+							role.getAuths().add(new Auth()
+								.setId(cursor.getValue(ID.class, "auth.id"))
+								.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"))
+								.setAccess(cursor.getValue(Auth.Access.class, "auth.access"))
+								.setModule(cursor.getValue(String.class, "auth.module"))
+								.setScreen(cursor.getValue(String.class, "auth.screen"))
+								.setAction(cursor.getValue(String.class, "auth.action")));
 
-							roles.add(role);
-						} while (!cursor.isAfterLast());
-					}
-					return roles;
-				});
+						roles.add(role);
+					} while (!cursor.isAfterLast());
+				}
+				return roles;
+			});
 	}
 
 	private static class UzerFetcher implements Fetcher<Optional<User>>
@@ -92,15 +117,16 @@ class GateDao extends gate.base.Dao
 				user.setPassword(cursor.getValue(String.class, "password"));
 				user.setName(cursor.getValue(String.class, "name"));
 				user.setEmail(cursor.getValue(String.class, "email"));
+				user.setActivity(cursor.getValue(LocalDateTime.class, "activity"));
 
 				while (cursor.next())
 					user.getAuths().add(new Auth()
-							.setId(cursor.getValue(ID.class, "auth.id"))
-							.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"))
-							.setAccess(cursor.getValue(Auth.Access.class, "auth.access"))
-							.setModule(cursor.getValue(String.class, "auth.module"))
-							.setScreen(cursor.getValue(String.class, "auth.screen"))
-							.setAction(cursor.getValue(String.class, "auth.action")));
+						.setId(cursor.getValue(ID.class, "auth.id"))
+						.setScope(cursor.getValue(Auth.Scope.class, "auth.scope"))
+						.setAccess(cursor.getValue(Auth.Access.class, "auth.access"))
+						.setModule(cursor.getValue(String.class, "auth.module"))
+						.setScreen(cursor.getValue(String.class, "auth.screen"))
+						.setAction(cursor.getValue(String.class, "auth.action")));
 
 				return Optional.of(user);
 			}

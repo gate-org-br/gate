@@ -281,6 +281,8 @@ customElements.define('g-tab-control', class extends HTMLElement
 				page.classList.add("content");
 				if (link.hasAttribute("data-page-style"))
 					page.style = link.getAttribute("data-page-style");
+				else if (this.hasAttribute("page-style"))
+					page.style = this.getAttribute("page-style");
 				link.after(page);
 			});
 
