@@ -40,7 +40,7 @@ public class UserProducer
 			var auth = request.getAuthorization();
 			if (auth instanceof BearerAuthorization bearer)
 			{
-				var subject = credentials.toSubject(bearer.token());
+				var subject = credentials.toToken(bearer.token());
 				User user = control.select(subject.id());
 				if (user.getActivity() == null || user.getActivity().isAfter(subject.iat()))
 					throw new UnauthorizedException("Attempt to authenticate with invalid token");
@@ -48,7 +48,7 @@ public class UserProducer
 				return user;
 			} else if (auth instanceof CookieAuthorization cookie)
 			{
-				var subject = credentials.toSubject(cookie.token());
+				var subject = credentials.toToken(cookie.token());
 				User user = control.select(subject.id());
 				request.setAttribute(User.class.getName(), user);
 				if (user.getActivity() == null || user.getActivity().isAfter(subject.iat()))

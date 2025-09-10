@@ -14,6 +14,7 @@ import gate.event.LogoffEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
 import gate.security.Credentials;
 import gate.type.RequestCommand;
 import jakarta.enterprise.event.Event;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Locale;
 
@@ -85,11 +87,12 @@ public class Gate extends HttpServlet
 	}
 
 	@Override
-	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response)
+	public void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
 		throws ServletException, IOException
 	{
-		response.addHeader("Vary", "X-G-Fragment");
+		httpServletResponse.addHeader("Vary", "X-G-Fragment");
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+		ScreenServletResponse response = new ScreenServletResponse(httpServletResponse);
 
 		try
 		{
@@ -111,8 +114,8 @@ public class Gate extends HttpServlet
 				if (user.getId() != null)
 				{
 					event.fire(new LogoffEvent(user));
-					control.update(user, LocalDateTime.now());
-					response.addHeader("Set-Cookie", CookieFactory.delete());
+					control.update(user, LocalDateTime.now(ZoneOffset.UTC));
+					response.deleteSubjectCookie();
 					String logoutUri = authenticator.logoutUri(request);
 					if (logoutUri != null)
 					{
@@ -142,9 +145,9 @@ public class Gate extends HttpServlet
 				if (user != null)
 				{
 					event.fireAsync(new LoginEvent(user));
-					control.update(user, LocalDateTime.now());
-					response.addHeader("Set-Cookie",
-						CookieFactory.create(credentials.fromSubject(user.getId())));
+					var token = Credentials.SubjectToken.create(user.getId());
+					control.update(user, token.iat());
+					response.createSubjectCookie(credentials.fromToken(token));
 				}
 				request.setAttribute(User.class.getName(), user);
 			}
@@ -161,14 +164,7 @@ public class Gate extends HttpServlet
 			screen.prepare(request, response);
 
 			if (call.method().isAnnotationPresent(Cors.class))
-			{
-				response.setHeader("Access-Control-Max-Age", "3600");
-				response.setHeader("Access-Control-Allow-Credentials", "true");
-				response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-				response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-				response.setHeader("Access-Control-Allow-Headers",
-					"Content-Type, Accept, X-Requested-With, remember-me");
-			}
+				response.enableCors(request.getHeader("Origin"));
 
 			if (call.method().isAnnotationPresent(Asynchronous.class))
 				executeAsync(user, request, response, screen, call.method());

@@ -22,6 +22,7 @@ public class Credentials
 {
 
 	private final SecretKey secret;
+	public static final long EXP = 3600;
 
 	public Credentials(SecretKey secret)
 	{
@@ -60,18 +61,17 @@ public class Credentials
 		}
 	}
 
-	public String fromSubject(ID id)
+	public String fromToken(SubjectToken subject)
 	{
-		final var now = Instant.now();
 		return Jwts.builder()
-			.subject(id.toString())
-			.issuedAt(Date.from(now))
-			.expiration(Date.from(now.plusSeconds(3600)))
+			.subject(subject.id.toString())
+			.issuedAt(Date.from(subject.iat().atZone(ZoneOffset.UTC).toInstant()))
+			.expiration(Date.from(subject.exp.atZone(ZoneOffset.UTC).toInstant()))
 			.signWith(secret)
 			.compact();
 	}
 
-	public Subject toSubject(String token)
+	public SubjectToken toToken(String token)
 		throws InvalidUsernameException,
 		HierarchyException, UnauthorizedException
 	{
@@ -86,7 +86,10 @@ public class Credentials
 			var iat = payload.getIssuedAt().toInstant().atZone(ZoneOffset.UTC)
 				.toLocalDateTime();
 
-			return new Subject(iat, ID.valueOf(payload.getSubject()));
+			var exp = payload.getExpiration().toInstant().atZone(ZoneOffset.UTC)
+				.toLocalDateTime();
+
+			return new SubjectToken(iat, exp, ID.valueOf(payload.getSubject()));
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
@@ -98,11 +101,23 @@ public class Credentials
 
 	public String refresh(String token)
 	{
-		return fromSubject(toSubject(token).id());
+		return fromToken(toToken(token).refresh());
 	}
 
-	public record Subject(LocalDateTime iat, ID id)
+	public record SubjectToken(LocalDateTime iat, LocalDateTime exp, ID id)
 		{
+
+		public SubjectToken refresh()
+		{
+			return new SubjectToken(iat, LocalDateTime.now(ZoneOffset.UTC).plusSeconds(EXP), id);
+		}
+
+		public static SubjectToken create(ID id)
+		{
+			var iat = LocalDateTime.now(ZoneOffset.UTC);
+			var exp = iat.plusSeconds(Credentials.EXP);
+			return new SubjectToken(iat, exp, id);
+		}
 
 	}
 

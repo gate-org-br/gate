@@ -3,6 +3,7 @@ package gate;
 import gate.http.BearerAuthorization;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
 import gate.security.Credentials;
 import jakarta.inject.Inject;
 import jakarta.servlet.Filter;
@@ -41,24 +42,25 @@ public class TokenRefreshFilter implements Filter
 			&& servletResponse instanceof HttpServletResponse httpServletResponse)
 		{
 			String uri = httpServletRequest.getRequestURI().toLowerCase();
+
+			ScreenServletRequest screenServletRequest
+				= new ScreenServletRequest(httpServletRequest);
+			ScreenServletResponse screenServletResponse
+				= new ScreenServletResponse(httpServletResponse);
+
 			if (!STATIC_EXTENSIONS.stream().anyMatch(ext -> uri.endsWith(ext)))
 			{
 
 				try
 				{
-					ScreenServletRequest screenServletRequest
-						= new ScreenServletRequest(httpServletRequest);
-
 					if (screenServletRequest.getAuthorization() instanceof CookieAuthorization cookie)
-						httpServletResponse.addHeader("Set-Cookie",
-							CookieFactory.create(credentials.refresh(cookie.token())));
+						screenServletResponse.createSubjectCookie(credentials.refresh(cookie.token()));
 					else if (screenServletRequest.getAuthorization() instanceof BearerAuthorization bearer)
 						httpServletResponse.addHeader("X-Access-Token", credentials.refresh(bearer.token()));
 
 				} catch (RuntimeException ex)
 				{
-					httpServletResponse.addHeader("Set-Cookie",
-						CookieFactory.create(CookieFactory.delete()));
+					screenServletResponse.deleteSubjectCookie();
 				}
 
 			}

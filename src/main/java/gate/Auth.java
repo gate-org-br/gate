@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 @WebServlet("/Auth")
 public class Auth extends HttpServlet
@@ -48,8 +49,9 @@ public class Auth extends HttpServlet
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
 
-				control.update(user, LocalDateTime.now());
-				writer.write(credentials.fromSubject(user.getId()));
+				var token = Credentials.SubjectToken.create(user.getId());
+				control.update(user, token.iat());
+				writer.write(credentials.fromToken(token));
 			} catch (AuthenticationException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
