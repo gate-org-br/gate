@@ -60,3 +60,38 @@ export default class GIconPicker extends GWindow
 }
 
 customElements.define('g-icon-picker', GIconPicker);
+
+window.addEventListener("connected", event =>
+{
+	const target = event.target;
+	if (target.getAttribute("data-picker") === "icon")
+	{
+		let link = target.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		if (target.hasAttribute('tabindex'))
+			link.setAttribute("tabindex", target.getAttribute('tabindex'));
+		let icon = link.appendChild(document.createElement("g-icon"));
+
+		icon.innerHTML = target.value ? "&#x1001;" : "&#x2003;";
+		target.addEventListener("input", () => icon.innerHTML = target.value ? "&#x1001;" : "&#x2009;");
+		target.addEventListener("change", () => icon.innerHTML = target.value ? "&#x1001;" : "&#x2009;");
+
+		link.addEventListener("click", event =>
+		{
+			event.preventDefault();
+
+			if (target.value)
+			{
+				target.value = '';
+				target.dispatchEvent(new Event('change', {bubbles: true}));
+			} else
+				GIconPicker.pick()
+					.then(value => target.value = value)
+					.then(() => target.dispatchEvent(new Event('change', {bubbles: true})))
+					.catch(() => undefined);
+
+			link.focus();
+			link.blur();
+		});
+	}
+});

@@ -6,25 +6,31 @@
 :host
 {
 	margin: 0;
-	padding: 0;
-	width: auto;
 	color: black;
-	display: flex;
+	border: none;
+	padding: 10px;
 	z-index: 1000;
 	overflow: auto;
 	font-size: 14px;
-	position: fixed;
 	max-width: 50vw;
 	max-height: 50vh;
 	min-width: 220px;
-	border-radius: 8px;
-	align-items: stretch;
-	flex-direction: column;
+	width: fit-content;
+	border-radius: 10px;
 	background-color: #FFFFFF;
-	box-shadow: 3px 10px 15px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-a, button
+:host(:popover-open) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+a,
+button,
+::slotted(a),
+::slotted(button)
 {
 	gap: 12px;
 	border: none;
@@ -37,20 +43,25 @@ a, button
 	align-items: center;
 	white-space: nowrap;
 	text-decoration: none;
+	transition: all 0.2s ease;
 	background-color: transparent;
 	justify-content: space-between;
 	transition: background-color 0.2s ease, padding 0.2s ease;
 }
 
 a:hover,
-button:hover
+button:hover,
+::slotted(a:hover),
+::slotted(button:hover)
 {
 	background-color: var(--hovered, #FFFACD);
 	padding-left: 20px;
 }
 
 a:focus,
-button:focus
+button:focus,
+::slotted(a:focus),
+::slotted(button:focus)
 {
 	outline: none;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -62,7 +73,9 @@ label {
 }
 
 a[data-icon]::before,
-button[data-icon]::before
+button[data-icon]::before,
+::slotted(a:[data-icon])::before,
+::slotted(button:[data-icon])::before
 {
 	font-family: gate;
 	content: attr(data-icon);
@@ -76,14 +89,4 @@ button[submenu]::after
 	content: '\\2207';
 	font-family: gate;
 	margin-left: 8px;
-}
-
-a, button {
-	transition: all 0.2s ease;
-}
-
-:host {
-	padding: 10px;
-	border-radius: 10px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }

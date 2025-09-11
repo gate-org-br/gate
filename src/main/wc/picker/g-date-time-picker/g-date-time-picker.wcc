@@ -1,51 +1,11 @@
-let template = document.createElement("template");
-template.innerHTML = `
-	<dialog>
-		<header>
-			Selecione um período
-			<a id='cancel' href="#">
-				<g-icon>
-					&#X1011;
-				</g-icon>
-			</a>
-		</header>
-		<section>
-			<g-month-interval-selector>
-			</g-month-interval-selector>
-		</section>
-		<footer>
-			<button id='commit'>
-			</button>
-		</footer>
-	</dialog>
- <style data-element="g-month-interval-picker">dialog
-{
-	min-width: 320px;
-	max-width: 600px;
-	height: fit-content;
-	width: calc(100% - 40px);
-}
-
-dialog > section {
-	align-items: stretch;
-}
-
-g-month-interval-selector {
-	flex-grow: 1;
-}
-
-dialog > footer > button {
-	flex-grow: 1;
-	justify-content: center;
-}</style>`;
 /* global customElements, template */
 
 import './g-icon.js';
+import './g-date-time-selector.js';
 import GWindow from './g-window.js';
-import './g-month-interval-selector.js';
 import CancelError from "./cancel-error.js";
 
-export default class GMonthIntervalPicker extends GWindow
+export default class GDateTimePicker extends GWindow
 {
 	constructor()
 	{
@@ -56,17 +16,18 @@ export default class GMonthIntervalPicker extends GWindow
 		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.dispatchEvent(new CustomEvent('cancel')));
 
 		let commit = this.shadowRoot.getElementById("commit");
-		let selector = this.shadowRoot.querySelector("g-month-interval-selector");
+		let selector = this.shadowRoot.querySelector("g-date-time-selector");
 
+		selector.date = new Date();
 		commit.innerText = selector.selection;
 
 		selector.addEventListener("selected", () => commit.innerText = selector.selection);
-		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: commit.innerText})) | this.hide());
+		commit.addEventListener("click", () => this.dispatchEvent(new CustomEvent("commit", {detail: commit.innerText})));
 	}
 
 	static pick()
 	{
-		let picker = window.top.document.createElement("g-month-interval-picker");
+		let picker = window.top.document.createElement("g-date-time-picker");
 		picker.show();
 
 		return new Promise((resolve, reject) =>
@@ -75,14 +36,14 @@ export default class GMonthIntervalPicker extends GWindow
 			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}
-}
+};
 
-customElements.define('g-month-interval-picker', GMonthIntervalPicker);
+customElements.define('g-date-time-picker', GDateTimePicker);
 
 window.addEventListener("connected", event =>
 {
 	const target = event.target;
-	if (target.getAttribute("data-picker") === "month-interval")
+	if (target.getAttribute("data-picker") === "date-time")
 	{
 		let link = target.parentNode.appendChild(document.createElement("a"));
 		link.href = "#";
@@ -103,7 +64,7 @@ window.addEventListener("connected", event =>
 				target.value = '';
 				target.dispatchEvent(new Event('change', {bubbles: true}));
 			} else
-				GMonthIntervalPicker.pick()
+				GDateTimePicker.pick()
 					.then(value => target.value = value)
 					.then(() => target.dispatchEvent(new Event('change', {bubbles: true})))
 					.catch(() => undefined);

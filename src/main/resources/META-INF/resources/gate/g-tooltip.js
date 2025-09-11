@@ -40,20 +40,24 @@ template.innerHTML = `
 }
 
 :host(*) {
+	margin: 0;
 	color: #eee;
 	padding: 10px;
-	display: none;
 	font-size: 16px;
-	position: fixed;
 	max-width: 50vw;
 	max-height: 50vh;
 	z-index: 1000000;
-	visibility: hidden;
 	border-radius: 6px;
 	background-color: #111;
 	overflow: visible !important;
 	border: 1px solid rgba(255,255,255,0.08);
 	box-shadow: 0 12px 24px rgba(0,0,0,0.28);
+}
+
+:host(:popover-open) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
 }
 
 div {
@@ -132,6 +136,7 @@ svg {
 }</style>`;
 /* global template */
 
+import DOM from './dom.js';
 import './mutation-events.js';
 import anchor from './anchor.js';
 import DataURL from './data-url.js';
@@ -172,16 +177,17 @@ export default class GTooltip extends HTMLElement
 		target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
 		target.addEventListener("click", () => this.hide() || controller.abort(), {signal: controller.signal});
 
-		this.style.display = "block";
 		this.style.visibility = "hidden";
+		this.showPopover();
+
 		anchor(this, target, GAP, position, ...POSITIONS)
 			.then(({position, location}) =>
 			{
 				this.setAttribute("arrow", position);
 				this.style.top = `${location.y}px`;
 				this.style.left = `${location.x}px`;
-			})
-			.finally(() => this.style.visibility = "visible");
+			}).catch((error) => console.warn("No valid position found tooltip position found:", error))
+			.finally(() => this.style.visibility = "");
 	}
 
 	get position()
@@ -199,15 +205,17 @@ export default class GTooltip extends HTMLElement
 	{
 		if (this.getAttribute("auto"))
 			this.remove();
-		this.style.display = "none";
 		this.style.visibility = "hidden";
 	}
 
 	static show(element, content, position)
 	{
 		let tooltip = new GTooltip();
-		element.parentNode.appendChild(tooltip);
 		tooltip.setAttribute("auto", true);
+
+		element.appendChild(tooltip);
+		if (tooltip.parentNode !== element)
+			element.parentNode.appendChild(tooltip);
 
 		if (typeof content === "object")
 		{
@@ -233,20 +241,7 @@ export default class GTooltip extends HTMLElement
 
 	connectedCallback()
 	{
-		if (this.parentNode !== document.body)
-		{
-			this.#parent = this.parentNode;
-			this.#parent.addEventListener("mouseenter", this.#trigger);
-		}
-	}
-
-	disconnectedCallback()
-	{
-		if (this.#parent)
-		{
-			this.#parent.removeEventListener("mouseenter", this.#trigger);
-			this.#parent = null;
-		}
+		this.setAttribute("popover", "auto");
 	}
 }
 
@@ -257,9 +252,13 @@ function trigger()
 	let timeout = setTimeout(() =>
 	{
 		if (this.hasAttribute("data-tooltip"))
-			return GTooltip.show(this, this.getAttribute("data-tooltip"));
-		if (this.hasAttribute("data-tooltip:source"))
-			return fetch(this.getAttribute("data-tooltip:source"))
+			DOM.navigate(this, this.getAttribute("data-tooltip"))
+				.orElseThrow(`${this.getAttribute("data-tooltip")} is not a valid selector`)
+				.show(this);
+		else if (this.hasAttribute("data-tooltip:text"))
+			GTooltip.show(this, this.getAttribute("data-tooltip:text"));
+		else if (this.hasAttribute("data-tooltip:source"))
+			fetch(this.getAttribute("data-tooltip:source"))
 				.then(ResponseHandler.auto)
 				.then(content => GTooltip.show(this, content))
 				.catch(error => console.error('Error trying to fetch tooltip data:', error));
@@ -270,8 +269,7 @@ function trigger()
 window.addEventListener("connected", event => {
 	let target = event.composedPath()[0] || event.target;
 	if (target.hasAttribute("data-tooltip")
-		|| target.hasAttribute("data-tooltip:source")
-		|| Array.from(target.children).some(e => e.tagName === "G-TOOLTIP"))
+		|| target.hasAttribute("data-tooltip:source"))
 		target.addEventListener("mouseenter", trigger);
 });
 
@@ -281,7 +279,7 @@ window.addEventListener("disconnected", event => {
 });
 
 window.addEventListener("attribute-created", event => {
-	let attribute = event.attribute;
+	let attribute = event.detail.attribute;
 	let target = event.composedPath()[0] || event.target;
 	if (attribute === "data-tooltip"
 		|| attribute === "data-tooltip:source")
@@ -289,7 +287,7 @@ window.addEventListener("attribute-created", event => {
 });
 
 window.addEventListener("attribute-removed", event => {
-	let attribute = event.attribute;
+	let attribute = event.detail.attribute;
 	let target = event.composedPath()[0] || event.target;
 	if (attribute === "data-tooltip"
 		|| attribute === "data-tooltip:source")

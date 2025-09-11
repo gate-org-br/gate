@@ -41,10 +41,13 @@ The padding is now applied automatically
 
 data-filter, data-sortable only works now inside g-tables
 
-input class="Date" replaced by input is='g-date-input'
-input class="DateInterval" replaced by input is='g-date-interval-input'
-input class="DateTime" replaced by input is='g-date-time-input'
-input class="DateTimeInterval" replaced by input is='g-date-time-interval-input'
+input class="Icon" replaced by input data-picker='icon'
+input class="Date" replaced by input data-picker='date'
+input class="DateInterval" replaced by input data-picker='date-interval'
+input class="Time" replaced by input data-picker='time'
+input class="TimeInterval" replaced by input data-picker='time-interval'
+input class="DateTime" replaced by input data-picker='date-time-interval'
+input class="DateTimeInterval" replaced by input data-picker='date-time-interval'
 
 g-icon-pane removed
 g-desk-pane small class added to replace the removed g-icon-pane
@@ -52,3 +55,5 @@ g-desk-pane small class added to replace the removed g-icon-pane
 _report and _report_dialog replaced by @report > @save
 
 StringList objects are now stored as JSON arrays on database
+
+is=["']g-([a-z-]+)-input['"] -> data-picker="$1"

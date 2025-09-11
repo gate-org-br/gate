@@ -1,67 +1,61 @@
 const DEFAULT_POSITIONS = ["north", "south", "east", "west",
 	"northeast", "southwest", "northwest", "southeast"];
-
-function isVisible(element)
-{
-	let rect = element.getBoundingClientRect();
-	return rect.top >= 0 && rect.left >= 0
-		&& rect.bottom <= window.innerHeight && rect.right <= window.innerWidth;
-}
-
 function calc(element, target, gap, position)
 {
-	target = target.getBoundingClientRect();
-	element = element.getBoundingClientRect();
+	const targetRect = target.getBoundingClientRect();
+	const elementRect = element.getBoundingClientRect();
 
 	switch (position)
 	{
 		case "northeast":
-			return {x: target.right + gap, y: target.top};
+			return {x: targetRect.right + gap, y: targetRect.top};
 		case "southwest":
-			return {x: target.left - element.width - gap, y: target.bottom - element.height};
+			return {x: targetRect.left - elementRect.width - gap, y: targetRect.bottom - elementRect.height};
 		case "northwest":
-			return {x: target.left - element.width - gap, y: target.top};
+			return {x: targetRect.left - elementRect.width - gap, y: targetRect.top};
 		case "southeast":
-			return {x: target.right + gap, y: target.bottom - element.height};
+			return {x: targetRect.right + gap, y: targetRect.bottom - elementRect.height};
 		case "north":
-			return {x: target.left + (target.width / 2) - (element.width / 2), y: target.top - element.height - gap};
+			return {x: targetRect.left + (targetRect.width / 2) - (elementRect.width / 2), y: targetRect.top - elementRect.height - gap};
 		case "east":
-			return {x: target.right + gap, y: target.top + (target.height / 2) - (element.height / 2)};
+			return {x: targetRect.right + gap, y: targetRect.top + (targetRect.height / 2) - (elementRect.height / 2)};
 		case "south":
-			return {x: target.left + (target.width / 2) - (element.width / 2), y: target.bottom + gap};
+			return {x: targetRect.left + (targetRect.width / 2) - (elementRect.width / 2), y: targetRect.bottom + gap};
 		case "west":
-			return {x: target.left - element.width - gap, y: target.top + (target.height / 2) - (element.height / 2)};
+			return {x: targetRect.left - elementRect.width - gap, y: targetRect.top + (targetRect.height / 2) - (elementRect.height / 2)};
 		default:
-			return {x: target.right + gap, y: target.bottom + gap};
+			return {x: targetRect.right + gap, y: targetRect.bottom + gap};
 	}
 }
 
-export default function anchor(element, target, gap = 0, ...positions)
-{
+function fits(element, target, gap, position) {
+	const targetRect = target.getBoundingClientRect();
+	const elementRect = element.getBoundingClientRect();
+	const viewport = {width: window.innerWidth, height: window.innerHeight};
+
+	const location = calc(element, target, gap, position);
+
+	const ok = location.x >= 0 &&
+		location.y >= 0 &&
+		(location.x + elementRect.width) <= viewport.width &&
+		(location.y + elementRect.height) <= viewport.height;
+
+	return ok ? location : null;
+}
+
+export default function anchor(element, target, gap = 0, ...positions) {
 	if (!positions.length)
 		positions = DEFAULT_POSITIONS;
 
-	return new Promise((resolve, reject) =>
-	{
-		const top = element.style.top;
-		const left = element.style.left;
-
-		for (let i = 0; i < positions.length; i++)
-		{
-			const position = positions[i];
-			let location = calc(element, target, gap, position);
-			element.style.top = `${location.y}px`;
-			element.style.left = `${location.x}px`;
-			if (isVisible(element))
+	return new Promise((resolve, reject) => {
+		requestAnimationFrame(() => {
+			for (const position of positions)
 			{
-				element.style.top = top;
-				element.style.left = left;
-				return resolve({position, location});
+				const location = fits(element, target, gap, position);
+				if (location)
+					return resolve({position, location});
 			}
-		}
-
-		element.style.top = top;
-		element.style.left = left;
-		reject(new Error("No position"));
+			reject(new Error("No available space"));
+		});
 	});
 }

@@ -10,7 +10,31 @@
 	<a href="#">Example 1</a>
 	<div>
 		<g-code-viewer>
-			<g-callout id="context" data-contextmenu:module="/component/g-context-menu/context-menu.js">
+			<g-callout data-context-menu="this.next(g-context-menu)">
+				<p>
+					Click here to load the file <a target="_blank" href="/component/g-context-menu/context-menu.js">
+						/component/g-context-menu/context-menu.js
+					</a> as a JavaScript module and display a context menu using the actions it defines. 
+					The module must export a default function that returns an array of action objects.
+				</p>
+			</g-callout>
+			<g-context-menu>
+				<a href="#">
+					Action 1<g-icon>&#X2003</g-icon>
+				</a>
+				<a href="#">
+					Action 2<g-icon>&#X2004</g-icon>
+				</a>
+				<a href="#">
+					Action 3<g-icon>&#X2005</g-icon>
+				</a>
+			</g-context-menu>
+		</g-code-viewer>
+	</div>
+	<a href="#">Example 2</a>
+	<div>
+		<g-code-viewer>
+			<g-callout data-context-menu:module="/component/g-context-menu/context-menu.js">
 				<p>
 					Click here to load the file <a target="_blank" href="/component/g-context-menu/context-menu.js">
 						/component/g-context-menu/context-menu.js

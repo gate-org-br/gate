@@ -3,20 +3,24 @@
 }
 
 :host(*) {
+	margin: 0;
 	color: #eee;
 	padding: 10px;
-	display: none;
 	font-size: 16px;
-	position: fixed;
 	max-width: 50vw;
 	max-height: 50vh;
 	z-index: 1000000;
-	visibility: hidden;
 	border-radius: 6px;
 	background-color: #111;
 	overflow: visible !important;
 	border: 1px solid rgba(255,255,255,0.08);
 	box-shadow: 0 12px 24px rgba(0,0,0,0.28);
+}
+
+:host(:popover-open) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
 }
 
 div {

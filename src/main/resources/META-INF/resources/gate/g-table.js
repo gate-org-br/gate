@@ -1,6 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-table">table[is='g-table'][data-table-size='0'][data-empty]
+ <style data-element="g-table">table[data-table-size='0'][data-empty]
 {
 	display: flex;
 	padding: 12px;
@@ -15,23 +15,23 @@ template.innerHTML = `
 	background-color: var(--main1);
 }
 
-table[is='g-table'][data-table-size='0'][data-empty] *
+table[data-table-size='0'][data-empty] *
 {
 	display: none !important;
 }
 
-table[is='g-table'][data-table-size='0'][data-empty]::before
+table[data-table-size='0'][data-empty]::before
 {
 	content: attr(data-empty);
 }
 
-table[is='g-table'] > thead > tr > th[data-sortable]
+table > thead > tr > th[data-sortable]
 {
 	cursor: pointer;
 	color: var(--question1);
 }
 
-table[is='g-table'] > thead > tr > th[data-sortable]::before
+table > thead > tr > th[data-sortable]::before
 {
 	font-size: 16px;
 	content: "\\2195 ";
@@ -39,25 +39,26 @@ table[is='g-table'] > thead > tr > th[data-sortable]::before
 	color: rgba(0, 0, 0, 0.2)
 }
 
-table[is='g-table'] > thead > tr > th[data-sortable="A"]::before
+table > thead > tr > th[data-sortable="A"]::before
 {
 	content: "\\2191 ";
 	color: var(--base);
 }
 
-table[is='g-table'] > thead > tr > th[data-sortable="D"]::before
+table > thead > tr > th[data-sortable="D"]::before
 {
 	content: "\\2193 ";
 	color: var(--base);
 
 }
 
-table[is='g-table'] > tbody > tr[hidden]
+table > tbody > tr[hidden]
 {
 	display: none;
 }</style>`;
-/* global Objects, template */
+/* global template */
 
+import DOM from './dom.js';
 import Objects from './objects.js';
 import colorize from './colorize.js';
 import EventHandler from './event-handler.js';
@@ -66,84 +67,56 @@ const sheet = new CSSStyleSheet();
 sheet.replaceSync(template.content.querySelector("style").textContent);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
-customElements.define('g-table', class extends HTMLTableElement
+const observer = new MutationObserver(mutations =>
 {
-	#observer;
+	observer.takeRecords();
+	new Set(mutations.map(e => e.target.closest("table")).filter(Boolean))
+		.forEach(update);
+	observer.takeRecords();
+});
+observer.observe(document, {childList: true, subtree: true, attributes: true});
 
-	constructor()
+window.addEventListener("connected", event =>
+{
+	if (event.target.tagName === "TABLE"
+		&& event.target.getRootNode() instanceof ShadowRoot)
+		observer.observe(event.target.getRootNode(),
+			{childList: true, subtree: true, attributes: true});
+});
+
+function update(table)
+{
+	if (table.hasAttribute("data-sorted"))
 	{
-		super();
-		this.#observer = new MutationObserver(() => this.update(this));
+		let value = table.getAttribute("data-sorted").split(":");
+		let index = Number(value[0]);
+		let order = value[1];
 
-		this.addEventListener("click", function (event)
+		Array.from(table.querySelectorAll("tbody")).forEach(body =>
 		{
-			let target = event.target.closest("th[data-sortable]");
-			if (target)
-			{
-				Array.from(target.parentNode.children)
-					.filter(e => e.hasAttribute("data-sortable"))
-					.forEach(e => e.dataset.sortable = "_");
-
-				let position = Array.prototype
-					.indexOf.call(target.parentNode.children, target);
-
-				if (this.hasAttribute("data-sorted") &&
-					this.getAttribute("data-sorted").endsWith(":A"))
-				{
-					target.setAttribute("data-sortable", "D");
-					this.setAttribute("data-sorted", `${position}:D`);
-				} else
-				{
-					target.setAttribute("data-sortable", "A");
-					this.setAttribute("data-sorted", `${position}:A`);
-				}
-			}
+			let replacement = document.createElement("div");
+			body.replaceWith(replacement);
+			sort(body, index, order);
+			replacement.replaceWith(body);
 		});
 	}
 
-	update()
-	{
-		this.#observer.disconnect();
+	let rows = Array.from(table.querySelectorAll("tbody > tr"));
 
-		if (this.hasAttribute("data-sorted"))
-		{
-			let value = this.getAttribute("data-sorted").split(":");
-			let index = Number(value[0]);
-			let order = value[1];
+	let criteria = table.hasAttribute("data-filter") ?
+		table.getAttribute("data-filter") : null;
+	let columns = Array.from(table.querySelectorAll("col"))
+		.map(e => e.hasAttribute("data-filter") ? e.getAttribute("data-filter") : null);
+	filter(rows, criteria, ...columns);
 
-			Array.from(this.querySelectorAll("tbody")).forEach(body =>
-			{
-				let replacement = document.createElement("div");
-				body.replaceWith(replacement);
-				sort(body, index, order);
-				replacement.replaceWith(body);
-			});
-		}
+	colorize(rows);
 
-		let rows = Array.from(this.querySelectorAll("tbody > tr"));
+	rows = rows.filter(e => !e.hasAttribute("hidden"));
+	table.setAttribute("data-table-size", rows.length);
+	table.querySelectorAll("[data-table-size]")
+		.forEach(e => e.textContent = rows.length);
+}
 
-		let criteria = this.hasAttribute("data-filter") ?
-			this.getAttribute("data-filter") : null;
-		let columns = Array.from(this.querySelectorAll("col"))
-			.map(e => e.hasAttribute("data-filter") ? e.getAttribute("data-filter") : null);
-		filter(rows, criteria, ...columns);
-
-		colorize(rows);
-
-		rows = rows.filter(e => !e.hasAttribute("hidden"));
-		this.setAttribute("data-table-size", rows.length);
-		this.querySelectorAll("[data-table-size]")
-			.forEach(e => e.textContent = rows.length);
-
-		this.#observer.observe(this, {childList: true, subtree: true,
-			attributes: true});
-	}
-
-	connectedCallback()
-	{
-		this.update(this);
-	}
-}, {extends: 'table'});
 
 function sort(element, index, order)
 {
@@ -200,6 +173,34 @@ function filter(elements, value, ...columns)
 		return element.removeAttribute("hidden");
 	});
 }
+
+window.addEventListener("click", function (event)
+{
+	const target = event.composedPath()
+		.find(e => e.matches && e.matches("table > thead > tr > th")
+				&& e.hasAttribute("data-sortable"));
+	if (target)
+	{
+		Array.from(target.parentNode.children)
+			.filter(e => e.hasAttribute("data-sortable"))
+			.forEach(e => e.dataset.sortable = "_");
+
+		let position = Array.prototype
+			.indexOf.call(target.parentNode.children, target);
+
+		const table = target.closest("table");
+		if (table.hasAttribute("data-sorted") &&
+			table.getAttribute("data-sorted").endsWith(":A"))
+		{
+			target.setAttribute("data-sortable", "D");
+			table.setAttribute("data-sorted", `${position}:D`);
+		} else
+		{
+			target.setAttribute("data-sortable", "A");
+			table.setAttribute("data-sorted", `${position}:A`);
+		}
+	}
+});
 
 window.addEventListener("mouseover", function (event)
 {

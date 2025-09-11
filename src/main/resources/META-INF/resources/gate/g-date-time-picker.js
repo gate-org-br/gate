@@ -79,3 +79,38 @@ export default class GDateTimePicker extends GWindow
 };
 
 customElements.define('g-date-time-picker', GDateTimePicker);
+
+window.addEventListener("connected", event =>
+{
+	const target = event.target;
+	if (target.getAttribute("data-picker") === "date-time")
+	{
+		let link = target.parentNode.appendChild(document.createElement("a"));
+		link.href = "#";
+		if (target.hasAttribute('tabindex'))
+			link.setAttribute("tabindex", target.getAttribute('tabindex'));
+		let icon = link.appendChild(document.createElement("g-icon"));
+
+		icon.innerHTML = target.value ? "&#x1001;" : "&#x2003;";
+		target.addEventListener("input", () => icon.innerHTML = target.value ? "&#x1001;" : "&#x2003;");
+		target.addEventListener("change", () => icon.innerHTML = target.value ? "&#x1001;" : "&#x2003;");
+
+		link.addEventListener("click", event =>
+		{
+			event.preventDefault();
+
+			if (target.value)
+			{
+				target.value = '';
+				target.dispatchEvent(new Event('change', {bubbles: true}));
+			} else
+				GDateTimePicker.pick()
+					.then(value => target.value = value)
+					.then(() => target.dispatchEvent(new Event('change', {bubbles: true})))
+					.catch(() => undefined);
+
+			link.focus();
+			link.blur();
+		});
+	}
+});

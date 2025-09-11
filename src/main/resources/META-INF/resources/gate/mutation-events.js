@@ -45,12 +45,12 @@ function dispatcher(mutations)
 	});
 }
 
-window.addEventListener("load", () => {
+window.addEventListener("DOMContentLoaded", () =>
+{
 	DOM.traverse(document, node => node.nodeType === Node.ELEMENT_NODE, node => {
 		node.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true}));
 
-		if (node.shadowRoot && !shadowRootObservers.has(node.shadowRoot))
-		{
+		if (node.shadowRoot && !shadowRootObservers.has(node.shadowRoot)) {
 			const observer = new MutationObserver(dispatcher);
 			shadowRootObservers.set(node.shadowRoot, observer);
 			observer.observe(node.shadowRoot, {childList: true, subtree: true, attributes: true});

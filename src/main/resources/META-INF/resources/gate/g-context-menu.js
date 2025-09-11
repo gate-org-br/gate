@@ -1,5 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
+	<slot>
+	</slot>
  <style data-element="g-context-menu">* {
 	cursor: pointer;
 	box-sizing: border-box;
@@ -8,25 +10,31 @@ template.innerHTML = `
 :host
 {
 	margin: 0;
-	padding: 0;
-	width: auto;
 	color: black;
-	display: flex;
+	border: none;
+	padding: 10px;
 	z-index: 1000;
 	overflow: auto;
 	font-size: 14px;
-	position: fixed;
 	max-width: 50vw;
 	max-height: 50vh;
 	min-width: 220px;
-	border-radius: 8px;
-	align-items: stretch;
-	flex-direction: column;
+	width: fit-content;
+	border-radius: 10px;
 	background-color: #FFFFFF;
-	box-shadow: 3px 10px 15px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-a, button
+:host(:popover-open) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+a,
+button,
+::slotted(a),
+::slotted(button)
 {
 	gap: 12px;
 	border: none;
@@ -39,20 +47,25 @@ a, button
 	align-items: center;
 	white-space: nowrap;
 	text-decoration: none;
+	transition: all 0.2s ease;
 	background-color: transparent;
 	justify-content: space-between;
 	transition: background-color 0.2s ease, padding 0.2s ease;
 }
 
 a:hover,
-button:hover
+button:hover,
+::slotted(a:hover),
+::slotted(button:hover)
 {
 	background-color: var(--hovered, #FFFACD);
 	padding-left: 20px;
 }
 
 a:focus,
-button:focus
+button:focus,
+::slotted(a:focus),
+::slotted(button:focus)
 {
 	outline: none;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -64,7 +77,9 @@ label {
 }
 
 a[data-icon]::before,
-button[data-icon]::before
+button[data-icon]::before,
+::slotted(a:[data-icon])::before,
+::slotted(button:[data-icon])::before
 {
 	font-family: gate;
 	content: attr(data-icon);
@@ -78,26 +93,18 @@ button[submenu]::after
 	content: '\\2207';
 	font-family: gate;
 	margin-left: 8px;
-}
-
-a, button {
-	transition: all 0.2s ease;
-}
-
-:host {
-	padding: 10px;
-	border-radius: 10px;
-	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }</style>`;
 /* global customElements, template */
 
+import DOM from './dom.js';
 import './mutation-events.js';
 import anchor from './anchor.js';
 import resolve from './resolve.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
+import WindowListenerHTMLElement from './window-listener-html-element.js';
 
-const POSITIONS = ["northeast", "southeast", "northwest", "southwest"];
+const POSITIONS = ["northeast", "southeast", "northwest", "southwest", "north", "south", "east", "west"];
 
 function scheduleClick(link)
 {
@@ -113,8 +120,9 @@ function createSubmenu(link, event, actions)
 {
 	const submenu = document.createElement('g-context-menu');
 	submenu.actions = actions;
-	submenu.style.visibility = "hidden";
 	link.appendChild(submenu);
+	submenu.style.visibility = "hidden";
+	submenu.showPopover();
 	anchor(submenu, link, 0, ...POSITIONS)
 		.then(({location}) =>
 		{
@@ -131,7 +139,7 @@ function createSubmenu(link, event, actions)
 		});
 }
 
-export default class GContextMenu extends HTMLElement
+export default class GContextMenu extends WindowListenerHTMLElement
 {
 	#context;
 
@@ -139,6 +147,7 @@ export default class GContextMenu extends HTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
+		this.addWindowListener("click", () => this.hide());
 		this.addEventListener("mouseleave", () => this.hide());
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
@@ -211,12 +220,6 @@ export default class GContextMenu extends HTMLElement
 
 	show(x, y)
 	{
-		const parent =
-			this.context ?
-			this.context.parentNode :
-			document.body;
-		parent.appendChild(this);
-
 		const target = {getBoundingClientRect: () => ({x, y,
 					left: x,
 					top: y,
@@ -226,13 +229,12 @@ export default class GContextMenu extends HTMLElement
 					height: 0})};
 
 		this.style.visibility = "hidden";
+		this.showPopover();
 		anchor(this, target, 0, ...POSITIONS).then(e =>
 		{
-			this.classList.remove("fallback");
 			this.style.top = `${e.location.y}px`;
 			this.style.left = `${e.location.x}px`;
-		}).catch(error => this.classList.add("fallback"))
-			.finally(() => this.style.visibility = "visible");
+		}).finally(() => this.style.visibility = "visible");
 	}
 
 	root()
@@ -244,24 +246,34 @@ export default class GContextMenu extends HTMLElement
 	}
 	hide()
 	{
-		this.remove();
+		this.hidePopover();
+		if (this.hasAttribute("automatic"))
+			this.remove();
 	}
 
 	static show(context, x, y, ...actions)
 	{
 		let menu = document.createElement("g-context-menu");
+		menu.setAttribute("automatic", "true");
 		menu.context = context;
 		menu.actions = actions;
+
+		context.appendChild(menu);
+		if (menu.parentNode !== context)
+			context.parentNode.appendChild(menu);
+
 		menu.show(x, y);
 		return menu;
+	}
+
+	connectedCallback()
+	{
+		super.connectedCallback();
+		this.setAttribute("popover", "manual");
 	}
 }
 
 customElements.define('g-context-menu', GContextMenu);
-
-window.addEventListener("click",
-	() => document.querySelectorAll("g-context-menu").forEach(menu => menu.hide()));
-
 window.addEventListener("contextmenu", function (event)
 {
 	if (event.ctrlKey)
@@ -273,17 +285,29 @@ window.addEventListener("contextmenu", function (event)
 	{
 		if (element.hasAttribute)
 		{
-			if (element.hasAttribute("data-contextmenu:source"))
+			if (element.hasAttribute("data-context-menu"))
 			{
-				fetch(element.getAttribute("data-contextmenu:source"))
+				event.preventDefault();
+				event.stopPropagation();
+				const selector = element.getAttribute("data-context-menu")
+				const contextmenu = DOM.navigate(element, selector)
+					.orElseThrow(`${selector} is not a valid selector`);
+				contextmenu.show(event.clientX, event.clientY);
+				return;
+			} else if (element.hasAttribute("data-context-menu:source"))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				fetch(element.getAttribute("data-context-menu:source"))
 					.then(response => response.json())
 					.then(actions => GContextMenu.show(element, event.clientX, event.clientY, ...actions))
 					.catch(error => console.error('Error fetching context menu source:', error));
-				event.preventDefault();
 				return;
-			} else if (element.hasAttribute("data-contextmenu:module"))
+			} else if (element.hasAttribute("data-context-menu:module"))
 			{
-				import(element.getAttribute("data-contextmenu:module"))
+				event.preventDefault();
+				event.stopPropagation();
+				import(element.getAttribute("data-context-menu:module"))
 					.then(module => module.default)
 					.then(create => create(element))
 					.then(actions => GContextMenu.show(element, event.clientX, event.clientY, ...actions))

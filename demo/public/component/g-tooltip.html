@@ -1,12 +1,8 @@
 <g-callout class='fill'>
 	<h1>&lt;g-tooltip&gt;</h1>
 	<p>
-		The <strong>&lt;g-tooltip&gt;</strong> component provides a seamless way to attach tooltips to other
-		elements within your HTML structure. To bind a tooltip, simply include a
-		<strong>&lt;g-tooltip&gt;</strong>
-		tag inside the target element, and within it, define the content you wish to display.
-		This straightforward approach streamlines the process of creating and associating
-		tooltips with specific elements, enhancing the overall user experience.
+		The <strong>&lt;g-tooltip&gt;</strong> component provides a seamless way to attach tooltips to
+		elements within your HTML structure.
 	</p>
 	<p>
 		The <strong>&lt;g-tooltip&gt;</strong> allows you to precisely control its display position. By utilizing the optional <strong>position</strong>
@@ -16,17 +12,28 @@
 		dynamic layout scenarios.
 	</p>
 	<p>
-		In addition to using the <strong>&lt;g-tooltip&gt;</strong> component, you have the alternative option of employing the data-tooltip
-		and data-tooltip:position attributes on any HTML element. When utilizing data-tooltip, you can provide a JSON string as its value,
-		defining the content you wish to display within the tooltip. The engine will automatically convert the JSON into HTML for an expressive
-		and customizable tooltip presentation. Moreover, the optional data-tooltip:position attribute allows you to specify the preferred
-		positioning of the tooltip.
+		The <strong>data-tooltip</strong> attribute references a selector of an existing 
+		<code>&lt;g-tooltip&gt;</code> element in the DOM. 
+		The tooltip will display the content found inside the referenced element, 
+		allowing you to reuse and centralize tooltip definitions.
+	</p>
+	<p>
+		The <strong>data-tooltip-source</strong> attribute defines a URL to fetch tooltip content dynamically. 
+		If the server responds with JSON, the engine automatically converts it into HTML before rendering, making 
+		it possible to build expressive tooltips from structured data.
+	</p>
+	<p>
+		The <strong>data-tooltip-text</strong> attribute provides plain text that will be shown directly inside the tooltip. 
+		This is the simplest option for quick, inline tooltips without needing additional markup or external sources.
+	</p>
+	<p>
+		The optional <strong>data-tooltip:position</strong> attribute can also be used in any of these cases to specify the preferred positioning of the tooltip relative to its target element.
 	</p>
 </g-callout>
 
 <div style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px'>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			Southeast
 			<g-tooltip position='southeast'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -36,7 +43,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			South
 			<g-tooltip position='south'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -46,7 +53,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			Southwest
 			<g-tooltip position='southwest'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -56,7 +63,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			East
 			<g-tooltip position='east'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -72,7 +79,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			West
 			<g-tooltip position='west'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -82,7 +89,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			Northeast
 			<g-tooltip position='northeast'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -92,7 +99,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			North
 			<g-tooltip position='north'>
 				<g-message class='fill icon' style='width: 200px'>
@@ -102,7 +109,7 @@
 		</g-callout>
 	</g-code-viewer>
 	<g-code-viewer>
-		<g-callout>
+		<g-callout data-tooltip="this[g-tooltip]">
 			Northwest
 			<g-tooltip position='northwest'>
 				<g-message class='fill icon' style='width: 200px'>
