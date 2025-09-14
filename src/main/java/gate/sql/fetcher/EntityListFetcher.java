@@ -1,15 +1,13 @@
 package gate.sql.fetcher;
 
-import gate.lang.property.Property;
-import gate.sql.Cursor;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
+import gate.sql.Cursor;
+
 /**
- * Fetches a cursor as a list of java objects of the specified type with it's properties set to their respective column values.
+ * Fetches a cursor as a list of java objects of the specified type with it's
+ * properties set to their respective column values.
  */
 public class EntityListFetcher<T> implements Fetcher<List<T>>
 {
@@ -28,12 +26,12 @@ public class EntityListFetcher<T> implements Fetcher<List<T>>
 	}
 
 	/**
-	 * Fetches each row from the specified Cursor as a list of java objects of the specified type with it's properties set to their respective column
-	 * values.
+	 * Fetches each row from the specified Cursor as a list of java objects of the
+	 * specified type with it's properties set to their respective column values.
 	 *
 	 * @param cursor the Cursor to be fetched
-	 * @return a List with each row or the specified Cursor as a java object of the specified type with it's properties set to their respective column
-	 * values
+	 * @return a List with each row or the specified Cursor as a java object of the
+	 * specified type with it's properties set to their respective column values
 	 */
 	@Override
 	public List<T> fetch(Cursor cursor)

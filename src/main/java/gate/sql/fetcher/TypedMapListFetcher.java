@@ -1,11 +1,11 @@
 package gate.sql.fetcher;
 
-import gate.sql.Cursor;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import gate.sql.Cursor;
 
 public class TypedMapListFetcher implements Fetcher<List<Map<String, Object>>>
 {

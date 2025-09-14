@@ -26,21 +26,19 @@ template.innerHTML = `
 			</g-coolbar>
 		</footer>
 	</dialog>
- <style data-element="g-tree-picker">dialog
-{
+ <style data-element="g-tree-picker">dialog {
 	width: clamp(320px, calc(100% - 120px), 1024px);
 	height: clamp(320px, calc(100% - 120px), 768px);
 }
 
-dialog > section
-{
+dialog>section {
 	gap: 4px;
 	padding: 4px;
 	display: flex;
 	height: auto;
 	overflow: auto;
 	align-items: stretch;
-	background-color: white;
+	background-color: var(--main1, white);
 }</style>`;
 /* global customElements, template, fetch */
 

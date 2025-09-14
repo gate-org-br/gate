@@ -1,31 +1,28 @@
 package gate.lang.template;
 
-import gate.entity.Role;
-import gate.entity.User;
-import gate.error.TemplateException;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonObject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
+
+import gate.entity.Role;
+import gate.entity.User;
+import gate.error.TemplateException;
+import gate.lang.json.JsonObject;
 
 public final class TemplateTest
 {
 
 	private List<Role> roles;
 
-	private final JsonObject PERMISSIONS
-			= new JsonObject()
-					.setBoolean("select", true)
-					.setBoolean("search", true)
-					.setBoolean("insert", false)
-					.setBoolean("update", false)
-					.setBoolean("delete", false);
+	private final JsonObject PERMISSIONS = new JsonObject().setBoolean("select", true).setBoolean("search", true)
+			.setBoolean("insert", false).setBoolean("update", false).setBoolean("delete", false);
 
 	public TemplateTest()
 	{

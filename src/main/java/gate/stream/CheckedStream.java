@@ -83,7 +83,7 @@ public class CheckedStream<T, E extends Exception>
 			{
 				try
 				{
-					return mapper.applyAsDouble​(e);
+					return mapper.applyAsDouble(e);
 				} catch (RuntimeException ex)
 				{
 					throw ex;
@@ -98,8 +98,7 @@ public class CheckedStream<T, E extends Exception>
 		}
 	}
 
-	public DoubleStream flatMapToDouble(CheckedFunction<? super T, ? extends DoubleStream> mapper)
-		throws E
+	public DoubleStream flatMapToDouble(CheckedFunction<? super T, ? extends DoubleStream> mapper) throws E
 	{
 		try
 		{
@@ -191,8 +190,7 @@ public class CheckedStream<T, E extends Exception>
 		}
 	}
 
-	public LongStream flatMapToLong(CheckedFunction<? super T, ? extends LongStream> mapper)
-		throws E
+	public LongStream flatMapToLong(CheckedFunction<? super T, ? extends LongStream> mapper) throws E
 	{
 		try
 		{
@@ -215,8 +213,7 @@ public class CheckedStream<T, E extends Exception>
 		}
 	}
 
-	public <R> CheckedStream<R, E> flatMap(
-		CheckedFunction<? super T, ? extends Stream<? extends R>> mapper) throws E
+	public <R> CheckedStream<R, E> flatMap(CheckedFunction<? super T, ? extends Stream<? extends R>> mapper) throws E
 	{
 		try
 		{
@@ -449,8 +446,8 @@ public class CheckedStream<T, E extends Exception>
 		}
 	}
 
-	public <U> U reduce(U identity, CheckedBiFunction<U, ? super T, U> accumulator,
-		CheckedBinaryOperator<U> combiner) throws E
+	public <U> U reduce(U identity, CheckedBiFunction<U, ? super T, U> accumulator, CheckedBinaryOperator<U> combiner)
+			throws E
 	{
 		try
 		{
@@ -487,7 +484,7 @@ public class CheckedStream<T, E extends Exception>
 	}
 
 	public <R> R collect(CheckedSupplier<R> supplier, CheckedBiConsumer<R, ? super T> accumulator,
-		CheckedBiConsumer<R, R> combiner) throws E
+			CheckedBiConsumer<R, R> combiner) throws E
 	{
 		try
 		{

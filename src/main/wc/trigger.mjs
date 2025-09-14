@@ -76,89 +76,90 @@ const DEFAULT = new Map()
 
 window.addEventListener("click", function (event)
 {
-	for (let element of event.composedPath())
-	{
-		if (!element.hasAttribute)
-			continue;
-		if (element.tagName === "A")
+	if (!event.defaultPrevented)
+		for (let element of event.composedPath())
 		{
-			if (!validate(element))
-				return EventHandler.cancel(event);
-
-			let method = element.getAttribute("data-method") || "get";
-			let target = element.getAttribute("target") || "_self";
-
-			if (event.ctrlKey)
-				target = "_blank";
-
-			if (target.startsWith("@") || method !== "get")
+			if (!element.hasAttribute)
+				continue;
+			if (element.tagName === "A")
 			{
-				trigger(event, element, element);
-				return EventHandler.cancel(event);
-			}
+				if (!validate(element))
+					return EventHandler.cancel(event);
 
-			let current = element.href;
+				let method = element.getAttribute("data-method") || "get";
+				let target = element.getAttribute("target") || "_self";
 
-			let resolved = resolve(element, event, current);
-			if (resolved === current)
-				return;
+				if (event.ctrlKey)
+					target = "_blank";
 
-			if (!resolved)
-				return EventHandler.cancel(event);
-
-			element.href = resolved;
-			element.click();
-			element.href = current;
-			return EventHandler.cancel(event);
-		}
-
-		if (element.tagName === "BUTTON")
-		{
-			if (!validate(element))
-				return EventHandler.cancel(event);
-
-			let method = element.getAttribute("formmethod") || "post";
-			let target = element.getAttribute("formtarget") || "_self";
-
-			if (event.ctrlKey)
-				target = "_blank";
-
-			if (target.startsWith("@") || (method !== "get" && method !== "post"))
-			{
-				trigger(event, element, element);
-				return EventHandler.cancel(event);
-			}
-
-			let current = element.getAttribute("formaction") || (element.form || {}).action;
-			if (!current)
-				return;
-
-			let resolved = resolve(element, event, current);
-			if (resolved === current)
-				return;
-
-			if (!resolved)
-				return EventHandler.cancel(event);
-
-			element.setAttribute("formaction", resolved);
-			element.click();
-			element.setAttribute("formaction", current);
-			return EventHandler.cancel(event);
-
-		}
-
-		if (element.hasAttribute("data-trigger")
-			|| element.hasAttribute("data-method")
-			|| element.hasAttribute("data-action")
-			|| element.hasAttribute("data-target"))
-		{
-			if ((element.getAttribute("data-trigger")
-				|| DEFAULT.get(element.tagName)) === "click")
-				if (validate(element))
+				if (target.startsWith("@") || method !== "get")
+				{
 					trigger(event, element, element);
-			return event.stopPropagation();
+					return EventHandler.cancel(event);
+				}
+
+				let current = element.href;
+
+				let resolved = resolve(element, event, current);
+				if (resolved === current)
+					return;
+
+				if (!resolved)
+					return EventHandler.cancel(event);
+
+				element.href = resolved;
+				element.click();
+				element.href = current;
+				return EventHandler.cancel(event);
+			}
+
+			if (element.tagName === "BUTTON")
+			{
+				if (!validate(element))
+					return EventHandler.cancel(event);
+
+				let method = element.getAttribute("formmethod") || "post";
+				let target = element.getAttribute("formtarget") || "_self";
+
+				if (event.ctrlKey)
+					target = "_blank";
+
+				if (target.startsWith("@") || (method !== "get" && method !== "post"))
+				{
+					trigger(event, element, element);
+					return EventHandler.cancel(event);
+				}
+
+				let current = element.getAttribute("formaction") || (element.form || {}).action;
+				if (!current)
+					return;
+
+				let resolved = resolve(element, event, current);
+				if (resolved === current)
+					return;
+
+				if (!resolved)
+					return EventHandler.cancel(event);
+
+				element.setAttribute("formaction", resolved);
+				element.click();
+				element.setAttribute("formaction", current);
+				return EventHandler.cancel(event);
+
+			}
+
+			if (element.hasAttribute("data-trigger")
+				|| element.hasAttribute("data-method")
+				|| element.hasAttribute("data-action")
+				|| element.hasAttribute("data-target"))
+			{
+				if ((element.getAttribute("data-trigger")
+					|| DEFAULT.get(element.tagName)) === "click")
+					if (validate(element))
+						trigger(event, element, element);
+				return event.stopPropagation();
+			}
 		}
-	}
 });
 
 window.addEventListener("submit", function (event)
@@ -225,15 +226,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-	{
-		Array.from(document.querySelectorAll('*'))
-			.filter(e => e.hasAttribute("data-trigger")
-					|| e.hasAttribute("data-method")
-					|| e.hasAttribute("data-action")
-					|| e.hasAttribute("data-target"))
-			.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-			.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-	});
+{
+	Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+				|| e.hasAttribute("data-method")
+				|| e.hasAttribute("data-action")
+				|| e.hasAttribute("data-target"))
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+});
 
 window.addEventListener("load", function (event)
 {

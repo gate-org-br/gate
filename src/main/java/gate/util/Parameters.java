@@ -1,9 +1,5 @@
 package gate.util;
 
-import gate.converter.Converter;
-import gate.type.Parameter;
-import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
@@ -12,11 +8,15 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import gate.converter.Converter;
+import gate.type.Parameter;
+
 public class Parameters extends LinkedHashMap<String, Object>
 {
 
 	public Parameters()
-	{}
+	{
+	}
 
 	public Parameters(List<Parameter> parameters)
 	{
@@ -27,8 +27,8 @@ public class Parameters extends LinkedHashMap<String, Object>
 	public String toString()
 	{
 		return entrySet().stream().filter(e -> e.getValue() != null)
-				.map(e -> e.getKey() + "=" + Converter.toString(e.getValue()))
-				.filter(e -> !e.isEmpty()).collect(Collectors.joining("&"));
+				.map(e -> e.getKey() + "=" + Converter.toString(e.getValue())).filter(e -> !e.isEmpty())
+				.collect(Collectors.joining("&"));
 	}
 
 	public String toEncodedString()

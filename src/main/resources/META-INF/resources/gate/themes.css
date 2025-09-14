@@ -1,11 +1,4 @@
 :root {
-  --phone: 576px;
-  --tablet: 768px;
-  --notebook: 992px;
-  --desktop: 1200px;
-  --widescreen: 1400px;
-}
-:root {
   --main1: #FFFFFF;
   --main2: #FAFAFA;
   --main3: #F8F8F8;

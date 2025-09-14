@@ -1,11 +1,12 @@
 package gate;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.ConstraintViolationException;
 import gate.error.InvalidPasswordException;
-import gate.error.NotFoundException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.security.hash.MD5;
@@ -16,9 +17,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.io.Writer;
 
 @MultipartConfig
 @WebServlet("/SetupPassword")
@@ -31,7 +29,8 @@ public class SetupPassword extends HttpServlet
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
+	public void doPost(HttpServletRequest httpServletRequest, HttpServletResponse response)
+			throws ServletException, IOException
 	{
 		response.setCharacterEncoding("UTF-8");
 		httpServletRequest.setCharacterEncoding("UTF-8");

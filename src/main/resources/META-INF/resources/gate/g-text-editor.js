@@ -5,8 +5,7 @@ template.innerHTML = `
 	<div id='scroll'>
 		<div id='editor' tabindex="1" contentEditable='true'></div>
 	</div>
- <style data-element="g-text-editor">:host(*)
-{
+ <style data-element="g-text-editor">:host(*) {
 	width: 100%;
 	height: 100%;
 	display: grid;
@@ -16,9 +15,8 @@ template.innerHTML = `
 	grid-template-rows: 60px 1fr;
 }
 
-:host([hidden])
-{
-	display:  none;
+:host([hidden]) {
+	display: none;
 }
 
 #scroll {
@@ -28,15 +26,14 @@ template.innerHTML = `
 	justify-content: stretch;
 }
 
-#editor
-{
+#editor {
 	flex-grow: 1;
 	padding: 12px;
 	outline: none;
 	overflow: auto;
 	font-size: 16px;
 	white-space: pre-wrap;
-	background-color: white;
+	background-color: var(--main1, white);
 	border-radius: 0 0 5px 5px;
 }
 
@@ -45,7 +42,7 @@ template.innerHTML = `
 }
 
 
-#editor > div {
+#editor>div {
 	padding: 8px;
 	display: flex;
 	overflow: auto;
@@ -57,8 +54,7 @@ template.innerHTML = `
 	background-color: var(--hovered);
 }
 
-#editor > div:hover
-{
+#editor>div:hover {
 	outline: dotted;
 	resize: vertical;
 	outline-width: 1px;

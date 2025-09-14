@@ -6,32 +6,32 @@ import ResponseHandler from './response-handler.js';
 
 const CACHE = new Map();
 
-window.addEventListener("@cache", function (event)
-{
+window.addEventListener("@cache", function (event) {
 	let path = event.composedPath();
-	let {method, action, signal} = event.detail;
+	let {method, action, parameters: [timeout = 300000], signal} = event.detail;
+
+	const milliseconds = Number(timeout);
+	if (isNaN(milliseconds) || milliseconds < 1)
+		throw new Error(`Invalid timeout: ${timeout}`);
 
 	if (method !== "get")
 		throw new Error(`Attempt to cache ${method} request`);
 
 	if (CACHE.has(action))
-		event.success(path, CACHE.get(action));
-	else
-		fetch(RequestBuilder.build(method, action), {signal})
-			.then(ResponseHandler.dataURL)
-			.then(result => CACHE.set(action, result))
-			.then(() => event.success(path, CACHE.get(action)))
-			.catch(error => event.failure(path, error));
+		return event.success(path, CACHE.get(action));
+
+	fetch(RequestBuilder.build(method, action), {signal})
+		.then(ResponseHandler.dataURL)
+		.then(result =>
+		{
+			CACHE.set(action, result);
+			setTimeout(() => CACHE.delete(action), milliseconds);
+			event.success(path, result);
+		})
+		.catch(error => event.failure(path, error));
 });
 
-window.addEventListener("@invalidate-cache", function (event)
-{
-	CACHE.clear();
-	event.success(event.composedPath());
-});
-
-window.addEventListener("trigger-success", function (event)
-{
+window.addEventListener("trigger-success", function (event) {
 	if (event.detail.cause.detail.method !== "get")
 		CACHE.clear();
 });

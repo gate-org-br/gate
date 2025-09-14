@@ -2,42 +2,43 @@
 
 <html lang="pt-BR">
 
-	<head>
-		<meta charset="UTF-8">
-		<title>Gate</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel='stylesheet' type='text/css' href='./gate/Gate.css' />
-		<script type='module' src='./gate/g-code-viewer.js' charset="utf-8"></script>
-		<script type='module' src='./gate/Gate.js' charset="utf-8"></script>
-		<script type='module' src='./gate/g-grid.js' charset="utf-8"></script>
-	</head>
+<head>
+	<meta charset="UTF-8">
+	<title>Gate</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel='stylesheet' type='text/css' href='./gate/Gate.css' />
+	<script type='module' src='./gate/g-code-viewer.js' charset="utf-8"></script>
+	<script type='module' src='./gate/Gate.js' charset="utf-8"></script>
+	<script type='module' src='./gate/g-grid.js' charset="utf-8"></script>
+</head>
 
-	<body data-loading onload="document.body.removeAttribute('data-loading')">
+<body data-loading onload="document.body.removeAttribute('data-loading')">
 
-		<main>
-			<header>
-				<img src='./gate/gate.svg' alt="Gate logo"/>
-				<label>Gate</label>
-				<label>Version 1.0.0-SNAPSHOT</label>
-			</header>
+	<main>
+		<header>
+			<img src='./gate/gate.svg' alt="Gate logo" />
+			<label>Gate</label>
+			<label>Version 1.0.0-SNAPSHOT</label>
+		</header>
 
-			<nav>
-				<g-tabbar>
-					<a id='targets' href='/target/view.html' target="@inner-html(section)">
-						Targets<g-icon>&#X1011;</g-icon>
-					</a>
-					<a id='components' href='/component/view.html' target="@inner-html(section)">
-						<g-icon>&#X2178;</g-icon>Components
-					</a>
-					<hr>
-					<a id="reload" href="/main.html">
-						Reload<g-icon>&#X2025;</g-icon>
-					</a>
-					<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
-				</g-tabbar>
-			</nav>
+		<nav>
+			<g-tabbar>
+				<a id='targets' href='/target/view.html' target="@inner-html(section)">
+					Targets<g-icon>&#X1011;</g-icon>
+				</a>
+				<a id='components' href='/component/view.html' target="@inner-html(section)">
+					<g-icon>&#X2178;</g-icon>Components
+				</a>
+				<hr>
+				<a id="reload" href="/main.html">
+					Reload<g-icon>&#X2025;</g-icon>
+				</a>
+				<a href='./login.html'>Sair<g-icon>&#X2007;</g-icon></a>
+			</g-tabbar>
+		</nav>
 
-			<section>
+		<section>
+			<fieldset>
 				<g-desk-pane>
 					<a href='/target/view.html' target="@inner-html(section)" aria-selected>
 						Targets<g-icon>&#X1011;</g-icon>
@@ -46,54 +47,246 @@
 						<g-icon>&#X2178;</g-icon>Components
 					</a>
 				</g-desk-pane>
+			</fieldset>
 
-				<g-tab-control>
-					<a href="#">
-						adfasdff
-					</a>
-					<div>
-						<g-coolbar style='min-width: 0'>
-							<a href="#" class='primary'>
-								Link 1<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='alternative'>
-								Link 2<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='secondary'>
-								Link 3<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='danger'>
-								Link 4<g-icon>&#X2178;</g-icon>
-							</a>
-							<hr>
-							<a href="#" class='tertiary'>
-								Link 5<g-icon>&#X2178;</g-icon>
-							</a>
-							<hr>
-							<a href="#" class='primary'>
-								Link 6<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='alternative'>
-								Link 7<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='secondary'>
-								Link 8<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='danger'>
-								Link 9<g-icon>&#X2178;</g-icon>
-							</a>
-							<a href="#" class='tertiary'>
-								Link 10<g-icon>&#X2178;</g-icon>
-							</a>
-						</g-coolbar>
-					</div>
-				</g-tab-control>
-			</section>
 
-			<footer>
-				<label>Foo</label>
-				<label>Bar</label>
-			</footer>
-		</main>
-	</body>
+			<fieldset>
+				<legend>
+					Legend
+				</legend>
+				<label>
+					Text
+					<span>
+						<input type="text">
+					</span>
+				</label>
+			</fieldset>
+
+			<g-coolbar>
+				<a href="#" class="primary">
+					<g-icon>&#X1002;</g-icon> Add
+				</a>
+			</g-coolbar>
+
+
+			<table class="c2 c3 c4" data-empty="Nor records found">
+				<colgroup>
+					<col>
+					<col style="width: 160px">
+					<col style="width: 160px">
+					<col style="width: 80px">
+				</colgroup>
+				<caption>
+					RECORDS FOUND:
+					<span data-table-size>
+					</span>
+				</caption>
+				<thead>
+					<tr>
+						<th data-sortable>
+							Name
+						</th>
+						<th data-sortable>
+							Sex
+						</th>
+						<th data-sortable>
+							Age
+						</th>
+						<th>
+							Remove
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							Foo
+						</td>
+						<td data-filter:value="Male">
+							Male
+						</td>
+						<td data-value="25">
+							25
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Bar
+						</td>
+						<td data-filter:value="Female">
+							Female
+						</td>
+						<td data-value="30">
+							30
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Baz
+						</td>
+						<td data-filter:value="Male">
+							Male
+						</td>
+						<td data-value="22">
+							22
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Qux
+						</td>
+						<td data-filter:value="Female">
+							Female
+						</td>
+						<td data-value="28">
+							28
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Fob
+						</td>
+						<td data-filter:value="Male">
+							Male
+						</td>
+						<td data-value="32">
+							32
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Bat
+						</td>
+						<td data-filter:value="Female">
+							Female
+						</td>
+						<td data-value="27">
+							27
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Bit
+						</td>
+						<td data-filter:value="Male">
+							Male
+						</td>
+						<td data-value="29">
+							29
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Car
+						</td>
+						<td data-filter:value="Female">
+							Female
+						</td>
+						<td data-value="35">
+							35
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Zoo
+						</td>
+						<td data-filter:value="Male">
+							Male
+						</td>
+						<td data-value="26">
+							26
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Tap
+						</td>
+						<td data-filter:value="Female">
+							Female
+						</td>
+						<td data-value="31">
+							31
+						</td>
+						<td>
+							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
+								<g-icon>
+									…
+								</g-icon>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+
+		<footer>
+			<label>Foo</label>
+			<label>Bar</label>
+		</footer>
+	</main>
+</body>
+
 </html>

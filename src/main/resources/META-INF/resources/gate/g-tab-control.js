@@ -12,8 +12,7 @@ template.innerHTML = `
 	box-sizing: border-box;
 }
 
-:host(*)
-{
+:host(*) {
 	min-width: 0;
 	display: grid;
 	background-color: var(--main3);
@@ -22,8 +21,7 @@ template.innerHTML = `
 
 }
 
-label
-{
+label {
 	padding: 8px;
 	display: none;
 	cursor: pointer;
@@ -43,38 +41,33 @@ section {
 	justify-content: stretch;
 }
 
-label::before
-{
+label::before {
 	content: '\\2265';
 }
 
-header
-{
+header {
 	display: flex;
 	flex-wrap: wrap;
 }
 
-::slotted(div)
-{
+::slotted(div) {
 	gap: 12px;
 	min-width: 0;
 	min-height: 0;
 	display: none;
-	padding : 18px;
+	padding: 18px;
 	overflow-y: auto;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
-:host([type='dummy']) ::slotted(div)
-{
+:host([type='dummy']) ::slotted(div) {
 	display: flex;
 }
 
 ::slotted(a),
-::slotted(button)
-{
+::slotted(button) {
 	gap: 8px;
 	padding: 8px;
 	height: 32px;
@@ -90,86 +83,74 @@ header
 	justify-content: flex-start;
 }
 
-header > ::slotted(:not(:first-child))
-{
+header> ::slotted(:not(:first-child)) {
 	border-left: 1px solid #F8F8F8;
 }
 
 
 ::slotted(a:hover),
-::slotted(button:hover)
-{
-	background-color:  #FFFACD;
+::slotted(button:hover) {
+	background-color: #FFFACD;
 }
 
 ::slotted(a:focus),
-::slotted(button:focus)
-{
+::slotted(button:focus) {
 	border: none;
 	outline: none;
 }
 
 ::slotted(a[data-selected=true]),
-::slotted(button[data-selected=true])
-{
+::slotted(button[data-selected=true]) {
 	color: black;
 	font-weight: bold;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
-@media only screen and (min-width: 768px)
-{
-	header > ::slotted(*)
-	{
+@media only screen and (min-width: 768px) {
+	header> ::slotted(*) {
 		flex-basis: 25%;
 	}
 
-	:host([size='9']) > header > ::slotted(*),
-	:host([size='10']) > header > ::slotted(*),
-	:host([size='20']) > header > ::slotted(*),
-	:host([size='30']) > header > ::slotted(*),
-	:host([size='40']) > header > ::slotted(*),
-	:host([size='50']) > header > ::slotted(*),
-	:host([size='60']) > header > ::slotted(*),
-	:host([size='70']) > header > ::slotted(*),
-	:host([size='80']) > header > ::slotted(*),
-	:host([size='90']) > header > ::slotted(*),
-	:host([size='100']) > header > ::slotted(*)
-	{
+	:host([size='9'])>header> ::slotted(*),
+	:host([size='10'])>header> ::slotted(*),
+	:host([size='20'])>header> ::slotted(*),
+	:host([size='30'])>header> ::slotted(*),
+	:host([size='40'])>header> ::slotted(*),
+	:host([size='50'])>header> ::slotted(*),
+	:host([size='60'])>header> ::slotted(*),
+	:host([size='70'])>header> ::slotted(*),
+	:host([size='80'])>header> ::slotted(*),
+	:host([size='90'])>header> ::slotted(*),
+	:host([size='100'])>header> ::slotted(*) {
 		flex-basis: 20%;
 	}
 }
 
-@media only screen and (min-width: 1200px)
-{
-	header > ::slotted(*)
-	{
+@media only screen and (min-width: 1200px) {
+	header> ::slotted(*) {
 		flex-basis: 12.5%;
 	}
 
-	:host([size='9']) > header > ::slotted(*),
-	:host([size='10']) > header > ::slotted(*),
-	:host([size='20']) > header > ::slotted(*),
-	:host([size='30']) > header > ::slotted(*),
-	:host([size='40']) > header > ::slotted(*),
-	:host([size='50']) > header > ::slotted(*),
-	:host([size='60']) > header > ::slotted(*),
-	:host([size='70']) > header > ::slotted(*),
-	:host([size='80']) > header > ::slotted(*),
-	:host([size='90']) > header > ::slotted(*),
-	:host([size='100']) > header > ::slotted(*)
-	{
+	:host([size='9'])>header> ::slotted(*),
+	:host([size='10'])>header> ::slotted(*),
+	:host([size='20'])>header> ::slotted(*),
+	:host([size='30'])>header> ::slotted(*),
+	:host([size='40'])>header> ::slotted(*),
+	:host([size='50'])>header> ::slotted(*),
+	:host([size='60'])>header> ::slotted(*),
+	:host([size='70'])>header> ::slotted(*),
+	:host([size='80'])>header> ::slotted(*),
+	:host([size='90'])>header> ::slotted(*),
+	:host([size='100'])>header> ::slotted(*) {
 		flex-basis: 10%;
 	}
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])
-{
+::slotted(:is(a, button, .g-command)[data-loading]) {
 	position: relative;
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])::before
-{
+::slotted(:is(a, button, .g-command)[data-loading])::before {
 	top: 0;
 	left: 0;
 	right: 0;
@@ -184,9 +165,7 @@ header > ::slotted(:not(:first-child))
 	background-repeat: no-repeat;
 	background-position-y: center;
 	background-image: var(--loading);
-}
-
-</style>`;
+}</style>`;
 /* global customElements */
 
 import GBlock from './g-block.js';

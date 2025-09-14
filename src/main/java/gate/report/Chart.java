@@ -1,13 +1,14 @@
 package gate.report;
 
-import gate.annotation.Name;
-import gate.type.DataGrid;
-import gate.type.PivotTable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+
+import gate.annotation.Name;
+import gate.type.DataGrid;
+import gate.type.PivotTable;
 
 public class Chart<T> extends ReportElement
 {
@@ -71,7 +72,7 @@ public class Chart<T> extends ReportElement
 		return category;
 	}
 
-	public Chart setCategory(Category<T> category)
+	public Chart<T> setCategory(Category<T> category)
 	{
 		this.category = category;
 		return this;
@@ -96,27 +97,22 @@ public class Chart<T> extends ReportElement
 
 	public Chart<T> addValue(String name, Function<T, Number> value)
 	{
-		return addValue(new Value(name, value));
+		return addValue(new Value<T>(name, value));
 	}
 
 	public enum Format
 	{
 		@Name("Pizza")
-		PIE,
-		@Name("Linhas")
-		LINE,
-		@Name("Áreas")
-		AREA,
-		@Name("Barras")
-		BAR,
-		@Name("Colunas")
+		PIE, @Name("Linhas")
+		LINE, @Name("Áreas")
+		AREA, @Name("Barras")
+		BAR, @Name("Colunas")
 		COLUMN
 	}
 
 	public static Chart of(Format format, String caption, PivotTable<? extends Number> dataset)
 	{
-		var chart = new Chart<>((Class<List<Object>>) (Object) List.class,
-			dataset.values(), format);
+		var chart = new Chart<>((Class<List<Object>>) (Object) List.class, dataset.values(), format);
 
 		chart.setCaption(caption);
 		chart.setCategory(dataset.header().get(0), e -> e.get(0));

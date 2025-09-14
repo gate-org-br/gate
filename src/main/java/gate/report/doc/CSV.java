@@ -1,5 +1,10 @@
 package gate.report.doc;
 
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.util.stream.Collectors;
+
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
@@ -12,11 +17,6 @@ import gate.report.Grid;
 import gate.report.Report;
 import gate.report.ReportElement;
 import gate.util.Toolkit;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.util.stream.Collectors;
 
 /**
  * Generates CSV documents from objects of type {@link gate.report.Report}.
@@ -66,15 +66,14 @@ public class CSV extends Doc
 		CSVFormatter formatter = CSVFormatter.of(writer);
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
-			formatter.writeLine(grid.getColumns().stream().map(Column::getHead)
-					.map(Converter::toText).collect(Collectors.toList()));
+			formatter.writeLine(grid.getColumns().stream().map(Column::getHead).map(Converter::toText)
+					.collect(Collectors.toList()));
 
 		for (Object obj : Toolkit.iterable(data))
 			if (obj != null)
 			{
 
-				formatter.writeLine(grid.getColumns().stream()
-						.map(e -> Converter.toText(e.getBody().apply(obj)))
+				formatter.writeLine(grid.getColumns().stream().map(e -> Converter.toText(e.getBody().apply(obj)))
 						.collect(Collectors.toList()));
 
 				if (grid.getChildren() != null)
@@ -83,7 +82,7 @@ public class CSV extends Doc
 			}
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
-			formatter.writeLine(grid.getColumns().stream().map(Column::getFoot)
-					.map(Converter::toText).collect(Collectors.toList()));
+			formatter.writeLine(grid.getColumns().stream().map(Column::getFoot).map(Converter::toText)
+					.collect(Collectors.toList()));
 	}
 }

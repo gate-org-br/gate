@@ -1,7 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-icon-selector">:host(*)
-{
+ <style data-element="g-icon-selector">:host(*) {
 	width: 100%;
 	margin: 8px;
 	display: flex;
@@ -26,7 +25,7 @@ a {
 	text-transform: none;
 	text-decoration: none;
 	justify-content: center;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
 a:hover {

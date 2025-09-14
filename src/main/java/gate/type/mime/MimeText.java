@@ -1,14 +1,5 @@
 package gate.type.mime;
 
-import gate.annotation.Converter;
-import gate.annotation.Handler;
-import gate.converter.custom.MimeTextConverter;
-import gate.error.AppError;
-import gate.error.ConversionException;
-import gate.handler.MimeTextHandler;
-import gate.lang.contentType.ContentType;
-import gate.lang.dataurl.DataURL;
-import static gate.sql.update.Update.type;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -18,6 +9,15 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+
+import gate.annotation.Converter;
+import gate.annotation.Handler;
+import gate.converter.custom.MimeTextConverter;
+import gate.error.AppError;
+import gate.error.ConversionException;
+import gate.handler.MimeTextHandler;
+import gate.lang.contentType.ContentType;
+import gate.lang.dataurl.DataURL;
 
 @Handler(MimeTextHandler.class)
 @Converter(MimeTextConverter.class)
@@ -83,19 +83,17 @@ public class MimeText implements Mime
 	{
 		try
 		{
-			Map map = new HashMap<>();
+			Map<String, String> map = new HashMap<>();
 			map.put("charset", charset);
 
-			return DataURL.of(getContentType(), false, map,
-					URLEncoder.encode(getText(), charset)).toString();
+			return DataURL.of(getContentType(), false, map, URLEncoder.encode(getText(), charset)).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
 			throw new AppError(ex);
 		}
 	}
 
-	public static MimeText parse(String string)
-			throws ConversionException
+	public static MimeText parse(String string) throws ConversionException
 	{
 		try
 		{
@@ -103,8 +101,7 @@ public class MimeText implements Mime
 
 			String charset = dataURL.getParameters().getOrDefault("charset", "utf-8");
 
-			String text = dataURL.isBase64()
-					? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
+			String text = dataURL.isBase64() ? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
 					: URLDecoder.decode(string, charset);
 
 			return new MimeText(dataURL.getContentType(), charset, text);

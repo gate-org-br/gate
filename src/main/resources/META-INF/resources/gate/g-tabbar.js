@@ -6,12 +6,11 @@ template.innerHTML = `
 	<a id="show" href='#'>
 		<g-icon>&#x2265;</g-icon>
 	</a>
-
-	<g-more-menu>
+	<g-context-menu>
 		<slot name='more'>
 
 		</slot>
-	</g-more-menu>
+	</g-context-menu>
  <style data-element="g-tabbar">* {
 	box-sizing: border-box;
 }
@@ -105,7 +104,6 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 
 #show {
 	margin: 8px;
-	padding: 6px;
 	display: none;
 	font-size: 2em;
 	color: #000088;
@@ -148,7 +146,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 }</style>`;
 /* global customElements */
 
-import  './g-more-menu.js';
+import  './g-context-menu.js';
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
@@ -187,8 +185,8 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 
 		const show = this.shadowRoot.getElementById("show");
-		const more = this.shadowRoot.querySelector("g-more-menu");
-		show.addEventListener("click", event => more.show(event.clientX, event.clientY, 0, ...POSITIONS));
+		const more = this.shadowRoot.querySelector("g-context-menu");
+		show.addEventListener("click", event => more.show(event.clientX, event.clientY));
 	}
 
 	connectedCallback()

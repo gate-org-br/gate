@@ -22,9 +22,8 @@ public class UserProducer
 	@Produces
 	@RequestScoped
 	@Named(value = "user")
-	public User getUser(GateControl control,
-		Credentials credentials,
-		HttpServletRequest httpServletRequest) throws HierarchyException
+	public User getUser(GateControl control, Credentials credentials, HttpServletRequest httpServletRequest)
+			throws HierarchyException
 	{
 		if (httpServletRequest == null)
 			return new User();
@@ -34,8 +33,7 @@ public class UserProducer
 
 		try
 		{
-			ScreenServletRequest request
-				= new ScreenServletRequest(httpServletRequest);
+			ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 			var auth = request.getAuthorization();
 			if (auth instanceof BearerAuthorization bearer)

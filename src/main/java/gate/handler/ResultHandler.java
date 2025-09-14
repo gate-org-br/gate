@@ -1,10 +1,10 @@
 package gate.handler;
 
-import gate.error.AppError;
-import gate.type.Result;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+
+import gate.error.AppError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ public class ResultHandler implements Handler
 		String string = value.toString();
 		response.setContentType("application/json");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 			writer.flush();

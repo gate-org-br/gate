@@ -1,7 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-calendar">:host(*)
-{
+ <style data-element="g-calendar">:host(*) {
 	display: grid;
 	font-size: 16px;
 	min-width: 240px;
@@ -28,7 +27,7 @@ a {
 	font-size: inherit;
 	align-items: center;
 	text-decoration: none;
-	background-color: white;
+	background-color: var(--main1, white);
 	justify-content: center;
 }
 
@@ -36,12 +35,15 @@ a.current {
 	font-weight: bold;
 	text-decoration: underline
 }
+
 a.disabled {
 	color: #AAAAAA;
 }
+
 a.selected {
 	background-color: var(--acent);
 }
+
 a:hover {
 	background-color: var(--hovered)
 }
@@ -52,7 +54,7 @@ span {
 	font-size: inherit;
 	font-weight: bolder;
 	grid-column: span 7;
-	align-items:  center;
+	align-items: center;
 	align-content: space-around;
 	justify-content: space-around;
 }

@@ -1,14 +1,12 @@
 package gate.sql.fetcher;
 
-import gate.lang.property.PropertyGraph;
-import gate.sql.Cursor;
-
-import javax.swing.text.html.Option;
-import java.util.Collection;
 import java.util.Optional;
 
+import gate.sql.Cursor;
+
 /**
- * Fetches first row from a Cursor as a java object of the specified type with its properties set to their respective column values.
+ * Fetches first row from a Cursor as a java object of the specified type with
+ * its properties set to their respective column values.
  */
 public class EntityFetcher<T> implements Fetcher<Optional<T>>
 {
@@ -26,10 +24,12 @@ public class EntityFetcher<T> implements Fetcher<Optional<T>>
 	}
 
 	/**
-	 * Fetches first row from the specified Cursor as a java object of the specified type with its properties set to their respective column values.
+	 * Fetches first row from the specified Cursor as a java object of the specified
+	 * type with its properties set to their respective column values.
 	 *
 	 * @param cursor the Cursor from with the object will be fetched
-	 * @return an Optional with the first row or the specified Cursor as a java object of the specified type with its properties set to their respective
+	 * @return an Optional with the first row or the specified Cursor as a java
+	 * object of the specified type with its properties set to their respective
 	 * column values or an empty Optional if the Cursor is empty
 	 */
 	@Override

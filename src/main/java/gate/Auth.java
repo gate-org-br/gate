@@ -1,5 +1,8 @@
 package gate;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.entity.User;
@@ -13,10 +16,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Writer;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 @WebServlet("/Auth")
 public class Auth extends HttpServlet

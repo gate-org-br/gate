@@ -24,7 +24,7 @@ public final class MimeMail<T extends Mime> implements Serializable
 		this.priority = priority;
 	}
 
-	public static <T extends Mime> MimeMail of(Priority priority, String subject, T content)
+	public static <T extends Mime> MimeMail<T> of(Priority priority, String subject, T content)
 	{
 		return new MimeMail<>(priority, subject, content);
 	}

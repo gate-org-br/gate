@@ -1,7 +1,5 @@
 package gate.io;
 
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -16,6 +14,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
 
 public class PersistentSet<T> implements Set<T>
 {
@@ -72,8 +73,7 @@ public class PersistentSet<T> implements Set<T>
 	@Override
 	public boolean remove(Object value)
 	{
-		if (type.isAssignableFrom(value.getClass())
-			&& values.contains((T) value))
+		if (type.isAssignableFrom(value.getClass()) && values.contains(type.cast(value)))
 		{
 			log += PersistentSet.persist(List.of(value), "-", path, encryptor);
 			values.remove(value);
@@ -87,9 +87,8 @@ public class PersistentSet<T> implements Set<T>
 	@Override
 	public boolean removeAll(Collection<?> collection)
 	{
-		var elements = collection.stream()
-			.filter(e -> type.isAssignableFrom(e.getClass()))
-			.filter(e -> values.contains((T) e)).toList();
+		var elements = collection.stream().filter(e -> type.isAssignableFrom(e.getClass()))
+				.filter(e -> values.contains((T) e)).toList();
 
 		if (!elements.isEmpty())
 		{
@@ -105,8 +104,7 @@ public class PersistentSet<T> implements Set<T>
 	@Override
 	public boolean retainAll(Collection<?> collection)
 	{
-		var elements = values.stream()
-			.filter(e -> !collection.contains(e)).toList();
+		var elements = values.stream().filter(e -> !collection.contains(e)).toList();
 
 		if (!elements.isEmpty())
 		{
@@ -185,8 +183,7 @@ public class PersistentSet<T> implements Set<T>
 	}
 
 	@Override
-	public boolean contains(Object o
-	)
+	public boolean contains(Object o)
 	{
 		return values.contains(o);
 	}
@@ -198,8 +195,7 @@ public class PersistentSet<T> implements Set<T>
 	}
 
 	@Override
-	public <T> T[] toArray(T[] a
-	)
+	public <E> E[] toArray(E[] a)
 	{
 		return values.toArray(a);
 	}
@@ -268,14 +264,14 @@ public class PersistentSet<T> implements Set<T>
 						var value = entry.get("v").toObject(type);
 						switch (entry.getString("a").orElseThrow())
 						{
-							case "+":
-								values.add(value);
-								break;
-							case "-":
-								values.remove(value);
-								break;
-							default:
-								throw new IOException("File is corrupted");
+						case "+":
+							values.add(value);
+							break;
+						case "-":
+							values.remove(value);
+							break;
+						default:
+							throw new IOException("File is corrupted");
 						}
 					}
 				}
@@ -307,10 +303,7 @@ public class PersistentSet<T> implements Set<T>
 			{
 				for (Object value : values)
 				{
-					String line = new JsonObject()
-						.setString("a", action)
-						.set("v", JsonElement.of(value))
-						.toString();
+					String line = new JsonObject().setString("a", action).set("v", JsonElement.of(value)).toString();
 
 					if (encryptor != null)
 						line = encryptor.encrypt(line);

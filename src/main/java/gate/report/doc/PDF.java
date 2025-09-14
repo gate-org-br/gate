@@ -1,5 +1,14 @@
 package gate.report.doc;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Chunk;
 import com.lowagie.text.Document;
@@ -18,6 +27,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
+
 import gate.annotation.Icon;
 import gate.converter.Converter;
 import gate.error.AppError;
@@ -37,25 +47,10 @@ import gate.report.LineBreak;
 import gate.report.PageBreak;
 import gate.report.Paragraph;
 import gate.report.Report;
-import static gate.report.Report.Orientation.LANDSCAPE;
-import static gate.report.Report.Orientation.PORTRAIT;
 import gate.report.ReportElement;
 import gate.report.ReportList;
 import gate.report.Style;
-import static gate.report.Style.ListStyleType.DECIMAL;
-import static gate.report.Style.ListStyleType.DISC;
-import static gate.report.Style.ListStyleType.LOWER_ALPHA;
-import static gate.report.Style.ListStyleType.NONE;
 import gate.util.Toolkit;
-import static io.jsonwebtoken.Jwts.header;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.geom.Rectangle2D;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Generates PDF documents from objects of type {@link gate.report.Report}.
@@ -110,12 +105,9 @@ public class PDF extends Doc
 		{
 			Document document = switch (getReport().getOrientation())
 			{
-				case PORTRAIT ->
-					new Document(PageSize.A4);
-				case LANDSCAPE ->
-					new Document(PageSize.A4.rotate());
-				default ->
-					throw new IllegalArgumentException("Invalid report orientation");
+			case PORTRAIT -> new Document(PageSize.A4);
+			case LANDSCAPE -> new Document(PageSize.A4.rotate());
+			default -> throw new IllegalArgumentException("Invalid report orientation");
 			};
 
 			var writer = PdfWriter.getInstance(document, os);
@@ -134,8 +126,7 @@ public class PDF extends Doc
 					document.add(printLineBreak());
 				else if (element instanceof PageBreak)
 					document.add(printPageBreak());
-				else if (element instanceof Form
-						&& (!((Form) element).getFields().isEmpty()))
+				else if (element instanceof Form && (!((Form) element).getFields().isEmpty()))
 					document.add(printForm((Form) element));
 				else if (element instanceof Grid grid)
 					document.add(printGrid(grid));
@@ -226,9 +217,7 @@ public class PDF extends Doc
 		{
 			PdfPTable table = new PdfPTable(1);
 			table.setWidths(new float[]
-			{
-				1f
-			});
+			{ 1f });
 
 			PdfPCell label = new PdfPCell(new com.lowagie.text.Paragraph(field.getName(), FIELD_FONT));
 			label.setBorder(0);
@@ -237,7 +226,8 @@ public class PDF extends Doc
 			label.setBackgroundColor(FORM_COLOR);
 			table.addCell(label);
 
-			PdfPCell value = new PdfPCell(new com.lowagie.text.Paragraph(Converter.toText(field.getValue()), FIELD_FONT));
+			PdfPCell value = new PdfPCell(
+					new com.lowagie.text.Paragraph(Converter.toText(field.getValue()), FIELD_FONT));
 			value.setPadding(2);
 			value.setMinimumHeight(field.getHeight());
 			value.setBorder(0);
@@ -299,16 +289,16 @@ public class PDF extends Doc
 	{
 		switch (style.getTextAlign())
 		{
-			case CENTER:
-				return PdfPCell.ALIGN_CENTER;
-			case JUSTIFY:
-				return PdfPCell.ALIGN_JUSTIFIED;
-			case LEFT:
-				return PdfPCell.ALIGN_LEFT;
-			case RIGHT:
-				return PdfPCell.ALIGN_RIGHT;
-			default:
-				return PdfPCell.ALIGN_CENTER;
+		case CENTER:
+			return PdfPCell.ALIGN_CENTER;
+		case JUSTIFY:
+			return PdfPCell.ALIGN_JUSTIFIED;
+		case LEFT:
+			return PdfPCell.ALIGN_LEFT;
+		case RIGHT:
+			return PdfPCell.ALIGN_RIGHT;
+		default:
+			return PdfPCell.ALIGN_CENTER;
 		}
 	}
 
@@ -354,8 +344,7 @@ public class PDF extends Doc
 	private void addBodies(Grid<Object> grid, PdfPTable table, Object data, int level)
 	{
 
-		int size = grid.getLimit() != null
-				? Math.min(grid.getLimit(), grid.getColumns().size())
+		int size = grid.getLimit() != null ? Math.min(grid.getLimit(), grid.getColumns().size())
 				: grid.getColumns().size();
 		for (Object object : Toolkit.iterable(data))
 		{
@@ -373,8 +362,7 @@ public class PDF extends Doc
 			}
 
 			if (grid.getChildren() != null)
-				Toolkit.collection(grid.getChildren().apply(object))
-						.forEach(e -> addBodies(grid, table, e, level + 1));
+				Toolkit.collection(grid.getChildren().apply(object)).forEach(e -> addBodies(grid, table, e, level + 1));
 		}
 	}
 
@@ -382,8 +370,7 @@ public class PDF extends Doc
 	{
 		try
 		{
-			int size = grid.getLimit() != null
-					? Math.min(grid.getLimit(), grid.getColumns().size())
+			int size = grid.getLimit() != null ? Math.min(grid.getLimit(), grid.getColumns().size())
 					: grid.getColumns().size();
 
 			float[] widths = new float[size];
@@ -488,37 +475,32 @@ public class PDF extends Doc
 
 	private Element printList(ReportList reportList)
 	{
-		com.lowagie.text.List list
-				= new com.lowagie.text.List();
+		com.lowagie.text.List list = new com.lowagie.text.List();
 
 		Font font = getFont(reportList.style());
 		switch (reportList.style().getListStyleType())
 		{
-			case DECIMAL ->
-			{
-				list.setNumbered(true);
-				list.setLettered(false);
-				list.setListSymbol(new Chunk("", font));
-			}
+		case DECIMAL -> {
+			list.setNumbered(true);
+			list.setLettered(false);
+			list.setListSymbol(new Chunk("", font));
+		}
 
-			case LOWER_ALPHA ->
-			{
-				list.setNumbered(false);
-				list.setLettered(true);
-				list.setListSymbol(new Chunk("", font));
-			}
-			case DISC ->
-			{
-				list.setNumbered(false);
-				list.setLettered(false);
-				list.setListSymbol(new Chunk("\u2022 ", font));
-			}
-			case NONE ->
-			{
-				list.setNumbered(false);
-				list.setLettered(false);
-				list.setListSymbol(new Chunk("", font));
-			}
+		case LOWER_ALPHA -> {
+			list.setNumbered(false);
+			list.setLettered(true);
+			list.setListSymbol(new Chunk("", font));
+		}
+		case DISC -> {
+			list.setNumbered(false);
+			list.setLettered(false);
+			list.setListSymbol(new Chunk("\u2022 ", font));
+		}
+		case NONE -> {
+			list.setNumbered(false);
+			list.setLettered(false);
+			list.setListSymbol(new Chunk("", font));
+		}
 		}
 
 		reportList.getElements().stream().forEach(e ->
@@ -544,9 +526,7 @@ public class PDF extends Doc
 
 			PdfPTable table = new PdfPTable(2);
 			table.setWidths(new float[]
-			{
-				0.5f, 0.5f
-			});
+			{ 0.5f, 0.5f });
 			table.setWidthPercentage(100);
 
 			Color lightGray = new Color(250, 250, 250);
@@ -592,27 +572,25 @@ public class PDF extends Doc
 
 	private Color getColor(Style style)
 	{
-		return COLORS.computeIfAbsent(style.getColor(),
-				c -> new Color(c.getR(), c.getG(), c.getB()));
+		return COLORS.computeIfAbsent(style.getColor(), c -> new Color(c.getR(), c.getG(), c.getB()));
 	}
 
 	private int getFontWeight(Style style)
 	{
 		switch (style.getFontWeight())
 		{
-			case NORMAL:
-				return Font.NORMAL;
-			case BOLD:
-				return Font.BOLD;
-			default:
-				return Font.NORMAL;
+		case NORMAL:
+			return Font.NORMAL;
+		case BOLD:
+			return Font.BOLD;
+		default:
+			return Font.NORMAL;
 		}
 	}
 
 	private Font getFont(Style style)
 	{
-		return FONTS.computeIfAbsent(style, e
-				-> new Font(Font.TIMES_ROMAN, e.getFontSize(),
-						getFontWeight(e), getColor(e)));
+		return FONTS.computeIfAbsent(style,
+				e -> new Font(Font.TIMES_ROMAN, e.getFontSize(), getFontWeight(e), getColor(e)));
 	}
 }

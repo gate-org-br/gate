@@ -91,7 +91,6 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 
 #show {
 	margin: 8px;
-	padding: 6px;
 	display: none;
 	font-size: 2em;
 	color: #000088;

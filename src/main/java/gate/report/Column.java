@@ -1,5 +1,12 @@
 package gate.report;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import gate.lang.json.JsonBoolean;
 import gate.lang.json.JsonCollection;
 import gate.lang.json.JsonNumber;
@@ -7,18 +14,12 @@ import gate.lang.json.JsonObject;
 import gate.lang.json.JsonScalar;
 import gate.lang.json.JsonString;
 import gate.type.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.util.Objects;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Describes a column to be displayed on a Grid.
  * <p>
- * A Column uses it's associated mapping function to get the value to be displayed on each row of it's associated Grid.
+ * A Column uses it's associated mapping function to get the value to be
+ * displayed on each row of it's associated Grid.
  *
  *
  */
@@ -29,7 +30,7 @@ public final class Column<T> extends Element
 	private Object foot;
 	private Function<T, Object> body = e -> e;
 	private BiFunction<T, Style, Style> styler = (object, style) -> style;
-	private List<ConditionalStyle> conditionalStyles = new ArrayList();
+	private List<ConditionalStyle> conditionalStyles = new ArrayList<>();
 
 	public Column()
 	{
@@ -52,7 +53,8 @@ public final class Column<T> extends Element
 	/**
 	 * Specify a value to be displayed on the column cells.
 	 *
-	 * @param value the function to be used to extract the value to be displayed on each cell of the column
+	 * @param value the function to be used to extract the value to be displayed on
+	 * each cell of the column
 	 *
 	 * @return this, for chained invocations
 	 */
@@ -77,9 +79,11 @@ public final class Column<T> extends Element
 	}
 
 	/**
-	 * Defines a function to dynamically change the column style for each row of the Grid.
+	 * Defines a function to dynamically change the column style for each row of the
+	 * Grid.
 	 *
-	 * @param styler a mapping function that returns the style to be applied for each row of the Grid
+	 * @param styler a mapping function that returns the style to be applied for
+	 * each row of the Grid
 	 *
 	 * @return this, for chained invocations
 	 */
@@ -91,28 +95,30 @@ public final class Column<T> extends Element
 	}
 
 	/**
-	 * Returns the function to dynamically change the column style for each row of the Grid.
+	 * Returns the function to dynamically change the column style for each row of
+	 * the Grid.
 	 *
-	 * @return the function to dynamically change the column style for each row of the Grid.
+	 * @return the function to dynamically change the column style for each row of
+	 * the Grid.
 	 */
 	public BiFunction<T, Style, Style> getStyler()
 	{
 		return styler;
 	}
 
-	public Column conditionalStyles(List<ConditionalStyle> conditionalStyles)
+	public Column<T> conditionalStyles(List<ConditionalStyle> conditionalStyles)
 	{
 		this.conditionalStyles = Objects.requireNonNull(conditionalStyles);
 		return this;
 	}
 
-	public Column conditionalStyle(ConditionalStyle conditionalStyle)
+	public Column<T> conditionalStyle(ConditionalStyle conditionalStyle)
 	{
 		this.conditionalStyles.add(conditionalStyle);
 		return this;
 	}
 
-	public Column conditionalStyle(Predicate<Object> predicate, String style)
+	public Column<T> conditionalStyle(Predicate<Object> predicate, String style)
 	{
 		return this.conditionalStyle(new ConditionalStyle((Predicate<Object>) predicate, style));
 	}
@@ -129,10 +135,7 @@ public final class Column<T> extends Element
 	{
 		Style style = new Style(style());
 
-		gate.annotation.Color.Extractor
-				.extract(value)
-				.map(Color::of)
-				.ifPresent(style::color);
+		gate.annotation.Color.Extractor.extract(value).map(Color::of).ifPresent(style::color);
 
 		styler.apply(object, style);
 
@@ -179,10 +182,10 @@ public final class Column<T> extends Element
 		return (Column<T>) super.style(style);
 	}
 
-	public static Column of(JsonObject jsonObject)
+	public static <T> Column<T> of(JsonObject jsonObject)
 	{
 
-		var column = new Column();
+		var column = new Column<T>();
 
 		var head = jsonObject.get("head");
 		if (head instanceof JsonString jsonString)
@@ -202,24 +205,19 @@ public final class Column<T> extends Element
 		else if (style != null)
 			throw new IllegalArgumentException("Invalid column style");
 
-		column.conditionalStyles(jsonObject.getJsonArray("conditions")
-				.map(array -> array.stream()
-				.filter(e -> e instanceof JsonObject)
-				.map(e -> (JsonObject) e)
-				.map(ConditionalStyle::of)
-				.toList())
-				.orElseGet(ArrayList::new));
+		column.conditionalStyles(
+				jsonObject
+						.getJsonArray("conditions").map(array -> array.stream().filter(e -> e instanceof JsonObject)
+								.map(e -> (JsonObject) e).map(ConditionalStyle::of).toList())
+						.orElseGet(ArrayList::new));
 
 		var property = jsonObject.get("property");
 		if (property instanceof JsonString string)
 			column.body(e ->
 			{
 				if (e instanceof JsonCollection jsonCollection)
-					return jsonCollection.getProperty(string.getValue())
-							.filter(value -> value instanceof JsonScalar)
-							.map(value -> (JsonScalar) value)
-							.map(JsonScalar::getScalarValue)
-							.orElse("");
+					return jsonCollection.getProperty(string.getValue()).filter(value -> value instanceof JsonScalar)
+							.map(value -> (JsonScalar) value).map(JsonScalar::getScalarValue).orElse("");
 				else
 					throw new IllegalArgumentException("Invalid column property");
 			});

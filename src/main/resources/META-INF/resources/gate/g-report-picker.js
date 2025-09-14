@@ -45,18 +45,16 @@ button {
 	text-decoration: none;
 	flex-direction: column;
 	justify-content: center;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
 button:hover {
 	background-color: var(--hovered);
 }
 
-section g-icon
-{
+section g-icon {
 	font-size: 50px;
-}
-</style>`;
+}</style>`;
 /* global customElements, template */
 
 import './g-icon.js';

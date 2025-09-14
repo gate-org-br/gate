@@ -6,11 +6,11 @@ template.innerHTML = `
 	<div>
 		<slot></slot>
 	</div>
-	<g-more-menu>
+	<g-context-menu>
 		<slot name='more'>
 
 		</slot>
-	</g-more-menu>
+	</g-context-menu>
  <style data-element="g-coolbar">*
 {
 	box-sizing: border-box;
@@ -256,6 +256,7 @@ g-more-menu > ::slotted(.g-command.tertiary)
 }</style>`;
 /* global customElements */
 
+import  './g-context-menu.js';
 import loading from './loading.js';
 import WindowListenerHTMLElement from './window-listener-html-element.js';
 const POSITIONS = ["southwest", "southeast", "northwest", "northeast"];
@@ -276,8 +277,8 @@ export default class GCoolbar extends WindowListenerHTMLElement
 
 
 		const show = this.shadowRoot.getElementById("show");
-		const more = this.shadowRoot.querySelector("g-more-menu");
-		show.addEventListener("click", event => more.show(event.clientX, event.clientY, 0, ...POSITIONS));
+		const more = this.shadowRoot.querySelector("g-context-menu");
+		show.addEventListener("click", event => more.show(event.clientX, event.clientY));
 	}
 
 	get disabled()

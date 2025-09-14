@@ -1,5 +1,9 @@
 package gate.lang.json;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Objects;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
@@ -7,9 +11,6 @@ import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.type.Money;
 import gate.type.Percentage;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Objects;
 
 /**
  * Represents a JSON number as a BigDecimal.
@@ -80,20 +81,19 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	@Override
 	public <T> T toObject(Class<T> type)
 	{
-
 		if (type == Short.class)
-			return (T) (Short) value.shortValue();
+			return type.cast(value.shortValue());
 		if (type == Integer.class)
-			return (T) (Integer) value.intValue();
+			return type.cast(value.intValue());
 		if (type == Long.class)
-			return (T) (Long) value.longValue();
+			return type.cast(value.longValue());
 		if (type == Float.class)
-			return (T) (Float) value.floatValue();
+			return type.cast(value.floatValue());
 		if (type == Double.class)
-			return (T) (Double) value.doubleValue();
+			return type.cast(value.doubleValue());
 		if (type.isAssignableFrom(BigInteger.class))
-			return (T) value.toBigInteger();
-		return (T) value;
+			return type.cast(value.toBigInteger());
+		return type.cast(value);
 	}
 
 	@Override
@@ -103,8 +103,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	}
 
 	@Override
-	public <T, E> T toObject(java.lang.reflect.Type type,
-			java.lang.reflect.Type elementType)
+	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -116,7 +115,8 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 *
 	 * @return a JsonNumber object representing the JSON formatted string specified
 	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException if an error occurs while trying to parse the
+	 * specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonNumber parse(String json) throws ConversionException
@@ -310,8 +310,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof JsonNumber
-				&& value.compareTo(((JsonNumber) obj).value) == 0;
+		return obj instanceof JsonNumber && value.compareTo(((JsonNumber) obj).value) == 0;
 	}
 
 	@Override

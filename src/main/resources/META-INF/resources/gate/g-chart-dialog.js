@@ -28,9 +28,8 @@ dialog {
 	border-radius: 0;
 }
 
-@media only screen and (min-width: 640px)
-{
-	dialog{
+@media only screen and (min-width: 640px) {
+	dialog {
 		border-radius: 5px;
 		width: calc(100% - 80px);
 		height: calc(100% - 80px);
@@ -41,7 +40,7 @@ section {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
 g-chart {

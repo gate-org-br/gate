@@ -1,42 +1,43 @@
-/* global customElements */
+import WindowListenerHTMLElement from './window-listener-html-element.js';
 
-import GBlock from './g-block.js';
-import loading from './loading.js';
-import EventHandler from './event-handler.js';
-import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
-import ResponseHandler from './response-handler.js';
+const sheet = new CSSStyleSheet()
+sheet.replaceSync(`g-side-menu g-icon { order: -1; font-size: 16px }`)
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
 
-const sheet = new CSSStyleSheet();
-sheet.replaceSync(`g-side-menu g-icon { order: -1; font-size: 16px }`);
-document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
-
-const DESKTOP = 1000;
-
-customElements.define('g-side-menu', class extends HTMLElement
+customElements.define('g-side-menu', class extends WindowListenerHTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.attachShadow({ mode: "open" });
+		this.shadowRoot.innerHTML = template.innerHTML;
 
-		this.shadowRoot.querySelector("header")
-			.addEventListener("click", event => this.toggleAttribute("open"));
+		this.addEventListener("click", event =>
+		{
+			if (!this.hasAttribute("open"))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+				this.toggleAttribute("open");
+			}
+		});
 
-		this.shadowRoot.querySelector("section")
-			.addEventListener("click", event =>
-				window.innerWidth < DESKTOP &&
-					this.removeAttribute("open"));
+		this.addEventListener("mouseenter", event => this.setAttribute("open", ""));
+		this.addEventListener("mouseleave", event => this.removeAttribute("open"));
+
+		this.addWindowListener("click", () =>
+		{
+			if (this.hasAttribute("open"))
+				this.removeAttribute("open")
+		});
 	}
 
 	connectedCallback()
 	{
-		if (window.innerWidth >= DESKTOP)
-			this.setAttribute("open", "");
 		Array.from(this.children)
 			.filter(e => e.tagName !== "HR")
 			.filter(e => !e.querySelector('g-icon'))
-			.forEach(e => e.appendChild(document.createElement("g-icon")).innerHTML = '&#x1003;');
+			.forEach(e => e.appendChild(document.createElement("g-icon")).innerHTML = '&#x1003;')
 	}
-});
+})

@@ -2,11 +2,11 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<link rel="stylesheet"
 	      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/idea.css"/>
-	<div id="html-pane">
-		<slot></slot>
-	</div>
 	<div id="code-pane">
                 <pre><code></code></pre>
+	</div>
+	<div id="html-pane">
+		<slot></slot>
 	</div>
  <style data-element="g-code-viewer">* {
 	box-sizing: border-box;
@@ -67,7 +67,7 @@ function highlightHTML(htmlString)
 					.reduce((a, b) => a + b);
 				Array.from(node.attributes).map((attr, index) =>
 					highlightedString += `${size > 120 && index ? indent + '\t\t' : ' '}<b ${key}>${attr.name}</b>`
-						+ (attr.value ? `="<b ${val}>${attr.value}</b>"` : ""));
+					+ (attr.value ? `="<b ${val}>${attr.value}</b>"` : ""));
 			}
 			highlightedString += `<b ${tag}>&gt;</b>`;
 
@@ -95,10 +95,10 @@ customElements.define('g-code-viewer', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		new MutationObserver(() => this.connectedCallback()).observe(this,
-			{attributes: true, childList: true, subtree: true});
+			{ attributes: true, childList: true, subtree: true });
 	}
 
 	get code()

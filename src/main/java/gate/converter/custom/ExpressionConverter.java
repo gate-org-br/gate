@@ -1,18 +1,15 @@
 package gate.converter.custom;
 
-import gate.constraint.Constraint;
-import gate.error.ConversionException;
-import gate.converter.Converter;
-import gate.lang.expression.Expression;
-import gate.lang.json.JsonScanner;
-import static gate.lang.json.JsonToken.Type.NULL;
-import static gate.lang.json.JsonToken.Type.STRING;
-import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
+
+import gate.constraint.Constraint;
+import gate.converter.Converter;
+import gate.error.ConversionException;
+import gate.lang.expression.Expression;
 
 public class ExpressionConverter implements Converter
 {

@@ -1,6 +1,8 @@
 package gate.sse;
 
-import gate.sse.SSEClientManager;
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import gate.annotation.Current;
 import gate.catcher.UnauthorizedExceptionCatcher;
 import gate.entity.User;
@@ -13,9 +15,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 @WebServlet(value = "/SSE", asyncSupported = true)
 public class SSEServlet extends HttpServlet
@@ -33,7 +32,7 @@ public class SSEServlet extends HttpServlet
 
 	@Override
 	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response)
-		throws ServletException, IOException
+			throws ServletException, IOException
 	{
 
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);

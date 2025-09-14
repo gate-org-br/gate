@@ -1,8 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<slot> </slot>
- <style data-element="g-accordion">:host(*)
-{
+ <style data-element="g-accordion">:host(*) {
 	display: flex;
 	flex-direction: column;
 	box-shadow: 1px 1px 2px 0px var(--main6);
@@ -10,8 +9,7 @@ template.innerHTML = `
 
 
 ::slotted(a),
-::slotted(button)
-{
+::slotted(button) {
 	padding: 8px;
 	display: flex;
 	cursor: pointer;
@@ -22,25 +20,22 @@ template.innerHTML = `
 	background-color: var(--main2);
 }
 
-::slotted(div)
-{
+::slotted(div) {
 	gap: 12px;
-	padding : 8px;
+	padding: 8px;
 	display: none;
 	overflow: hidden;
 	align-items: stretch;
 	flex-direction: column;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
-::slotted(div[data-expanded])
-{
+::slotted(div[data-expanded]) {
 	display: flex;
 }
 
 ::slotted(a)::after,
-::slotted(button)::after
-{
+::slotted(button)::after {
 	display: flex;
 	font-size: 0.5em;
 	content: '\\2276';
@@ -52,11 +47,9 @@ template.innerHTML = `
 }
 
 ::slotted(a[data-expanded])::after,
-::slotted(button[data-expanded])::after
-{
+::slotted(button[data-expanded])::after {
 	content: '\\2278';
-}
-</style>`;
+}</style>`;
 /* global customElements */
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';

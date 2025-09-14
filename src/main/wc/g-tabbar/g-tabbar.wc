@@ -5,10 +5,9 @@
 	<a id="show" href='#'>
 		<g-icon>&#x2265;</g-icon>
 	</a>
-
-	<g-more-menu>
+	<g-context-menu>
 		<slot name='more'>
 
 		</slot>
-	</g-more-menu>
+	</g-context-menu>
 </template>

@@ -1,16 +1,15 @@
 package gate.converter.custom;
 
-import gate.constraint.Constraint;
-import gate.constraint.Pattern;
-import gate.converter.Converter;
-import gate.error.ConversionException;
-import gate.type.SafeString;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.LinkedList;
 import java.util.List;
+
+import gate.constraint.Constraint;
+import gate.converter.Converter;
+import gate.error.ConversionException;
+import gate.type.SafeString;
 
 public class SafeStringConverter implements Converter
 {

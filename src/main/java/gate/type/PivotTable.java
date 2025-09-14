@@ -1,6 +1,5 @@
 package gate.type;
 
-import gate.lang.json.JsonArray;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -9,6 +8,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import gate.lang.json.JsonArray;
 
 public class PivotTable<T> implements Serializable
 {
@@ -30,7 +31,7 @@ public class PivotTable<T> implements Serializable
 		this.defaultValue = defaultValue;
 	}
 
-	public PivotTable add(String row, String col, T value)
+	public PivotTable<T> add(String row, String col, T value)
 	{
 		columns.add(col);
 		values.computeIfAbsent(row, e -> new LinkedHashMap<>()).put(col, value);
@@ -65,10 +66,11 @@ public class PivotTable<T> implements Serializable
 	public List<List<Object>> values()
 	{
 		return values.entrySet().stream()
-			.map(row -> Stream.concat(Stream.of(row.getKey()),
-			columns.stream().map(e -> row.getValue().getOrDefault(e, defaultValue)))
-			.collect(Collectors.toList()))
-			.collect(Collectors.toList());
+				.map(row -> Stream
+						.concat(Stream.of(row.getKey()),
+								columns.stream().map(e -> row.getValue().getOrDefault(e, defaultValue)))
+						.collect(Collectors.toList()))
+				.collect(Collectors.toList());
 	}
 
 	public String getRowLabel()
@@ -101,9 +103,9 @@ public class PivotTable<T> implements Serializable
 		return JsonArray.of(dataset());
 	}
 
-	public PivotTable inverted()
+	public PivotTable<T> inverted()
 	{
-		PivotTable result = new PivotTable(getColLabel(), getRowLabel(), getValueLabel(), defaultValue);
+		PivotTable<T> result = new PivotTable<>(getColLabel(), getRowLabel(), getValueLabel(), defaultValue);
 
 		for (Map.Entry<String, Map<String, T>> row : values.entrySet())
 			for (Map.Entry<String, T> col : row.getValue().entrySet())

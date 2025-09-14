@@ -1,16 +1,14 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-logger">:host(*)
-{
+ <style data-element="g-logger">:host(*) {
 	padding: 4px;
 	cursor: pointer;
 	overflow-y: auto;
 	border-radius: 5px;
-	background-color: white;
+	background-color: var(--main1, white);
 }
 
-span
-{
+span {
 	height: 16px;
 	display: flex;
 	align-items: center;

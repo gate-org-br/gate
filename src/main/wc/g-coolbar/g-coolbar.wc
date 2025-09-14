@@ -5,9 +5,9 @@
 	<div>
 		<slot></slot>
 	</div>
-	<g-more-menu>
+	<g-context-menu>
 		<slot name='more'>
 
 		</slot>
-	</g-more-menu>
+	</g-context-menu>
 </template>

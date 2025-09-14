@@ -1,10 +1,11 @@
 package gate.sql.fetcher;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+
 import gate.error.AppError;
 import gate.sql.Cursor;
 import gate.type.PivotTable;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 
 /**
  * Fetches a Cursor as a PivotTable of the specified type.
@@ -43,13 +44,14 @@ public class PivotTableFetcher<T> implements Fetcher<PivotTable<T>>
 		{
 			ResultSetMetaData rsmd = cursor.getResultSet().getMetaData();
 			if (rsmd.getColumnCount() < 3)
-				throw new java.lang.IllegalArgumentException("Attempt to fetch a pivot table from a cursor with less than 3 columns");
+				throw new java.lang.IllegalArgumentException(
+						"Attempt to fetch a pivot table from a cursor with less than 3 columns");
 
-			PivotTable result = new PivotTable(rsmd.getColumnLabel(1), rsmd.getColumnLabel(2), rsmd.getColumnLabel(3), defaultValue);
+			PivotTable<T> result = new PivotTable<>(rsmd.getColumnLabel(1), rsmd.getColumnLabel(2),
+					rsmd.getColumnLabel(3), defaultValue);
 			while (cursor.next())
-				result.add(cursor.getValue(String.class, 1),
-					cursor.getValue(String.class, 2),
-					cursor.getValue(type, 3));
+				result.add(cursor.getValue(String.class, 1), cursor.getValue(String.class, 2),
+						cursor.getValue(type, 3));
 			return result;
 		} catch (SQLException e)
 		{

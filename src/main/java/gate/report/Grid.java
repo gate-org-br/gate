@@ -1,7 +1,14 @@
 package gate.report;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import gate.converter.Converter;
-import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonNumber;
@@ -11,20 +18,14 @@ import gate.language.Language;
 import gate.type.DataGrid;
 import gate.type.PivotTable;
 import gate.util.Toolkit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Represents a grid on a report.
  * <p>
- * A grid is associated with a data source from where it obtains the values to be displayed on each of it's cells. Each
- * object of the associated data source will generate a single row on the Grid. The value to be displayed on each column
- * is obtained using a mapping function on it's row value.
+ * A grid is associated with a data source from where it obtains the values to
+ * be displayed on each of it's cells. Each object of the associated data source
+ * will generate a single row on the Grid. The value to be displayed on each
+ * column is obtained using a mapping function on it's row value.
  *
  *
  *
@@ -49,7 +50,8 @@ public class Grid<T> extends ReportElement
 	/**
 	 * Adds a new Column to the Grid.
 	 * <p>
-	 * Each column is associated with a mapping function used to get the value to be displayed for each row of the Grid.
+	 * Each column is associated with a mapping function used to get the value to be
+	 * displayed for each row of the Grid.
 	 *
 	 * @return the new Column added
 	 */
@@ -82,7 +84,8 @@ public class Grid<T> extends ReportElement
 	/**
 	 * Sets a value to be displayed on the grid's caption using a java Formatter.
 	 *
-	 * @param caption the format string of the caption to be passed to the java Formatter
+	 * @param caption the format string of the caption to be passed to the java
+	 * Formatter
 	 * @param args the parameters to be passed to the java Formatter
 	 *
 	 * @return this, for chained invocations
@@ -95,9 +98,11 @@ public class Grid<T> extends ReportElement
 	}
 
 	/**
-	 * Sets a mapping function to select a value to be displayed on a sub grid of the current grid.
+	 * Sets a mapping function to select a value to be displayed on a sub grid of
+	 * the current grid.
 	 *
-	 * @param children the function where to get the values to be displayed on the sub grid
+	 * @param children the function where to get the values to be displayed on the
+	 * sub grid
 	 *
 	 * @return the same object, for chained invocations
 	 */
@@ -140,9 +145,7 @@ public class Grid<T> extends ReportElement
 		while (iterator.hasNext())
 		{
 			Column<T> column = iterator.next();
-			if (Toolkit.collection(datasource)
-					.stream()
-					.map(e -> column.getBody().apply((T) e))
+			if (Toolkit.collection(datasource).stream().map(e -> column.getBody().apply((T) e))
 					.allMatch(e -> e == null))
 				iterator.remove();
 		}
@@ -153,7 +156,8 @@ public class Grid<T> extends ReportElement
 	/**
 	 * Sets the max number of columns to be shown on doc types of limited size.
 	 *
-	 * @param limit the max number of columns to be shown on doc types of limited size
+	 * @param limit the max number of columns to be shown on doc types of limited
+	 * size
 	 *
 	 * @return the same object, for chained invocations
 	 */
@@ -183,18 +187,16 @@ public class Grid<T> extends ReportElement
 
 	public static Grid<List<Object>> of(String caption, PivotTable dataset)
 	{
-		Grid<List<Object>> grid = new Grid<>(dataset.values())
-				.setCaption(caption)
-				.add(new Column<List<Object>>()
-						.head(dataset.header().get(0))
+		Grid<List<Object>> grid = new Grid<>(dataset.values()).setCaption(caption)
+				.add(new Column<List<Object>>().head(dataset.header().get(0))
 						.body(e -> Language.PORTUGUESE.capitalize(Converter.toString(e.get(0))))
 						.style(new Style().width(90).left()));
 
 		for (int i = 1; i < dataset.header().size(); i++)
 		{
 			var index = i;
-			grid.add(new Column<List<Object>>().head(dataset.header().get(i))
-					.body(e -> e.get(index)).style(new Style().width(10)));
+			grid.add(new Column<List<Object>>().head(dataset.header().get(i)).body(e -> e.get(index))
+					.style(new Style().width(10)));
 		}
 
 		return grid;
@@ -202,18 +204,13 @@ public class Grid<T> extends ReportElement
 
 	public static Grid<Object[]> of(String caption, DataGrid dataset)
 	{
-		Grid<Object[]> grid = new Grid<>(dataset)
-				.setCaption(caption)
-				.add(new Column<Object[]>()
-						.head(dataset.getHead()[0])
-						.body(e -> Converter.toText(e[0]))
-						.style(new Style().width(90).left()));
+		Grid<Object[]> grid = new Grid<>(dataset).setCaption(caption).add(new Column<Object[]>()
+				.head(dataset.getHead()[0]).body(e -> Converter.toText(e[0])).style(new Style().width(90).left()));
 
 		for (int i = 1; i < dataset.getHead().length; i++)
 		{
 			var index = i;
-			grid.add(new Column<Object[]>().head(dataset.getHead()[i])
-					.body(e -> Converter.toText(e[index]))
+			grid.add(new Column<Object[]>().head(dataset.getHead()[i]).body(e -> Converter.toText(e[index]))
 					.style(new Style().width(10)));
 		}
 
@@ -235,12 +232,9 @@ public class Grid<T> extends ReportElement
 				if (element instanceof JsonObject object)
 					grid.add(Column.of(object));
 				else if (element instanceof JsonString string)
-					grid.add(Column.of(new JsonObject()
-							.set("head", string)
-							.set("property", string)));
+					grid.add(Column.of(new JsonObject().set("head", string).set("property", string)));
 				else if (element instanceof JsonNumber index)
-					grid.add(Column.of(new JsonObject()
-							.setString("property", "[" + index + "]")));
+					grid.add(Column.of(new JsonObject().setString("property", "[" + index + "]")));
 			}
 			return grid;
 		}
@@ -254,30 +248,21 @@ public class Grid<T> extends ReportElement
 		{
 			if (jsonArray.get(0) instanceof JsonObject header)
 			{
-				var columns = header.keySet()
-						.stream().map(e -> new JsonObject()
-						.setString("head", e)
-						.setString("property", e))
+				var columns = header.keySet().stream()
+						.map(e -> new JsonObject().setString("head", e).setString("property", e))
 						.collect(Collectors.toCollection(JsonArray::new));
-				return of(new JsonObject()
-						.set("columns", columns)
-						.set("dataset", jsonArray));
+				return of(new JsonObject().set("columns", columns).set("dataset", jsonArray));
 			} else if (jsonArray.get(0) instanceof JsonArray header)
 			{
 				var columns = new JsonArray();
 				for (int i = 0; i < header.size(); i++)
 					columns.add(new JsonObject().set("head", header.get(i)).setString("property", "[" + i + "]"));
 				var dataset = jsonArray.stream().skip(1).collect(Collectors.toCollection(JsonArray::new));
-				return of(new JsonObject()
-						.set("columns", columns)
-						.set("dataset", dataset));
+				return of(new JsonObject().set("columns", columns).set("dataset", dataset));
 			} else if (jsonArray.get(0) instanceof JsonString)
 			{
-				var columns = JsonArray.of(new JsonObject()
-						.setString("property", "[0]"));
-				return of(new JsonObject()
-						.set("columns", columns)
-						.set("dataset", jsonArray));
+				var columns = JsonArray.of(new JsonObject().setString("property", "[0]"));
+				return of(new JsonObject().set("columns", columns).set("dataset", jsonArray));
 			}
 		}
 

@@ -1,11 +1,5 @@
 package gate.sql.replace;
 
-import gate.converter.Converter;
-import gate.sql.Proxy;
-import gate.sql.Thenable;
-import gate.sql.statement.Sentence;
-import gate.sql.update.TableUpdate;
-import jakarta.persistence.PersistenceException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +8,10 @@ import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import gate.converter.Converter;
+import gate.sql.Proxy;
+import gate.sql.statement.Sentence;
 
 /**
  * Replace sentence builder for a table.
@@ -98,40 +96,44 @@ public class TableReplace implements Replace
 	}
 
 	/**
-	 * Creates a proxy instance of the specified type and passes it to the provided {@code setter} consumer. The proxy
-	 * intercepts calls to setter methods, capturing the columns names and values, and maps them to the replace builder.
+	 * Creates a proxy instance of the specified type and passes it to the provided
+	 * {@code setter} consumer. The proxy intercepts calls to setter methods,
+	 * capturing the columns names and values, and maps them to the replace builder.
 	 *
 	 * @param <T> the type of the entity being updated
 	 * @param type the class of the entity to be proxied
-	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
-	 * @return a {@code Compiled} object containing the mapping of column names and values
+	 * @param setter a consumer that modifies the proxy instance to specify the
+	 * fields and values to be updated
+	 * @return a {@code Compiled} object containing the mapping of column names and
+	 * values
 	 * @throws InstantiationError if an error occurs while creating the proxy
 	 */
 	public <T> Compiled setFields(Class<T> type, Consumer<T> setter)
 	{
 		var compiled = new Compiled();
-		var proxy = Proxy.create(type,
-				(col, val) -> compiled.set(col, val));
+		var proxy = Proxy.create(type, (col, val) -> compiled.set(col, val));
 		setter.accept(proxy);
 		return compiled;
 	}
 
 	/**
-	 * Creates a proxy instance of for the provided object and passes it to the provided {@code setter} consumer. The
-	 * proxy intercepts calls to setter methods, updates the provided, capture the columns names and values, and maps
+	 * Creates a proxy instance of for the provided object and passes it to the
+	 * provided {@code setter} consumer. The proxy intercepts calls to setter
+	 * methods, updates the provided, capture the columns names and values, and maps
 	 * them to the replace builder.
 	 *
 	 * @param <T> the type of the entity being updated
 	 * @param object the existing instance of the entity to be proxied
-	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
-	 * @return a {@code Compiled} object containing the mapping of column names and values
+	 * @param setter a consumer that modifies the proxy instance to specify the
+	 * fields and values to be updated
+	 * @return a {@code Compiled} object containing the mapping of column names and
+	 * values
 	 * @throws InstantiationError if an error occurs while creating the proxy
 	 */
 	public <T> Compiled setFields(T object, Consumer<T> setter)
 	{
 		var compiled = new Compiled();
-		var proxy = Proxy.create(object,
-				(col, val) -> compiled.set(col, val));
+		var proxy = Proxy.create(object, (col, val) -> compiled.set(col, val));
 		setter.accept(proxy);
 		return compiled;
 	}
@@ -199,13 +201,13 @@ public class TableReplace implements Replace
 		@Override
 		public String toString()
 		{
-			return String.join(" ", replace) + " into " + table + " " + columns + " values "
-					+ parameters;
+			return String.join(" ", replace) + " into " + table + " " + columns + " values " + parameters;
 		}
 	}
 
 	/**
-	 * SQL replace sentence builder for a table with values specified and ready for execution.
+	 * SQL replace sentence builder for a table with values specified and ready for
+	 * execution.
 	 */
 	public class Compiled implements Sentence.Compiled.Builder
 	{
@@ -247,8 +249,7 @@ public class TableReplace implements Replace
 		public <T> Compiled set(Class<T> type, String column, T value)
 		{
 			values.add(value);
-			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
-					.forEach(parameters::add);
+			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?").forEach(parameters::add);
 			return this;
 		}
 
@@ -273,15 +274,15 @@ public class TableReplace implements Replace
 		@Override
 		public String toString()
 		{
-			return String.join(" ", replace) + " into " + table + " " + columns + " values "
-					+ parameters;
+			return String.join(" ", replace) + " into " + table + " " + columns + " values " + parameters;
 		}
 
 		public class When
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous
+			 * specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param value the value associated
@@ -294,7 +295,8 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous
+			 * specified condition was true.
 			 *
 			 * @param column the column to be added
 			 * @param supplier the supplier of the value associated
@@ -307,7 +309,8 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous
+			 * specified condition was true.
 			 *
 			 *
 			 * @param column the column to be added
@@ -322,7 +325,8 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column and it's associated value to the builder if the previous
+			 * specified condition was true.
 			 *
 			 *
 			 * @param type type of the column to be added
@@ -391,7 +395,8 @@ public class TableReplace implements Replace
 	}
 
 	/**
-	 * SQL replace sentence builder for a table with values specified and ready for execution.
+	 * SQL replace sentence builder for a table with values specified and ready for
+	 * execution.
 	 *
 	 * @param <E> type of the entities to be replaced on database
 	 */
@@ -437,8 +442,7 @@ public class TableReplace implements Replace
 		public <K> Prepared<E> set(Class<K> type, String column, Function<E, K> extractor)
 		{
 			extractors.add(extractor);
-			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
-					.forEach(parameters::add);
+			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?").forEach(parameters::add);
 			return this;
 		}
 
@@ -451,8 +455,7 @@ public class TableReplace implements Replace
 		@Override
 		public String toString()
 		{
-			return String.join(" ", replace) + " into " + table + " " + columns + " values "
-					+ parameters;
+			return String.join(" ", replace) + " into " + table + " " + columns + " values " + parameters;
 		}
 	}
 
@@ -460,7 +463,8 @@ public class TableReplace implements Replace
 	{
 
 		/**
-		 * Adds a new column to be persisted if the previous specified condition was true.
+		 * Adds a new column to be persisted if the previous specified condition was
+		 * true.
 		 *
 		 * @param column the column to be added
 		 *
@@ -472,7 +476,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted if the previous specified condition was true.
+		 * Adds a new column to be persisted if the previous specified condition was
+		 * true.
 		 *
 		 *
 		 * @param type type of the column to be persisted
@@ -486,7 +491,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous
+		 * specified condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param value the value associated
@@ -499,7 +505,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous
+		 * specified condition was true.
 		 *
 		 * @param column the column to be persisted
 		 * @param supplier the supplier of the value associated
@@ -512,7 +519,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous
+		 * specified condition was true.
 		 *
 		 *
 		 * @param type type of the column to be added
@@ -527,7 +535,8 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
+		 * Adds a new column to be persisted with the specified value if the previous
+		 * specified condition was true.
 		 *
 		 *
 		 * @param type type of the column to be added

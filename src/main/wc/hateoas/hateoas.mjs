@@ -44,7 +44,6 @@ import './@reload.js';
 import './@show.js';
 import './@template.js';
 import './@throttle.js';
-import './@tooltip.js';
 import './@trigger.js';
 import './@value.js';
 import './@notification.js';

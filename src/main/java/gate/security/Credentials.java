@@ -13,6 +13,7 @@ import io.jsonwebtoken.security.SignatureException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -114,7 +115,8 @@ public class Credentials
 
 		public static SubjectToken create(ID id)
 		{
-			var iat = LocalDateTime.now(ZoneOffset.UTC);
+			var iat = LocalDateTime.now(ZoneOffset.UTC)
+				.truncatedTo(ChronoUnit.SECONDS);
 			var exp = iat.plusSeconds(Credentials.EXP);
 			return new SubjectToken(iat, exp, id);
 		}

@@ -1,12 +1,12 @@
 package gate.lang.property;
 
-import gate.error.ConversionException;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import gate.error.ConversionException;
 
 public class PropertyGraph<T>
 {
@@ -24,15 +24,13 @@ public class PropertyGraph<T>
 			if (property == null)
 				continue;
 
-			var attributes = property.getAttributes()
-					.stream().skip(1).toList();
+			var attributes = property.getAttributes().stream().skip(1).toList();
 
 			Map<Attribute, Object> value = result;
 			for (int i = 0; i < attributes.size() - 1; i++)
 			{
 				var attribute = attributes.get(i);
-				value = (Map<Attribute, Object>) value
-						.computeIfAbsent(attribute, e -> new LinkedHashMap<>());
+				value = (Map<Attribute, Object>) value.computeIfAbsent(attribute, e -> new LinkedHashMap<>());
 			}
 			value.put(attributes.get(attributes.size() - 1), property);
 		}
@@ -40,16 +38,13 @@ public class PropertyGraph<T>
 		return new PropertyGraph<>(type, result);
 	}
 
-
 	public PropertyGraph(Class<T> type, Map<Attribute, Object> graph)
 	{
 		this.type = type;
 		this.graph = graph;
 	}
 
-	@SuppressWarnings("unchecked")
-	public Object get(Object value, Function<Property, Object> getValue)
-			throws ConversionException
+	public Object get(Object value, Function<Property, Object> getValue) throws ConversionException
 	{
 		try
 		{
@@ -60,11 +55,8 @@ public class PropertyGraph<T>
 		}
 	}
 
-	private Object get(Class<?> type,
-					   Object value,
-					   Object properties,
-					   Function<Property, Object> getValue) throws
-			ReflectiveOperationException
+	private Object get(Class<?> type, Object value, Object properties, Function<Property, Object> getValue)
+			throws ReflectiveOperationException
 	{
 		if (properties instanceof Property property)
 			return getValue.apply(property);
@@ -79,14 +71,9 @@ public class PropertyGraph<T>
 				{
 					types.add(component.getType());
 					var parameters = map.entrySet().stream()
-							.filter(e -> e.getKey().toString().equals(component.getName()))
-							.map(Map.Entry::getValue)
-							.findAny()
-							.orElse(null);
-					values.add(get(component.getType(),
-							null,
-							parameters,
-							getValue));
+							.filter(e -> e.getKey().toString().equals(component.getName())).map(Map.Entry::getValue)
+							.findAny().orElse(null);
+					values.add(get(component.getType(), null, parameters, getValue));
 				}
 				var constructor = type.getDeclaredConstructor(types.toArray(new Class[0]));
 				constructor.setAccessible(true);
@@ -99,10 +86,7 @@ public class PropertyGraph<T>
 				{
 					var attribute = ((Attribute) entry.getKey());
 					var currentValue = attribute.getValue(value);
-					var newValue = get(attribute.getRawType(),
-							currentValue,
-							entry.getValue(),
-							getValue);
+					var newValue = get(attribute.getRawType(), currentValue, entry.getValue(), getValue);
 					if (newValue != currentValue)
 						attribute.setValue(value, newValue);
 				}

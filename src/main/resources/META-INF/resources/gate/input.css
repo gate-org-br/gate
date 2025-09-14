@@ -10,7 +10,7 @@ g-selectn {
   height: 38px;
   font-size: 14px;
   min-height: 38px;
-  background-color: white;
+  background-color: var(--main1, white);
   border: 1px solid var(--main6);
 }
 textarea,

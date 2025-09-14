@@ -1,26 +1,28 @@
 package gate.handler;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
-public class OptionHandler implements Handler {
+public class OptionHandler implements Handler
+{
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError {
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	{
 		Objects.requireNonNull(value);
 
 		String string = Toolkit.stream(value).map(this::javaToJson).collect(Collectors.joining(",", "[", "]"));
@@ -30,15 +32,18 @@ public class OptionHandler implements Handler {
 		response.setContentLength(bytes.length);
 		response.setContentType("application/json");
 
-		try (OutputStream os = response.getOutputStream()) {
+		try (OutputStream os = response.getOutputStream())
+		{
 			os.write(bytes);
 			os.flush();
-		} catch (IOException ex) {
+		} catch (IOException ex)
+		{
 			throw new UncheckedIOException(ex);
 		}
 	}
 
-	private String javaToJson(Object object) {
+	private String javaToJson(Object object)
+	{
 		Objects.requireNonNull(object);
 		Class<?> type = object.getClass();
 		Property property = Property.getProperty(type, Entity.getId(type));

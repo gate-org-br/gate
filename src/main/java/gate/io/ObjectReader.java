@@ -1,9 +1,10 @@
 package gate.io;
 
-import gate.converter.Converter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
+
+import gate.converter.Converter;
 
 public class ObjectReader<T> implements Reader<Optional<T>>
 {
@@ -21,22 +22,22 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 
 	public static <T> ObjectReader<T> getInstance(Class<T> type)
 	{
-		return new ObjectReader("application/json", type, null);
+		return new ObjectReader<T>("application/json", type, null);
 	}
 
 	public static <T> ObjectReader<T> getInstance(String contentType, Class<T> type)
 	{
-		return new ObjectReader(contentType, type, null);
+		return new ObjectReader<T>(contentType, type, null);
 	}
 
 	public static <T> ObjectReader<T> getInstance(Class<T> type, Class<?> elementType)
 	{
-		return new ObjectReader("application/json", type, elementType);
+		return new ObjectReader<T>("application/json", type, elementType);
 	}
 
 	public static <T> ObjectReader<T> getInstance(String contentType, Class<T> type, Class<?> elementType)
 	{
-		return new ObjectReader(contentType, type, elementType);
+		return new ObjectReader<T>(contentType, type, elementType);
 	}
 
 	@Override

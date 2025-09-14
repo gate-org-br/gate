@@ -1,6 +1,5 @@
 package gate.io;
 
-import gate.error.ConversionException;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
@@ -9,7 +8,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.UncheckedIOException;
 import java.util.Base64;
+
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
+
+import gate.error.ConversionException;
 
 public abstract class Encoder<T>
 {
@@ -50,8 +52,8 @@ public abstract class Encoder<T>
 				return "";
 
 			try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
+					BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+					ObjectOutputStream objectOutputStream = new ObjectOutputStream(bufferedOutputStream))
 
 			{
 				objectOutputStream.writeObject(object);
@@ -73,9 +75,11 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 
-			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(Base64.getDecoder().decode(string));
-				BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
-				ClassLoaderObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(Thread.currentThread().getContextClassLoader(), bufferedInputStream))
+			try (ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
+					Base64.getDecoder().decode(string));
+					BufferedInputStream bufferedInputStream = new BufferedInputStream(byteArrayInputStream);
+					ClassLoaderObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(
+							Thread.currentThread().getContextClassLoader(), bufferedInputStream))
 
 			{
 				return (T) objectInputStream.readObject();
@@ -110,7 +114,6 @@ public abstract class Encoder<T>
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public T decode(String string) throws ConversionException
 		{
 			if (string == null)

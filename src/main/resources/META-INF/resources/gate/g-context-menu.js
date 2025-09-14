@@ -34,7 +34,8 @@ template.innerHTML = `
 a,
 button,
 ::slotted(a),
-::slotted(button)
+::slotted(button),
+::slotted(.g-command)
 {
 	gap: 12px;
 	border: none;
@@ -49,14 +50,15 @@ button,
 	text-decoration: none;
 	transition: all 0.2s ease;
 	background-color: transparent;
-	justify-content: space-between;
+	justify-content: flex-start;
 	transition: background-color 0.2s ease, padding 0.2s ease;
 }
 
 a:hover,
 button:hover,
 ::slotted(a:hover),
-::slotted(button:hover)
+::slotted(button:hover),
+::slotted(.g-command:hover)
 {
 	background-color: var(--hovered, #FFFACD);
 	padding-left: 20px;
@@ -65,7 +67,9 @@ button:hover,
 a:focus,
 button:focus,
 ::slotted(a:focus),
-::slotted(button:focus)
+::slotted(button:focus),
+::slotted(.g-command:focus)
+
 {
 	outline: none;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -78,8 +82,9 @@ label {
 
 a[data-icon]::before,
 button[data-icon]::before,
-::slotted(a:[data-icon])::before,
-::slotted(button:[data-icon])::before
+::slotted(a[data-icon])::before,
+::slotted(button[data-icon])::before,
+::slotted(.g-command[data-icon])::before
 {
 	font-family: gate;
 	content: attr(data-icon);
@@ -102,9 +107,12 @@ import anchor from './anchor.js';
 import resolve from './resolve.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';
-import WindowListenerHTMLElement from './window-listener-html-element.js';
 
 const POSITIONS = ["northeast", "southeast", "northwest", "southwest", "north", "south", "east", "west"];
+
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`g-context-menu g-icon { order: -1 }`);
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
 function scheduleClick(link)
 {
@@ -139,7 +147,7 @@ function createSubmenu(link, event, actions)
 		});
 }
 
-export default class GContextMenu extends WindowListenerHTMLElement
+export default class GContextMenu extends HTMLElement
 {
 	#context;
 
@@ -147,9 +155,26 @@ export default class GContextMenu extends WindowListenerHTMLElement
 	{
 		super();
 		this.attachShadow({mode: "open"});
-		this.addWindowListener("click", () => this.hide());
 		this.addEventListener("mouseleave", () => this.hide());
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		const click = event =>
+		{
+			if (!event.composedPath().includes(this))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+			}
+			this.hide();
+		};
+		this.addEventListener("toggle", e =>
+		{
+			if (e.newState === "open")
+				window.addEventListener("click",
+					click, {once: true, capture: true});
+			else
+				window.removeEventListener("click", click, {capture: true});
+		});
 	}
 
 	set context(context)
@@ -220,13 +245,7 @@ export default class GContextMenu extends WindowListenerHTMLElement
 
 	show(x, y)
 	{
-		const target = {getBoundingClientRect: () => ({x, y,
-					left: x,
-					top: y,
-					right: x,
-					bottom: y,
-					width: 0,
-					height: 0})};
+		const target = {x, y};
 
 		this.style.visibility = "hidden";
 		this.showPopover();
@@ -268,7 +287,6 @@ export default class GContextMenu extends WindowListenerHTMLElement
 
 	connectedCallback()
 	{
-		super.connectedCallback();
 		this.setAttribute("popover", "manual");
 	}
 }

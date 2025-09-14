@@ -1,5 +1,12 @@
 package gate.report;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.annotation.Name;
@@ -10,12 +17,6 @@ import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
-import java.io.File;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Model from where documents of various types can be generated.
@@ -209,10 +210,9 @@ public class Report
 		return image;
 	}
 
-	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset,
-			Chart.Format format)
+	public final <T> Chart<T> addChart(Class<T> type, Collection<T> dataset, Chart.Format format)
 	{
-		Chart chart = new Chart(type, dataset, format);
+		Chart<T> chart = new Chart<>(type, dataset, format);
 		elements.add(chart);
 		return chart;
 	}
@@ -233,23 +233,17 @@ public class Report
 	public enum Orientation
 	{
 		@Name("Retrato")
-		PORTRAIT,
-		@Name("Paisagem")
+		PORTRAIT, @Name("Paisagem")
 		LANDSCAPE
 	}
 
 	public static Report of(JsonObject jsonObject) throws IllegalArgumentException
 	{
-		var orientation = jsonObject.getString("orientation")
-				.map(String::toUpperCase)
-				.map(e -> switch (e)
+		var orientation = jsonObject.getString("orientation").map(String::toUpperCase).map(e -> switch (e)
 		{
-			case "PORTRAIT" ->
-				Report.Orientation.PORTRAIT;
-			case "LANDSCAPE" ->
-				Report.Orientation.LANDSCAPE;
-			default ->
-				throw new IllegalArgumentException("Invalid report orientation");
+		case "PORTRAIT" -> Report.Orientation.PORTRAIT;
+		case "LANDSCAPE" -> Report.Orientation.LANDSCAPE;
+		default -> throw new IllegalArgumentException("Invalid report orientation");
 		}).orElse(Report.Orientation.PORTRAIT);
 
 		Report report = new Report(orientation);
@@ -257,12 +251,8 @@ public class Report
 		if (jsonObject.get("type") instanceof JsonString)
 			report.add(ReportElement.of(jsonObject));
 		else if (jsonObject.get("elements") instanceof JsonArray elements)
-			elements.stream()
-					.map(ReportElement::of)
-					.filter(Objects::nonNull)
-					.forEach(report::add);
-		else if (jsonObject.get("columns") instanceof JsonArray
-				&& jsonObject.get("dataset") instanceof JsonArray)
+			elements.stream().map(ReportElement::of).filter(Objects::nonNull).forEach(report::add);
+		else if (jsonObject.get("columns") instanceof JsonArray && jsonObject.get("dataset") instanceof JsonArray)
 			report.add(Grid.of(jsonObject));
 		else
 			report.add(Dictionary.of(jsonObject));
