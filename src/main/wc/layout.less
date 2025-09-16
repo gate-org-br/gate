@@ -18,7 +18,7 @@ body {
 	align-items: stretch;
 	flex-direction: column;
 
-	> main {
+	>main {
 		flex: 1;
 		padding: 0;
 		min-height: 0;
@@ -27,7 +27,7 @@ body {
 		grid-template-columns: auto 1fr;
 		grid-template-rows: auto auto 1fr auto;
 
-		> header {
+		>header {
 			grid-row: 1;
 			grid-column: span 2;
 			width: 100%;
@@ -38,11 +38,11 @@ body {
 			background-color: var(--base2);
 			gap: var(--gap);
 
-			> * {
+			>* {
 				margin: 0 8px;
 			}
 
-			> img {
+			>img {
 				width: 28px;
 				height: 30px;
 				display: flex;
@@ -51,7 +51,7 @@ body {
 				justify-content: center;
 			}
 
-			> *:nth-child(2) {
+			>*:nth-child(2) {
 				flex-grow: 1;
 				display: flex;
 				font-size: 22px;
@@ -59,14 +59,14 @@ body {
 				justify-content: flex-start;
 			}
 
-			> *:nth-child(3) {
+			>*:nth-child(3) {
 				display: flex;
 				align-items: flex-start;
 				justify-content: flex-end;
 			}
 		}
 
-		> nav {
+		>nav {
 			margin: 0;
 			grid-column: span 2;
 			grid-row: 2;
@@ -79,7 +79,7 @@ body {
 			border-bottom: 1px solid var(--base3);
 		}
 
-		> section {
+		>section {
 			margin: 0;
 			grid-row: 3;
 			padding: 8px;
@@ -95,7 +95,7 @@ body {
 			gap: var(--gap);
 		}
 
-		> footer {
+		>footer {
 			grid-row: 4;
 			grid-column: span 2;
 			height: 28px;
@@ -108,12 +108,12 @@ body {
 			background-color: var(--base3);
 			justify-content: space-between;
 
-			> label {
+			>label {
 				font-size: inherit;
 			}
 		}
 
-		> aside {
+		>aside {
 			grid-row: 3;
 			grid-column: 1;
 			padding: 8px;
@@ -144,7 +144,7 @@ article {
 	grid-template-columns: auto 1fr;
 	grid-template-rows: auto auto 1fr auto;
 
-	> header {
+	>header {
 		grid-row: 1;
 		grid-column: span 2;
 		display: flex;
@@ -152,23 +152,22 @@ article {
 		gap: var(--gap);
 	}
 
-	> nav {
+	>nav {
 		grid-row: 2;
 		grid-column: span 2;
 	}
 
-	> section {
+	>section {
 		grid-row: 3;
 		grid-column: 2;
 		min-height: 0;
-		overflow-y: auto;
-		overflow-x: hidden;
+		overflow: auto;
 		display: flex;
 		flex-direction: column;
 		gap: var(--gap);
 	}
 
-	> aside {
+	>aside {
 		grid-row: 3;
 		grid-column: 1;
 		height: 100%;
@@ -179,7 +178,7 @@ article {
 		align-self: stretch;
 	}
 
-	> footer {
+	>footer {
 		grid-row: 4;
 		grid-column: span 2;
 		overflow: auto;

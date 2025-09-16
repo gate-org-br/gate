@@ -256,7 +256,7 @@ g-more-menu > ::slotted(.g-command.tertiary)
 }</style>`;
 /* global customElements */
 
-import  './g-context-menu.js';
+import './g-context-menu.js';
 import loading from './loading.js';
 import WindowListenerHTMLElement from './window-listener-html-element.js';
 const POSITIONS = ["southwest", "southeast", "northwest", "northeast"];
@@ -270,7 +270,7 @@ export default class GCoolbar extends WindowListenerHTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		new ResizeObserver(() => this.#update()).observe(this);
@@ -278,7 +278,7 @@ export default class GCoolbar extends WindowListenerHTMLElement
 
 		const show = this.shadowRoot.getElementById("show");
 		const more = this.shadowRoot.querySelector("g-context-menu");
-		show.addEventListener("click", event => more.show(event.clientX, event.clientY));
+		show.addEventListener("click", event => more.show({ x: event.clientX, y: event.clientY }));
 	}
 
 	get disabled()

@@ -143,8 +143,7 @@ article > section {
   grid-row: 3;
   grid-column: 2;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: var(--gap);

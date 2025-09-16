@@ -15,8 +15,8 @@ template.innerHTML = `
 	display: flex;
 	border-radius: 3px;
 	align-items: center;
-	background-color: var(--main1, white);
 	border: 1px solid #f0f0f0;
+	background-color: var(--main1, white);
 	box-shadow: 1px 1px 2px 0px var(--main6);
 }
 

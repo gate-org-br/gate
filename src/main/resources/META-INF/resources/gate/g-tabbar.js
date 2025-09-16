@@ -3,14 +3,14 @@ template.innerHTML = `
 	<header>
 		<slot></slot>
 	</header>
-	<a id="show" href='#'>
+	<label id="show">
 		<g-icon>&#x2265;</g-icon>
-	</a>
-	<g-context-menu>
-		<slot name='more'>
+		<g-context-menu>
+			<slot name='more'>
 
-		</slot>
-	</g-context-menu>
+			</slot>
+		</g-context-menu>
+	</label>
  <style data-element="g-tabbar">* {
 	box-sizing: border-box;
 }
@@ -36,6 +36,7 @@ header {
 }
 
 header ::slotted(a),
+header ::slotted(label),
 header ::slotted(button),
 header ::slotted(.g-command) {
 	gap: 4px;
@@ -63,18 +64,20 @@ header ::slotted(.g-command[aria-selected]) {
 }
 
 header ::slotted(a:hover),
+header ::slotted(label:hover),
 header ::slotted(button:hover),
 header ::slotted(.g-command:hover) {
 	background-color: var(--hovered);
 }
 
 header ::slotted(a:focus),
+header ::slotted(label:focus),
 header ::slotted(button:focus),
 header ::slotted(.g-command:focus) {
 	outline: none;
 }
 
-header ::slotted([hidden="true"]) {
+r header ::slotted([hidden="true"]) {
 	display: none;
 }
 
@@ -106,6 +109,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 	margin: 8px;
 	display: none;
 	font-size: 2em;
+	cursor: pointer;
 	color: #000088;
 	flex-basis: 60px;
 	border-radius: 5px;
@@ -146,7 +150,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 }</style>`;
 /* global customElements */
 
-import  './g-context-menu.js';
+import './g-context-menu.js';
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
@@ -161,7 +165,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		let div = this.shadowRoot.querySelector("div");
 		window.addEventListener("trigger-success", event =>
@@ -173,20 +177,15 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 			const trigger = Array.from(this.children)
 				.find(e => e === element ||
-						(TriggerExtractor.method(e) === method
-							&& TriggerExtractor.action(e) === action
-							&& TriggerExtractor.target(e) === target));
+					(TriggerExtractor.method(e) === method
+						&& TriggerExtractor.action(e) === action
+						&& TriggerExtractor.target(e) === target));
 			if (trigger)
 				this.#select(trigger);
 		});
 
 
 		new ResizeObserver(() => this.#update()).observe(this);
-
-
-		const show = this.shadowRoot.getElementById("show");
-		const more = this.shadowRoot.querySelector("g-context-menu");
-		show.addEventListener("click", event => more.show(event.clientX, event.clientY));
 	}
 
 	connectedCallback()

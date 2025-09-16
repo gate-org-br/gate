@@ -23,6 +23,7 @@ header {
 }
 
 header ::slotted(a),
+header ::slotted(label),
 header ::slotted(button),
 header ::slotted(.g-command) {
 	gap: 4px;
@@ -50,18 +51,20 @@ header ::slotted(.g-command[aria-selected]) {
 }
 
 header ::slotted(a:hover),
+header ::slotted(label:hover),
 header ::slotted(button:hover),
 header ::slotted(.g-command:hover) {
 	background-color: var(--hovered);
 }
 
 header ::slotted(a:focus),
+header ::slotted(label:focus),
 header ::slotted(button:focus),
 header ::slotted(.g-command:focus) {
 	outline: none;
 }
 
-header ::slotted([hidden="true"]) {
+r header ::slotted([hidden="true"]) {
 	display: none;
 }
 
@@ -93,6 +96,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 	margin: 8px;
 	display: none;
 	font-size: 2em;
+	cursor: pointer;
 	color: #000088;
 	flex-basis: 60px;
 	border-radius: 5px;

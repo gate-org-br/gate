@@ -1,0 +1,69 @@
+import WindowListenerHTMLElement from './window-listener-html-element.js';
+
+const sheet = new CSSStyleSheet()
+sheet.replaceSync(`g-drawer g-icon { order: -1; font-size: 20px }`)
+document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
+
+customElements.define('g-drawer', class extends WindowListenerHTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({ mode: "open" });
+		this.shadowRoot.innerHTML = template.innerHTML;
+
+		const click = event => 
+		{
+			if (!event.composedPath().includes(this))
+			{
+				event.preventDefault();
+				event.stopPropagation();
+				event.stopImmediatePropagation();
+			}
+			this.hide();
+		};
+
+		this.addEventListener("toggle", e =>
+		{
+			if (e.newState === "open")
+				window.addEventListener("click",
+					click, { once: true, capture: true });
+			else
+				window.removeEventListener("click", click, { capture: true });
+		});
+	}
+
+	show()
+	{
+		this.showPopover();
+	}
+
+	hide()
+	{
+		this.hidePopover();
+	}
+
+	connectedCallback()
+	{
+		this.setAttribute("popover", "manual");
+	}
+})
+
+window.addEventListener("click", function (event)
+{
+	const path = event.composedPath();
+	if (path.some(e => e instanceof HTMLAnchorElement
+		|| e instanceof HTMLButtonElement))
+		return;
+
+	const trigger = path.find(e => e.matches && e.matches("label:has(g-drawer)"));
+	if (!trigger)
+		return;
+
+	event.preventDefault();
+	event.stopPropagation();
+	event.stopImmediatePropagation();
+
+	const drawer = trigger.querySelector("g-drawer");
+	drawer.show();
+}, { capture: true });

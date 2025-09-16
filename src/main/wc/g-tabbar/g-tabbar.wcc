@@ -1,6 +1,6 @@
 /* global customElements */
 
-import  './g-context-menu.js';
+import './g-context-menu.js';
 import loading from './loading.js';
 import TriggerExtractor from './trigger-extractor.js';
 
@@ -15,7 +15,7 @@ customElements.define("g-tabbar", class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: 'open'});
+		this.attachShadow({ mode: 'open' });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		let div = this.shadowRoot.querySelector("div");
 		window.addEventListener("trigger-success", event =>
@@ -27,20 +27,15 @@ customElements.define("g-tabbar", class extends HTMLElement
 
 			const trigger = Array.from(this.children)
 				.find(e => e === element ||
-						(TriggerExtractor.method(e) === method
-							&& TriggerExtractor.action(e) === action
-							&& TriggerExtractor.target(e) === target));
+					(TriggerExtractor.method(e) === method
+						&& TriggerExtractor.action(e) === action
+						&& TriggerExtractor.target(e) === target));
 			if (trigger)
 				this.#select(trigger);
 		});
 
 
 		new ResizeObserver(() => this.#update()).observe(this);
-
-
-		const show = this.shadowRoot.getElementById("show");
-		const more = this.shadowRoot.querySelector("g-context-menu");
-		show.addEventListener("click", event => more.show(event.clientX, event.clientY));
 	}
 
 	connectedCallback()

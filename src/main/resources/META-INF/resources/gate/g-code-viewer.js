@@ -1,12 +1,11 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<link rel="stylesheet"
-	      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/idea.css"/>
-	<div id="code-pane">
-                <pre><code></code></pre>
-	</div>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/idea.css" />
 	<div id="html-pane">
 		<slot></slot>
+	</div>
+	<div id="code-pane">
+		<pre><code></code></pre>
 	</div>
  <style data-element="g-code-viewer">* {
 	box-sizing: border-box;

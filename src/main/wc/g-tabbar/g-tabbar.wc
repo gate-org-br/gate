@@ -2,12 +2,12 @@
 	<header>
 		<slot></slot>
 	</header>
-	<a id="show" href='#'>
+	<label id="show">
 		<g-icon>&#x2265;</g-icon>
-	</a>
-	<g-context-menu>
-		<slot name='more'>
+		<g-context-menu>
+			<slot name='more'>
 
-		</slot>
-	</g-context-menu>
+			</slot>
+		</g-context-menu>
+	</label>
 </template>

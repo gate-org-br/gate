@@ -23,12 +23,144 @@
 
 		<nav>
 			<g-tabbar>
-				<a id='targets' href='/target/view.html' target="@inner-html(section)">
-					Targets<g-icon>&#X1011;</g-icon>
-				</a>
-				<a id='components' href='/component/view.html' target="@inner-html(section)">
+				<label>
+					Targets
+					<g-icon>&#X1011;</g-icon>
+					<g-drawer>
+						<a href="/target/target.html" target="@inner-html(section)">
+							Targets<g-icon>&#X1024;</g-icon>
+						</a>
+						<hr>
+						<a href="/target/@after-begin.html" target="@inner-html(section)">@after-begin</a>
+						<a href="/target/@after-end.html" target="@inner-html(section)">@after-end</a>
+						<a href="/target/@before-begin.html" target="@inner-html(section)">@before-begin</a>
+						<a href="/target/@before-end.html" target="@inner-html(section)">@before-end</a>
+						<a href="/target/@inner-html.html" target="@inner-html(section)">@inner-html</a>
+						<a href="/target/@none.html" target="@inner-html(section)">@none</a>
+						<a href="/target/@outer-html.html" target="@inner-html(section)">@outer-html</a>
+						<a href="/target/@populate.html" target="@inner-html(section)">@populate</a>
+						<a href="/target/@remove.html" target="@inner-html(section)">@remove</a>
+						<a href="/target/@value.html" target="@inner-html(section)">@value</a>
+						<hr>
+						<a href="/target/@debounce.html" target="@inner-html(section)">@debounce</a>
+						<a href="/target/@once.html" target="@inner-html(section)">@once</a>
+						<a href="/target/@throttle.html" target="@inner-html(section)">@throttle</a>
+						<a href="/target/@cache.html" target="@inner-html(section)">@cache</a>
+						<hr>
+						<a href="/target/@dialog/@dialog.html" target="@inner-html(section)">@dialog</a>
+						<a href="/target/@stack/@stack.html" target="@inner-html(section)">@stack</a>
+						<a href="/target/@message.html" target="@inner-html(section)">@message</a>
+						<hr>
+						<a href="/target/@select.html" target="@inner-html(section)">@select</a>
+						<a href="/target/@search.html" target="@inner-html(section)">@search</a>
+						<a href="/target/@pick.html" target="@inner-html(section)">@pick</a>
+						<a href="/target/@fill.html" target="@inner-html(section)">@fill</a>
+						<hr>
+						<a href="/target/@exec.html" target="@inner-html(section)">@exec</a>
+						<a href="/target/@map.html" target="@inner-html(section)">@map</a>
+						<a href="/target/@json-to-html.html" target="@inner-html(section)">@json-to-html</a>
+						<hr>
+						<a href="/target/@report.html" target="@inner-html(section)">@report</a>
+						<a href="/target/@save.html" target="@inner-html(section)">@save</a>
+						<hr>
+						<a href="/target/@dataset.html" target="@inner-html(section)">@dataset</a>
+						<a href="/target/@chart/@chart.html" target="@inner-html(section)">@chart</a>
+						<hr>
+						<a href="/target/@form.html" target="@inner-html(section)">@form</a>
+						<a href="/target/@progress/@progress.html" target="@inner-html(section)">@progress</a>
+						<a href="/target/@template.html" target="@inner-html(section)">@template</a>
+						<a href="/target/@put.html" target="@inner-html(section)">@put</a>
+					</g-drawer>
+				</label>
+
+				<label>
 					<g-icon>&#X2178;</g-icon>Components
-				</a>
+
+					<g-drawer>
+						<a href='./component/g-callout.html' target="@inner-html(section)">
+							g-callout<g-icon>&#x1007;</g-icon>
+						</a>
+						<a href='./component/g-card.html' target="@inner-html(section)">
+							g-card<g-icon>&#x2197;</g-icon>
+						</a>
+						<a href='./component/g-context-menu/g-context-menu.html' target="@inner-html(section)">
+							g-context-menu
+						</a>
+						<a href='./component/g-coolbar.html' target="@inner-html(section)">
+							g-coolbar
+						</a>
+						<a href='./component/g-desk-pane.html' target="@inner-html(section)">
+							g-desk-pane<g-icon>&#x2270;</g-icon>
+						</a>
+						<a href='./component/g-chart/g-chart.html' target="@inner-html(section)">
+							g-chart<g-icon>&#x2031;</g-icon>
+						</a>
+						<a href='./component/g-dialog.html' target="@inner-html(section)">
+							g-dialog<g-icon>&#x2256;</g-icon>
+						</a>
+						<a href='./component/form/g-form.html' target="@inner-html(section)">
+							g-form
+						</a>
+						<a href='./component/form/g-form-editor.html' target="@inner-html(section)">
+							g-form-editor
+						</a>
+						<a href='./component/form/g-form-view.html' target="@inner-html(section)">
+							g-form-view
+						</a>
+						<a href='./component/g-message.html' target="@inner-html(section)">
+							g-message<g-icon>&#x2015;</g-icon>
+						</a>
+						<a href='./component/g-selectn.html' target="@inner-html(section)">
+							g-selectn<g-icon>&#x3011;</g-icon>
+						</a>
+						<a href='./component/g-tab-control/g-tab-control.html' target="@inner-html(section)">
+							g-tab-control<g-icon>&#x3055;</g-icon>
+						</a>
+						<a href='./component/g-table.html' target="@inner-html(section)">
+							g-table
+						</a>
+						<a href='./component/g-text-editor.html' target="@inner-html(section)">
+							g-text-editor<g-icon>&#x3025;</g-icon>
+						</a>
+						<a href='./component/g-tooltip.html' target="@inner-html(section)">
+							g-tooltip
+						</a>
+						<a href='./component/g-tree-grid.html' target="@inner-html(section)">
+							g-tree-grid
+						</a>
+						<a href='./component/g-tree-list.html' target="@inner-html(section)">
+							g-tree-list
+						</a>
+						<hr>
+						<a href='./component/date.html' target="@inner-html(section)">
+							date<g-icon>&#x2003;</g-icon>
+						</a>
+						<a href='./component/date-interval.html' target="@inner-html(section)">
+							date-interval<g-icon>&#x2003;</g-icon>
+						</a>
+						<a href='./component/date-time.html' target="@inner-html(section)">
+							date-time<g-icon>&#x2003;</g-icon>
+						</a>
+						<a href='./component/date-time-interval.html' target="@inner-html(section)">
+							date-time-interval<g-icon>&#x2003;</g-icon>
+						</a>
+						<a href='./component/icon.html' target="@inner-html(section)">
+							icon<g-icon>&#x2009;</g-icon>
+						</a>
+						<a href='./component/month.html' target="@inner-html(section)">
+							month<g-icon>&#x2003;</g-icon>
+						</a>
+						<a href='./component/month-interval.html' target="@inner-html(section)">
+							month-interval<g-icon>&#x2003;</g-icon>
+						</a>
+						<a href='./component/time.html' target="@inner-html(section)">
+							time<g-icon>&#x2167;</g-icon>
+						</a>
+						<a href='./component/time-interval.html' target="@inner-html(section)">
+							time-interval<g-icon>&#x2167;</g-icon>
+						</a>
+					</g-drawer>
+				</label>
 				<hr>
 				<a id="reload" href="/main.html">
 					Reload<g-icon>&#X2025;</g-icon>
@@ -37,249 +169,7 @@
 			</g-tabbar>
 		</nav>
 
-		<section>
-			<fieldset>
-				<g-desk-pane>
-					<a href='/target/view.html' target="@inner-html(section)" aria-selected>
-						Targets<g-icon>&#X1011;</g-icon>
-					</a>
-					<a href='/component/view.html' target="@inner-html(section)">
-						<g-icon>&#X2178;</g-icon>Components
-					</a>
-				</g-desk-pane>
-			</fieldset>
-
-
-			<fieldset>
-				<legend>
-					Legend
-				</legend>
-				<label>
-					Text
-					<span>
-						<input type="text">
-					</span>
-				</label>
-			</fieldset>
-
-			<g-coolbar>
-				<a href="#" class="primary">
-					<g-icon>&#X1002;</g-icon> Add
-				</a>
-			</g-coolbar>
-
-
-			<table class="c2 c3 c4" data-empty="Nor records found">
-				<colgroup>
-					<col>
-					<col style="width: 160px">
-					<col style="width: 160px">
-					<col style="width: 80px">
-				</colgroup>
-				<caption>
-					RECORDS FOUND:
-					<span data-table-size>
-					</span>
-				</caption>
-				<thead>
-					<tr>
-						<th data-sortable>
-							Name
-						</th>
-						<th data-sortable>
-							Sex
-						</th>
-						<th data-sortable>
-							Age
-						</th>
-						<th>
-							Remove
-						</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>
-							Foo
-						</td>
-						<td data-filter:value="Male">
-							Male
-						</td>
-						<td data-value="25">
-							25
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Bar
-						</td>
-						<td data-filter:value="Female">
-							Female
-						</td>
-						<td data-value="30">
-							30
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Baz
-						</td>
-						<td data-filter:value="Male">
-							Male
-						</td>
-						<td data-value="22">
-							22
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Qux
-						</td>
-						<td data-filter:value="Female">
-							Female
-						</td>
-						<td data-value="28">
-							28
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Fob
-						</td>
-						<td data-filter:value="Male">
-							Male
-						</td>
-						<td data-value="32">
-							32
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Bat
-						</td>
-						<td data-filter:value="Female">
-							Female
-						</td>
-						<td data-value="27">
-							27
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Bit
-						</td>
-						<td data-filter:value="Male">
-							Male
-						</td>
-						<td data-value="29">
-							29
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Car
-						</td>
-						<td data-filter:value="Female">
-							Female
-						</td>
-						<td data-value="35">
-							35
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Zoo
-						</td>
-						<td data-filter:value="Male">
-							Male
-						</td>
-						<td data-value="26">
-							26
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							Tap
-						</td>
-						<td data-filter:value="Female">
-							Female
-						</td>
-						<td data-value="31">
-							31
-						</td>
-						<td>
-							<a href="#" target="@remove(this.parent(1))" style="color: #660000">
-								<g-icon>
-									…
-								</g-icon>
-							</a>
-						</td>
-					</tr>
-				</tbody>
-			</table>
+		<section id="content">
 		</section>
 
 		<footer>
