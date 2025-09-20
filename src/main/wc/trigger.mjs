@@ -1,12 +1,12 @@
-import DOM from './dom.js';
-import './mutation-events.js';
 import DataURL from './data-url.js';
-import resolve from './resolve.js';
-import validate from './validate.js';
-import property from './property.js';
+import DOM from './dom.js';
 import EventHandler from './event-handler.js';
-import TriggerExtractor from './trigger-extractor.js';
+import './mutation-events.js';
+import property from './property.js';
+import resolve from './resolve.js';
 import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
+import TriggerExtractor from './trigger-extractor.js';
+import validate from './validate.js';
 
 const CONTROLLERS = new WeakMap();
 
@@ -166,7 +166,7 @@ window.addEventListener("submit", function (event)
 {
 	let form = event.composedPath()[0] || event.target;
 	if (!validate(form))
-		return	event.preventDefault();
+		return event.preventDefault();
 
 	let submiter = event.submitter || form;
 	let method = submiter.getAttribute("formmethod") || form.method || "get";
@@ -215,11 +215,11 @@ window.addEventListener("mouseover", function (event)
 		if (type && type.startsWith("hover(") && type.endsWith(")"))
 		{
 			const timeout = setTimeout(() => trigger(event, element), Number(type.slice(6, -1)) * 1000);
-			element.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+			element.addEventListener("mouseleave", () => clearTimeout(timeout), { once: true });
 		} else if (type === "hover")
 		{
 			const timeout = setTimeout(() => trigger(event, element), 1000);
-			element.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+			element.addEventListener("mouseleave", () => clearTimeout(timeout), { once: true });
 		} else if (type === "mouseenter")
 			trigger(event, element);
 	}
@@ -229,9 +229,9 @@ window.addEventListener("load", event =>
 {
 	Array.from(document.querySelectorAll('*'))
 		.filter(e => e.hasAttribute("data-trigger")
-				|| e.hasAttribute("data-method")
-				|| e.hasAttribute("data-action")
-				|| e.hasAttribute("data-target"))
+			|| e.hasAttribute("data-method")
+			|| e.hasAttribute("data-action")
+			|| e.hasAttribute("data-target"))
 		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
 		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
 });
@@ -288,7 +288,7 @@ window.addEventListener("connected", function (event)
 					|| element.getAttribute("value")
 					|| element.getAttribute("data-value")
 					|| "";
-				trigger(drop, element, {source, target});
+				trigger(drop, element, { source, target });
 			});
 
 			e.addEventListener("dragover", dragover => dragover.preventDefault());
@@ -303,7 +303,7 @@ window.addEventListener("connected", function (event)
 				|| element.getAttribute("value")
 				|| element.getAttribute("data-value")
 				|| "";
-			trigger(drop, element, {source, target});
+			trigger(drop, element, { source, target });
 		});
 	}
 });
@@ -312,12 +312,12 @@ window.addEventListener("sse", function (event)
 {
 	const REGEX = /^sse(?:\(([A-Za-z_$][A-Za-z0-9_$]*)\))?$/;
 	DOM.traverse(document, e => e.hasAttribute("data-trigger")
-			&& REGEX.test(e.getAttribute("data-trigger")), element =>
+		&& REGEX.test(e.getAttribute("data-trigger")), element =>
 	{
-		const trigger = element.getAttribute("data-trigger");
-		if (trigger.startsWith("sse("))
+		const name = element.getAttribute("data-trigger");
+		if (name.startsWith("sse("))
 		{
-			const type = trigger.slice(4, -1);
+			const type = name.slice(4, -1);
 			if (event.detail.type !== type)
 				return;
 		}
@@ -335,7 +335,7 @@ window.addEventListener("sse", function (event)
 						return Number(e.value) === value;
 					case "boolean":
 						return (e.value === "true") === value;
-					default :
+					default:
 						return e.value === value;
 				}
 			}))

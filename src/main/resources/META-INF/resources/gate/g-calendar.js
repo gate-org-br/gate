@@ -22,7 +22,7 @@ label {
 }
 
 a {
-	color: black;
+	color: var(--text, black);
 	display: flex;
 	font-size: inherit;
 	align-items: center;

@@ -47,28 +47,28 @@ label::first-line  {
 }
 
 :host([type="INFO"]) {
-	color: black
+	color: var(--text, black);
 }
 :host([type="INFO"]) > dialog > section::before {
 	content: "\\2015"
 }
 
 :host([type="ERROR"]) {
-	color: var(--error1)
+	color: var(--r1)
 }
 :host([type="ERROR"]) > dialog > section::before {
 	content: "\\1001"
 }
 
 :host([type="SUCCESS"]) {
-	color: var(--success1)
+	color: var(--g1)
 }
 :host([type="SUCCESS"]) > dialog > section::before {
 	content: "\\1000"
 }
 
 :host([type="WARNING"]) {
-	color: var(--warning1)
+	color: var(--y1)
 }
 :host([type="WARNING"]) > dialog > section::before {
 	content: "\\1007"

@@ -5,8 +5,8 @@
 :host(*) {
 	min-width: 0;
 	display: grid;
-	background-color: var(--main3);
-	border: 1px outset var(--main4);
+	background-color: var(--main3, #F8F8F8);
+	border: 1px outset var(--main4, #F0F0F0);
 	grid-template-rows: auto 1fr;
 
 }
@@ -19,7 +19,7 @@ label {
 	font-size: 0.75rem;
 	align-items: center;
 	justify-content: space-between;
-	background-color: var(--main4);
+	background-color: var(--main4, #F0F0F0);
 }
 
 section {
@@ -62,25 +62,25 @@ header {
 	padding: 8px;
 	height: 32px;
 	border: none;
-	color: black;
 	display: flex;
 	cursor: pointer;
 	flex-basis: 50%;
 	font-size: 0.75rem;
 	align-items: center;
 	text-decoration: none;
-	background-color: #E8E8E8;
+	color: var(--text, black);
 	justify-content: flex-start;
+	background-color: var(--main4, #F0F0F0);
 }
 
 header> ::slotted(:not(:first-child)) {
-	border-left: 1px solid #F8F8F8;
+	border-left: 1px solid var(--main3, #F8F8F8);
 }
 
 
 ::slotted(a:hover),
 ::slotted(button:hover) {
-	background-color: #FFFACD;
+	background-color: var(--hovered, #FFFACD);
 }
 
 ::slotted(a:focus),
@@ -91,7 +91,7 @@ header> ::slotted(:not(:first-child)) {
 
 ::slotted(a[data-selected=true]),
 ::slotted(button[data-selected=true]) {
-	color: black;
+	color: var(--text, black);
 	font-weight: bold;
 	background-color: var(--main1, white);
 }

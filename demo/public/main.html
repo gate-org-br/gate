@@ -23,7 +23,7 @@
 
 		<nav>
 			<g-tabbar>
-				<label>
+				<g-trigger>
 					Targets
 					<g-icon>&#X1011;</g-icon>
 					<g-drawer>
@@ -71,9 +71,9 @@
 						<a href="/target/@template.html" target="@inner-html(section)">@template</a>
 						<a href="/target/@put.html" target="@inner-html(section)">@put</a>
 					</g-drawer>
-				</label>
+				</g-trigger>
 
-				<label>
+				<g-trigger>
 					<g-icon>&#X2178;</g-icon>Components
 
 					<g-drawer>
@@ -160,7 +160,7 @@
 							time-interval<g-icon>&#x2167;</g-icon>
 						</a>
 					</g-drawer>
-				</label>
+				</g-trigger>
 				<hr>
 				<a id="reload" href="/main.html">
 					Reload<g-icon>&#X2025;</g-icon>
@@ -173,7 +173,9 @@
 		</section>
 
 		<footer>
-			<label>Foo</label>
+			<g-theme-selector>
+				<label>Foo</label>
+			</g-theme-selector>
 			<label>Bar</label>
 		</footer>
 	</main>

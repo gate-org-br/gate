@@ -1,0 +1,49 @@
+let template = document.createElement("template");
+template.innerHTML = `
+	<slot>
+	</slot>
+`;
+
+/* global customElements, template */
+
+import GDrawer from './g-drawer.js';
+import GContextMenu from './g-context-menu.js';
+
+export default class GTrigger extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		this.addEventListener("mouseenter", () =>
+		{
+			Array.from(this.children)
+				.filter(e => e.issubmenu)
+				.forEach(e => e.show(this));
+		});
+
+		this.addEventListener("mouseleave", () =>
+		{
+			Array.from(this.children)
+				.filter(e => e.issubmenu)
+				.forEach(e => e.hide());
+		});
+
+		this.addEventListener("click", function (event)
+		{
+			const popover = Array.from(this.children)
+				.find(e => e.show && !event.composedPath().includes(e));
+			if (!popover)
+				return;
+
+			popover.show(event);
+			event.preventDefault();
+			event.stopPropagation();
+			event.stopImmediatePropagation();
+		}, {capture: true});
+	}
+}
+
+customElements.define('g-trigger', GTrigger);

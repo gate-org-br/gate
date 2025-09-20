@@ -3,14 +3,14 @@ template.innerHTML = `
 	<header>
 		<slot></slot>
 	</header>
-	<label id="show">
+	<g-trigger id="show">
 		<g-icon>&#x2265;</g-icon>
 		<g-context-menu>
 			<slot name='more'>
 
 			</slot>
 		</g-context-menu>
-	</label>
+	</g-trigger>
  <style data-element="g-tabbar">* {
 	box-sizing: border-box;
 }
@@ -18,12 +18,12 @@ template.innerHTML = `
 :host(*) {
 	flex: 1;
 	width: 100%;
-	color: black;
 	display: flex;
 	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
-	background-color: var(--main3);
+	color: var(--text, black);
+	background-color: var(--main3, #F8F8F8);
 }
 
 header {
@@ -36,8 +36,8 @@ header {
 }
 
 header ::slotted(a),
-header ::slotted(label),
 header ::slotted(button),
+header ::slotted(g-trigger),
 header ::slotted(.g-command) {
 	gap: 4px;
 	padding: 6px;
@@ -53,7 +53,7 @@ header ::slotted(.g-command) {
 	text-decoration: none;
 	flex-direction: column;
 	justify-content: space-around;
-	background-color: var(--main4);
+	background-color: var(--main4, #F0F0F0);
 }
 
 header ::slotted(a[aria-selected]),
@@ -64,20 +64,20 @@ header ::slotted(.g-command[aria-selected]) {
 }
 
 header ::slotted(a:hover),
-header ::slotted(label:hover),
+header ::slotted(g-trigger:hover),
 header ::slotted(button:hover),
 header ::slotted(.g-command:hover) {
 	background-color: var(--hovered);
 }
 
 header ::slotted(a:focus),
-header ::slotted(label:focus),
+header ::slotted(g-trigger:focus),
 header ::slotted(button:focus),
 header ::slotted(.g-command:focus) {
 	outline: none;
 }
 
-r header ::slotted([hidden="true"]) {
+header ::slotted([hidden="true"]) {
 	display: none;
 }
 
@@ -91,18 +91,18 @@ header ::slotted(:is(a, button, .g-command)[data-loading]) {
 }
 
 header ::slotted(:is(a, button, .g-command)[data-loading])::before {
-	content: "";
-	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
+	content: "";
+	position: absolute;
 	background-size: 50%;
 	border-radius: inherit;
-	background-color: #F0F0F0;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-image: var(--loading);
+	background-color: var(--main4, #F0F0F0);
 }
 
 #show {
@@ -116,11 +116,11 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-	background-color: var(--main4);
+	background-color: var(--main4, #F0F0F0);
 }
 
 #show:hover {
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }
 
 :host(.inline) #show {

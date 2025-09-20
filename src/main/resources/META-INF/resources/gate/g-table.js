@@ -28,7 +28,7 @@ table[data-table-size='0'][data-empty]::before
 table > thead > tr > th[data-sortable]
 {
 	cursor: pointer;
-	color: var(--question1);
+	color: var(--b1);
 }
 
 table > thead > tr > th[data-sortable]::before

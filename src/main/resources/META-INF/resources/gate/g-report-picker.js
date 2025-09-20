@@ -36,7 +36,6 @@ button {
 	flex-grow: 1;
 	display: flex;
 	height: 128px;
-	color: #000066;
 	cursor: pointer;
 	font-size: 24px;
 	min-width: 128px;
@@ -45,6 +44,7 @@ button {
 	text-decoration: none;
 	flex-direction: column;
 	justify-content: center;
+	color: var(--b1, #444488);
 	background-color: var(--main1, white);
 }
 

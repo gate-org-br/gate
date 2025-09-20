@@ -1,6 +1,5 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/idea.css" />
 	<div id="html-pane">
 		<slot></slot>
 	</div>
@@ -16,16 +15,16 @@ template.innerHTML = `
 	min-width: 0;
 	display: grid;
 	font-size: 10px;
-	border: 1px solid #EEEEEE;
 	grid-template-rows: auto auto;
+	border: 1px solid var(--main4, #F0F0F0);
 }
 
 #code-pane {
 	min-width: 0;
 	padding: 10px;
 	overflow: auto;
-	border-bottom: 1px solid #ccc;
 	background-color: var(--hovered);
+	border-bottom: 1px solid var(--main3, #F8F8F8);
 }
 
 #code-pane * {
@@ -40,12 +39,21 @@ template.innerHTML = `
 	display: flex;
 	flex-direction: column;
 	background-color: var(--main2);
+}
+
+.tag {
+	color: var(--b1, #444488);
+}
+
+.key {
+	color: var(--g1, #006600);
+}
+
+.val {
+	color: var(--r1, #660000);
 }</style>`;
 function highlightHTML(htmlString)
 {
-	const tag = 'style="color: #000066"';
-	const key = 'style="color: #006600"';
-	const val = 'style="color: #884444"';
 	const selfClosing = ["AREA", "BASE", "BR", "COL", "COMMAND", "EMBED", "HR", "IMG", "INPUT",
 		"KEYGEN", "LINK", "META", "PARAM", "SOURCE", "TRACK", "WBR"];
 
@@ -59,22 +67,22 @@ function highlightHTML(htmlString)
 		const indent = `\n${"\t".repeat(depth)}`;
 		if (node.nodeType === Node.ELEMENT_NODE)
 		{
-			highlightedString += `${indent}<b ${tag}>&lt;${node.tagName.toLowerCase()}</b>`;
+			highlightedString += `${indent}<b class="tag">&lt;${node.tagName.toLowerCase()}</b>`;
 			if (node.hasAttributes())
 			{
 				let size = Array.from(node.attributes).map(attr => attr.name.length + attr.value.length)
 					.reduce((a, b) => a + b);
 				Array.from(node.attributes).map((attr, index) =>
-					highlightedString += `${size > 120 && index ? indent + '\t\t' : ' '}<b ${key}>${attr.name}</b>`
-					+ (attr.value ? `="<b ${val}>${attr.value}</b>"` : ""));
+					highlightedString += `${size > 120 && index ? indent + '\t\t' : ' '}<b class="key">${attr.name}</b>`
+					+ (attr.value ? `="<b class="val">${attr.value}</b>"` : ""));
 			}
-			highlightedString += `<b ${tag}>&gt;</b>`;
+			highlightedString += `<b class="tag">&gt;</b>`;
 
 			if (!selfClosing.includes(node.tagName))
 			{
 				Array.from(node.tagName === "TEMPLATE" ? node.content.childNodes : node.childNodes)
 					.forEach(e => highlightNodes(e, depth + 1));
-				highlightedString += `${indent}<b ${tag}>&lt;/${node.tagName.toLowerCase()}&gt;</b>`;
+				highlightedString += `${indent}<b class="tag">&lt;/${node.tagName.toLowerCase()}&gt;</b>`;
 			}
 		} else if (node.nodeType === Node.TEXT_NODE)
 		{

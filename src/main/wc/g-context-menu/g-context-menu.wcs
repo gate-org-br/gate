@@ -5,7 +5,7 @@
 
 :host {
 	margin: 0;
-	color: black;
+	color: var(--text, black);
 	border: none;
 	padding: 10px;
 	z-index: 1000;
@@ -16,7 +16,7 @@
 	min-width: 220px;
 	width: fit-content;
 	border-radius: 10px;
-	background-color: #FFFFFF;
+	background-color: var(--main2, white);
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,7 +32,7 @@ button,
 ::slotted(a),
 ::slotted(button),
 ::slotted(.g-command),
-::slotted(label) {
+::slotted(g-trigger) {
 	gap: 12px;
 	border: none;
 	display: flex;
@@ -57,7 +57,7 @@ button:hover,
 ::slotted(a:hover),
 ::slotted(button:hover),
 ::slotted(.g-command:hover),
-::slotted(label:hover) {
+::slotted(g-trigger:hover) {
 	background-color: var(--hovered, #FFFACD);
 	padding-left: 20px;
 }
@@ -66,23 +66,18 @@ a:focus,
 label:focus,
 button:focus,
 ::slotted(a:focus),
-::slotted(label:focus),
+::slotted(g-trigger:focus),
 ::slotted(button:focus),
 ::slotted(.g-command:focus) {
 	outline: none;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-label {
-	flex-grow: 1;
-	font-weight: 600;
-}
-
 a[data-icon]::before,
-button[data-icon]::before,
 label[data-icon]::before,
+button[data-icon]::before,
 ::slotted(a[data-icon])::before,
-::slotted(label[data-icon])::before,
+::slotted(g-trigger[data-icon])::before,
 ::slotted(button[data-icon])::before,
 ::slotted(.g-command[data-icon])::before {
 	font-family: gate;
@@ -90,7 +85,7 @@ label[data-icon]::before,
 }
 
 label::after,
-::slotted(label)::after {
+::slotted(g-trigger)::after {
 	color: #888;
 	font-size: 12px;
 	content: '\\3017';

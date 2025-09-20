@@ -33,6 +33,7 @@ dialog {
 	width: 100%;
 	height: 100%;
 	border-radius: 0;
+	color: var(--text, black);
 }
 
 @media only screen and (min-width: 1000px)

@@ -1,13 +1,12 @@
 table {
   width: 100%;
-  border: none;
-  color: black;
   border-spacing: 0;
   position: relative;
   font-size: 0.75rem;
   font-weight: normal;
   table-layout: fixed;
   text-decoration: none;
+  color: var(--text, black);
   border: 1px solid var(--base3);
 }
 table > td > input,
@@ -46,7 +45,7 @@ table tr > *:first-child {
 table tr > * > a,
 table tr > * > button,
 table tr > * > .g-command {
-  color: #000066;
+  color: var(--b1, #444488);
   cursor: pointer;
 }
 table tr > * > a:hover,

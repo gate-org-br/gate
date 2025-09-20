@@ -53,7 +53,7 @@ template.innerHTML = `
 ::slotted(nav)
 {
 	gap: 4px;
-	color: black;
+	color: var(--text, black);
 	display: flex;
 	font-size: 12px;
 	flex-basis: 36px;
@@ -73,7 +73,7 @@ template.innerHTML = `
 ::slotted(footer) {
 	gap: 4px;
 	padding: 4px;
-	color: black;
+	color: var(--text, black);
 	display: flex;
 	font-size: 10px;
 	flex-basis: 36px;

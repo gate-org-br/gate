@@ -1,18 +1,18 @@
-import WindowListenerHTMLElement from './window-listener-html-element.js';
+import GTrigger from './g-trigger.js';
 
 const sheet = new CSSStyleSheet()
 sheet.replaceSync(`g-drawer g-icon { order: -1; font-size: 20px }`)
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet]
 
-customElements.define('g-drawer', class extends WindowListenerHTMLElement
+export default class GDrawer extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({ mode: "open" });
+		this.attachShadow({mode: "open"});
 		this.shadowRoot.innerHTML = template.innerHTML;
 
-		const click = event => 
+		const click = event =>
 		{
 			if (!event.composedPath().includes(this))
 			{
@@ -27,9 +27,9 @@ customElements.define('g-drawer', class extends WindowListenerHTMLElement
 		{
 			if (e.newState === "open")
 				window.addEventListener("click",
-					click, { once: true, capture: true });
+					click, {once: true, capture: true});
 			else
-				window.removeEventListener("click", click, { capture: true });
+				window.removeEventListener("click", click, {capture: true});
 		});
 	}
 
@@ -47,23 +47,6 @@ customElements.define('g-drawer', class extends WindowListenerHTMLElement
 	{
 		this.setAttribute("popover", "manual");
 	}
-})
+}
 
-window.addEventListener("click", function (event)
-{
-	const path = event.composedPath();
-	if (path.some(e => e instanceof HTMLAnchorElement
-		|| e instanceof HTMLButtonElement))
-		return;
-
-	const trigger = path.find(e => e.matches && e.matches("label:has(g-drawer)"));
-	if (!trigger)
-		return;
-
-	event.preventDefault();
-	event.stopPropagation();
-	event.stopImmediatePropagation();
-
-	const drawer = trigger.querySelector("g-drawer");
-	drawer.show();
-}, { capture: true });
+customElements.define('g-drawer', GDrawer);

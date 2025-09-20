@@ -20,7 +20,7 @@ template.innerHTML = `
 {
 	width: 100%;
 	height: auto;
-	color: black;
+	color: var(--text, black);
 	border: none;
 	display: flex;
 	position: relative;
@@ -44,9 +44,7 @@ div > ::slotted(:is(a, button, .g-command))
 	gap: 8px;
 	width: 120px;
 	height: 44px;
-	color: black;
 	padding: 8px;
-	color: black;
 	border: none;
 	display: flex;
 	cursor: pointer;
@@ -55,15 +53,10 @@ div > ::slotted(:is(a, button, .g-command))
 	align-items: center;
 	text-decoration: none;
 	min-width: fit-content;
-	background-color: #E8E8E8;
 	justify-content: space-between;
-}
 
-div > ::slotted(a),
-div > ::slotted(button),
-div > ::slotted(.g-command)
-{
-	background-color: #D0D0D0;
+	color: var(--text, black);
+	background-color: var(--main5, #FAFAFA);
 }
 
 div > ::slotted(a:focus),

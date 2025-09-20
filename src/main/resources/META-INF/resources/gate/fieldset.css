@@ -88,7 +88,6 @@ fieldset > label > span > button,
 fieldset > label > form > button,
 fieldset > label > span > .g-command,
 fieldset > label > form > .g-command {
-  color: black;
   height: 100%;
   flex-grow: 0;
   display: flex;
@@ -100,6 +99,7 @@ fieldset > label > form > .g-command {
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
+  color: var(--text, black);
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,

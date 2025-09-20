@@ -28,7 +28,7 @@ div {
 }
 
 a {
-	color: black;
+	color: var(--text, black);
 	display: flex;
 	align-items: center;
 	font-family: "gate";

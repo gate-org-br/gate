@@ -9,21 +9,22 @@ html {
 }
 
 body {
-	gap: var(--gap);
 	margin: 0;
 	height: 100%;
 	min-height: 0;
 	display: flex;
+	gap: var(--gap);
 	overflow: hidden;
 	align-items: stretch;
 	flex-direction: column;
+	color: var(--text, black);
 
 	>main {
 		flex: 1;
 		padding: 0;
 		min-height: 0;
-		overflow: hidden;
 		display: grid;
+		overflow: hidden;
 		grid-template-columns: auto 1fr;
 		grid-template-rows: auto auto 1fr auto;
 
@@ -33,13 +34,14 @@ body {
 			width: 100%;
 			height: 50px;
 			display: flex;
-			color: var(--main1);
+			color: white;
 			align-items: center;
-			background-color: var(--base2);
+			background-color: #3f729b;
 			gap: var(--gap);
-
+			padding: var(--gap);
+			
 			>* {
-				margin: 0 8px;
+				margin: 0;
 			}
 
 			>img {
@@ -52,6 +54,7 @@ body {
 			}
 
 			>*:nth-child(2) {
+				margin: 0;
 				flex-grow: 1;
 				display: flex;
 				font-size: 22px;
@@ -60,6 +63,7 @@ body {
 			}
 
 			>*:nth-child(3) {
+				margin: 0;
 				display: flex;
 				align-items: flex-start;
 				justify-content: flex-end;
@@ -75,8 +79,8 @@ body {
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			background-color: var(--main3);
-			border-bottom: 1px solid var(--base3);
+			background-color: var(--main3, #F8F8F8);
+			border-bottom: 1px solid var(--base3, #cfdce6);
 		}
 
 		>section {
@@ -89,13 +93,14 @@ body {
 			overflow: auto;
 			overflow-x: hidden;
 			position: relative;
-			background-color: var(--main1);
+			background-color: var(--main1, white);
 			display: flex;
 			flex-direction: column;
 			gap: var(--gap);
 		}
 
 		>footer {
+			gap: var(--gap);
 			grid-row: 4;
 			grid-column: span 2;
 			height: 28px;
@@ -105,12 +110,15 @@ body {
 			font-weight: bold;
 			color: var(--base1);
 			align-items: center;
-			background-color: var(--base3);
-			justify-content: space-between;
+			background-color: var(--base3, #cfdce6);
 
 			>label {
 				font-size: inherit;
 			}
+			>label:last-child {
+				margin-left: auto;
+			}
+
 		}
 
 		>aside {
@@ -120,7 +128,7 @@ body {
 			min-height: 0;
 			overflow: auto;
 			position: relative;
-			background-color: var(--main1);
+			background-color: var(--main1, white);
 			width: max-content;
 			align-self: stretch;
 		}

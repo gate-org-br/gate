@@ -12,17 +12,16 @@
 	align-items: stretch;
 	flex-direction: column;
 	justify-content: center;
-	background-color: var(--main1);
 	border-radius: 0 3px 3px 0;
+	background-color: var(--main1, white);
 
 	border: 1px solid;
 	border-left: 6px solid;
-	border-color: var(--main6);
+	border-color: var(--main6, #CCCCCC);
 
 }
 
-::slotted(*)
-{
+::slotted(*) {
 	margin: 0;
 }
 
@@ -30,67 +29,67 @@
 	margin: 0;
 	width: 100%;
 	align-self: center;
-	border: 1px solid var(--main3);
+	border: 1px solid var(--main3, "#F8F8F8");
 }
 
 :host(.fill) {
-	color: #000000;
-	border-color: #000000;
-	background-color: var(--main4);
+	color: var(--text, black);
+	border-color: var(--text, black);
+	background-color: var(--main4, #F0F0F0);
 }
 
 :host(.fill) ::slotted(hr) {
-	border: 1px solid var(--main5);
+	border: 1px solid var(--main5, #DDDDDD);
 }
 
 :host(.success) {
-	color: var(--success1);
-	border-color: var(--success1);
+	color: var(--g1, #006600);
+	border-color: var(--g1, #006600);
 }
 
 :host(.success.fill) {
-	background-color: var(--success3);
+	background-color: var(--g3, #c7ecc7);
 }
 
 :host(.success.fill) ::slotted(hr) {
-	border-color: var(--success2);
+	border-color: var(--g2, #a3d8a3);
 }
 
 :host(.warning) {
-	color: var(--warning1);
-	border-color: var(--warning1);
+	color: var(--y1, #808000);
+	border-color: var(--y1, #808000);
 }
 
 :host(.warning.fill) {
-	background-color: var(--warning3);
+	background-color: var(--y3, #FFFFCC);
 }
 
 :host(.warning.fill) ::slotted(hr) {
-	border-color: var(--warning2);
+	border-color: var(--y2, #EEDD82);
 }
 
 :host(.danger) {
-	color: var(--error1);
-	border-color: var(--error1);
+	color: var(--r1, #660000);
+	border-color: var(--r1, #660000);
 }
 
 :host(.danger.fill) {
-	background-color: var(--error3);
+	background-color: var(--r3, #FFE4E1);
 }
 
 :host(.danger.fill) ::slotted(hr) {
-	border-color: var(--error2);
+	border-color: var(--r2, #FFCCCC);
 }
 
 :host(.question) {
-	color: var(--question1);
-	border-color: var(--question1);
+	color: var(--b1, #444488);
+	border-color: var(--b1, #444488);
 }
 
 :host(.question.fill) {
-	background-color: var(--question3);
+	background-color: var(--b3, #F0F8FF);
 }
 
 :host(.question.fill) ::slotted(hr) {
-	border-color: var(--question2);
+	border-color: var(--b2, #B0C4DE);
 }
