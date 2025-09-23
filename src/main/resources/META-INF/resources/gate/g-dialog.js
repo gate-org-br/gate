@@ -21,8 +21,7 @@ template.innerHTML = `
 	box-sizing: border-box;
 }
 
-:host(*)
-{
+:host(*) {
 	gap: 8px;
 	align-items: stretch;
 	flex-direction: column;
@@ -33,39 +32,36 @@ dialog {
 	width: 100%;
 	height: 100%;
 	border-radius: 0;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 }
 
-@media only screen and (min-width: 1000px)
-{
-	dialog{
+@media only screen and (min-width: 1000px) {
+	dialog {
 		border-radius: 3px;
 		width: calc(100% - 80px);
 		height: calc(100% - 80px);
 	}
 }
 
-dialog > section {
+dialog>section {
 	padding: 8px;
 	display: flex;
 	align-items: stretch;
 	flex-direction: column;
 }
 
-:host([data-loading]) > dialog > section > *
-{
+:host([data-loading])>dialog>section>* {
 	visibility: hidden;
 }
 
-:host([data-loading]) > dialog > section {
+:host([data-loading])>dialog>section {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-image: var(--loading);
 	background-size: clamp(64px, 25%, 128px);
 }
 
-nav
-{
+nav {
 	gap: 8px;
 	width: auto;
 	padding: 8px;
@@ -80,10 +76,9 @@ nav:empty {
 	display: none;
 }
 
-nav > a ,
-nav > button,
-nav > .g-command
-{
+nav>a,
+nav>button,
+nav>.g-command {
 	font-size: 14px;
 	cursor: pointer;
 	color: var(--main);
@@ -91,8 +86,7 @@ nav > .g-command
 }
 
 ::slotted(section:only-child),
-::slotted(iframe:only-child)
-{
+::slotted(iframe:only-child) {
 	margin: 0;
 	width: 100%;
 	border: none;

@@ -5,7 +5,7 @@
 
 :host {
 	margin: 0;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	border: none;
 	padding: 10px;
 	z-index: 1000;

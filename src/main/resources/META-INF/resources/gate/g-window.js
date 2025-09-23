@@ -26,11 +26,10 @@ dialog {
 	border-radius: 3px;
 	flex-direction: column;
 	background-color: var(--main3);
-	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
+	box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.75);
 }
 
-dialog > header
-{
+dialog>header {
 	gap: 8px;
 	padding: 8px;
 	display: flex;
@@ -42,8 +41,7 @@ dialog > header
 	border-bottom: 1px solid var(--main6);
 }
 
-dialog > section
-{
+dialog>section {
 	padding: 8px;
 	flex-grow: 1;
 	display: flex;
@@ -53,12 +51,11 @@ dialog > section
 	-webkit-overflow-scrolling: touch;
 }
 
-dialog > section > fieldset:only-child {
+dialog>section>fieldset:only-child {
 	border: none;
 }
 
-dialog > header > label
-{
+dialog>header>label {
 	flex-grow: 1;
 	display: flex;
 	color: inherit;
@@ -67,11 +64,10 @@ dialog > header > label
 	justify-content: flex-start;
 }
 
-dialog > header > a,
-dialog > header > button
-{
-	border:none;
-	color: var(--text, black);
+dialog>header>a,
+dialog>header>button {
+	border: none;
+	color: var(--text1, #000000);
 	display: flex;
 	cursor: pointer;
 	font-size: 16px;
@@ -81,13 +77,12 @@ dialog > header > button
 	background-color: transparent;
 }
 
-dialog > header > a > g-icon,
-dialog > header > button > g-icon
-{
+dialog>header>a>g-icon,
+dialog>header>button>g-icon {
 	line-height: 16px;
 }
 
-dialog > footer {
+dialog>footer {
 	gap: 4px;
 	padding: 8px;
 	display: flex;

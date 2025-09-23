@@ -15,7 +15,7 @@ body {
   overflow: hidden;
   align-items: stretch;
   flex-direction: column;
-  color: var(--text, black);
+  color: var(--text1, #000000);
 }
 body > main {
   flex: 1;

@@ -12,7 +12,7 @@ nav > a {
   border-radius: 3px;
   align-items: center;
   justify-content: center;
-  color: var(--text, black);
+  color: var(--text1, #000000);
 }
 nav > a:hover {
   background-color: var(--main4);

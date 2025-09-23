@@ -57,18 +57,22 @@ h5 {
 	font-size: 14px;
 	text-align: center
 }
+
 h4 {
 	font-size: 16px;
 	text-align: center
 }
+
 h3 {
 	font-size: 18px;
 	text-align: center
 }
+
 h2 {
 	font-size: 20px;
 	text-align: center
 }
+
 h1 {
 	font-size: 22px;
 	text-align: center
@@ -83,7 +87,8 @@ img {
 }
 
 
-a, button {
+a,
+button {
 	text-decoration: none;
 }
 
@@ -91,13 +96,16 @@ a, button {
 input[type='file'] {
 	cursor: pointer
 }
-input:invalid, select:invalid, textarea:invalid {
+
+input:invalid,
+select:invalid,
+textarea:invalid {
 	box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
 }
 
 
-tr[data-canceled='true'] > td {
-	color: var(--main6)
+tr[data-canceled='true']>td {
+	color: var(--text2, #FFFFFF);
 }
 
 datalist {
@@ -111,6 +119,7 @@ body[data-scroll-disabled] * {
 big {
 	font-size: 1.2em
 }
+
 small {
 	font-size: 0.8em
 }
@@ -121,12 +130,10 @@ small {
 	pointer-events: none;
 }
 
-*[data-loading]
-{
+*[data-loading] {
 	cursor: wait !important;
 }
 
-:not(:defined)
-{
+:not(:defined) {
 	visibility: hidden;
 }

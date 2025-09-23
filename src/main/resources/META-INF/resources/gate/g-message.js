@@ -13,6 +13,7 @@ template.innerHTML = `
 	gap: 12px;
 	padding: 16px;
 	display: flex;
+	font-size: 16px;
 	border-radius: 3px;
 	align-items: center;
 	background-color: var(--main1, white);
@@ -22,7 +23,7 @@ template.innerHTML = `
 
 main {
 	display: flex;
-	min-height: 36px;
+	min-height: 2em;
 	text-align: justify;
 	align-items: stretch;
 	flex-direction: column;
@@ -33,7 +34,7 @@ main {
 	display: flex;
 	color: inherit;
 	flex-shrink: 0;
-	font-size: 36px;
+	font-size: 2em;
 	content: '\\2015';
 	align-items: center;
 	font-family: 'gate';
@@ -42,7 +43,7 @@ main {
 
 :host(.fill) {
 	box-shadow: none;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	background-color: var(--main4, #F0F0F0);
 }
 
@@ -59,11 +60,11 @@ main {
 }
 
 :host(.success) {
-	color: var(--g1);
+	color: var(--g1, #003300);
 }
 
 :host(.success.fill) {
-	background-color: var(--g3);
+	background-color: var(--g3, #a8d8a8);
 }
 
 :host(.success.icon)::before {
@@ -71,11 +72,11 @@ main {
 }
 
 :host(.warning) {
-	color: var(--y1);
+	color: var(--y1, #808000);
 }
 
 :host(.warning.fill) {
-	background-color: var(--y3);
+	background-color: var(--y3, #FFFFCC);
 }
 
 :host(.warning.icon)::before {
@@ -83,11 +84,11 @@ main {
 }
 
 :host(.question) {
-	color: var(--b1);
+	color: var(--b1, #00334D);
 }
 
 :host(.question.fill) {
-	background-color: var(--b3);
+	background-color: var(--b3, #A8D8F0);
 }
 
 :host(.question.icon)::before {

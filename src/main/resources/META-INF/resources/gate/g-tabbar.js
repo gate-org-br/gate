@@ -22,7 +22,7 @@ template.innerHTML = `
 	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	background-color: var(--main3, #F8F8F8);
 }
 

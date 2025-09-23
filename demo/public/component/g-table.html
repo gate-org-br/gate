@@ -2,11 +2,15 @@
 	<h1>g-table</h1>
 
 	<p>
-		The <strong>g-table</strong> component extends the functionality of the standard HTML <strong>&lt;table&gt;</strong>
-		by incorporating robust features for counting, filtering, and sorting data. Any child tag with a <strong>data-table-size</strong>
+		The <strong>g-table</strong> component extends the functionality of the standard HTML
+		<strong>&lt;table&gt;</strong>
+		by incorporating robust features for counting, filtering, and sorting data. Any child tag with a
+		<strong>data-table-size</strong>
 		attribute dynamically updates to display the total number of rows in the <strong>g-table</strong> body, ensuring
-		users are always aware of the dataset's size. If the <strong>&lt;table&gt;</strong> body is empty, a custom message
-		specified by the <strong>data-empty</strong> attribute is displayed, providing a clear indication when no records are found.
+		users are always aware of the dataset's size. If the <strong>&lt;table&gt;</strong> body is empty, a custom
+		message
+		specified by the <strong>data-empty</strong> attribute is displayed, providing a clear indication when no
+		records are found.
 	</p>
 
 	<p>
@@ -35,9 +39,11 @@
 
 	<p>
 		To enable sorting, apply the <strong>data-sortable</strong> attribute to column headers.
-		This indicates that the content in that column is sortable, allowing users to interactively organize data by clicking on designated column headers.
+		This indicates that the content in that column is sortable, allowing users to interactively organize data by
+		clicking on designated column headers.
 		By default, sorting is determined by the text content of the respective column.
-		However, if a <strong>&lt;td&gt;</strong> element within a column includes the data-value attribute, the sorting is adjusted to use its numeric value, providing
+		However, if a <strong>&lt;td&gt;</strong> element within a column includes the data-value attribute, the sorting
+		is adjusted to use its numeric value, providing
 		flexibility in organizing numerical data within the <strong>&lt;table&gt;</strong>.
 	</p>
 
@@ -45,7 +51,7 @@
 		These powerful functionalities collectively enhance the user experience, making <strong>g-table</strong>
 		a versatile and feature-rich component for managing and presenting data effectively.
 	</p>
-</p>
+	</p>
 </g-callout>
 
 <g-code-viewer ignore='="[_AD]"|data-sorted="[^"]+"|data-size="[^"]*"'>
@@ -53,16 +59,16 @@
 		<label data-size='8'>
 			<span>
 				<input type="text"
-				       placeholder='Search'
-				       data-trigger='input'
-				       data-action='data:text/plain,@value(this)'
-				       data-target='@attribute(this.parent(fieldset).search(table):data-filter)'>
+					   placeholder='Search'
+					   data-trigger='input'
+					   data-action='data:text/plain,@value(this)'
+					   data-target='@attribute(this.parent(fieldset).search(table):data-filter)'>
 			</span>
 		</label>
 		<label data-size='8'>
 			<span>
 				<select data-action='data:text/plain,@value(this)'
-					data-target='@attribute(this.parent(fieldset).search(col:nth-child(2)):data-filter)'>
+						data-target='@attribute(this.parent(fieldset).search(col:nth-child(2)):data-filter)'>
 					<option value="">Sex</option>
 					<option value="Male">Male</option>
 					<option value="Female">Female</option>
@@ -93,7 +99,7 @@
 					<td data-filter:value='Male'>Male</td>
 					<td data-value="25">25</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -103,7 +109,7 @@
 					<td data-filter:value='Female'>Female</td>
 					<td data-value="30">30</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -113,7 +119,7 @@
 					<td data-filter:value='Male'>Male</td>
 					<td data-value="22">22</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -123,7 +129,7 @@
 					<td data-filter:value='Female'>Female</td>
 					<td data-value="28">28</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -133,7 +139,7 @@
 					<td data-filter:value='Male'>Male</td>
 					<td data-value="32">32</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -143,7 +149,7 @@
 					<td data-filter:value='Female'>Female</td>
 					<td data-value="27">27</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -153,7 +159,7 @@
 					<td data-filter:value='Male'>Male</td>
 					<td data-value="29">29</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -163,7 +169,7 @@
 					<td data-filter:value='Female'>Female</td>
 					<td data-value="35">35</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -173,7 +179,7 @@
 					<td data-filter:value='Male'>Male</td>
 					<td data-value="26">26</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>
@@ -183,7 +189,7 @@
 					<td data-filter:value='Female'>Female</td>
 					<td data-value="31">31</td>
 					<td>
-						<a href="#" target='@remove(this.parent(1))' style='color: #660000'>
+						<a href="#" target='@remove(this.parent(1))' style='color: var(--r1, #660000)'>
 							<g-icon>&#X2026;</g-icon>
 						</a>
 					</td>

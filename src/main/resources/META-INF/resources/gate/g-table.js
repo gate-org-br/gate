@@ -1,7 +1,6 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-table">table[data-table-size='0'][data-empty]
-{
+ <style data-element="g-table">table[data-table-size='0'][data-empty] {
 	display: flex;
 	padding: 12px;
 	display: flex;
@@ -15,45 +14,38 @@ template.innerHTML = `
 	background-color: var(--main1);
 }
 
-table[data-table-size='0'][data-empty] *
-{
+table[data-table-size='0'][data-empty] * {
 	display: none !important;
 }
 
-table[data-table-size='0'][data-empty]::before
-{
+table[data-table-size='0'][data-empty]::before {
 	content: attr(data-empty);
 }
 
-table > thead > tr > th[data-sortable]
-{
+table>thead>tr>th[data-sortable] {
 	cursor: pointer;
-	color: var(--b1);
+	color: var(--text1);
 }
 
-table > thead > tr > th[data-sortable]::before
-{
+table>thead>tr>th[data-sortable]::before {
 	font-size: 16px;
 	content: "\\2195 ";
 	font-family: monospace;
 	color: rgba(0, 0, 0, 0.2)
 }
 
-table > thead > tr > th[data-sortable="A"]::before
-{
+table>thead>tr>th[data-sortable="A"]::before {
 	content: "\\2191 ";
-	color: var(--base);
+	color: var(--text1);
 }
 
-table > thead > tr > th[data-sortable="D"]::before
-{
+table>thead>tr>th[data-sortable="D"]::before {
 	content: "\\2193 ";
-	color: var(--base);
+	color: var(--text1);
 
 }
 
-table > tbody > tr[hidden]
-{
+table>tbody>tr[hidden] {
 	display: none;
 }</style>`;
 /* global template */

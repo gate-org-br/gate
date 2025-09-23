@@ -33,8 +33,8 @@
 }
 
 :host(.fill) {
-	color: var(--text, black);
-	border-color: var(--text, black);
+	color: var(--text1, #000000);
+	border-color: var(--text1, #000000);
 	background-color: var(--main4, #F0F0F0);
 }
 
@@ -43,12 +43,12 @@
 }
 
 :host(.success) {
-	color: var(--g1, #006600);
-	border-color: var(--g1, #006600);
+	color: var(--g1, #003300);
+	border-color: var(--g1, #003300);
 }
 
 :host(.success.fill) {
-	background-color: var(--g3, #c7ecc7);
+	background-color: var(--g3, #a8d8a8);
 }
 
 :host(.success.fill) ::slotted(hr) {
@@ -82,14 +82,14 @@
 }
 
 :host(.question) {
-	color: var(--b1, #444488);
-	border-color: var(--b1, #444488);
+	color: var(--b1, #00334D);
+	border-color: var(--b1, #00334D);
 }
 
 :host(.question.fill) {
-	background-color: var(--b3, #F0F8FF);
+	background-color: var(--b3, #A8D8F0);
 }
 
 :host(.question.fill) ::slotted(hr) {
-	border-color: var(--b2, #B0C4DE);
+	border-color: var(--b2, #2A6B9A);
 }

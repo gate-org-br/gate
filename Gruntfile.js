@@ -5,32 +5,38 @@ module.exports = function (grunt)
 	grunt.initConfig({
 
 		clean: [`${resources}/*.mjs`,
-			`${resources}/*.js`,
-			`${resources}/*.css`],
+		`${resources}/*.js`,
+		`${resources}/*.css`],
 
 		copy: {
 			styles: {
-				files: [{expand: true,
-						flatten: true,
-						filter: 'isFile',
-						dest: resources,
-						src: ['src/main/wc/**/*.css']}]
+				files: [{
+					expand: true,
+					flatten: true,
+					filter: 'isFile',
+					dest: resources,
+					src: ['src/main/wc/**/*.css']
+				}]
 			},
 			modules: {
-				files: [{expand: true,
-						flatten: true,
-						filter: 'isFile',
-						dest: resources,
-						src: ['src/main/wc/**/*.mjs'],
-						rename: (dest, src) => dest + '/' + src.replace('.mjs', '.js')}]
+				files: [{
+					expand: true,
+					flatten: true,
+					filter: 'isFile',
+					dest: resources,
+					src: ['src/main/wc/**/*.mjs'],
+					rename: (dest, src) => dest + '/' + src.replace('.mjs', '.js')
+				}]
 			},
 			classes: {
-				files: [{expand: true,
-						flatten: true,
-						filter: 'isFile',
-						dest: resources,
-						src: ['src/main/wc/**/*.wc'],
-						rename: (dest, src) => dest + '/' + src.replace('.wc', '.js')}]
+				files: [{
+					expand: true,
+					flatten: true,
+					filter: 'isFile',
+					dest: resources,
+					src: ['src/main/wc/**/*.wc'],
+					rename: (dest, src) => dest + '/' + src.replace('.wc', '.js')
+				}]
 			},
 			options: {
 				process: function (data, name)
@@ -92,7 +98,11 @@ ${script}`;
 			views: {
 				files: ['src/main/wc/**/*',
 					'src/main/components/**/*'],
-				tasks: ['default']
+				tasks: ['default'],
+				options: {
+					spawn: false,
+					debounceDelay: 250
+				}
 			}
 		}
 	});
@@ -122,7 +132,7 @@ ${script}`;
 			if (grunt.file.isFile(path))
 			{
 				const code = filename.replace('.svg', '');
-				const data = grunt.file.read(path, {encoding: 'utf8'});
+				const data = grunt.file.read(path, { encoding: 'utf8' });
 				content += `icons.set("${code}", "data:image/svg+xml;base64,${Buffer.from(data).toString('base64')}");\n`;
 			}
 		});
@@ -132,6 +142,6 @@ ${script}`;
 		console.log('icon-data.mjs sucessfully created.');
 	});
 
-
+	grunt.registerTask('startup', 'watch');
 	grunt.registerTask('default', ['clean', 'copy', "less", 'create-icon-list', 'create-icon-data']);
 };

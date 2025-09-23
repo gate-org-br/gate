@@ -8,10 +8,11 @@ textarea,
 g-selectn {
   width: 100%;
   height: 38px;
+  color: inherit;
   font-size: 14px;
   min-height: 38px;
-  background-color: var(--main1, white);
   border: 1px solid var(--main6);
+  background-color: var(--main1, #FFFFFF);
 }
 textarea,
 g-selectn {
@@ -50,7 +51,7 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 input:invalid,
 select:invalid,

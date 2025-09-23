@@ -99,7 +99,7 @@ fieldset > label > form > .g-command {
   align-items: stretch;
   text-decoration: none;
   justify-content: center;
-  color: var(--text, black);
+  color: var(--text1, #000000);
 }
 fieldset > label > span > a > i,
 fieldset > label > form > a > i,
@@ -166,7 +166,6 @@ fieldset > label > form > g-icon {
   text-indent: 0;
   position: absolute;
   align-items: center;
-  color: var(--main6);
   justify-content: center;
 }
 fieldset > label > span[data-icon]::after,
@@ -178,7 +177,6 @@ fieldset > label > form[data-icon]::after {
   font-family: gate;
   position: absolute;
   align-items: center;
-  color: var(--main6);
   justify-content: center;
   content: attr(data-icon);
 }

@@ -40,7 +40,6 @@ g-digital-clock
 /* global customElements, template */
 
 import './g-progress.js';
-import DOM from './dom.js';
 import GWindow from './g-window.js';
 
 export default class GBlock extends GWindow
@@ -71,7 +70,7 @@ export default class GBlock extends GWindow
 		window.top.GBlock.show();
 	}
 
-	static  hide()
+	static hide()
 	{
 		if (!window.top.GBlock)
 			return;
@@ -105,7 +104,7 @@ window.addEventListener("connected", function (event)
 				break;
 			case "BUTTON":
 				if (element.form)
-					element.form.addEventListener("submit", () => GBlock.show(message), {once: true});
+					element.form.addEventListener("submit", () => GBlock.show(message), { once: true });
 				else
 					element.addEventListener("click", () => GBlock.show(message));
 				break;

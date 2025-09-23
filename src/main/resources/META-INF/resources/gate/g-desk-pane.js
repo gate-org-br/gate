@@ -11,7 +11,7 @@ template.innerHTML = `
 	display: grid;
 	font-size: 16px;
 	grid-auto-rows: 200px;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	background-color: transparent;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 }
@@ -62,7 +62,7 @@ template.innerHTML = `
 	font-family: gate;
 	content: '\\3017';
 	position: absolute;
-	color: var(--main6);
+	color: var(--text2, #FFFFFF);
 }
 
 ::slotted(g-desk-pane-reset)::before {
@@ -128,7 +128,7 @@ template.innerHTML = `
 	position: absolute;
 	border-radius: inherit;
 	justify-content: center;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	background-color: var(--main4, #F0F0F0);
 }
 

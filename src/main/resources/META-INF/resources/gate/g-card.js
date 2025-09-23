@@ -14,8 +14,7 @@ template.innerHTML = `
 
 ::slotted(i),
 ::slotted(e),
-::slotted(g-icon)
-{
+::slotted(g-icon) {
 	padding: 8px;
 	display: flex;
 	align-items: center;
@@ -40,8 +39,7 @@ template.innerHTML = `
 	align-self: center;
 }
 
-::slotted(header)
-{
+::slotted(header) {
 	padding: 4px;
 	display: flex;
 	font-size: 16px;
@@ -50,10 +48,9 @@ template.innerHTML = `
 	align-items: center;
 }
 
-::slotted(nav)
-{
+::slotted(nav) {
 	gap: 4px;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	display: flex;
 	font-size: 12px;
 	flex-basis: 36px;
@@ -61,8 +58,7 @@ template.innerHTML = `
 	justify-content: flex-end;
 }
 
-::slotted(section)
-{
+::slotted(section) {
 	padding: 8px;
 	flex-grow: 1;
 	overflow: auto;
@@ -73,7 +69,7 @@ template.innerHTML = `
 ::slotted(footer) {
 	gap: 4px;
 	padding: 4px;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	display: flex;
 	font-size: 10px;
 	flex-basis: 36px;

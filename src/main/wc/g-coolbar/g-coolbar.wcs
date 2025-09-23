@@ -1,22 +1,19 @@
-*
-{
+* {
 	box-sizing: border-box;
 }
 
-:host(*)
-{
+:host(*) {
 	width: 100%;
 	height: auto;
-	color: var(--text, black);
 	border: none;
 	display: flex;
 	position: relative;
 	align-items: stretch;
 	justify-content: stretch;
+	color: var(--text1, #000000);
 }
 
-div
-{
+div {
 	gap: 8px;
 	padding: 8px;
 	flex-grow: 1;
@@ -26,8 +23,7 @@ div
 	flex-direction: row-reverse;
 }
 
-div > ::slotted(:is(a, button, .g-command))
-{
+div> ::slotted(:is(a, button, .g-command)) {
 	gap: 8px;
 	width: 120px;
 	height: 44px;
@@ -42,109 +38,79 @@ div > ::slotted(:is(a, button, .g-command))
 	min-width: fit-content;
 	justify-content: space-between;
 
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	background-color: var(--main5, #FAFAFA);
+
+	transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-div > ::slotted(a:focus),
-div > ::slotted(button:focus),
-div > ::slotted(.g-command:focus)
-{
+div> ::slotted(a:hover),
+div> ::slotted(button:hover),
+div> ::slotted(.g-command:hover) {
+	transform: scale(1.05);
+}
+
+div> ::slotted(a:focus),
+div> ::slotted(button:focus),
+div> ::slotted(.g-command:focus) {
 	outline: 4px solid var(--hovered);
 }
 
-div > ::slotted(a.primary),
-div > ::slotted(button.primary),
-div > ::slotted(.g-command.primary)
-{
+div> ::slotted(a.primary),
+div> ::slotted(button.primary),
+div> ::slotted(.g-command.primary) {
 	color: white;
 	border: none;
 	background-color: #2A6B9A;
 }
 
-div > ::slotted(a.primary:hover),
-div > ::slotted(button.primary:hover),
-div > ::slotted(.g-command.primary:hover)
-{
-	background-color: #25608A;
-}
-
-div > ::slotted(a.alternative),
-div > ::slotted(button.alternative),
-div > ::slotted(.g-command.alternative)
-{
+div> ::slotted(a.alternative),
+div> ::slotted(button.alternative),
+div> ::slotted(.g-command.alternative) {
 	color: white;
 	border: none;
 	background-color: #009E60;
 }
 
-div > ::slotted(a.alternative:hover),
-div > ::slotted(button.alternative:hover),
-div > ::slotted(.g-command.alternative:hover)
-{
-	background-color: #008E56;
-}
-
-div > ::slotted(a.tertiary),
-div > ::slotted(button.tertiary),
-div > ::slotted(.g-command.tertiary)
-{
-	background-color: var(--main1);
+div> ::slotted(a.tertiary),
+div> ::slotted(button.tertiary),
+div> ::slotted(.g-command.tertiary) {
+	color: var(--text1, #000000);
 	border: 1px solid var(--main6);
+	background-color: var(--text2, #FFFFFF);
 }
 
-div > ::slotted(a.tertiary:hover),
-div > ::slotted(button.tertiary:hover),
-div > ::slotted(.g-command.tertiary:hover)
-{
-	border: 1px solid black;
-}
-
-div > ::slotted(a.danger),
-div > ::slotted(button.danger),
-div > ::slotted(.g-command.danger)
-{
+div> ::slotted(a.danger),
+div> ::slotted(button.danger),
+div> ::slotted(.g-command.danger) {
 	color: white;
 	border: none;
 	background-color: #AA2222;
 }
 
-div > ::slotted(a.danger:hover),
-div > ::slotted(button.danger:hover),
-div > ::slotted(.g-command.danger:hover)
-{
-	background-color: #882222;
-}
-
-div > ::slotted([hidden="true"])
-{
+div> ::slotted([hidden="true"]) {
 	display: none;
 }
 
-div > ::slotted(hr)
-{
+div> ::slotted(hr) {
 	border: none;
 	flex-grow: 100000;
 }
 
-:host([reverse]) div
-{
+:host([reverse]) div {
 	flex-direction: row;
 }
 
-:host([disabled])
-{
+:host([disabled]) {
 	background-color: var(--main6);
 }
 
 :host([disabled]) div,
-:host([disabled]) button
-{
+:host([disabled]) button {
 	display: none;
 }
 
-:host([disabled])::before
-{
+:host([disabled])::before {
 	content: "";
 	height: 44px;
 	grid-column: 2;
@@ -153,26 +119,21 @@ div > ::slotted(hr)
 	animation: progress 2s infinite ease-in-out;
 }
 
-@keyframes progress
-{
-	0%
-	{
+@keyframes progress {
+	0% {
 		width: 0;
 	}
 
-	100%
-	{
+	100% {
 		width: 100%;
 	}
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])
-{
+::slotted(:is(a, button, .g-command)[data-loading]) {
 	position: relative;
 }
 
-::slotted(:is(a, button, .g-command)[data-loading])::before
-{
+::slotted(:is(a, button, .g-command)[data-loading])::before {
 	top: 0;
 	left: 0;
 	right: 0;
@@ -205,32 +166,4 @@ div > ::slotted(hr)
 
 #show:hover {
 	background-color: var(--hovered);
-}
-
-g-more-menu > ::slotted(a.primary),
-g-more-menu > ::slotted(button.primary),
-g-more-menu > ::slotted(.g-command.primary)
-{
-	color: #000088;
-}
-
-g-more-menu > ::slotted(a.alternative),
-g-more-menu > ::slotted(button.alternative),
-g-more-menu > ::slotted(.g-command.alternative)
-{
-	color: #008800;
-}
-
-g-more-menu > ::slotted(a.danger),
-g-more-menu > ::slotted(button.danger),
-g-more-menu > ::slotted(.g-command.danger)
-{
-	color: #880000;
-}
-
-g-more-menu > ::slotted(a.tertiary),
-g-more-menu > ::slotted(button.tertiary),
-g-more-menu > ::slotted(.g-command.tertiary)
-{
-	color: #444444;
 }

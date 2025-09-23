@@ -68,7 +68,7 @@ header {
 	font-size: 0.75rem;
 	align-items: center;
 	text-decoration: none;
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	justify-content: flex-start;
 	background-color: var(--main4, #F0F0F0);
 }
@@ -91,7 +91,7 @@ header> ::slotted(:not(:first-child)) {
 
 ::slotted(a[data-selected=true]),
 ::slotted(button[data-selected=true]) {
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	font-weight: bold;
 	background-color: var(--main1, white);
 }

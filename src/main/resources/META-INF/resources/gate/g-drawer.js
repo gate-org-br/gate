@@ -20,7 +20,7 @@ template.innerHTML = `
 	pointer-events: none;
 	flex-direction: column;
 	width: min(320px, 80vw);
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	transform: translateX(-100%);
 	transition: transform 0.3s ease-in-out;
 	background-color: var(--main1, #FFFFFF);

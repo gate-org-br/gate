@@ -13,8 +13,7 @@ template.innerHTML = `
 		<section>
 		</section>
 	</dialog>
- <style data-element="g-message-dialog">dialog
-{
+ <style data-element="g-message-dialog">dialog {
 	width: 100%;
 	padding: 8px;
 	height: 240px;
@@ -23,7 +22,7 @@ template.innerHTML = `
 	max-width: 800px;
 }
 
-dialog > section {
+dialog>section {
 	padding: 8px;
 	display: flex;
 	color: inherit;
@@ -42,35 +41,39 @@ section::before {
 	justify-content: center;
 }
 
-label::first-line  {
+label::first-line {
 	text-indent: 40px;
 }
 
 :host([type="INFO"]) {
-	color: var(--text, black);
+	color: var(--text1, #000000);
 }
-:host([type="INFO"]) > dialog > section::before {
+
+:host([type="INFO"])>dialog>section::before {
 	content: "\\2015"
 }
 
 :host([type="ERROR"]) {
 	color: var(--r1)
 }
-:host([type="ERROR"]) > dialog > section::before {
+
+:host([type="ERROR"])>dialog>section::before {
 	content: "\\1001"
 }
 
 :host([type="SUCCESS"]) {
 	color: var(--g1)
 }
-:host([type="SUCCESS"]) > dialog > section::before {
+
+:host([type="SUCCESS"])>dialog>section::before {
 	content: "\\1000"
 }
 
 :host([type="WARNING"]) {
-	color: var(--y1)
+	color: color: var(--y1, #808000)
 }
-:host([type="WARNING"]) > dialog > section::before {
+
+:host([type="WARNING"])>dialog>section::before {
 	content: "\\1007"
 }</style>`;
 /* global customElements, template */

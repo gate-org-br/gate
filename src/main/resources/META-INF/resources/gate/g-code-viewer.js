@@ -46,7 +46,7 @@ template.innerHTML = `
 }
 
 .key {
-	color: var(--g1, #006600);
+	color: var(--g1, #003300);
 }
 
 .val {

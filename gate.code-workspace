@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"name": "java",
+			"path": "src/main/java"
+		},
+		{
+			"name": "wc",
+			"path": "src/main/wc"
+		},
+		{
+			"name": "demo",
+			"path": "demo"
+		},
+		{
+			"name": "resources",
+			"path": "src/main/resources"
+		},
+		{
+			"name": "db",
+			"path": "src/main/db"
+		},
+		{
+			"name": "gate",
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.compile.nullAnalysis.mode": "automatic",
+		"java.dependency.packagePresentation": "hierarchical",
+		"java.project.explorer.showNonJavaResources": true,
+		"[java]": {
+			"editor.insertSpaces": false
+		}
+	}
+}

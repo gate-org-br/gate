@@ -28,7 +28,7 @@ div {
 }
 
 a {
-	color: var(--text, black);
+	color: var(--text1, #000000);
 	display: flex;
 	align-items: center;
 	font-family: "gate";
@@ -56,8 +56,7 @@ span:hover {
 	font-weight: bold;
 }
 
-label
-{
+label {
 	display: flex;
 	cursor: pointer;
 	font-weight: bold;
