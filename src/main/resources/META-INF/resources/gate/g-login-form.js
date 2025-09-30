@@ -12,21 +12,23 @@ template.innerHTML = `
 					<g-icon>&#X2004;</g-icon>Fazer logon
 				</a>
 				<div>
-					<form id='form'
-					      method ='POST'
-					      target ='_top'
-					      action='#'>
+					<form id='form' method='POST' target='_top' action='#'>
 						<fieldset>
 							<label>
 								Login:
 								<span>
-									<input type="text" required='required' name='$username' maxlength='64' tabindex="1" title='Entre com o seu login.'>
+									<input type="text" required='required' name='$username' maxlength='64' tabindex="1"
+										title='Entre com o seu login.'>
 								</span>
 							</label>
 							<label>
 								Senha:
 								<span>
-									<input type="password" required='required' name='$password' maxlength='32' tabindex="1" title='Entre com a sua senha.'>
+									<input type="password" required='required' name='$password' maxlength='32'
+										tabindex="1" title='Entre com a sua senha.'>
+									<a href="#" class="show">
+										<g-icon>&#X2199;</g-icon>
+									</a>
 								</span>
 							</label>
 						</fieldset>
@@ -42,30 +44,43 @@ template.innerHTML = `
 					<g-icon>&#X2002;</g-icon>Trocar senha
 				</a>
 				<div>
-					<form method ='POST' action="#">
+					<form method='POST' action="#">
 						<fieldset>
 							<label style='grid-column: 1 / span 8'>
 								Login:
 								<span>
-									<input type="text" required='required' maxlength='64' tabindex="1" title='Entre com o seu login.'/>
+									<input type="text" required='required' maxlength='64' tabindex="1"
+										title='Entre com o seu login.' />
 								</span>
 							</label>
 							<label style='grid-column: 9 / span 8'>
 								Senha:
 								<span>
-									<input type="password" required='required' maxlength='32' tabindex="1" title='Entre com a sua senha.'/>
+									<input type="password" required='required' maxlength='32' tabindex="1"
+										title='Entre com a sua senha.' />
+									<a href="#" class="show">
+										<g-icon>&#X2199;</g-icon>
+									</a>
 								</span>
 							</label>
 							<label style='grid-column: 1 / span 8'>
 								Nova Senha:
 								<span>
-									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+									<input type="password" required='required' maxlength='32' tabindex="1"
+										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' />
+									<a href="#" class="show">
+										<g-icon>&#X2199;</g-icon>
+									</a>
 								</span>
 							</label>
 							<label style='grid-column: 9 / span 8'>
 								Repita:
 								<span>
-									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+									<input type="password" required='required' maxlength='32' tabindex="1"
+										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' />
+									<a href="#" class="show">
+										<g-icon>&#X2199;</g-icon>
+									</a>
 								</span>
 							</label>
 						</fieldset>
@@ -80,7 +95,7 @@ template.innerHTML = `
 					<g-icon>&#X2034;</g-icon>Esqueci a senha
 				</a>
 				<div>
-					<form method ='POST' action="#">
+					<form method='POST' action="#">
 						<g-callout>
 							<p>
 								Entre com o seu login ou email na caixa de texto
@@ -95,8 +110,8 @@ template.innerHTML = `
 							<label>
 								Login ou E-Mail:
 								<span>
-									<input type="text" required='required' maxlength='64'
-									       tabindex="1" title='Entre com o seu login ou e-mail'/>
+									<input type="text" required='required' maxlength='64' tabindex="1"
+										title='Entre com o seu login ou e-mail' />
 								</span>
 							</label>
 						</fieldset>
@@ -111,24 +126,33 @@ template.innerHTML = `
 					<g-icon>&#X2058;</g-icon>Redefinir a senha
 				</a>
 				<div>
-					<form method ='POST' action="#">
+					<form method='POST' action="#">
 						<fieldset>
 							<label>
 								Entre com o código recebido no email:
 								<span style='flex-basis: 60px'>
-									<textarea required='required' tabindex="1" title='Entre com o código recebido no email'></textarea>
+									<textarea required='required' tabindex="1"
+										title='Entre com o código recebido no email'></textarea>
 								</span>
 							</label>
 							<label style='grid-column: 1 / span 8'>
 								Entre com a nova senha:
 								<span>
-									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+									<input type="password" required='required' maxlength='32' tabindex="1"
+										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' />
+									<a href="#" class="show">
+										<g-icon>&#X2199;</g-icon>
+									</a>
 								</span>
 							</label>
 							<label style='grid-column: 9 / span 8'>
 								Repita a nova senha:
 								<span>
-									<input type="password" required='required' maxlength='32' tabindex="1" title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$'/>
+									<input type="password" required='required' maxlength='32' tabindex="1"
+										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' />
+									<a href="#" class="show">
+										<g-icon>&#X2199;</g-icon>
+									</a>
 								</span>
 							</label>
 						</fieldset>
@@ -146,13 +170,12 @@ template.innerHTML = `
 	box-sizing: border-box;
 }
 
-g-tab-control > a {
+g-tab-control>a {
 	flex-grow: 1;
 	flex-shrink: 0;
 }
 
-:host(*)
-{
+:host(*) {
 	top: 0;
 	left: 0;
 	bottom: 0;
@@ -163,95 +186,85 @@ g-tab-control > a {
 	justify-content: center;
 }
 
-main
-{
+main {
 	width: 600px;
 	min-width: 320px;
 	max-width: calc(100% - 16px);
-	border: 1px solid var(--main4);
-	background-color: var(--main3);
-	box-shadow: 6px 6px 6px 0px rgba(0,0,0,0.75);
-}
+	border: 1px solid var(--main3, #DDDDDD);
+	background-color: var(--main2, #F0F0F0);
+	box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.75);
 
-header
-{
-	gap: 8px;
-	padding: 8px;
-	height: 50px;
-	color: white;
-	display: flex;
-	align-items: center;
-	background-color: var(--base2);
-}
-
-#logo {
-	width: 32px;
-	height: 32px;
-}
-
-#app
-{
-	flex-grow: 1;
-	font-size: 20px;
-}
-
-#version {
-	font-size: 12px;
-}
-
-section
-{
-	padding: 10px;
-}
-
-form
-{
-	gap: 12px;
-	display: flex;
-	flex-direction: column;
-}
-
-:host([setup-password='false']) #setup-tab,
-:host([setup-password='false']) #forgot-tab,
-:host([setup-password='false']) #reset-tab
-{
-	display: none;
-}
-
-@media screen and (max-width: 600px)
-{
-
-
-	:host(*)
-	{
-		align-items: flex-start;
+	header {
+		gap: 8px;
+		padding: 8px;
+		height: 50px;
+		color: white;
+		display: flex;
+		align-items: center;
+		background-color: var(--base2, #3f729b);
 	}
 
-	main
-	{
-		width: 100%;
-		border: none;
-		height: 100%;
-		box-shadow: none;
-		max-width: unset;
-		background-color: var(--main3);
+	#logo {
+		width: 32px;
+		height: 32px;
 	}
-}</style>`;
+
+	#app {
+		flex-grow: 1;
+		font-size: 20px;
+	}
+
+	#version {
+		font-size: 12px;
+	}
+
+	section {
+		padding: 10px;
+	}
+
+	form {
+		gap: 12px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	:host([setup-password='false']) #setup-tab,
+	:host([setup-password='false']) #forgot-tab,
+	:host([setup-password='false']) #reset-tab {
+		display: none;
+	}
+
+	@media screen and (max-width: 600px) {
+
+
+		:host(*) {
+			align-items: flex-start;
+		}
+
+		main {
+			width: 100%;
+			border: none;
+			height: 100%;
+			box-shadow: none;
+			max-width: unset;
+			background-color: var(--main3);
+		}
+	}</style>`;
 /* global customElements */
 
-import './g-icon.js';
 import './g-coolbar.js';
-import './g-tab-control.js';
-import stylesheets from './stylesheets.js';
+import './g-icon.js';
 import GMessageDialog from './g-message-dialog.js';
+import './g-tab-control.js';
 import ResponseHandler from './response-handler.js';
+import stylesheets from './stylesheets.js';
 
 customElements.define('g-login-form', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({ mode: "open" });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		stylesheets('input.css', 'fieldset.css').forEach(e => this.shadowRoot.appendChild(e));
 
@@ -281,8 +294,10 @@ customElements.define('g-login-form', class extends HTMLElement
 				return GMessageDialog.error("As duas senhas não conferem");
 
 			let creadentials = btoa(username.value + ':' + password.value);
-			fetch(new Request("SetupPassword", {method: "post",
-				headers: {Authorization: `Basic ${creadentials}`}, body: change.value}))
+			fetch(new Request("SetupPassword", {
+				method: "post",
+				headers: { Authorization: `Basic ${creadentials}` }, body: change.value
+			}))
 				.then(ResponseHandler.none)
 				.then(() =>
 				{
@@ -334,8 +349,10 @@ customElements.define('g-login-form', class extends HTMLElement
 			if (change.value !== repeat.value)
 				return GMessageDialog.error("As duas senhas não conferem");
 
-			fetch(new Request("ResetPassword", {method: "post",
-				headers: {Authorization: `Bearer ${code.value}`}, body: change.value}))
+			fetch(new Request("ResetPassword", {
+				method: "post",
+				headers: { Authorization: `Bearer ${code.value}` }, body: change.value
+			}))
 				.then(ResponseHandler.none)
 				.then(() =>
 				{
@@ -344,6 +361,22 @@ customElements.define('g-login-form', class extends HTMLElement
 					code.value = change.value = repeat.value = "";
 				})
 				.catch(error => GMessageDialog.error(error.message));
+		});
+
+		Array.from(this.shadowRoot.querySelectorAll(".show")).forEach(e => 
+		{
+			e.addEventListener("click", () =>
+			{
+				if (e.previousElementSibling.type === "password")
+				{
+					e.previousElementSibling.type = "text";
+					e.firstElementChild.innerHTML = "&#X3070;"
+				} else
+				{
+					e.previousElementSibling.type = "password";
+					e.firstElementChild.innerHTML = "&#X2199;"
+				}
+			});
 		});
 	}
 

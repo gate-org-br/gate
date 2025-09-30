@@ -16,7 +16,7 @@ template.innerHTML = `
 	border-radius: 5px;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--main4);
+	background-color: var(--main2, #F0F0F0);
 }
 
 label {

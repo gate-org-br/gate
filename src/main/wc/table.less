@@ -7,7 +7,7 @@ table {
 	table-layout: fixed;
 	text-decoration: none;
 	color: var(--text1, #000000);
-	border: 1px solid var(--base3);
+	border: 1px solid var(--base3, #cfdce6);
 
 	>td>input,
 	>td>select {
@@ -50,7 +50,7 @@ table {
 			>a,
 			>button,
 			>.g-command {
-				color: var(--b1, #444488);
+				color: var(--b1, #1A2D5F);
 				cursor: pointer;
 
 				&:hover {
@@ -83,7 +83,7 @@ table {
 				height: 32px;
 				text-indent: 4px;
 				border-radius: 3px;
-				border: 1px solid var(--main5);
+				border: 1px solid var(--main3, #DDDDDD);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ table {
 		text-align: center;
 		color: var(--text1);
 		border-radius: 3px 3px 0 0;
-		background-color: var(--base3);
+		background-color: var(--base3, #cfdce6);
 	}
 
 	>thead>tr {
@@ -105,42 +105,42 @@ table {
 	>thead>tr>* {
 		color: inherit;
 		font-weight: bold;
-		border-color: var(--base5);
-		background-color: var(--base6);
+		border-color: var(--main3, #DDDDDD);
+		background-color: var(--main2, #F0F0F0);
 	}
 
 	>tbody>tr {
 		outline: none;
 
 		&:nth-child(odd) {
-			background-color: var(--main1);
+			background-color: var(--main1, #FFFFFF);
 
 			>* {
-				border-color: var(--main2)
+				border-color: var(--main2, #F0F0F0)
 			}
 		}
 
 		&:nth-child(even) {
-			background-color: var(--main2);
+			background-color: var(--main2, #F0F0F0);
 
 			>* {
-				border-color: var(--main1);
+				border-color: var(--main1, #FFFFFF);
 			}
 		}
 
 		&.odd {
-			background-color: var(--main1);
+			background-color: var(--main1, #FFFFFF);
 
 			>* {
-				border-color: var(--main2)
+				border-color: var(--main2, #F0F0F0)
 			}
 		}
 
 		&.even {
-			background-color: var(--main2);
+			background-color: var(--main2, #F0F0F0);
 
 			>* {
-				border-color: var(--main1);
+				border-color: var(--main1, #FFFFFF);
 			}
 		}
 
@@ -148,7 +148,7 @@ table {
 			cursor: pointer;
 
 			&:focus {
-				background-color: var(--hovered);
+				background-color: var(--hovered, #FFFACD);
 			}
 		}
 
@@ -158,7 +158,7 @@ table {
 			cursor: pointer;
 
 			&:hover {
-				background-color: var(--hovered);
+				background-color: var(--hovered, #FFFACD);
 			}
 		}
 
@@ -167,7 +167,7 @@ table {
 				cursor: pointer;
 
 				&:focus {
-					background-color: var(--hovered);
+					background-color: var(--hovered, #FFFACD);
 				}
 			}
 
@@ -177,21 +177,21 @@ table {
 				cursor: pointer;
 
 				&:hover {
-					background-color: var(--hovered);
+					background-color: var(--hovered, #FFFACD);
 				}
 			}
 		}
 	}
 
 	>tfoot>tr {
-		color: var(--base1);
+		color: var(--base1, #2f5674);
 	}
 
 	>tfoot>tr>* {
 		color: inherit;
 		font-weight: bold;
-		border-color: var(--base5);
-		background-color: var(--base6);
+		border-color: var(--main3, #DDDDDD);
+		background-color: var(--main2, #F0F0F0);
 	}
 }
 

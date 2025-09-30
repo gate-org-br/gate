@@ -5,8 +5,8 @@ fieldset {
   display: grid;
   align-items: start;
   border-radius: 3px;
-  border: 1px solid var(--main4);
   grid-template-columns: repeat(16, 1fr);
+  border: 1px solid var(--main2, #F0F0F0);
 }
 fieldset > * {
   grid-column: span 16;
@@ -18,8 +18,8 @@ fieldset > legend {
   font-weight: bold;
   border-radius: 3px;
   align-items: center;
-  color: var(--base1);
-  background-color: var(--base3);
+  color: var(--base1, #2f5674);
+  background-color: var(--base3, #cfdce6);
   box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
 }
 fieldset > legend > i,
@@ -57,8 +57,8 @@ fieldset > label > form {
   position: relative;
   border-radius: 3px;
   overflow-wrap: break-word;
-  background-color: var(--main3);
-  border: 1px solid var(--main5);
+  background-color: var(--main2, #F0F0F0);
+  border: 1px solid var(--main3, #DDDDDD);
 }
 fieldset > label > span *,
 fieldset > label > form * {
@@ -66,7 +66,7 @@ fieldset > label > form * {
 }
 fieldset > label > span * + *,
 fieldset > label > form * + * {
-  border-left: 1px solid var(--main5);
+  border-left: 1px solid var(--main3, #DDDDDD);
 }
 fieldset > label > span > label,
 fieldset > label > form > label {
@@ -131,7 +131,7 @@ fieldset > label > span > button:focus,
 fieldset > label > form > button:focus,
 fieldset > label > span > .g-command:focus,
 fieldset > label > form > .g-command:focus {
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 fieldset > label > span > *:first-child,
 fieldset > label > form > *:first-child {

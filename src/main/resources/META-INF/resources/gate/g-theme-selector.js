@@ -18,37 +18,43 @@ template.innerHTML = `
 	justify-content: center;
 }
 
-:host::before
-{
-	content: '\\2203';
+:host::before {
+	content: '\\3073';
 	font-family: 'gate';
 }
 
-:host([value='true'])::before
-{
-	content: '\\2164';
+:host([value='light'])::before {
+	content: '\\2203';
 }
 
-@media (prefers-color-scheme: dark)
-{
+:host([value='dark'])::before {
 	content: '\\2164';
-	
-	:host([value='true'])::before
-	{
-		content: '\\2203';
-	}
 }</style>`;
+import GContextMenu from "./g-context-menu.js";
+
 /* global customElements, template */
 customElements.define('g-theme-selector', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({ mode: "open" });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-		this.addEventListener("click", () =>
-			this.value = this.value === "true" ? "false" : 'true');
+		this.addEventListener("click", event =>
+		{
+			event.preventDefault();
+			GContextMenu.show(this, this,
+				{
+					text: "Light", icon: "2203", action: () => this.value = "light"
+				},
+				{
+					text: "Dark", icon: "2164", action: () => this.value = "dark"
+				},
+				{
+					text: "System", icon: "3073", action: () => this.value = "system"
+				});
+		});
 	}
 	get value()
 	{
@@ -57,6 +63,7 @@ customElements.define('g-theme-selector', class extends HTMLElement
 	set value(value)
 	{
 		this.setAttribute("value", value);
+		localStorage.setItem('theme', value);
 	}
 	connectedCallback()
 	{

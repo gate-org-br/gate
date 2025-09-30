@@ -1,8 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<div id='editor'></div>
- <style data-element="g-text-viewer">:host(*)
-{
+ <style data-element="g-text-viewer">:host(*) {
 	flex-grow: 1;
 	display: flex;
 	overflow: auto;
@@ -19,8 +18,7 @@ dialog {
 	border: 1px solid #CCCCCC;
 }
 
-#editor
-{
+#editor {
 	flex-grow: 1;
 	padding: 12px;
 	outline: none;
@@ -32,7 +30,7 @@ dialog {
 	background-color: transparent;
 }
 
-#editor > div {
+#editor>div {
 	padding: 8px;
 	display: flex;
 	overflow: auto;
@@ -41,11 +39,10 @@ dialog {
 	align-items: stretch;
 	justify-content: center;
 	border: 1px solid #EFEFEF;
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }
 
-#editor > img
-{
+#editor>img {
 	display: block;
 	max-width: 100%;
 }</style>`;

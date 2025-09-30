@@ -10,7 +10,7 @@
 	align-items: stretch;
 	justify-content: stretch;
 	color: var(--text1, #000000);
-	background-color: var(--main3, #F8F8F8);
+	background-color: var(--main2, #F0F0F0);
 }
 
 header {
@@ -40,21 +40,21 @@ header ::slotted(.g-command) {
 	text-decoration: none;
 	flex-direction: column;
 	justify-content: space-around;
-	background-color: var(--main4, #F0F0F0);
+	background-color: var(--main3, #DDDDDD);
 }
 
 header ::slotted(a[aria-selected]),
 header ::slotted(button[aria-selected]),
 header ::slotted(.g-command[aria-selected]) {
-	color: var(--base1);
-	background-color: var(--main5);
+	color: var(--base1, #2f5674);
+	background-color: var(--main3, #DDDDDD);
 }
 
 header ::slotted(a:hover),
 header ::slotted(g-trigger:hover),
 header ::slotted(button:hover),
 header ::slotted(.g-command:hover) {
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }
 
 header ::slotted(a:focus),
@@ -89,7 +89,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-image: var(--loading);
-	background-color: var(--main4, #F0F0F0);
+	background-color: var(--main2, #F0F0F0);
 }
 
 #show {
@@ -103,7 +103,7 @@ header ::slotted(:is(a, button, .g-command)[data-loading])::before {
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-	background-color: var(--main4, #F0F0F0);
+	background-color: var(--main2, #F0F0F0);
 }
 
 #show:hover {

@@ -9,7 +9,7 @@ template.innerHTML = `
 	flex-direction: column;
 	background-color: var(--main1);
 	border: 1px solid var(--main3);
-	box-shadow: 1px 1px 2px 0px var(--main6);
+	box-shadow: 1px 1px 2px 0px var(--main3, #DDDDDD);
 }
 
 ::slotted(i),
@@ -24,7 +24,7 @@ template.innerHTML = `
 ::slotted(header),
 ::slotted(section),
 ::slotted(footer) {
-	border-bottom: 1px solid var(--main5);
+	border-bottom: 1px solid var(--main3, #DDDDDD);
 }
 
 ::slotted(header:last-child),

@@ -5,12 +5,12 @@ template.innerHTML = `
 	font-size: 16px;
 	min-width: 240px;
 	grid-auto-rows: 1fr;
-	background-color: var(--main5);
 	grid-template-columns: repeat(7, auto);
+	background-color: var(--main3, #DDDDDD);
 }
 
 :host(*):hover {
-	border-color: var(--hovered);
+	border-color: var(--hovered, #FFFACD);
 }
 
 label {
@@ -22,13 +22,14 @@ label {
 }
 
 a {
-	color: var(--text1, #000000);
+
 	display: flex;
 	font-size: inherit;
 	align-items: center;
 	text-decoration: none;
-	background-color: var(--main1, white);
 	justify-content: center;
+	color: var(--text1, #000000);
+	background-color: var(--main1, #FFFFFF);
 }
 
 a.current {
@@ -45,7 +46,7 @@ a.selected {
 }
 
 a:hover {
-	background-color: var(--hovered)
+	background-color: var(--hovered, #FFFACD)
 }
 
 span {

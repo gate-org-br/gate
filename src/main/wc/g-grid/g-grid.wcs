@@ -5,24 +5,23 @@
 caption:empty,
 thead:empty,
 tbody:empty,
-tfoot:empty
-{
+tfoot:empty {
 	display: none;
 }
 
-:host([empty]) > table {
+:host([empty])>table {
 	display: none;
 }
 
-:host(:not([empty])) > g-callout {
+:host(:not([empty]))>g-callout {
 	display: none;
 }
 
 
-tbody > tr {
+tbody>tr {
 	cursor: pointer;
 }
 
-tbody > tr:hover > td{
-	background-color: var(--hovered);
+tbody>tr:hover>td {
+	background-color: var(--hovered, #FFFACD);
 }

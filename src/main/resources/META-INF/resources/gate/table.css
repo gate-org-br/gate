@@ -7,7 +7,7 @@ table {
   table-layout: fixed;
   text-decoration: none;
   color: var(--text1, #000000);
-  border: 1px solid var(--base3);
+  border: 1px solid var(--base3, #cfdce6);
 }
 table > td > input,
 table > td > select {
@@ -45,7 +45,7 @@ table tr > *:first-child {
 table tr > * > a,
 table tr > * > button,
 table tr > * > .g-command {
-  color: var(--b1, #444488);
+  color: var(--b1, #1A2D5F);
   cursor: pointer;
 }
 table tr > * > a:hover,
@@ -75,7 +75,7 @@ table tr td > form > input[type='password']:only-child {
   height: 32px;
   text-indent: 4px;
   border-radius: 3px;
-  border: 1px solid var(--main5);
+  border: 1px solid var(--main3, #DDDDDD);
 }
 table > caption {
   height: 32px;
@@ -84,7 +84,7 @@ table > caption {
   text-align: center;
   color: var(--text1);
   border-radius: 3px 3px 0 0;
-  background-color: var(--base3);
+  background-color: var(--base3, #cfdce6);
 }
 table > thead > tr {
   color: var(--text1);
@@ -92,41 +92,41 @@ table > thead > tr {
 table > thead > tr > * {
   color: inherit;
   font-weight: bold;
-  border-color: var(--base5);
-  background-color: var(--base6);
+  border-color: var(--main3, #DDDDDD);
+  background-color: var(--main2, #F0F0F0);
 }
 table > tbody > tr {
   outline: none;
 }
 table > tbody > tr:nth-child(odd) {
-  background-color: var(--main1);
+  background-color: var(--main1, #FFFFFF);
 }
 table > tbody > tr:nth-child(odd) > * {
-  border-color: var(--main2);
+  border-color: var(--main2, #F0F0F0);
 }
 table > tbody > tr:nth-child(even) {
-  background-color: var(--main2);
+  background-color: var(--main2, #F0F0F0);
 }
 table > tbody > tr:nth-child(even) > * {
-  border-color: var(--main1);
+  border-color: var(--main1, #FFFFFF);
 }
 table > tbody > tr.odd {
-  background-color: var(--main1);
+  background-color: var(--main1, #FFFFFF);
 }
 table > tbody > tr.odd > * {
-  border-color: var(--main2);
+  border-color: var(--main2, #F0F0F0);
 }
 table > tbody > tr.even {
-  background-color: var(--main2);
+  background-color: var(--main2, #F0F0F0);
 }
 table > tbody > tr.even > * {
-  border-color: var(--main1);
+  border-color: var(--main1, #FFFFFF);
 }
 table > tbody > tr[tabindex] {
   cursor: pointer;
 }
 table > tbody > tr[tabindex]:focus {
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 table > tbody > tr:not([tabindex])[data-action],
 table > tbody > tr:not([tabindex])[data-target],
@@ -136,13 +136,13 @@ table > tbody > tr:not([tabindex])[data-method] {
 table > tbody > tr:not([tabindex])[data-action]:hover,
 table > tbody > tr:not([tabindex])[data-target]:hover,
 table > tbody > tr:not([tabindex])[data-method]:hover {
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 table > tbody > tr > td[tabindex] {
   cursor: pointer;
 }
 table > tbody > tr > td[tabindex]:focus {
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 table > tbody > tr > td:not([tabindex])[data-action],
 table > tbody > tr > td:not([tabindex])[data-target],
@@ -152,16 +152,16 @@ table > tbody > tr > td:not([tabindex])[data-method] {
 table > tbody > tr > td:not([tabindex])[data-action]:hover,
 table > tbody > tr > td:not([tabindex])[data-target]:hover,
 table > tbody > tr > td:not([tabindex])[data-method]:hover {
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 table > tfoot > tr {
-  color: var(--base1);
+  color: var(--base1, #2f5674);
 }
 table > tfoot > tr > * {
   color: inherit;
   font-weight: bold;
-  border-color: var(--base5);
-  background-color: var(--base6);
+  border-color: var(--main3, #DDDDDD);
+  background-color: var(--main2, #F0F0F0);
 }
 table.c1 > * > tr > *:nth-child(1),
 table.cge1 > * > tr > *:nth-child(n+1),

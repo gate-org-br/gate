@@ -4,7 +4,7 @@ template.innerHTML = `
  <style data-element="g-accordion">:host(*) {
 	display: flex;
 	flex-direction: column;
-	box-shadow: 1px 1px 2px 0px var(--main6);
+	box-shadow: 1px 1px 2px 0px var(--main3, #DDDDDD);
 }
 
 

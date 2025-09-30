@@ -16,16 +16,16 @@ template.innerHTML = `
 }
 
 dialog {
-	max-width: none;
-	max-height: none;
-	margin: auto;
 	padding: 0;
 	height: auto;
 	border: none;
+	margin: auto;
 	display: flex;
+	max-width: none;
+	max-height: none;
 	border-radius: 3px;
 	flex-direction: column;
-	background-color: var(--main3);
+	background-color: var(--main2, #F0F0F0);
 	box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.75);
 }
 
@@ -38,7 +38,7 @@ dialog>header {
 	font-weight: bold;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 1px solid var(--main6);
+	border-bottom: 1px solid var(--main3, #DDDDDD);
 }
 
 dialog>section {
@@ -90,7 +90,7 @@ dialog>footer {
 	align-items: stretch;
 	justify-content: stretch;
 	flex-direction: row-reverse;
-	border-top: 1px solid var(--main6);
+	border-top: 1px solid var(--main3, #DDDDDD);
 }</style>`;
 /* global customElements, template */
 

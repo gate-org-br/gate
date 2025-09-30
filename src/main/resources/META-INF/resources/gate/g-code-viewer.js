@@ -16,20 +16,20 @@ template.innerHTML = `
 	display: grid;
 	font-size: 10px;
 	grid-template-rows: auto auto;
-	border: 1px solid var(--main4, #F0F0F0);
+	border: 1px solid var(--main2, #F0F0F0);
 }
 
 #code-pane {
 	min-width: 0;
 	padding: 10px;
 	overflow: auto;
-	background-color: var(--hovered);
-	border-bottom: 1px solid var(--main3, #F8F8F8);
+	background-color: var(--hovered, #FFFACD);
+	border-bottom: 1px solid var(--main3, #DDDDDD);
 }
 
 #code-pane * {
 	font-size: inherit;
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }
 
 #html-pane {
@@ -38,19 +38,19 @@ template.innerHTML = `
 	padding: 10px;
 	display: flex;
 	flex-direction: column;
-	background-color: var(--main2);
+	border: 1px solid var(--main2, #F0F0F0);
 }
 
 .tag {
-	color: var(--b1, #444488);
+	color: var(--b1, #1A2D5F);
 }
 
 .key {
-	color: var(--g1, #003300);
+	color: var(--g1, #003D26);
 }
 
 .val {
-	color: var(--r1, #660000);
+	color: var(--r1, #5e0000);
 }</style>`;
 function highlightHTML(htmlString)
 {

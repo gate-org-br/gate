@@ -16,8 +16,7 @@ li {
 	padding: 4px;
 }
 
-li[data-icon]
-{
+li[data-icon] {
 	gap: 8px;
 	display: flex;
 	align-items: center;
@@ -29,10 +28,9 @@ li[data-icon]:before {
 	content: attr(data-icon);
 }
 
-li[data-action]:hover
-{
+li[data-action]:hover {
 	cursor: pointer;
-	background-color: var(--hovered)
+	background-color: var(--hovered, #FFFACD)
 }
 
 dl {

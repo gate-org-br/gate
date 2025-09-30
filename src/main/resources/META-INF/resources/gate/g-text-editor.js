@@ -51,7 +51,7 @@ template.innerHTML = `
 	align-items: stretch;
 	justify-content: center;
 	border: 1px solid #EFEFEF;
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }
 
 #editor>div:hover {

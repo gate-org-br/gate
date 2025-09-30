@@ -1,19 +1,17 @@
 let template = document.createElement("template");
 template.innerHTML = `
- <style data-element="g-progress">:host(*)
-{
+ <style data-element="g-progress">:host(*) {
 	width: 100%;
 	flex-grow: 1;
 	display: flex;
 	align-items: stretch;
-	background-color: var(--main6);
+	background-color: var(--main3, #DDDDDD);
 }
 
-:host(*)::before
-{
+:host(*)::before {
 	content: "";
-	animation-fill-mode:both;
-	background-color: var(--base1);
+	animation-fill-mode: both;
+	background-color: var(--base1, #2f5674);
 	animation: progress 2s infinite ease-in-out;
 }
 
@@ -21,6 +19,7 @@ template.innerHTML = `
 	0% {
 		flex-basis: 0;
 	}
+
 	100% {
 		flex-basis: 100%;
 	}

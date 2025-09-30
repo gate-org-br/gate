@@ -14,23 +14,15 @@
 	justify-content: center;
 }
 
-:host::before
-{
-	content: '\\2203';
+:host::before {
+	content: '\\3073';
 	font-family: 'gate';
 }
 
-:host([value='true'])::before
-{
-	content: '\\2164';
+:host([value='light'])::before {
+	content: '\\2203';
 }
 
-@media (prefers-color-scheme: dark)
-{
+:host([value='dark'])::before {
 	content: '\\2164';
-	
-	:host([value='true'])::before
-	{
-		content: '\\2203';
-	}
 }

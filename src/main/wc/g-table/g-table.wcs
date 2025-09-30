@@ -7,9 +7,9 @@ table[data-table-size='0'][data-empty] {
 	text-align: justify;
 	align-items: stretch;
 	border-left: 6px solid;
-	border-color: var(--main6);
 	border-radius: 0 3px 3px 0;
 	background-color: var(--main1);
+	border-color: var(--main3, #DDDDDD);
 }
 
 table[data-table-size='0'][data-empty] * {
@@ -26,20 +26,21 @@ table>thead>tr>th[data-sortable] {
 }
 
 table>thead>tr>th[data-sortable]::before {
+	opacity: 0.2;
 	font-size: 16px;
 	content: "\\2195 ";
 	font-family: monospace;
-	color: rgba(0, 0, 0, 0.2)
+	color: var(--text1, #000000);
 }
 
 table>thead>tr>th[data-sortable="A"]::before {
+	opacity: 1;
 	content: "\\2191 ";
-	color: var(--text1);
 }
 
 table>thead>tr>th[data-sortable="D"]::before {
+	opacity: 1;
 	content: "\\2193 ";
-	color: var(--text1);
 
 }
 

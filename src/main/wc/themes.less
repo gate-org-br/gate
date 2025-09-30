@@ -3,34 +3,28 @@
 	--text2: #FFFFFF;
 
 	--main1: #FFFFFF;
-	--main2: #FAFAFA;
-	--main3: #F8F8F8;
-	--main4: #F0F0F0;
-	--main5: #DDDDDD;
-	--main6: #CCCCCC;
+	--main2: #F0F0F0;
+	--main3: #DDDDDD;
 
 	--base1: #2f5674;
 	--base2: #3f729b;
 	--base3: #cfdce6;
-	--base4: #d8e3eb;
-	--base5: #DDDDDD;
-	--base6: #EEEEEE;
 
 	--acent: #c0b9cd;
 
-	--r1: #660000;
-	--r2: #884444;
-	--r3: #FFAAAA;
-
-	--g1: #003300;
-	--g2: #448844;
-	--g3: #a8d8a8;
+	--r1: #5e0000;
+	--r2: #AA2222;
+	--r3: #F0A8A8;
 
 	--y1: #808000;
-	--y2: #EEDD82;
+	--y2: #BFBF66;
 	--y3: #FFFFCC;
 
-	--b1: #00334D;
+	--g1: #003D26;
+	--g2: #009E60;
+	--g3: #A8F0C8;
+
+	--b1: #1A2D5F;
 	--b2: #2A6B9A;
 	--b3: #A8D8F0;
 
@@ -42,36 +36,30 @@
 	--text2: #000000;
 
 	--main1: #1a1a1a;
-	--main2: #222222;
-	--main3: #2a2a2a;
-	--main4: #333333;
-	--main5: #444444;
-	--main6: #555555;
+	--main2: #2a2a2a;
+	--main3: #444444;
 
 	--base1: #4a7ba7;
 	--base2: #5a8bc4;
 	--base3: #2a3c4a;
-	--base4: #344048;
-	--base5: #444444;
-	--base6: #333333;
 
 	--acent: #d4c9e0;
 
-	--r1: #FFAAAA;
-	--r2: #884444;
-	--r3: #660000;
+	--r1: #F0A8A8;
+	--r2: #AA2222;
+	--r3: #2D1A1A;
 
-	--g1: #a8d8a8;
-	--g2: #448844;
-	--g3: #003300;
+	--g1: #A8F0C8;
+	--g2: #009E60;
+	--g3: #1A2D22;
 
 	--y1: #cccc44;
-	--y2: #4a4a1a;
+	--y2: #BFBF66;
 	--y3: #3a3a1a;
 
 	--b1: #A8D8F0;
 	--b2: #2A6B9A;
-	--b3: #00334D;
+	--b3: #1A2D3D;
 
 	--hovered: #2a2522;
 }
@@ -82,16 +70,16 @@
 	--loading: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjEuNSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIxLjU7MzsxLjUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIzOzEuNTszIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjIwIiBjeT0iMTIiIHI9IjEuNSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIxLjU7MzsxLjUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9zdmc+);
 }
 
-:root:has(g-theme-selector[value="true"]) {
-	.theme-dark();
-}
-
 @media (prefers-color-scheme: dark) {
 	:root {
 		.theme-dark();
 	}
+}
 
-	:root:has(g-theme-selector[value="true"]) {
-		.theme-light();
-	}
+:root:has(g-theme-selector[value="dark"]) {
+	.theme-dark();
+}
+
+:root:has(g-theme-selector[value="light"]) {
+	.theme-light();
 }

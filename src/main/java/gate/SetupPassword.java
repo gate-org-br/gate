@@ -3,13 +3,12 @@ package gate;
 import java.io.IOException;
 import java.io.Writer;
 
-import gate.entity.User;
+import gate.annotation.Current;
+import gate.authenticator.Authenticator;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.InvalidPasswordException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.security.hash.MD5;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -22,6 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SetupPassword")
 public class SetupPassword extends HttpServlet
 {
+	@Inject
+	@Current
+	Authenticator authenticator;
 
 	@Inject
 	private PasswordControl control;
@@ -41,12 +43,9 @@ public class SetupPassword extends HttpServlet
 			try
 			{
 
-				if (request.getAuthorization() instanceof BasicAuthorization authorization)
+				if (request.getAuthorization() instanceof BasicAuthorization)
 				{
-					User user = control.select(authorization.username());
-					if (!user.getPassword().equals(MD5.digest(authorization.password()).toString()))
-						throw new InvalidPasswordException();
-
+					var user = authenticator.getUser(request);
 					control.update(user, request.getBody().trim());
 				} else
 					throw new BadRequestException("Missing user credentials");

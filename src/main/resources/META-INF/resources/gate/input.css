@@ -11,7 +11,7 @@ g-selectn {
   color: inherit;
   font-size: 14px;
   min-height: 38px;
-  border: 1px solid var(--main6);
+  border: 1px solid var(--main2, #F0F0F0);
   background-color: var(--main1, #FFFFFF);
 }
 textarea,

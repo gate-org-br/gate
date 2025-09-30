@@ -26,8 +26,7 @@ div {
 	align-self: stretch;
 }
 
-div[hidden]
-{
+div[hidden] {
 	flex-basis: 0;
 	display: none;
 }
@@ -42,7 +41,7 @@ button {
 	margin-right: 4px;
 
 	cursor: col-resize;
-	background-color: var(--main4);
+	background-color: var(--main2, #F0F0F0);
 }</style>`;
 /* global customElements, template */
 

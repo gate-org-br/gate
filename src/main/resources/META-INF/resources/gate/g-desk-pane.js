@@ -38,7 +38,7 @@ template.innerHTML = `
 	justify-content: center;
 	grid-template-rows: 1fr 1fr;
 
-	border: 1px solid var(--base6, #FAFAFA);
+	border: 1px solid var(--main3, #DDDDDD);
 }
 
 ::slotted(:hover) {
@@ -62,20 +62,22 @@ template.innerHTML = `
 	font-family: gate;
 	content: '\\3017';
 	position: absolute;
-	color: var(--text2, #FFFFFF);
+	color: var(--text1, #000000);
+}
+
+::slotted(g-desk-pane-reset) {
+	cursor: pointer;
+	color: var(--r1, #5e0000);
 }
 
 ::slotted(g-desk-pane-reset)::before {
-	color: var(--r, #660000);
+
 	font-size: 48px;
-	cursor: pointer;
 	content: '\\2023';
 	font-family: gate;
 }
 
 ::slotted(g-desk-pane-reset)::after {
-	color: var(--r, #660000);
-	cursor: pointer;
 	content: 'Return';
 }
 
@@ -129,7 +131,7 @@ template.innerHTML = `
 	border-radius: inherit;
 	justify-content: center;
 	color: var(--text1, #000000);
-	background-color: var(--main4, #F0F0F0);
+	background-color: var(--main2, #F0F0F0);
 }
 
 ::slotted(:is(a, button, .g-command)[data-loading])::after {
@@ -139,7 +141,7 @@ template.innerHTML = `
 	max-width: 80%;
 	position: absolute;
 	animation-fill-mode: both;
-	background-color: var(--base1);
+	background-color: var(--base1, #2f5674);
 	animation: loading 2s infinite ease-in-out;
 }
 

@@ -5,7 +5,6 @@
 
 :host {
 	margin: 0;
-	color: var(--text1, #000000);
 	border: none;
 	padding: 10px;
 	z-index: 1000;
@@ -16,6 +15,7 @@
 	min-width: 220px;
 	width: fit-content;
 	border-radius: 10px;
+	color: var(--text1, #000000);
 	background-color: var(--main2, white);
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }

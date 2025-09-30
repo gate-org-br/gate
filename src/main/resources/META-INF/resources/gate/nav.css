@@ -15,5 +15,5 @@ nav > a {
   color: var(--text1, #000000);
 }
 nav > a:hover {
-  background-color: var(--main4);
+  background-color: var(--main2, #F0F0F0);
 }

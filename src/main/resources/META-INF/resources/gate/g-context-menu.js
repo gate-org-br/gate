@@ -9,7 +9,6 @@ template.innerHTML = `
 
 :host {
 	margin: 0;
-	color: var(--text1, #000000);
 	border: none;
 	padding: 10px;
 	z-index: 1000;
@@ -20,6 +19,7 @@ template.innerHTML = `
 	min-width: 220px;
 	width: fit-content;
 	border-radius: 10px;
+	color: var(--text1, #000000);
 	background-color: var(--main2, white);
 	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -294,18 +294,18 @@ export default class GContextMenu extends HTMLElement
 		menu.addEventListener("toggle",
 			e => e.newState === "closed" && menu.remove());
 
-		for (let parent = context;
-			parent !== null && menu.parentNode !== parent;
-			parent = parent.parentNode)
+		let parent = context;
+		while (parent && !parent.contains(menu))
+		{
 			parent.appendChild(menu);
-
+			parent = parent.parentNode;
+		}
 		menu.show(target);
 		return menu;
 	}
 
 	connectedCallback()
 	{
-		//super.connectedCallback();
 		this.setAttribute("popover", "manual");
 	}
 }

@@ -3,7 +3,6 @@ template.innerHTML = `
 	<slot>
 	</slot>
 `;
-
 /* global customElements, template */
 
 import GDrawer from './g-drawer.js';

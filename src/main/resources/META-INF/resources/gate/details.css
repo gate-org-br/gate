@@ -5,7 +5,7 @@ details {
   align-items: stretch;
   flex-direction: column;
   justify-content: stretch;
-  border: 1px solid var(--base3);
+  border: 1px solid var(--base3, #cfdce6);
 }
 details > section {
   padding: 8px;
@@ -21,12 +21,12 @@ details > summary {
   font-weight: bold;
   border-radius: 3px;
   align-items: center;
-  color: var(--base1);
+  color: var(--base1, #2f5674);
   justify-content: space-between;
-  background-color: var(--base3);
+  background-color: var(--base3, #cfdce6);
 }
 details > summary:focus {
-  background-color: var(--hovered);
+  background-color: var(--hovered, #FFFACD);
 }
 details > summary::-webkit-details-marker {
   display: none;

@@ -39,7 +39,7 @@ div> ::slotted(:is(a, button, .g-command)) {
 	justify-content: space-between;
 
 	color: var(--text1, #000000);
-	background-color: var(--main5, #FAFAFA);
+	background-color: var(--main3, #DDDDDD);
 
 	transition: background-color 0.2s ease, transform 0.2s ease;
 }
@@ -53,15 +53,15 @@ div> ::slotted(.g-command:hover) {
 div> ::slotted(a:focus),
 div> ::slotted(button:focus),
 div> ::slotted(.g-command:focus) {
-	outline: 4px solid var(--hovered);
+	outline: 4px solid var(--hovered, #FFFACD);
 }
 
 div> ::slotted(a.primary),
 div> ::slotted(button.primary),
 div> ::slotted(.g-command.primary) {
-	color: white;
 	border: none;
-	background-color: #2A6B9A;
+	color: white;
+	background-color: var(--b2, #2A6B9A);
 }
 
 div> ::slotted(a.alternative),
@@ -69,23 +69,23 @@ div> ::slotted(button.alternative),
 div> ::slotted(.g-command.alternative) {
 	color: white;
 	border: none;
-	background-color: #009E60;
+	background-color: var(--g2, #009E60);
 }
 
 div> ::slotted(a.tertiary),
 div> ::slotted(button.tertiary),
 div> ::slotted(.g-command.tertiary) {
 	color: var(--text1, #000000);
-	border: 1px solid var(--main6);
+	border: 1px solid var(--main3, #DDDDDD);
 	background-color: var(--text2, #FFFFFF);
 }
 
 div> ::slotted(a.danger),
 div> ::slotted(button.danger),
 div> ::slotted(.g-command.danger) {
-	color: white;
 	border: none;
-	background-color: #AA2222;
+	color: white;
+	background-color: var(--r2, #AA2222);
 }
 
 div> ::slotted([hidden="true"]) {
@@ -102,7 +102,7 @@ div> ::slotted(hr) {
 }
 
 :host([disabled]) {
-	background-color: var(--main6);
+	background-color: var(--main3, #DDDDDD);
 }
 
 :host([disabled]) div,
@@ -115,7 +115,7 @@ div> ::slotted(hr) {
 	height: 44px;
 	grid-column: 2;
 	animation-fill-mode: both;
-	background-color: var(--base1);
+	background-color: var(--base1, #2f5674);
 	animation: progress 2s infinite ease-in-out;
 }
 
@@ -165,5 +165,5 @@ div> ::slotted(hr) {
 }
 
 #show:hover {
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }

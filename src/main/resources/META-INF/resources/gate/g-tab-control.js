@@ -15,21 +15,14 @@ template.innerHTML = `
 :host(*) {
 	min-width: 0;
 	display: grid;
-	background-color: var(--main3, #F8F8F8);
-	border: 1px outset var(--main4, #F0F0F0);
 	grid-template-rows: auto 1fr;
-
+	background-color: transparent;
+	border: 1px outset var(--main2, #F0F0F0);
 }
 
-label {
-	padding: 8px;
-	display: none;
-	cursor: pointer;
-	font-family: gate;
-	font-size: 0.75rem;
-	align-items: center;
-	justify-content: space-between;
-	background-color: var(--main4, #F0F0F0);
+header {
+	display: flex;
+	flex-wrap: wrap;
 }
 
 section {
@@ -39,15 +32,6 @@ section {
 	align-items: stretch;
 	flex-direction: column;
 	justify-content: stretch;
-}
-
-label::before {
-	content: '\\2265';
-}
-
-header {
-	display: flex;
-	flex-wrap: wrap;
 }
 
 ::slotted(div) {
@@ -80,7 +64,7 @@ header {
 	text-decoration: none;
 	color: var(--text1, #000000);
 	justify-content: flex-start;
-	background-color: var(--main4, #F0F0F0);
+	background-color: var(--main2, #F0F0F0);
 }
 
 header> ::slotted(:not(:first-child)) {

@@ -8,20 +8,18 @@ template.innerHTML = `
 	box-sizing: border-box;
 }
 
-:host(*)
-{
+:host(*) {
 	display: flex;
 	font-size: 12px;
 	cursor: pointer;
 	position: relative;
 	align-items: stretch;
 	flex-direction: column;
-	border: 1px solid var(--main6);
-	background-color: var(--main4);
+	border: 1px solid var(--main3, #DDDDDD);
+	background-color: var(--main2, #F0F0F0);
 }
 
-header
-{
+header {
 	gap: 8px;
 	padding: 8px;
 	height: 32px;
@@ -33,13 +31,11 @@ header
 	grid-template-columns: 1fr 24px;
 }
 
-header::before
-{
+header::before {
 	content: attr(title);
 }
 
-header::after
-{
+header::after {
 	display: flex;
 	font-size: 0.5em;
 	content: '\\2276';
@@ -58,11 +54,12 @@ main {
 	font-size: inherit;
 	position: absolute;
 	flex-direction: column;
-	background-color: var(--main4);
-	border: 1px solid var(--main6);
+	background-color: var(--main2, #F0F0F0);
+	border: 1px solid var(--main3, #DDDDDD);
 }
 
-a, .g-command {
+a,
+.g-command {
 	gap: 8px;
 	padding: 8px;
 	height: 32px;
@@ -74,24 +71,22 @@ a, .g-command {
 	grid-template-columns: 1fr 24px;
 }
 
-g-icon, i {
+g-icon,
+i {
 	order: 1;
 	font-size: 1.5em;
 }
 
 a:hover,
-.g-command:hover
-{
-	background-color: var(--hovered);
+.g-command:hover {
+	background-color: var(--hovered, #FFFACD);
 }
 
-:host([opened]) > main
-{
+:host([opened])>main {
 	display: block;
 }
 
-:host([opened]) > header::after
-{
+:host([opened])>header::after {
 	content: '\\2278';
 }</style>`;
 /* global customElements */

@@ -196,18 +196,18 @@ export default class GContextMenu extends HTMLElement
 		menu.addEventListener("toggle",
 			e => e.newState === "closed" && menu.remove());
 
-		for (let parent = context;
-			parent !== null && menu.parentNode !== parent;
-			parent = parent.parentNode)
+		let parent = context;
+		while (parent && !parent.contains(menu))
+		{
 			parent.appendChild(menu);
-
+			parent = parent.parentNode;
+		}
 		menu.show(target);
 		return menu;
 	}
 
 	connectedCallback()
 	{
-		//super.connectedCallback();
 		this.setAttribute("popover", "manual");
 	}
 }

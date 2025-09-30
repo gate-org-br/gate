@@ -16,9 +16,9 @@ template.innerHTML = `
 	font-size: 16px;
 	border-radius: 3px;
 	align-items: center;
-	background-color: var(--main1, white);
-	border: 1px solid var(--main4, #F0F0F0);
-	box-shadow: 1px 1px 2px 0px var(--main6, #CCCCCC);
+	background-color: var(--main1, #FFFFFF);
+	border: 1px solid var(--main2, #F0F0F0);
+	box-shadow: 1px 1px 2px 0px var(--main3, #DDDDDD);
 }
 
 main {
@@ -44,7 +44,8 @@ main {
 :host(.fill) {
 	box-shadow: none;
 	color: var(--text1, #000000);
-	background-color: var(--main4, #F0F0F0);
+	background-color: var(--main3, #FFFFFF);
+	border: 1px solid var(--main2, #F0F0F0);
 }
 
 :host(.error) {
@@ -60,11 +61,11 @@ main {
 }
 
 :host(.success) {
-	color: var(--g1, #003300);
+	color: var(--g1, #003D26);
 }
 
 :host(.success.fill) {
-	background-color: var(--g3, #a8d8a8);
+	background-color: var(--g3, #A8F0C8);
 }
 
 :host(.success.icon)::before {
@@ -84,7 +85,7 @@ main {
 }
 
 :host(.question) {
-	color: var(--b1, #00334D);
+	color: var(--b1, #1A2D5F);
 }
 
 :host(.question.fill) {

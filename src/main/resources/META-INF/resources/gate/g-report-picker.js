@@ -44,12 +44,12 @@ button {
 	text-decoration: none;
 	flex-direction: column;
 	justify-content: center;
-	color: var(--b1, #444488);
+	color: var(--b1, #1A2D5F);
 	background-color: var(--main1, white);
 }
 
 button:hover {
-	background-color: var(--hovered);
+	background-color: var(--hovered, #FFFACD);
 }
 
 section g-icon {

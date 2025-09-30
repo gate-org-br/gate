@@ -29,7 +29,7 @@ a {
 }
 
 a:hover {
-	background-color: var(--hovered)
+	background-color: var(--hovered, #FFFACD)
 }</style>`;
 /* global customElements */
 

@@ -159,7 +159,7 @@ select
 	width: 120px;
 	height: 40px;
 	border-radius: 5px;
-	border: 1px solid var(--main5);
+	border: 1px solid var(--main3, #DDDDDD);
 }
 
 #emoji option {

@@ -1,18 +1,18 @@
 /* global customElements */
 
-import './g-icon.js';
 import './g-coolbar.js';
-import './g-tab-control.js';
-import stylesheets from './stylesheets.js';
+import './g-icon.js';
 import GMessageDialog from './g-message-dialog.js';
+import './g-tab-control.js';
 import ResponseHandler from './response-handler.js';
+import stylesheets from './stylesheets.js';
 
 customElements.define('g-login-form', class extends HTMLElement
 {
 	constructor()
 	{
 		super();
-		this.attachShadow({mode: "open"});
+		this.attachShadow({ mode: "open" });
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 		stylesheets('input.css', 'fieldset.css').forEach(e => this.shadowRoot.appendChild(e));
 
@@ -42,8 +42,10 @@ customElements.define('g-login-form', class extends HTMLElement
 				return GMessageDialog.error("As duas senhas não conferem");
 
 			let creadentials = btoa(username.value + ':' + password.value);
-			fetch(new Request("SetupPassword", {method: "post",
-				headers: {Authorization: `Basic ${creadentials}`}, body: change.value}))
+			fetch(new Request("SetupPassword", {
+				method: "post",
+				headers: { Authorization: `Basic ${creadentials}` }, body: change.value
+			}))
 				.then(ResponseHandler.none)
 				.then(() =>
 				{
@@ -95,8 +97,10 @@ customElements.define('g-login-form', class extends HTMLElement
 			if (change.value !== repeat.value)
 				return GMessageDialog.error("As duas senhas não conferem");
 
-			fetch(new Request("ResetPassword", {method: "post",
-				headers: {Authorization: `Bearer ${code.value}`}, body: change.value}))
+			fetch(new Request("ResetPassword", {
+				method: "post",
+				headers: { Authorization: `Bearer ${code.value}` }, body: change.value
+			}))
 				.then(ResponseHandler.none)
 				.then(() =>
 				{
@@ -105,6 +109,22 @@ customElements.define('g-login-form', class extends HTMLElement
 					code.value = change.value = repeat.value = "";
 				})
 				.catch(error => GMessageDialog.error(error.message));
+		});
+
+		Array.from(this.shadowRoot.querySelectorAll(".show")).forEach(e => 
+		{
+			e.addEventListener("click", () =>
+			{
+				if (e.previousElementSibling.type === "password")
+				{
+					e.previousElementSibling.type = "text";
+					e.firstElementChild.innerHTML = "&#X3070;"
+				} else
+				{
+					e.previousElementSibling.type = "password";
+					e.firstElementChild.innerHTML = "&#X2199;"
+				}
+			});
 		});
 	}
 

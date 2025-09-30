@@ -1,17 +1,17 @@
 package gate.icon;
 
-import gate.lang.json.JsonArray;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import gate.lang.json.JsonArray;
+
 public class Icons
 {
 
-	public static final Icon UNKNOWN
-		= new Icon("1006", "??????");
+	public static final Icon UNKNOWN = new Icon("1006", "??????");
 
 	private final List<Icon> icons;
 
@@ -31,8 +31,8 @@ public class Icons
 		models.add(new Icon("1001", "hide"));
 		models.add(new Icon("1002", "insert"));
 		models.add(new Icon("1003", "??????"));
-		models.add(new Icon("1006", "??????"));
-		models.add(new Icon("1007", "??????"));
+		models.add(new Icon("1006", "question"));
+		models.add(new Icon("1007", "exclamation"));
 		models.add(new Icon("1010", "??????"));
 		models.add(new Icon("1011", "??????"));
 		models.add(new Icon("1012", "??????"));
@@ -130,7 +130,7 @@ public class Icons
 		models.add(new Icon("2095", "??????"));
 		models.add(new Icon("2096", "??????"));
 		models.add(new Icon("2097", "??????"));
-		models.add(new Icon("2098", "??????"));
+		models.add(new Icon("2098", "money"));
 		models.add(new Icon("2099", "??????"));
 		models.add(new Icon("2100", "??????"));
 		models.add(new Icon("2101", "trophy"));
@@ -152,10 +152,10 @@ public class Icons
 		models.add(new Icon("2117", "??????"));
 		models.add(new Icon("2118", "??????"));
 		models.add(new Icon("2119", "??????"));
-		models.add(new Icon("2120", "??????"));
-		models.add(new Icon("2121", "??????"));
+		models.add(new Icon("2120", "flag"));
+		models.add(new Icon("2121", "stamp"));
 		models.add(new Icon("2122", "??????"));
-		models.add(new Icon("2123", "??????"));
+		models.add(new Icon("2123", "html"));
 		models.add(new Icon("2124", "??????"));
 		models.add(new Icon("2125", "??????"));
 		models.add(new Icon("2126", "??????"));
@@ -217,28 +217,28 @@ public class Icons
 		models.add(new Icon("2182", "??????"));
 		models.add(new Icon("2183", "??????"));
 		models.add(new Icon("2187", "??????"));
-		models.add(new Icon("2188", "??????"));
+		models.add(new Icon("2188", "pin"));
 		models.add(new Icon("2189", "prompt"));
 		models.add(new Icon("2190", "??????"));
 		models.add(new Icon("2191", "??????"));
 		models.add(new Icon("2192", "??????"));
-		models.add(new Icon("2193", "??????"));
+		models.add(new Icon("2193", "keyboard"));
 		models.add(new Icon("2194", "??????"));
 		models.add(new Icon("2195", "??????"));
 		models.add(new Icon("2196", "??????"));
 		models.add(new Icon("2197", "??????"));
 		models.add(new Icon("2198", "??????"));
-		models.add(new Icon("2199", "??????"));
-		models.add(new Icon("2200", "??????"));
-		models.add(new Icon("2201", "??????"));
-		models.add(new Icon("2202", "??????"));
+		models.add(new Icon("2199", "eye"));
+		models.add(new Icon("2200", "bug"));
+		models.add(new Icon("2201", "tv"));
+		models.add(new Icon("2202", "help"));
 		models.add(new Icon("2203", "??????"));
 		models.add(new Icon("2204", "??????"));
 		models.add(new Icon("2205", "??????"));
 		models.add(new Icon("2206", "??????"));
-		models.add(new Icon("2207", "??????"));
-		models.add(new Icon("2208", "??????"));
-		models.add(new Icon("2209", "??????"));
+		models.add(new Icon("2207", "play"));
+		models.add(new Icon("2208", "pause"));
+		models.add(new Icon("2209", "stop"));
 		models.add(new Icon("2210", "??????"));
 		models.add(new Icon("2211", "??????"));
 		models.add(new Icon("2212", "??????"));
@@ -287,13 +287,13 @@ public class Icons
 		models.add(new Icon("2255", "??????"));
 		models.add(new Icon("2256", "dialog"));
 		models.add(new Icon("2257", "??????"));
-		models.add(new Icon("2258", "??????"));
-		models.add(new Icon("2259", "??????"));
-		models.add(new Icon("2260", "??????"));
+		models.add(new Icon("2258", "heart-full"));
+		models.add(new Icon("2259", "heart"));
+		models.add(new Icon("2260", "inject"));
 		models.add(new Icon("2261", "island"));
 		models.add(new Icon("2262", "??????"));
 		models.add(new Icon("2263", "??????"));
-		models.add(new Icon("2264", "??????"));
+		models.add(new Icon("2264", "percent"));
 		models.add(new Icon("2265", "??????"));
 		models.add(new Icon("2266", "??????"));
 		models.add(new Icon("2267", "??????"));
@@ -368,7 +368,25 @@ public class Icons
 		models.add(new Icon("3052", "??????"));
 		models.add(new Icon("3053", "??????"));
 		models.add(new Icon("3054", "??????"));
-		models.add(new Icon("3055", "??????"));
+		models.add(new Icon("3055", "tabs"));
+		models.add(new Icon("3056", "??????"));
+		models.add(new Icon("3057", "??????"));
+		models.add(new Icon("3058", "??????"));
+		models.add(new Icon("3059", "??????"));
+		models.add(new Icon("3060", "??????"));
+		models.add(new Icon("3061", "??????"));
+		models.add(new Icon("3062", "??????"));
+		models.add(new Icon("3063", "discount"));
+		models.add(new Icon("3064", "??????"));
+		models.add(new Icon("3065", "??????"));
+		models.add(new Icon("3066", "??????"));
+		models.add(new Icon("3067", "??????"));
+		models.add(new Icon("3068", "??????"));
+		models.add(new Icon("3069", "??????"));
+		models.add(new Icon("3070", "eye-slashed"));
+		models.add(new Icon("3071", "??????"));
+		models.add(new Icon("3072", "??????"));
+		models.add(new Icon("3073", "??????"));
 		this.icons = Collections.unmodifiableList(models);
 	}
 
@@ -400,7 +418,8 @@ public class Icons
 
 	public JsonArray toJson()
 	{
-		return this.icons.stream().map(Icon::toJson)
-			.collect(Collectors.toCollection(JsonArray::new));
+		return this.icons.stream()
+				.map(Icon::toJson)
+				.collect(Collectors.toCollection(JsonArray::new));
 	}
 }

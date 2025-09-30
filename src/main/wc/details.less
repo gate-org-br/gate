@@ -5,13 +5,13 @@ details {
 	align-items: stretch;
 	flex-direction: column;
 	justify-content: stretch;
-	border: 1px solid var(--base3);
+	border: 1px solid var(--base3, #cfdce6);
 
-	> section {
+	>section {
 		padding: 8px;
 	}
 
-	> summary {
+	>summary {
 
 		border: none;
 		padding: 6px;
@@ -23,12 +23,12 @@ details {
 		font-weight: bold;
 		border-radius: 3px;
 		align-items: center;
-		color: var(--base1);
+		color: var(--base1, #2f5674);
 		justify-content: space-between;
-		background-color: var(--base3);
+		background-color: var(--base3, #cfdce6);
 
 		&:focus {
-			background-color: var(--hovered);
+			background-color: var(--hovered, #FFFACD);
 		}
 
 		&::-webkit-details-marker {
@@ -41,10 +41,8 @@ details {
 		}
 	}
 
-	&[open]
-	{
-		> summary
-		{
+	&[open] {
+		>summary {
 			border-radius: 3px 3px 0 0;
 
 			&::after {
@@ -53,4 +51,3 @@ details {
 		}
 	}
 }
-
