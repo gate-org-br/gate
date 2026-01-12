@@ -40,6 +40,7 @@ import './@redirect.js';
 import './@reload.js';
 import './@remove.js';
 import './@report.js';
+import './@reset.js';
 import './@return.js';
 import './@sanitize.js';
 import './@save.js';

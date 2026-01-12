@@ -1,61 +1,90 @@
-import DOM from './dom.js';
+import MutationListener from './mutation-listener.js';
 
-const shadowRootObservers = new WeakMap();
+const connectedElements = new WeakSet();
+
+const listener = new MutationListener(dispatcher, {
+	childList: true,
+	subtree: true,
+	attributes: true,
+	attributeOldValue: true
+});
+
+function connect(root)
+{
+	if (connectedElements.has(root))
+		return;
+
+	connectedElements.add(root);
+
+	if (root.nodeType === Node.ELEMENT_NODE)
+		root.dispatchEvent(new CustomEvent("connected", { bubbles: true, composed: true }));
+
+	if (root.children)
+		Array.from(root.children).forEach(connect);
+
+	if (root.shadowRoot)
+	{
+		Array.from(root.shadowRoot.children).forEach(connect);
+		listener.listen(root.shadowRoot);
+	}
+}
+
+function disconnect(root)
+{
+	if (!connectedElements.has(root))
+		return;
+
+	connectedElements.delete(root);
+
+	if (root.nodeType === Node.ELEMENT_NODE)
+		root.dispatchEvent(new CustomEvent("disconnected", { bubbles: true, composed: true }));
+
+	if (root.children)
+		Array.from(root.children).forEach(disconnect);
+
+	if (root.shadowRoot)
+		Array.from(root.shadowRoot.children).forEach(disconnect);
+}
 
 function dispatcher(mutations)
 {
-	mutations.forEach(mutation => {
+	mutations.forEach(mutation =>
+	{
 		if (mutation.type === "childList")
 		{
-			Array.from(mutation.addedNodes).forEach(root => {
-				DOM.traverse(root, target => target.nodeType === Node.ELEMENT_NODE, target => {
-					target.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true}));
+			let added = mutation.addedNodes;
 
-					if (target.shadowRoot && !shadowRootObservers.has(target.shadowRoot))
-					{
-						const observer = new MutationObserver(dispatcher);
-						shadowRootObservers.set(target.shadowRoot, observer);
-						observer.observe(target.shadowRoot, {childList: true, subtree: true, attributes: true});
-					}
-				});
-			});
+			if (added.length === 0 && mutation.target.children.length > 0)
+				added = Array.from(mutation.target.children);
 
-			Array.from(mutation.removedNodes).forEach(root => {
-				DOM.traverse(root, target => target.nodeType === Node.ELEMENT_NODE, target => {
-					target.dispatchEvent(new CustomEvent("disconnected", {bubbles: true, composed: true}));
-
-					if (target.shadowRoot && shadowRootObservers.has(target.shadowRoot))
-					{
-						const observer = shadowRootObservers.get(target.shadowRoot);
-						observer.disconnect();
-						shadowRootObservers.delete(target.shadowRoot);
-					}
-				});
-			});
-		} else if (mutation.type === "attributes")
+			Array.from(added).forEach(connect);
+			Array.from(mutation.removedNodes).forEach(disconnect);
+		}
+		else if (mutation.type === "attributes")
 		{
-			const {target, attributeName: attribute, oldValue} = mutation;
+			const { target, attributeName: attribute, oldValue } = mutation;
+
 			if (!target.hasAttribute(attribute))
-				target.dispatchEvent(new CustomEvent("attribute-removed", {bubbles: true, composed: true, detail: {attribute}}));
+				target.dispatchEvent(new CustomEvent("attribute-removed", {
+					bubbles: true,
+					composed: true,
+					detail: { attribute }
+				}));
 			else if (oldValue === null)
-				target.dispatchEvent(new CustomEvent("attribute-created", {bubbles: true, composed: true, detail: {attribute}}));
+				target.dispatchEvent(new CustomEvent("attribute-created", {
+					bubbles: true,
+					composed: true,
+					detail: { attribute }
+				}));
 			else
-				target.dispatchEvent(new CustomEvent("attribute-changed", {bubbles: true, composed: true, detail: {attribute, oldValue}}));
+				target.dispatchEvent(new CustomEvent("attribute-changed", {
+					bubbles: true,
+					composed: true,
+					detail: { attribute, oldValue }
+				}));
 		}
 	});
 }
 
-window.addEventListener("DOMContentLoaded", () =>
-{
-	DOM.traverse(document, node => node.nodeType === Node.ELEMENT_NODE, node => {
-		node.dispatchEvent(new CustomEvent("connected", {bubbles: true, composed: true}));
-
-		if (node.shadowRoot && !shadowRootObservers.has(node.shadowRoot)) {
-			const observer = new MutationObserver(dispatcher);
-			shadowRootObservers.set(node.shadowRoot, observer);
-			observer.observe(node.shadowRoot, {childList: true, subtree: true, attributes: true});
-		}
-	});
-});
-
-new MutationObserver(dispatcher).observe(document, {childList: true, subtree: true, attributes: true});
+listener.listen(document);
+connect(document);

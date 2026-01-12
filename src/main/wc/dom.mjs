@@ -1,5 +1,5 @@
-import Parser from './parser.js';
 import Optional from './optional.js';
+import Parser from './parser.js';
 
 /**
  * Utility class for DOM manipulation and traversal.
@@ -19,6 +19,8 @@ export default class DOM
 	 */
 	static traverse(root, filter, consumer)
 	{
+		if (filter(root))
+			consumer(root);
 		if (root.querySelectorAll)
 		{
 			Array.from(root.querySelectorAll("*")).forEach(element =>
@@ -28,8 +30,7 @@ export default class DOM
 				if (element.shadowRoot)
 					DOM.traverse(element.shadowRoot, filter, consumer);
 			});
-		} else if (filter(root))
-			consumer(root);
+		}
 	}
 
 	/**

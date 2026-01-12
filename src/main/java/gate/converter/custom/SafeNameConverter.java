@@ -7,11 +7,12 @@ import java.sql.Types;
 import java.util.List;
 
 import gate.constraint.Constraint;
+import gate.constraint.Pattern;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.type.SafeString;
+import gate.type.SafeName;
 
-public class SafeStringConverter implements Converter
+public class SafeNameConverter implements Converter
 {
 
 	@Override
@@ -26,7 +27,7 @@ public class SafeStringConverter implements Converter
 			if (string.isEmpty())
 				return null;
 
-			return SafeString.valueOf(string);
+			return SafeName.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(ex, ex.getMessage());
@@ -60,27 +61,27 @@ public class SafeStringConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Safe string to avoid injection attacks.";
+		return "Use apenas letras, números, espaços, _, - ou .";
 	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		return List.of();
+		return List.of(new Pattern.Implementation(SafeName.PATTERN.pattern()));
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : SafeString.valueOf(value);
+		return rs.wasNull() ? null : SafeName.valueOf(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : SafeString.valueOf(value);
+		return rs.wasNull() ? null : SafeName.valueOf(value);
 	}
 
 	@Override

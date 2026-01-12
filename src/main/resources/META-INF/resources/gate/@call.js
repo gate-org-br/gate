@@ -1,13 +1,13 @@
-import './trigger.js';
-import DOM from './dom.js';
 import DataURL from './data-url.js';
+import DOM from './dom.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
+import './trigger.js';
 
 window.addEventListener("@call", function (event)
 {
 	let path = event.composedPath();
-	let {method, action, form, parameters: [selector], signal} = event.detail;
+	let { method, action, form, parameters: [selector], signal } = event.detail;
 
 	let index = selector.lastIndexOf(":");
 	if (index === -1)
@@ -17,10 +17,11 @@ window.addEventListener("@call", function (event)
 	let target = DOM.navigate(event, selector.substring(0, index))
 		.orElseThrow(`${selector} is not a valid selector`);
 
-	fetch(RequestBuilder.build(method, action, form), {signal})
+	fetch(RequestBuilder.build(method, action, form), { signal })
 		.then(response =>
 		{
-			const contentType = response.headers.get('content-type');
+			const contentType = response.headers.get('content-type')
+				|| 'text/plain';
 			return ResponseHandler.auto(response)
 				.then(result =>
 				{
