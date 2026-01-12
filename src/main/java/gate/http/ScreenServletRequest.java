@@ -201,6 +201,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			}
 
 			return getCookieValue("subject")
+					.filter(Objects::nonNull)
+					.filter(e -> !e.isBlank())
+					.filter(e -> e.chars().filter(c -> c == '.').count() == 2)
 					.map(CookieAuthorization::valueOf)
 					.orElse(null);
 		}
