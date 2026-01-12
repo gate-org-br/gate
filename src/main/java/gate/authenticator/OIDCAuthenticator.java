@@ -1,11 +1,15 @@
 package gate.authenticator;
 
+import java.io.IOException;
+import java.security.PublicKey;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import gate.GateControl;
 import gate.cache.Cache;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.AuthenticatorException;
-import gate.error.BadRequestException;
 import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.http.BasicAuthorization;
@@ -14,16 +18,12 @@ import gate.http.ScreenServletRequest;
 import gate.io.URL;
 import gate.lang.json.JsonObject;
 import gate.security.JWKSPublicKeyParser;
-import gate.util.Parameters;
 import gate.security.SecuritySessions;
+import gate.util.Parameters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.PublicKey;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class OIDCAuthenticator implements Authenticator
 {
@@ -49,27 +49,33 @@ public class OIDCAuthenticator implements Authenticator
 
 	private String getCallback(ScreenServletRequest request)
 	{
-		return redirectUri.replace("${server}", "%s://%s:%d"
-				.formatted(request.getScheme(),
-						request.getLocalAddr(),
-						request.getLocalPort()));
+		if (redirectUri.contains("${server}"))
+			return redirectUri.replace("${server}", request.getPublicAddress());
+		return redirectUri;
 	}
 
 	public OIDCAuthenticator(GateControl control, AuthConfig config)
 	{
 		this.control = control;
-		clientId = config.getProperty("oidc.client_id").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
-		clientSecret = config.getProperty("oidc.client_secret").orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
-		provider = config.getProperty("oidc.provider").orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
-		configurationEndpoint = config.getProperty("oidc.configuration_endpoint").orElse(provider + "/.well-known/openid-configuration");
+		clientId = config.getProperty("oidc.client_id")
+				.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
+		clientSecret = config.getProperty("oidc.client_secret")
+				.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
+		provider = config.getProperty("oidc.provider")
+				.orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
+		configurationEndpoint = config.getProperty("oidc.configuration_endpoint")
+				.orElse(provider + "/.well-known/openid-configuration");
 		redirectUri = config.getProperty("oidc.redirect_uri").orElse("${server}/Gate?authenticator=" + config.name());
 		userId = config.getProperty("oidc.user_id").orElse("email");
 		scope = config.getProperty("oidc.scope").orElse("openid email profile");
 		logoutUri = config.getProperty("oidc.logout_uri").orElse(null);
 		configuration = Cache.of(this::fetchConfiguration);
-		authorizationEndpoint = Cache.of(() -> config.getProperty("oidc.authorization_endpoint").orElseGet(() -> getEndpoint("authorization_endpoint")));
-		tokenEndpoint = Cache.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
-		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint").orElseGet(() -> getEndpoint("userinfo_endpoint")));
+		authorizationEndpoint = Cache.of(() -> config.getProperty("oidc.authorization_endpoint")
+				.orElseGet(() -> getEndpoint("authorization_endpoint")));
+		tokenEndpoint = Cache
+				.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
+		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint")
+				.orElseGet(() -> getEndpoint("userinfo_endpoint")));
 		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
 		publicKeys = Cache.of(this::fetchPublicKeys);
 	}
@@ -138,7 +144,8 @@ public class OIDCAuthenticator implements Authenticator
 		if (tokens.containsKey("id_token"))
 		{
 
-			var idToken = tokens.getString("id_token").orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
+			var idToken = tokens.getString("id_token")
+					.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
 			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(idToken);
 
 			if (jwt.getPayload() instanceof Claims claims)
@@ -248,7 +255,8 @@ public class OIDCAuthenticator implements Authenticator
 			return new URL(configurationEndpoint)
 					.get()
 					.readJsonObject()
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
+					.orElseThrow(() -> new AuthenticatorException(
+							"Error trying to get configuration from auth provider"));
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -267,8 +275,8 @@ public class OIDCAuthenticator implements Authenticator
 					.stream()
 					.map(e -> (JsonObject) e)
 					.collect(Collectors.toMap(e -> e.getString("kid")
-					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider")),
-							JWKSPublicKeyParser::parse));
+							.orElseThrow(() -> new AuthenticatorException(
+									"Error trying to get public key from auth provider")), JWKSPublicKeyParser::parse));
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -277,7 +285,8 @@ public class OIDCAuthenticator implements Authenticator
 
 	private String getEndpoint(String endpointKey)
 	{
-		return configuration.get().getString(endpointKey)
+		return configuration.get()
+				.getString(endpointKey)
 				.orElseThrow(() -> new AuthenticatorException("Error trying to get " + endpointKey + " from provider"));
 	}
 
@@ -290,13 +299,19 @@ public class OIDCAuthenticator implements Authenticator
 	private PublicKey getPublicKey(Header header)
 	{
 		if (!header.containsKey("kid"))
-			return publicKeys.get().values().stream().findFirst()
+			return publicKeys.get()
+					.values()
+					.stream()
+					.findFirst()
 					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
 
 		var publicKey = publicKeys.get().get((String) header.get("kid"));
 
 		if (publicKey == null)
-			return publicKeys.get().values().stream().findFirst()
+			return publicKeys.get()
+					.values()
+					.stream()
+					.findFirst()
 					.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
 
 		return publicKey;

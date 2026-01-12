@@ -1,15 +1,16 @@
 package gate;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.ConstraintViolationException;
 import gate.error.InvalidUsernameException;
 import gate.error.NotFoundException;
 import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.Token;
-import gate.messaging.MessageException;
 import gate.messaging.Messenger;
 import gate.type.mime.MimeMail;
 import jakarta.inject.Inject;
@@ -19,8 +20,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.Writer;
 
 @MultipartConfig
 @WebServlet("/ResetPassword")
@@ -55,8 +54,9 @@ public class ResetPassword extends HttpServlet
 					throw new BadRequestException(
 							"Você não definiu um email para o qual seu token possa ser enviado");
 
-				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
-						"Utilize este token para redefinir sua senha: " + Token.create(user)));
+				messenger.post(user.getEmail(), MimeMail
+						.of("Redefinição de senha", "Utilize este token para redefinir sua senha: "
+								+ Token.create(user)));
 
 			} catch (BadRequestException | InvalidUsernameException ex)
 			{

@@ -1,16 +1,16 @@
 package gate;
 
-import gate.entity.User;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import gate.entity.User;
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
 
 public class Progress
 {
@@ -52,8 +52,10 @@ public class Progress
 			try
 			{
 				writer.write("event: %s\n".formatted(type));
-				writer.write("data: " + Base64.getEncoder().encodeToString(message
-						.getBytes(StandardCharsets.UTF_8)) + "\n\n");
+				writer.write("data: " + Base64.getEncoder()
+						.encodeToString(message
+								.getBytes(StandardCharsets.UTF_8))
+						+ "\n\n");
 				writer.flush();
 			} catch (IOException ex)
 			{

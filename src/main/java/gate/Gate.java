@@ -1,5 +1,15 @@
 package gate;
 
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+
+import org.eclipse.microprofile.context.ThreadContext;
+import org.slf4j.Logger;
+
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
@@ -7,7 +17,11 @@ import gate.authenticator.Authenticator;
 import gate.base.Screen;
 import gate.catcher.Catcher;
 import gate.entity.User;
-import gate.error.*;
+import gate.error.AppException;
+import gate.error.AuthenticationException;
+import gate.error.ForbiddenException;
+import gate.error.InternalServerException;
+import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
 import gate.event.LoginEvent;
 import gate.event.LogoffEvent;
@@ -29,15 +43,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.eclipse.microprofile.context.ThreadContext;
-import org.slf4j.Logger;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 @MultipartConfig
 @WebServlet(value = "/Gate/*", asyncSupported = true)
@@ -115,7 +120,7 @@ public class Gate extends HttpServlet
 			request.setAttribute("SCREEN", SCREEN);
 
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-					&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
+					&& !authenticator.hasCredentials(request))
 			{
 				if (user.getId() != null)
 				{
@@ -133,14 +138,9 @@ public class Gate extends HttpServlet
 				if (provider != null)
 					response.sendRedirect(provider);
 				else
-					handlers.select(HTMLCommandHandler.class).get().handle(httpServletRequest,
-							response, HTML);
+					handlers.select(HTMLCommandHandler.class).get().handle(httpServletRequest, response, HTML);
 				return;
 			}
-
-			Call call = Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-					? mainAction
-					: Call.of(MODULE, SCREEN, ACTION);
 
 			if (authenticator.hasCredentials(request))
 			{
@@ -151,8 +151,17 @@ public class Gate extends HttpServlet
 					response.addCookie(CookieFactory.create(SUBJECT_COOKIE, credentials.subject(user)));
 				}
 				request.setAttribute(User.class.getName(), user);
+
+				if (Toolkit.isEmpty(MODULE, SCREEN, ACTION))
+				{
+					if (mainAction == Call.NONE)
+						throw new InternalServerException("No main action defined");
+					response.sendRedirect(mainAction.toString());
+					return;
+				}
 			}
 
+			Call call = Call.of(MODULE, SCREEN, ACTION);
 			if (!call.checkAccess(user))
 				if (user != null && user.getId() != null)
 					throw new ForbiddenException();
@@ -170,8 +179,7 @@ public class Gate extends HttpServlet
 				response.setHeader("Access-Control-Allow-Credentials", "true");
 				response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
 				response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-				response.setHeader("Access-Control-Allow-Headers",
-						"Content-Type, Accept, X-Requested-With, remember-me");
+				response.setHeader("Access-Control-Allow-Headers", "Content-Type, Accept, X-Requested-With, remember-me");
 			}
 
 			if (call.getMethod().isAnnotationPresent(Asynchronous.class))
@@ -188,8 +196,7 @@ public class Gate extends HttpServlet
 				catcher.catches(httpServletRequest, response, ex);
 			} else
 			{
-				httpServletRequest.setAttribute("messages",
-						Collections.singletonList(ex.getMessage()));
+				httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 				httpServletRequest.setAttribute("exception", ex);
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);

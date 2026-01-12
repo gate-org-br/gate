@@ -1,5 +1,10 @@
 package gate.handler;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.lang.annotation.Annotation;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,10 +15,6 @@ import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Providers;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.lang.annotation.Annotation;
 
 @ApplicationScoped
 public class JAXRSResponseHandler implements Handler
@@ -28,9 +29,13 @@ public class JAXRSResponseHandler implements Handler
 		Response res = (Response) value;
 
 		response.setStatus(res.getStatus());
-		res.getHeaders().entrySet()
-			.forEach(h -> h.getValue().stream().filter(v -> v instanceof String)
-			.map(v -> (String) v).forEach(v -> response.addHeader(h.getKey(), v)));
+		res.getHeaders()
+				.entrySet()
+				.forEach(h -> h.getValue()
+						.stream()
+						.filter(v -> v instanceof String)
+						.map(v -> (String) v)
+						.forEach(v -> response.addHeader(h.getKey(), v)));
 
 		Object entity = res.getEntity();
 
