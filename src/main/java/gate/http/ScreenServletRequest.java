@@ -27,6 +27,8 @@ import gate.error.AuthenticationException;
 import gate.error.ConversionException;
 import gate.error.InvalidPasswordException;
 import gate.error.InvalidUsernameException;
+import gate.lang.property.CollectionAttribute;
+import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
 import gate.policonverter.Policonverter;
 import jakarta.servlet.ServletException;
@@ -225,6 +227,16 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public <T> PropertyGraph<T> getPropertyGraph(Class<T> type)
 	{
 		return PropertyGraph.of(type, getParameterList().stream().sorted().toList());
+	}
+
+	public Object getParameter(Property property)
+	{
+		if (property.getLastAttribute() instanceof CollectionAttribute)
+		{
+			var previous = property.getPreviousProperty();
+			return getParameterValues(previous.getRawType(), previous.getElementRawType(), property.toString());
+		}
+		return getParameter(property.getRawType(), property.toString());
 	}
 
 	public void setUser(User user)

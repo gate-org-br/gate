@@ -1,13 +1,14 @@
 package gate.lang.property;
 
-import gate.annotation.ElementType;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import gate.annotation.ElementType;
+import gate.util.Toolkit;
 
 public class CollectionAttribute implements Attribute
 {
@@ -85,7 +86,9 @@ public class CollectionAttribute implements Attribute
 	@SuppressWarnings("unchecked")
 	public void setValue(Object object, Object value)
 	{
-		((Collection<Object>) object).add(value);
+		var collection = ((Collection<Object>) object);
+		collection.clear();
+		collection.addAll(Toolkit.collection(value));
 	}
 
 	@Override
