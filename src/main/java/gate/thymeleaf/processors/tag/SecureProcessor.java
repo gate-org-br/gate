@@ -1,5 +1,10 @@
 package gate.thymeleaf.processors.tag;
 
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
 import gate.Call;
 import gate.annotation.Current;
 import gate.converter.Converter;
@@ -9,10 +14,6 @@ import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class SecureProcessor extends TagProcessor
@@ -21,7 +22,6 @@ public class SecureProcessor extends TagProcessor
 	@Inject
 	@Current
 	User user;
-
 
 	@Inject
 	ELExpressionFactory expression;
@@ -33,24 +33,26 @@ public class SecureProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context,
-						IProcessableElementTag element,
-						IElementTagStructureHandler handler)
+		IProcessableElementTag element,
+		IElementTagStructureHandler handler)
 	{
 		try
 		{
 			if (Call.of(((IWebContext) context).getExchange(),
-							element.getAttributeValue("module"),
-							element.getAttributeValue("screen"),
-							element.getAttributeValue("action"))
-					.checkAccess(user))
+				element.getAttributeValue("module"),
+				element.getAttributeValue("screen"),
+				element.getAttributeValue("action"))
+				.checkAccess(user))
+			{
 				handler.removeTags();
-			else if (element.hasAttribute("otherwise"))
+			} else if (element.hasAttribute("otherwise"))
 			{
 				String otherwise = element.getAttributeValue("otherwise");
 				otherwise = Converter.toText(expression.create().evaluate(otherwise));
 				handler.replaceWith(otherwise, false);
 			} else
-				handler.removeTags();
+				handler.removeElement();
+
 		} catch (BadRequestException ex)
 		{
 			throw new AppError(ex);
