@@ -1,9 +1,16 @@
 package gate.util;
 
-import gate.lang.json.JsonScalar;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import gate.lang.json.JsonScalar;
 
 public class Toolkit
 {
@@ -119,7 +126,8 @@ public class Toolkit
 	 * Checks if the object can be considered "false".
 	 *
 	 * @param obj the object to be checked.
-	 * @return true if the object is null, a blank string, zero, an empty collection or an empty map
+	 * @return true if the object is null, a blank string, zero, an empty
+	 * collection or an empty map
 	 */
 	public static boolean isFalsy(Object obj)
 	{
@@ -216,11 +224,25 @@ public class Toolkit
 			string.add(Toolkit.escapeHTML(error.getMessage()));
 			string.add("<ul>");
 			Stream.of(error.getStackTrace()).map(StackTraceElement::toString)
-					.map(Toolkit::escapeHTML).forEach(e -> string.add("<li>").add(e).add("</li>"));
+				.map(Toolkit::escapeHTML).forEach(e -> string.add("<li>").add(e).add("</li>"));
 			string.add("</ul>");
 			string.add("</li>");
 		}
 		string.add("</ul>");
 		return string.toString();
+	}
+
+	public static String unquote(String string)
+	{
+		if (string == null)
+			return null;
+
+		string = string.trim();
+
+		if (string.length() >= 2
+			&& ((string.startsWith("\"") && string.endsWith("\""))
+			|| (string.startsWith("'") && string.endsWith("'"))))
+			return string.substring(1, string.length() - 1);
+		return string.trim();
 	}
 }
