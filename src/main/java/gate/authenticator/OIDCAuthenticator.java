@@ -66,7 +66,10 @@ public class OIDCAuthenticator implements Authenticator
 			.orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
 		configurationEndpoint = config.getProperty("oidc.configuration_endpoint")
 			.orElse(provider + "/.well-known/openid-configuration");
-		redirectUri = config.getProperty("oidc.redirect_uri").orElse("${server}/Gate?authenticator=" + config.name());
+		redirectUri = config.getProperty("oidc.redirect_uri")
+			.orElse("default".equals(config.name())
+				? "${server}/Gate"
+				: "${server}/Gate?authenticator=" + config.name());
 		userId = config.getProperty("oidc.user_id").orElse("email");
 		scope = config.getProperty("oidc.scope").orElse("openid email profile");
 		logoutUri = config.getProperty("oidc.logout_uri").orElse(null);
