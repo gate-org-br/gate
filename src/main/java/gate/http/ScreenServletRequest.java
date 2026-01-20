@@ -256,8 +256,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String proto = Objects.requireNonNullElse(getHeader("X-Forwarded-Proto"), getScheme());
 		String host = Objects.requireNonNullElse(getHeader("X-Forwarded-Host"), getServerName());
 		String port = Optional.ofNullable(getHeader("X-Forwarded-Port"))
-			.filter(p -> !(("http".equals(proto) && "80".equals(p))
-			|| ("https".equals(proto) && "443".equals(p))))
+			.or(() -> Optional.of(String.valueOf(getServerPort())))
+			.filter(p -> !(("http".equals(proto) && "80".equals(p)) || ("https".equals(proto) && "443".equals(p))))
 			.map(e -> ":" + e)
 			.orElse("");
 		return "%s://%s%s".formatted(proto, host, port);

@@ -7,8 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import gate.annotation.BodyParamExtractor;
 import gate.annotation.CookieParamExtractor;
 import gate.annotation.HeaderParamExtractor;
@@ -21,7 +19,6 @@ import gate.util.Paginator;
 import gate.util.PropertyComparator;
 import gate.util.Reflection;
 import jakarta.enterprise.inject.spi.Unmanaged;
-import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.HeaderParam;
@@ -36,9 +33,6 @@ public abstract class Screen extends Base
 	private List<String> messages;
 	private ScreenServletRequest request;
 	private HttpServletResponse response;
-
-	@Inject
-	Logger logger;
 
 	public static Screen create(Class<Screen> clazz)
 	{
@@ -65,7 +59,7 @@ public abstract class Screen extends Base
 
 	public Object execute(Method method) throws Throwable
 	{
-		var parameters = new ArrayList<>();
+		List<Object> parameters = new ArrayList<>();
 		for (var parameter : method.getParameters())
 		{
 			Object value;
@@ -230,12 +224,12 @@ public abstract class Screen extends Base
 		try
 		{
 			return Optional.of(Thread.currentThread()
-					.getContextClassLoader()
-					.loadClass(screen != null
-							? module + "." + screen
-									+ "Screen"
-							: module + ".Screen"))
-					.map(e -> (Class<Screen>) e);
+				.getContextClassLoader()
+				.loadClass(screen != null
+					? module + "." + screen
+					+ "Screen"
+					: module + ".Screen"))
+				.map(e -> (Class<Screen>) e);
 		} catch (ClassNotFoundException ex)
 		{
 			return Optional.empty();

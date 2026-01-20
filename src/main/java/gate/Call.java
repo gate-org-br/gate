@@ -1,5 +1,11 @@
 package gate;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Optional;
+
+import org.thymeleaf.web.IWebExchange;
+
 import gate.annotation.Alert;
 import gate.annotation.Annotations;
 import gate.annotation.Authorization;
@@ -19,12 +25,6 @@ import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.util.Toolkit;
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Optional;
-
-import org.thymeleaf.web.IWebExchange;
 
 public class Call
 {
@@ -60,8 +60,8 @@ public class Call
 		@SuppressWarnings("unchecked")
 		Class<Screen> type = (Class<Screen>) method.getDeclaringClass();
 		String module = type.getPackageName();
-		String screen =
-				type.getSimpleName().equals("Screen") ? null : type.getSimpleName().substring(6);
+		String screen
+			= type.getSimpleName().equals("Screen") ? null : type.getSimpleName().substring(6);
 		String action = method.getName().equals("call") ? null : method.getName().substring(4);
 		return new Call(module, screen, action, type, method);
 	}
@@ -69,16 +69,16 @@ public class Call
 	public static Call of(String module, String screen, String action) throws BadRequestException
 	{
 		Class<Screen> type = Screen.getScreen(module, screen)
-				.orElseThrow(() -> new BadRequestException(module, screen, action));
+			.orElseThrow(() -> new BadRequestException(module, screen, action));
 		if (Modifier.isAbstract(type.getModifiers()))
 			throw new BadRequestException(module, screen, action);
 		Method method = Screen.getAction(type, action)
-				.orElseThrow(() -> new BadRequestException(module, screen, action));
+			.orElseThrow(() -> new BadRequestException(module, screen, action));
 		return new Call(module, screen, action, type, method);
 	}
 
 	public static Call of(HttpServletRequest request, String module, String screen, String action)
-			throws BadRequestException
+		throws BadRequestException
 	{
 
 		if ("#".equals(module))
@@ -103,7 +103,7 @@ public class Call
 	}
 
 	public static Call of(IWebExchange exchange, String module, String screen, String action)
-			throws BadRequestException
+		throws BadRequestException
 	{
 
 		if ("#".equals(module))
@@ -145,50 +145,50 @@ public class Call
 	public Optional<gate.icon.Icon> getIcon()
 	{
 		return action != null ? Icon.Extractor.extract(method)
-				: Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type));
+			: Icon.Extractor.extract(method).or(() -> Icon.Extractor.extract(type));
 	}
 
 	public Optional<gate.icon.Emoji> getEmoji()
 	{
 		return action != null ? Emoji.Extractor.extract(method)
-				: Emoji.Extractor.extract(method).or(() -> Emoji.Extractor.extract(type));
+			: Emoji.Extractor.extract(method).or(() -> Emoji.Extractor.extract(type));
 	}
 
 	public Optional<String> getName()
 	{
 		return action != null ? Name.Extractor.extract(method)
-				: Name.Extractor.extract(method).or(() -> Name.Extractor.extract(type));
+			: Name.Extractor.extract(method).or(() -> Name.Extractor.extract(type));
 	}
 
 	public Optional<String> getDescription()
 	{
 		return action != null ? Description.Extractor.extract(method)
-				: Description.Extractor.extract(method)
+			: Description.Extractor.extract(method)
 				.or(() -> Description.Extractor.extract(type));
 	}
 
 	public Optional<String> getTooltip()
 	{
 		return action != null ? Tooltip.Extractor.extract(method)
-				: Tooltip.Extractor.extract(method).or(() -> Tooltip.Extractor.extract(type));
+			: Tooltip.Extractor.extract(method).or(() -> Tooltip.Extractor.extract(type));
 	}
 
 	public Optional<String> getColor()
 	{
 		return action != null ? Color.Extractor.extract(method)
-				: Color.Extractor.extract(method).or(() -> Color.Extractor.extract(type));
+			: Color.Extractor.extract(method).or(() -> Color.Extractor.extract(type));
 	}
 
 	public Optional<String> getConfirm()
 	{
 		return action != null ? Confirm.Extractor.extract(method)
-				: Confirm.Extractor.extract(method).or(() -> Confirm.Extractor.extract(type));
+			: Confirm.Extractor.extract(method).or(() -> Confirm.Extractor.extract(type));
 	}
 
 	public Optional<String> getAlert()
 	{
 		return action != null ? Alert.Extractor.extract(method)
-				: Alert.Extractor.extract(method).or(() -> Alert.Extractor.extract(type));
+			: Alert.Extractor.extract(method).or(() -> Alert.Extractor.extract(type));
 	}
 
 	public Class<Screen> getType()
@@ -222,26 +222,45 @@ public class Call
 			return user != null && user.getId() != null && user.isSuperUser();
 
 		return switch (Security.Extractor.extract(method)
-				.orElse(Security.Type.AUTHORIZATION))
+			.orElse(Security.Type.AUTHORIZATION))
 		{
-			case NONE -> true;
-			case AUTHENTICATION -> user != null && user.getId() != null;
+			case NONE ->
+				true;
+			case AUTHENTICATION ->
+				user != null && user.getId() != null;
 			case AUTHORIZATION ->
 			{
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
 				yield user != null && user.getId() != null
-						&& user.checkAccess(auth.module(), auth.screen(), auth.action());
+				&& user.checkAccess(auth.module(), auth.screen(), auth.action());
 			}
 			case SPECIFIC_AUTHORIZATION ->
 			{
 				var auth = Authorization.Extractor.extract(method, module, screen, action);
 				yield user != null
-						&& user.getId() != null
-						&& user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
+				&& user.getId() != null
+				&& user.checkSpecificAccess(auth.module(), auth.screen(), auth.action());
 			}
-			case SUPERUSER -> user != null
-					&& user.getId() != null
-					&& user.isSuperUser();
+			case SUPERUSER ->
+				user != null
+				&& user.getId() != null
+				&& user.isSuperUser();
 		};
 	}
+
+	@Override
+	public String toString()
+	{
+		if (module != null && !module.isBlank())
+			if (screen != null && !screen.isBlank())
+				if (action != null && !action.isBlank())
+					return "Gate?MODULE=%s&SCREEN=%s&ACTION=%s".formatted(module, screen, action);
+				else
+					return "Gate?MODULE=%s&SCREEN=%s".formatted(module, screen);
+			else
+				return "Gate?MODULE=%s".formatted(module);
+		else
+			return "Gate";
+	}
+
 }

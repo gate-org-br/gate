@@ -1,5 +1,10 @@
 package gate.authenticator;
 
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+
 import gate.GateControl;
 import gate.annotation.Current;
 import gate.entity.App;
@@ -9,10 +14,6 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author davins
@@ -58,7 +59,8 @@ public class AuthenticatorProducer implements Serializable
 						new LDAPAuthenticator(control, config);
 					case "oidc" ->
 						new OIDCAuthenticator(control, config);
-					default -> throw new AuthenticatorException("Invalid authenticator type");
+					default ->
+						throw new AuthenticatorException("Invalid authenticator type");
 				};
 
 			if (!"default".equals(authenticator))
