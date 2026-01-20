@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -54,8 +55,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		try
 		{
 			return contentType != null
-					&& contentType.toLowerCase().startsWith("multipart/") ? getParts()
-							: Collections.emptyList();
+				&& contentType.toLowerCase().startsWith("multipart/") ? getParts()
+				: Collections.emptyList();
 		} catch (IOException | ServletException e)
 		{
 			throw new RuntimeException(e);
@@ -86,9 +87,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 				return Policonverter.getPoliconverter(type)
-						.getObject(elementType, parts().stream()
-								.filter(e -> e.getName().equals(name))
-								.toArray(Part[]::new));
+					.getObject(elementType, parts().stream()
+						.filter(e -> e.getName().equals(name))
+						.toArray(Part[]::new));
 			return null;
 		} catch (ConversionException e)
 		{
@@ -128,11 +129,11 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	{
 		String string = getParameter(name);
 		return string != null ? string
-				: parts().stream()
-						.filter(e -> e.getName().equals(name))
-						.filter(e -> e.getSize() > 0)
-						.findAny()
-						.orElse(null);
+			: parts().stream()
+				.filter(e -> e.getName().equals(name))
+				.filter(e -> e.getSize() > 0)
+				.findAny()
+				.orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -145,7 +146,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 				return (T) Converter.getConverter(type).ofString(type, URLDecoder.decode(getParameter(name), charset));
 			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 				return (T) Converter.getConverter(type)
-						.ofPart(type, parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
+					.ofPart(type, parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
 			return null;
 		} catch (UnsupportedEncodingException e)
 		{
@@ -155,8 +156,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public String getBody()
 	{
-		try (BufferedReader reader = this.getReader();
-				StringWriter string = new StringWriter())
+		try (BufferedReader reader = this.getReader(); StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -177,12 +177,12 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public Optional<String> getCookieValue(String name)
 	{
 		return Optional.ofNullable(getCookies())
-				.stream()
-				.flatMap(Stream::of)
-				.filter(c -> name.equals(c.getName()))
-				.findFirst()
-				.map(Cookie::getValue)
-				.filter(e -> !e.isBlank());
+			.stream()
+			.flatMap(Stream::of)
+			.filter(c -> name.equals(c.getName()))
+			.findFirst()
+			.map(Cookie::getValue)
+			.filter(e -> !e.isBlank());
 	}
 
 	public Object getParameter(Property property)
@@ -214,8 +214,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			}
 
 			return getCookieValue("subject")
-					.map(CookieAuthorization::valueOf)
-					.orElse(null);
+				.map(CookieAuthorization::valueOf)
+				.orElse(null);
 		}
 
 		Matcher authorization = AUTHORIZATION.matcher(header);
@@ -225,9 +225,12 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String type = authorization.group(1);
 		return switch (type.toUpperCase())
 		{
-		case "BEARER" -> BearerAuthorization.valueOf(header);
-		case "BASIC" -> BasicAuthorization.valueOf(header);
-		default -> throw new AuthenticationException("Authorization type not supported: " + type);
+			case "BEARER" ->
+				BearerAuthorization.valueOf(header);
+			case "BASIC" ->
+				BasicAuthorization.valueOf(header);
+			default ->
+				throw new AuthenticationException("Authorization type not supported: " + type);
 		};
 
 	}
@@ -253,7 +256,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String SCREEN = getParameter("SCREEN");
 		String ACTION = getParameter("ACTION");
 		if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-				&& getPathInfo() != null)
+			&& getPathInfo() != null)
 		{
 			List<String> path = Toolkit.parsePath(getPathInfo());
 			MODULE = !path.isEmpty() ? path.get(0) : null;
@@ -262,5 +265,15 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 
 		return new RequestCommand(MODULE, SCREEN, ACTION);
+	}
+
+	public String getPublicAddress()
+	{
+		String proto = Objects.requireNonNullElse(getHeader("X-Forwarded-Proto"), getScheme());
+		String host = Objects.requireNonNullElse(getHeader("X-Forwarded-Host"), getServerName());
+		String port = Optional.ofNullable(getHeader("X-Forwarded-Port"))
+			.map(e -> ":" + e)
+			.orElse("");
+		return "%s://%s%s".formatted(proto, host, port);
 	}
 }
