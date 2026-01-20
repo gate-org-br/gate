@@ -3,6 +3,7 @@ package gate;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Optional;
+import java.util.StringJoiner;
 
 import org.thymeleaf.web.IWebExchange;
 
@@ -251,16 +252,19 @@ public class Call
 	@Override
 	public String toString()
 	{
+		StringJoiner joiner = new StringJoiner("&");
+
 		if (module != null && !module.isBlank())
-			if (screen != null && !screen.isBlank())
-				if (action != null && !action.isBlank())
-					return "Gate?MODULE=%s&SCREEN=%s&ACTION=%s".formatted(module, screen, action);
-				else
-					return "Gate?MODULE=%s&SCREEN=%s".formatted(module, screen);
-			else
-				return "Gate?MODULE=%s".formatted(module);
-		else
-			return "Gate";
+			joiner.add("MODULE=" + module);
+
+		if (screen != null && !screen.isBlank())
+			joiner.add("SCREEN=" + screen);
+
+		if (action != null && !action.isBlank())
+			joiner.add("ACTION=" + action);
+
+		String query = joiner.toString();
+		return query.isEmpty() ? "Gate" : "Gate?" + query;
 	}
 
 }

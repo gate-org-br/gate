@@ -31,6 +31,7 @@ import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
 import gate.policonverter.Policonverter;
+import gate.util.Toolkit;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -253,13 +254,35 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public String getPublicAddress()
 	{
-		String proto = Objects.requireNonNullElse(getHeader("X-Forwarded-Proto"), getScheme());
-		String host = Objects.requireNonNullElse(getHeader("X-Forwarded-Host"), getServerName());
-		String port = Optional.ofNullable(getHeader("X-Forwarded-Port"))
-			.or(() -> Optional.of(String.valueOf(getServerPort())))
-			.filter(p -> !(("http".equals(proto) && "80".equals(p)) || ("https".equals(proto) && "443".equals(p))))
-			.map(e -> ":" + e)
-			.orElse("");
+		String proto = getHeader("X-Forwarded-Proto");
+		if (proto == null || proto.isBlank())
+			proto = getScheme();
+		proto = Toolkit.unquote(proto);
+
+		String host = getHeader("X-Forwarded-Host");
+		if (host == null || host.isBlank())
+			host = getServerName();
+		host = Toolkit.unquote(host);
+
+		int idx = host.indexOf(':');
+		if (idx != -1)
+			host = host.substring(0, idx);
+
+		String port = getHeader("X-Forwarded-Port");
+		if (port == null || port.isBlank())
+			port = String.valueOf(getServerPort());
+		port = Toolkit.unquote(port);
+
+		if (port.startsWith(":"))
+			port = port.substring(1);
+
+		if (("http".equals(proto) && "80".equals(port))
+			|| ("https".equals(proto) && "443".equals(port)))
+			port = "";
+		else
+			port = ":" + port;
+
 		return "%s://%s%s".formatted(proto, host, port);
 	}
+
 }
