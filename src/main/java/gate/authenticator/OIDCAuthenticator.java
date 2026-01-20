@@ -68,7 +68,7 @@ public class OIDCAuthenticator implements Authenticator
 
 		redirectUri = config.getProperty("oidc.redirect_uri")
 			.orElse("default".equals(config.name())
-				? "${server}"
+				? "${server}/Gate"
 				: "${server}/Gate?authenticator=" + config.name());
 
 		userId = config.getProperty("oidc.user_id").orElse("email");
