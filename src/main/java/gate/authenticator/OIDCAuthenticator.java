@@ -60,9 +60,7 @@ public class OIDCAuthenticator implements Authenticator
 			.orElse(provider + "/.well-known/openid-configuration");
 
 		redirectUri = config.getProperty("oidc.redirect_uri")
-			.orElse("default".equals(config.name())
-				? "${server}/Gate"
-				: "${server}/Gate?authenticator=" + config.name());
+			.orElseThrow(() -> new AuthenticatorException("Missing oidc.redirect_uri configuration parameter"));
 
 		userId = config.getProperty("oidc.user_id").orElse("email");
 		scope = config.getProperty("oidc.scope").orElse("openid email profile");
