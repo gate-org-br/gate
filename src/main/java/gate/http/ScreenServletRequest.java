@@ -265,37 +265,4 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 		return new RequestCommand(MODULE, SCREEN, ACTION);
 	}
-
-	public String getPublicAddress()
-	{
-		String proto = getHeader("X-Forwarded-Proto");
-		if (proto == null || proto.isBlank())
-			proto = getScheme();
-		proto = Toolkit.unquote(proto);
-
-		String host = getHeader("X-Forwarded-Host");
-		if (host == null || host.isBlank())
-			host = getServerName();
-		host = Toolkit.unquote(host);
-
-		int idx = host.indexOf(':');
-		if (idx != -1)
-			host = host.substring(0, idx);
-
-		String port = getHeader("X-Forwarded-Port");
-		if (port == null || port.isBlank())
-			port = String.valueOf(getServerPort());
-		port = Toolkit.unquote(port);
-
-		if (port.startsWith(":"))
-			port = port.substring(1);
-
-		if (("http".equals(proto) && "80".equals(port))
-			|| ("https".equals(proto) && "443".equals(port)))
-			port = "";
-		else
-			port = ":" + port;
-
-		return "%s://%s%s".formatted(proto, host, port);
-	}
 }

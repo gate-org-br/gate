@@ -47,14 +47,6 @@ public class OIDCAuthenticator implements Authenticator
 	private final Cache<String> jwksUri;
 	private final Cache<Map<String, PublicKey>> publicKeys;
 
-	private String getCallback(ScreenServletRequest request)
-	{
-		if (redirectUri.contains("${server}"))
-			return redirectUri.replace("${server}",
-				request.getPublicAddress());
-		return redirectUri;
-	}
-
 	public OIDCAuthenticator(GateControl control, AuthConfig config)
 	{
 		this.control = control;
@@ -88,7 +80,7 @@ public class OIDCAuthenticator implements Authenticator
 	public String provider(ScreenServletRequest request, HttpServletResponse response)
 	{
 		return new URL(authorizationEndpoint.get()).setParameter("response_type", "code")
-			.setParameter("client_id", clientId).setParameter("redirect_uri", getCallback(request))
+			.setParameter("client_id", clientId).setParameter("redirect_uri", redirectUri)
 			.setParameter("scope", scope).setParameter("state", SESSIONS.create())
 			.setParameter("nonce", SESSIONS.create()).toString();
 	}
@@ -132,7 +124,7 @@ public class OIDCAuthenticator implements Authenticator
 		var tokens = new URL(tokenEndpoint.get())
 			.post(new Parameters().set("grant_type", "authorization_code").set("code", code).set("scope", scope)
 				.set("client_id", clientId).set("client_secret", clientSecret)
-				.set("redirect_uri", getCallback(request)))
+				.set("redirect_uri", redirectUri))
 			.readJsonObject()
 			.orElseThrow(() -> new AuthenticationException("Error trying to get token from auth provider"));
 
