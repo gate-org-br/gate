@@ -1,5 +1,6 @@
 package gate.cache;
 
+import java.time.Duration;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -12,6 +13,11 @@ public interface Cache<T>
 	 * @return The cached value.
 	 */
 	T get();
+
+	/**
+	 * Invalidates current value.
+	 */
+   	void invalidate();
 
 	/**
 	 * Creates a cache for a lazily supplied value.
@@ -33,7 +39,7 @@ public interface Cache<T>
 	 * @param timeout The cache timeout duration in milliseconds.
 	 * @return A Cache instance.
 	 */
-	static <E> Cache<E> of(long timeout, Supplier<E> supplier)
+	static <E> Cache<E> of(Duration timeout, Supplier<E> supplier)
 	{
 		return new TimeoutCache<>(timeout, supplier);
 	}
@@ -60,7 +66,7 @@ public interface Cache<T>
 	 * @param supplier The supplier function to obtain the cached value.
 	 * @return A Cache instance.
 	 */
-	static <E> Cache<E> of(long timeout, Predicate<E> predicate, Supplier<E> supplier)
+	static <E> Cache<E> of(Duration timeout, Predicate<E> predicate, Supplier<E> supplier)
 	{
 		return new PredicateTimeoutCache<>(timeout, predicate, supplier);
 	}

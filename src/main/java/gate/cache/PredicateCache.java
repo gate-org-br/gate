@@ -27,4 +27,9 @@ class PredicateCache<T> implements Cache<T>
 		return value.updateAndGet(e -> e != null && !predicate.test(e) ? e : supplier.get());
 	}
 
+	@Override
+	public void invalidate() 
+	{
+		value.set(null);
+	}
 }

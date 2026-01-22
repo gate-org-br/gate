@@ -20,4 +20,9 @@ class LazyCache<T> implements Cache<T>
 		return value.updateAndGet(e -> e != null ? e : supplier.get());
 	}
 
+	@Override
+	public void invalidate() 
+	{
+		value.set(null);
+	}
 }
