@@ -24,11 +24,11 @@ class PredicateCache<T> implements Cache<T>
 	@Override
 	public T get()
 	{
-		return value.updateAndGet(e -> e != null && !predicate.test(e) ? e : supplier.get());
+		return value.updateAndGet(e -> e != null && predicate.test(e) ? e : supplier.get());
 	}
 
 	@Override
-	public void invalidate() 
+	public void invalidate()
 	{
 		value.set(null);
 	}
