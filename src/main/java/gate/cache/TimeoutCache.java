@@ -1,16 +1,17 @@
 package gate.cache;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 class TimeoutCache<T> implements Cache<T>
 {
 
-	private final long timeout;
+	private final Duration timeout;
 	private final Supplier<T> supplier;
-	private AtomicReference<CacheEntry<T>> value;
+	private AtomicReference<CacheEntry<T>> value = new AtomicReference<>();
 
-	TimeoutCache(long timeout, Supplier<T> supplier)
+	TimeoutCache(Duration timeout, Supplier<T> supplier)
 	{
 		this.timeout = timeout;
 		this.supplier = supplier;
@@ -19,7 +20,13 @@ class TimeoutCache<T> implements Cache<T>
 	@Override
 	public T get()
 	{
-		return value.updateAndGet(e -> e != null && System.currentTimeMillis() - e.getTimestamp() < timeout ? e : new CacheEntry<T>(supplier.get())).getValue();
+		return value.updateAndGet(e -> e != null && System.currentTimeMillis() - e.getTimestamp() < timeout.toMillis() ? e : new CacheEntry<T>(supplier.get())).getValue();
+	}
+
+	@Override
+	public void invalidate() 
+	{
+		value.set(null);
 	}
 
 	private static class CacheEntry<T>
