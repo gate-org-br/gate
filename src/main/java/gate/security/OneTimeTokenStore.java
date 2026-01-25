@@ -41,32 +41,13 @@ public class OneTimeTokenStore
 		sessions.entrySet().removeIf(e -> timestamp - e.getValue().timestamp() > timeout);
 	}
 
-	public static class Session
-	{
-
-		private final String uuid;
-		private final long timestamp;
+	public record Session(String uuid, long timestamp)
+		{
 
 		public static Session create()
 		{
 			return new Session(UUID.randomUUID().toString(),
 				System.currentTimeMillis());
-		}
-
-		private Session(String uuid, long timestamp)
-		{
-			this.uuid = uuid;
-			this.timestamp = timestamp;
-		}
-
-		public String uuid()
-		{
-			return uuid;
-		}
-
-		public long timestamp()
-		{
-			return timestamp;
 		}
 
 		@Override

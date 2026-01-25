@@ -2,7 +2,9 @@ package gate.authenticator;
 
 import java.io.IOException;
 import java.security.PublicKey;
+import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import gate.GateControl;
@@ -19,6 +21,8 @@ import gate.io.URL;
 import gate.lang.json.JsonObject;
 import gate.security.JWKSPublicKeyParser;
 import gate.security.OneTimeTokenStore;
+import gate.security.OneTimeValueStore;
+import gate.security.PKCE;
 import gate.util.Parameters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
@@ -29,9 +33,10 @@ public class OIDCAuthenticator implements Authenticator
 {
 
 	private final GateControl control;
-
-	private static final OneTimeTokenStore SESSIONS = OneTimeTokenStore.of(60000);
-
+	private static final String AUTH_FAILED = "Authentication could not be completed";
+	private static final OneTimeTokenStore STATES = OneTimeTokenStore.of(60000);
+	private static final OneTimeTokenStore NONCES = OneTimeTokenStore.of(60000);
+	private static final OneTimeValueStore CODE_VERIFIERS = OneTimeValueStore.of(60000);
 	private final String provider;
 	private final String clientId;
 	private final String clientSecret;
@@ -45,6 +50,7 @@ public class OIDCAuthenticator implements Authenticator
 	private final Cache<String> tokenEndpoint;
 	private final Cache<String> userInfoEndpoint;
 	private final Cache<String> jwksUri;
+	private final Cache<String> issuer;
 	private final Cache<Map<String, PublicKey>> publicKeys;
 
 	public OIDCAuthenticator(GateControl control, AuthConfig config)
@@ -52,8 +58,7 @@ public class OIDCAuthenticator implements Authenticator
 		this.control = control;
 		clientId = config.getProperty("oidc.client_id")
 			.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
-		clientSecret = config.getProperty("oidc.client_secret")
-			.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
+		clientSecret = config.getProperty("oidc.client_secret").orElse(null);
 		provider = config.getProperty("oidc.provider")
 			.orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
 		configurationEndpoint = config.getProperty("oidc.configuration_endpoint")
@@ -68,25 +73,44 @@ public class OIDCAuthenticator implements Authenticator
 			.orElseGet(() -> getEndpoint("authorization_endpoint")));
 		tokenEndpoint = Cache
 			.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
-		userInfoEndpoint = Cache.of(
-			() -> config.getProperty("oidc.userinfo_endpoint").orElseGet(() -> getEndpoint("userinfo_endpoint")));
+		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint").orElseGet(() -> getEndpoint("userinfo_endpoint")));
 		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
-		publicKeys = Cache.of(this::fetchPublicKeys);
+		issuer = Cache.of(() -> configuration.get().getString("issuer")
+			.orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider")));
+		publicKeys = Cache.of(Duration.ofHours(1), this::fetchPublicKeys);
 	}
 
 	@Override
 	public String provider(ScreenServletRequest request, HttpServletResponse response)
 	{
-		return new URL(authorizationEndpoint.get()).setParameter("response_type", "code")
-			.setParameter("client_id", clientId).setParameter("redirect_uri", redirectUri)
-			.setParameter("scope", scope).setParameter("state", SESSIONS.create())
-			.setParameter("nonce", SESSIONS.create()).toString();
+		String state = STATES.create();
+		String nonce = NONCES.create();
+
+		URL authUrl = new URL(authorizationEndpoint.get())
+			.setParameter("response_type", "code")
+			.setParameter("client_id", clientId)
+			.setParameter("redirect_uri", redirectUri)
+			.setParameter("scope", scope)
+			.setParameter("state", state)
+			.setParameter("nonce", nonce);
+
+		if (clientSecret == null)
+		{
+			var pcke = PKCE.create();
+			CODE_VERIFIERS.store(state, pcke.verifier());
+
+			authUrl.setParameter("code_challenge", pcke.challenge())
+				.setParameter("code_challenge_method", "S256");
+		}
+
+		return authUrl.toString();
 	}
 
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
-		return request.getParameter("code") != null || request.getParameter("accessToken") != null
+		return request.getParameter("code") != null
+			|| request.getParameter("accessToken") != null
 			|| request.getAuthorization() instanceof BasicAuthorization;
 	}
 
@@ -103,10 +127,10 @@ public class OIDCAuthenticator implements Authenticator
 			else if (request.getAuthorization() instanceof BasicAuthorization basicAuthorization)
 				return resourceOwnerPasswordCredentialsFlow(control, basicAuthorization);
 			else
-				throw new AuthenticationException("Attempt to authenticate without supplying credentials");
+				throw new AuthenticationException(AUTH_FAILED);
 		} catch (IOException | RuntimeException ex)
 		{
-			throw new AuthenticationException();
+			throw new AuthenticationException(AUTH_FAILED);
 		}
 	}
 
@@ -116,43 +140,51 @@ public class OIDCAuthenticator implements Authenticator
 		var code = request.getParameter("code");
 
 		var state = request.getParameter("state");
-		if (state == null || !SESSIONS.consume(state))
+		if (state == null || !STATES.consume(state))
 			return null;
 
+		String codeVerifier = CODE_VERIFIERS.consume(state);
+
+		if (clientSecret == null && codeVerifier == null)
+			throw new AuthenticationException(AUTH_FAILED);
+
 		var tokens = new URL(tokenEndpoint.get())
-			.post(new Parameters().set("grant_type", "authorization_code").set("code", code).set("scope", scope)
-				.set("client_id", clientId).set("client_secret", clientSecret)
-				.set("redirect_uri", redirectUri))
+			.post(new Parameters()
+				.set("grant_type", "authorization_code")
+				.set("code", code)
+				.set("scope", scope)
+				.set("client_id", clientId)
+				.set("client_secret", clientSecret)
+				.set("redirect_uri", redirectUri)
+				.set("code_verifier", codeVerifier))
 			.readJsonObject()
-			.orElseThrow(() -> new AuthenticationException("Error trying to get token from auth provider"));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 
 		if (tokens.containsKey("id_token"))
 		{
 
 			var idToken = tokens.getString("id_token")
-				.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
-			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(idToken);
+				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+			Claims claims = getClaims(idToken);
+			if (!claims.getAudience()
+				.stream().anyMatch(clientId::equals))
+				throw new AuthenticationException(AUTH_FAILED);
 
-			if (jwt.getPayload() instanceof Claims claims)
-			{
+			if (!NONCES.consume(claims.get("nonce", String.class)))
+				throw new AuthenticationException(AUTH_FAILED);
 
-				if (!SESSIONS.consume(claims.get("nonce", String.class)))
-					throw new AuthenticationException("Error validating the id token from auth provider");
-
-				if (claims.containsKey(userId))
-					return control.select(claims.get(userId, String.class));
-			}
+			if (claims.containsKey(userId))
+				return control.select(claims.get(userId, String.class));
 		}
 
 		String accessToken = tokens.getString("access_token")
-			.orElseThrow(() -> new AuthenticationException("Error trying to get access token from auth provider"));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get()).setAuthorization(BearerAuthorization.from(accessToken))
 			.get().readJsonObject()
-			.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));
-
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED)));
 	}
 
 	private User partialAuthorizationCodeFlow(GateControl control, ScreenServletRequest request)
@@ -162,18 +194,18 @@ public class OIDCAuthenticator implements Authenticator
 		var token = request.getParameter("accessToken");
 		if (token.split("\\.").length == 3)
 		{
-			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(token);
-			if (!(jwt.getPayload() instanceof Claims claims) || !claims.containsKey(userId))
+			Claims claims = getClaims(token);
+			if (!claims.containsKey(userId))
 				throw new AuthenticationException("Invalid token");
 			return control.select(claims.get(userId, String.class));
 		}
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get()).setAuthorization(BearerAuthorization.from(token)).get()
 			.readJsonObject()
-			.orElseThrow(() -> new AuthenticationException("Error trying to get user info from auth provider"));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED)));
 	}
 
 	private User resourceOwnerPasswordCredentialsFlow(GateControl control, BasicAuthorization basicAuth)
@@ -184,26 +216,25 @@ public class OIDCAuthenticator implements Authenticator
 			.post(new Parameters().set("grant_type", "password").set("username", basicAuth.username())
 				.set("password", basicAuth.password()).set("client_id", clientId)
 				.set("client_secret", clientSecret).set("scope", scope))
-			.readJsonObject().orElseThrow(() -> new AuthenticationException("Error obtaining access token"));
+			.readJsonObject().orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 
 		if (tokens.containsKey("id_token"))
 		{
 			var idToken = tokens.getString("id_token")
-				.orElseThrow(() -> new AuthenticationException("Error trying to get id token from auth provider"));
-			var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(idToken);
-
-			if (jwt.getPayload() instanceof Claims claims && claims.containsKey(userId))
+				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+			Claims claims = getClaims(idToken);
+			if (claims.containsKey(userId))
 				return control.select(claims.get(userId, String.class));
 		}
 
 		String accessToken = tokens.getString("access_token")
-			.orElseThrow(() -> new AuthenticationException("No access token in response"));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get()).setAuthorization(BearerAuthorization.from(accessToken))
-			.get().readJsonObject().orElseThrow(() -> new AuthenticationException("Error retrieving user info"));
+			.get().readJsonObject().orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
 
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(() -> new AuthenticationException("Error trying to get user user id from auth provider")));
+			.orElseThrow(() -> new AuthenticationException(AUTH_FAILED)));
 	}
 
 	@Override
@@ -214,8 +245,8 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			if (bearerAuthorization.token().split("\\.").length == 3)
 			{
-				var jwt = Jwts.parser().keyLocator(this::getPublicKey).build().parse(bearerAuthorization.token());
-				if (jwt.getPayload() instanceof Claims claims && claims.containsKey(userId))
+				Claims claims = getClaims(bearerAuthorization.token());
+				if (claims.containsKey(userId))
 					return control.select(claims.get(userId, String.class));
 			} else
 			{
@@ -223,12 +254,12 @@ public class OIDCAuthenticator implements Authenticator
 					.setAuthorization(BearerAuthorization.from(bearerAuthorization.token())).get().readJsonObject()
 					.orElseThrow(() -> new AuthenticationException("Error retrieving user info"));
 				return control.select(userInfo.getString(userId).orElseThrow(
-					() -> new AuthenticationException("Error trying to get user user id from auth provider")));
+					() -> new AuthenticationException(AUTH_FAILED)));
 			}
 		} else if (authorization instanceof BasicAuthorization basicAuthorization)
 			return resourceOwnerPasswordCredentialsFlow(control, basicAuthorization);
 
-		throw new AuthenticationException("Missing credentials");
+		throw new AuthenticationException(AUTH_FAILED);
 	}
 
 	@Override
@@ -246,8 +277,7 @@ public class OIDCAuthenticator implements Authenticator
 	{
 		try
 		{
-			return new URL(configurationEndpoint).get().readJsonObject().orElseThrow(
-				() -> new AuthenticatorException("Error trying to get configuration from auth provider"));
+			return new URL(configurationEndpoint).get().readJsonObject().orElseThrow(() -> new AuthenticatorException(AUTH_FAILED));
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -262,8 +292,7 @@ public class OIDCAuthenticator implements Authenticator
 				.stream().map(e -> (JsonObject) e)
 				.collect(Collectors.toMap(
 					e -> e.getString("kid")
-						.orElseThrow(() -> new AuthenticatorException(
-						"Error trying to get public key from auth provider")),
+						.orElseThrow(() -> new AuthenticatorException(AUTH_FAILED)),
 					JWKSPublicKeyParser::parse));
 		} catch (IOException ex)
 		{
@@ -285,16 +314,32 @@ public class OIDCAuthenticator implements Authenticator
 
 	private PublicKey getPublicKey(Header header)
 	{
-		if (!header.containsKey("kid"))
-			return publicKeys.get().values().stream().findFirst()
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
+		String kid = (String) header.get("kid");
 
-		var publicKey = publicKeys.get().get((String) header.get("kid"));
+		if (kid != null)
+		{
+			PublicKey key = publicKeys.get().get(kid);
+			if (key == null)
+				throw new AuthenticatorException(AUTH_FAILED);
+			return key;
+		}
 
-		if (publicKey == null)
-			return publicKeys.get().values().stream().findFirst()
-				.orElseThrow(() -> new AuthenticatorException("Error trying to get public key from auth provider"));
+		// Compatiblity for JWT without kid
+		if (publicKeys.get().size() == 1)
+			return publicKeys.get().values().iterator().next();
 
-		return publicKey;
+		throw new AuthenticatorException(AUTH_FAILED);
+	}
+
+	private Claims getClaims(String token)
+	{
+		var claims = Jwts.parser()
+			.keyLocator(this::getPublicKey)
+			.build()
+			.parseSignedClaims(token)
+			.getPayload();
+		if (!Objects.equals(claims.getIssuer(), issuer.get()))
+			throw new AuthenticatorException(AUTH_FAILED);
+		return claims;
 	}
 }

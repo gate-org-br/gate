@@ -27,8 +27,8 @@ public class Parameters extends LinkedHashMap<String, Object>
 	public String toString()
 	{
 		return entrySet().stream().filter(e -> e.getValue() != null)
-				.map(e -> e.getKey() + "=" + Converter.toString(e.getValue())).filter(e -> !e.isEmpty())
-				.collect(Collectors.joining("&"));
+			.map(e -> e.getKey() + "=" + Converter.toString(e.getValue())).filter(e -> !e.isEmpty())
+			.collect(Collectors.joining("&"));
 	}
 
 	public String toEncodedString()
@@ -40,13 +40,16 @@ public class Parameters extends LinkedHashMap<String, Object>
 				String value = Converter.toString(parameter.getValue());
 				if (!value.isEmpty())
 					string.add(URLEncoder.encode(parameter.getKey(), StandardCharsets.UTF_8) + "="
-							+ URLEncoder.encode(value, StandardCharsets.UTF_8));
+						+ URLEncoder.encode(value, StandardCharsets.UTF_8));
 			}
 		return string.toString();
 	}
 
 	public Parameters put(String string)
 	{
+		if (string == null || string.isBlank())
+			return this;
+
 		int i = 0;
 		while (i < string.length())
 		{

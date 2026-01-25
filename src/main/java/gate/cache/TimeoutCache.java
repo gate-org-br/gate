@@ -9,7 +9,7 @@ class TimeoutCache<T> implements Cache<T>
 
 	private final Duration timeout;
 	private final Supplier<T> supplier;
-	private AtomicReference<CacheEntry<T>> value = new AtomicReference<>();
+	private final AtomicReference<CacheEntry<T>> value = new AtomicReference<>();
 
 	TimeoutCache(Duration timeout, Supplier<T> supplier)
 	{
@@ -20,11 +20,11 @@ class TimeoutCache<T> implements Cache<T>
 	@Override
 	public T get()
 	{
-		return value.updateAndGet(e -> e != null && System.currentTimeMillis() - e.getTimestamp() < timeout.toMillis() ? e : new CacheEntry<T>(supplier.get())).getValue();
+		return value.updateAndGet(e -> e != null && System.nanoTime() - e.getTimestamp() < timeout.toNanos() ? e : new CacheEntry<T>(supplier.get())).getValue();
 	}
 
 	@Override
-	public void invalidate() 
+	public void invalidate()
 	{
 		value.set(null);
 	}
@@ -38,7 +38,7 @@ class TimeoutCache<T> implements Cache<T>
 		private CacheEntry(T value)
 		{
 			this.value = value;
-			this.timestamp = System.currentTimeMillis();
+			this.timestamp = System.nanoTime();
 		}
 
 		T getValue()
