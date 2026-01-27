@@ -1,18 +1,5 @@
 package gate;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Collections;
-import java.util.Locale;
-
-import org.eclipse.microprofile.context.ThreadContext;
-import org.slf4j.Logger;
-
-import gate.annotation.Asynchronous;
-import gate.annotation.Cors;
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.base.Screen;
@@ -22,6 +9,7 @@ import gate.error.AppException;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
 import gate.error.ForbiddenException;
+import gate.error.MethodNotAllowedException;
 import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
 import gate.event.LoginEvent;
@@ -32,6 +20,7 @@ import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.security.Credentials;
 import gate.type.RequestCommand;
+import gate.type.TempFile;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -44,6 +33,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.Locale;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.slf4j.Logger;
 
 @MultipartConfig
 @WebServlet(value = "/Gate/*", asyncSupported = true)
@@ -71,9 +69,6 @@ public class Gate extends HttpServlet
 	Authenticator authenticator;
 
 	@Inject
-	Call mainAction;
-
-	@Inject
 	ThreadContext threadContext;
 
 	@Inject
@@ -85,6 +80,9 @@ public class Gate extends HttpServlet
 
 	@Inject
 	GateControl control;
+
+	@Inject
+	Calls actionRegistry;
 
 	static
 	{
@@ -114,7 +112,8 @@ public class Gate extends HttpServlet
 			request.setAttribute("METHOD", request.getMethod());
 
 			if (command.equals(RequestCommand.DEFAULT)
-				&& (mainAction == Call.NONE || !authenticator.hasCredentials(request)))
+				&& (actionRegistry.getMainAction() == null
+				|| !authenticator.hasCredentials(request)))
 			{
 				if (user.getId() != null)
 				{
@@ -138,12 +137,6 @@ public class Gate extends HttpServlet
 				return;
 			}
 
-			Call call = command.equals(RequestCommand.DEFAULT)
-				? mainAction : Call.of(command);
-
-			if (!call.checkMethod(request.getMethod()))
-				throw new BadRequestException();
-
 			if (authenticator.hasCredentials(request))
 			{
 				user = authenticator.authenticate(request, response);
@@ -153,25 +146,39 @@ public class Gate extends HttpServlet
 					var token = Credentials.SubjectToken.create(user.getId());
 					control.update(user, token.iat());
 					response.createSubjectCookie(credentials.fromToken(token));
+
+					if (actionRegistry.getMainAction() != null
+						&& command.equals(RequestCommand.DEFAULT))
+					{
+						response.sendRedirect(actionRegistry.getMainAction()
+							.command().toString());
+						return;
+					}
 				}
 				request.setAttribute(User.class.getName(), user);
 			}
 
-			if (!call.checkAccess(user))
+			Call call
+				= actionRegistry.get(command)
+					.orElseThrow(() -> new BadRequestException(command));
+			if (!call.allowsHttpMethod(request.getMethod().toUpperCase()))
+				throw new MethodNotAllowedException();
+
+			if (!call.accessRule().allows(user))
 				if (user != null && user.getId() != null)
 					throw new ForbiddenException();
 				else
 					throw new UnauthorizedException();
 
-			Screen screen = CDI.current().select(call.type()).get();
+			Screen screen = CDI.current().select(call.screen()).get();
 			request.setAttribute("screen", screen);
 			request.setAttribute("action", call.method());
 			screen.prepare(request, response);
 
-			if (call.method().isAnnotationPresent(Cors.class))
+			if (call.cors())
 				response.enableCors(request.getHeader("Origin"));
 
-			if (call.method().isAnnotationPresent(Asynchronous.class))
+			if (call.asynchronous())
 				executeAsync(user, request, response, screen, call.method());
 			else
 				execute(httpServletRequest, response, screen, call.method());
@@ -262,6 +269,7 @@ public class Gate extends HttpServlet
 				logger.error(ex.getMessage(), ex);
 			} finally
 			{
+				TempFile.cleanup();
 				asyncContext.complete();
 			}
 		});
