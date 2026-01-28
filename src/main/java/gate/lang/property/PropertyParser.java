@@ -1,10 +1,5 @@
 package gate.lang.property;
 
-import gate.error.PropertyError;
-import gate.converter.Converter;
-import gate.error.ConversionException;
-import gate.util.Reflection;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -14,6 +9,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import gate.converter.Converter;
+import gate.error.ConversionException;
+import gate.error.PropertyError;
+import gate.util.Reflection;
 
 class PropertyParser
 {
@@ -31,13 +31,7 @@ class PropertyParser
 
 	public Property parse()
 	{
-		try (PropertyScanner scanner = new PropertyScanner(property))
-		{
-			return property(scanner);
-		} catch (IOException e)
-		{
-			throw new PropertyError("Error on trying to parse property: %s", e.getMessage());
-		}
+		return property(new PropertyScanner(property));
 	}
 
 	private Property property(PropertyScanner scanner)
@@ -59,6 +53,7 @@ class PropertyParser
 				return null;
 			attributes.add(dottedAttribute);
 		}
+
 		return new Property(type, property, attributes);
 	}
 
@@ -66,6 +61,7 @@ class PropertyParser
 	{
 		if (!"this".equals(token))
 			throw new PropertyError("Invalid property name: %s.", property);
+
 		token = scanner.next();
 		return new SelfAttribute(type);
 	}
@@ -74,26 +70,30 @@ class PropertyParser
 	{
 		if ("this".equals(token))
 			return self(scanner);
-		else if (token instanceof String)
+
+		if (token instanceof String)
 			return javaIdentifier(scanner);
-		else if (token.equals('['))
+
+		if (token.equals('['))
 			return collection(scanner);
+
 		throw new PropertyError("Invalid property name: %s.", property);
 	}
 
 	private Attribute dottedAttribute(PropertyScanner scanner)
 	{
-		if (token.equals('.'))
-		{
-			token = scanner.next();
-			if ("this".equals(token))
-				return self(scanner);
-			else if (token instanceof String)
-				return attribute(scanner);
-			else
-				throw new PropertyError("Invalid property name: %s.", property);
-		}
-		return attribute(scanner);
+		if (!token.equals('.'))
+			return attribute(scanner);
+
+		token = scanner.next();
+
+		if ("this".equals(token))
+			return self(scanner);
+
+		if (token instanceof String)
+			return attribute(scanner);
+
+		throw new PropertyError("Invalid property name: %s.", property);
 	}
 
 	private Attribute javaIdentifier(PropertyScanner scanner)
@@ -102,7 +102,6 @@ class PropertyParser
 			throw new PropertyError("Invalid property name: %s.", property);
 
 		token = scanner.next();
-
 		Attribute attribute = attributes.get(attributes.size() - 1);
 
 		if (Objects.equals(token, '('))
@@ -112,60 +111,68 @@ class PropertyParser
 			try
 			{
 				Method method = attribute.getRawType().getMethod(name,
-						parameters.stream().map(Object::getClass).toArray(Class[]::new));
+					parameters.stream().map(Object::getClass).toArray(Class[]::new));
+
 				if (method.getReturnType() == null)
 					throw new PropertyError("Method %s has no return type.", method.toString());
+
 				return new MethodAttribute(method, parameters.toArray());
 			} catch (NoSuchMethodException e)
 			{
 				return null;
 			}
-		} else
-		{
-			if (Map.class.isAssignableFrom(attribute.getRawType()))
-			{
-				if (attribute.getGenericType() instanceof ParameterizedType)
-				{
-					Class<?> keyType =
-							Reflection.getRawType(((ParameterizedType) attribute.getGenericType())
-									.getActualTypeArguments()[0]);
-					try
-					{
-						return new MapAttribute(attribute.getElementType(),
-								Converter.getConverter(keyType).ofString(keyType, name));
-					} catch (ConversionException ex)
-					{
-						throw new PropertyError("Error on trying to parse property: %s",
-								ex.getMessage());
-					}
-				}
-
-				return new MapAttribute(attribute.getElementType(), name);
-			} else
-			{
-				for (Class<?> superclass = attribute.getRawType(); superclass != null; superclass =
-						superclass.getSuperclass())
-				{
-					Field field = Arrays.stream(superclass.getDeclaredFields())
-							.filter(e -> e.getName().equals(name)).findAny().orElse(null);
-					if (field != null)
-						return new FieldAttribute(field);
-				}
-				return null;
-			}
 		}
+
+		// Map access
+		if (Map.class.isAssignableFrom(attribute.getRawType()))
+		{
+			if (attribute.getGenericType() instanceof ParameterizedType parameterizedType)
+			{
+				Class<?> keyType = Reflection.getRawType(
+					parameterizedType.getActualTypeArguments()[0]);
+
+				try
+				{
+					return new MapAttribute(attribute.getElementType(),
+						Converter.getConverter(keyType).ofString(keyType, name));
+				} catch (ConversionException ex)
+				{
+					throw new PropertyError("Error on trying to parse property: %s",
+						ex.getMessage());
+				}
+			}
+
+			return new MapAttribute(attribute.getElementType(), name);
+		}
+
+		// Field access
+		for (Class<?> superclass = attribute.getRawType(); superclass != null;
+			superclass = superclass.getSuperclass())
+		{
+			Field field = Arrays.stream(superclass.getDeclaredFields())
+				.filter(e -> e.getName().equals(name))
+				.findAny()
+				.orElse(null);
+
+			if (field != null)
+				return new FieldAttribute(field);
+		}
+
+		return null;
 	}
 
 	private List<Object> parameters(PropertyScanner scanner)
 	{
 		if (!Objects.equals(token, '('))
 			throw new PropertyError("Invalid property name: %s.", property);
-		token = scanner.next();
 
+		token = scanner.next();
 		List<Object> parameters = new ArrayList<>();
+
 		if (!Objects.equals(')', token))
 		{
 			parameters.add(parameter(scanner));
+
 			while (Objects.equals(token, ','))
 			{
 				token = scanner.next();
@@ -175,8 +182,8 @@ class PropertyParser
 
 		if (!Objects.equals(token, ')'))
 			throw new PropertyError("Invalid property name: %s.", property);
-		token = scanner.next();
 
+		token = scanner.next();
 		return parameters;
 	}
 
@@ -196,8 +203,8 @@ class PropertyParser
 	{
 		if (!token.equals('['))
 			throw new PropertyError("Invalid property name: %s.", property);
-		token = scanner.next();
 
+		token = scanner.next();
 		Object name = null;
 
 		if (!token.equals(']'))
@@ -210,45 +217,47 @@ class PropertyParser
 		}
 
 		token = scanner.next();
-
 		Attribute attribute = attributes.get(attributes.size() - 1);
 		Class<?> clazz = attribute.getRawType();
 
 		if (name != null)
 		{
+			// Array access
 			if (clazz.isArray())
 			{
-				if (name instanceof Long || name instanceof Integer || name instanceof Short
-						|| name instanceof Byte)
-					return new ArrayAttribute(clazz.getComponentType(), ((Number) name).intValue());
-				return null;
-			} else if (List.class.isAssignableFrom(clazz))
-			{
-				if (name instanceof Long || name instanceof Integer || name instanceof Short
-						|| name instanceof Byte)
-					return new ListAttribute(attribute.getElementType(),
-							((Number) name).intValue());
-				return null;
+				if (name instanceof Number number)
+					return new ArrayAttribute(clazz.getComponentType(), number.intValue());
 
-			} else if (Map.class.isAssignableFrom(clazz))
+				return null;
+			}
+
+			// List access
+			if (List.class.isAssignableFrom(clazz))
 			{
-				if (name instanceof Long || name instanceof Integer || name instanceof Short
-						|| name instanceof Byte || name instanceof Double || name instanceof Float
-						|| name instanceof Boolean || name instanceof String)
+				if (name instanceof Number number)
+					return new ListAttribute(attribute.getElementType(), number.intValue());
+
+				return null;
+			}
+
+			// Map access
+			if (Map.class.isAssignableFrom(clazz))
+			{
+				if (name instanceof Number || name instanceof Boolean || name instanceof String)
 				{
 					if (name instanceof String
-							&& attribute.getGenericType() instanceof ParameterizedType)
+						&& attribute.getGenericType() instanceof ParameterizedType paramType)
 					{
-						Class<?> keyType = Reflection
-								.getRawType(((ParameterizedType) attribute.getGenericType())
-										.getActualTypeArguments()[0]);
+						Class<?> keyType = Reflection.getRawType(
+							paramType.getActualTypeArguments()[0]);
+
 						try
 						{
 							name = Converter.getConverter(keyType).ofString(keyType, (String) name);
 						} catch (ConversionException ex)
 						{
 							throw new PropertyError("Error on trying to parse property: %s",
-									ex.getMessage());
+								ex.getMessage());
 						}
 					}
 
@@ -259,12 +268,12 @@ class PropertyParser
 			}
 
 			return null;
-		} else if (Collection.class.isAssignableFrom(clazz))
-		{
-			return new CollectionAttribute(attribute.getElementType());
-		} else
-		{
-			return null;
 		}
+
+		// Collection access (no index)
+		if (Collection.class.isAssignableFrom(clazz))
+			return new CollectionAttribute(attribute.getElementType());
+
+		return null;
 	}
 }

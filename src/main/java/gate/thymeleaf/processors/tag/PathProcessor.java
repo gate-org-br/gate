@@ -1,22 +1,27 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.base.Screen;
-import gate.type.Attributes;
-import jakarta.enterprise.context.ApplicationScoped;
-import java.lang.reflect.AnnotatedElement;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
+import gate.Call;
+import gate.Calls;
+import gate.type.Attributes;
+import gate.type.RequestCommand;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
 @ApplicationScoped
 public class PathProcessor extends TagProcessor
 {
+
+	@Inject
+	Calls calls;
 
 	public PathProcessor()
 	{
@@ -29,29 +34,43 @@ public class PathProcessor extends TagProcessor
 		if ("g-path".equals(element.getElementCompleteName()))
 			return;
 
-		String module = extract(element, handler, "module").orElse(null);
-		String screen = extract(element, handler, "screen").orElse(null);
-		String action = extract(element, handler, "action").orElse(null);
+		var command = new RequestCommand(
+			extract(element, handler, "module").orElse(null),
+			extract(element, handler, "screen").orElse(null),
+			extract(element, handler, "action").orElse(null));
 
 		var request = ((IWebContext) context).getExchange().getRequest();
 
-		boolean empty = module == null && screen == null && action == null;
-		if ("#".equals(module) || empty)
-			module = request.getParameterValue("MODULE");
-		if ("#".equals(screen) || empty)
-			screen = request.getParameterValue("SCREEN");
-		if ("#".equals(action) || empty)
-			action = request.getParameterValue("ACTION");
+		if (command.equals(RequestCommand.DEFAULT))
+			command = new RequestCommand(
+				request.getParameterValue("MODULE"),
+				request.getParameterValue("SCREEN"),
+				request.getParameterValue("ACTION"));
+		else
+			command = command.with(
+				request.getParameterValue("MODULE"),
+				request.getParameterValue("SCREEN"),
+				request.getParameterValue("ACTION"));
 
 		StringJoiner string = new StringJoiner("");
-		if (module != null)
+
+		if (command.module() != null)
 		{
-			Screen.getScreen(module, null).flatMap(PathProcessor::getLabel).ifPresent(string::add);
-			if (screen != null)
+			calls.get(new RequestCommand(command.module(), null, null))
+				.flatMap(PathProcessor::getText)
+				.ifPresent(string::add);
+
+			if (command.screen() != null)
 			{
-				Screen.getScreen(module, screen).flatMap(PathProcessor::getLabel).ifPresent(string::add);
-				if (action != null)
-					Screen.getAction(module, screen, action).flatMap(PathProcessor::getLabel).ifPresent(string::add);
+				calls.get(new RequestCommand(command.module(), command.screen(), null))
+					.flatMap(PathProcessor::getText)
+					.ifPresent(string::add);
+
+				if (command.action() != null)
+					calls.get(new RequestCommand(command.module(), command.screen(), command.action()))
+						.flatMap(PathProcessor::getText)
+						.ifPresent(string::add);
+
 			}
 		}
 
@@ -62,16 +81,19 @@ public class PathProcessor extends TagProcessor
 		handler.replaceWith("<g-path " + attributes + ">" + string + "</g-path>", false);
 	}
 
-	private static Optional<String> getLabel(AnnotatedElement element)
-	{
-		return getText(element).map(e -> "<label>" + e + "</label>");
-	}
-
-	private static Optional<String> getText(AnnotatedElement element)
+	private static Optional<String> getText(Call call)
 	{
 		StringJoiner string = new StringJoiner("");
-		Icon.Extractor.extract(element).ifPresent(e -> string.add("<g-icon>&#X" + e.getCode() + ";</g-icon>"));
-		Name.Extractor.extract(element).ifPresent(string::add);
+		if (call.metadata().name() != null)
+		{
+			string.add("<label>");
+			if (call.metadata().icon() != null)
+				string.add("<g-icon>" + call.metadata().icon() + "</g-icon>");
+			string.add(call.metadata().name());
+			string.add("</label>");
+		} else if (call.metadata().icon() != null)
+			string.add("<g-icon>" + call.metadata().icon() + "</g-icon>");
+
 		return string.length() != 0 ? Optional.of(string.toString()) : Optional.empty();
 	}
 }

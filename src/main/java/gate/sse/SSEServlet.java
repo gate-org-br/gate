@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import gate.annotation.Current;
-import gate.catcher.UnauthorizedExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 import gate.entity.User;
 import gate.error.UnauthorizedException;
 import gate.http.ScreenServletRequest;
@@ -25,14 +25,14 @@ public class SSEServlet extends HttpServlet
 	User user;
 
 	@Inject
-	UnauthorizedExceptionCatcher catcher;
+	HttpExceptionCatcher catcher;
 
 	@Inject
 	SSEClientManager sseClientManager;
 
 	@Override
 	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response)
-			throws ServletException, IOException
+		throws ServletException, IOException
 	{
 
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);

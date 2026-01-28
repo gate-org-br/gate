@@ -19,6 +19,7 @@ import gate.sql.statement.Sentence;
 import gate.sql.statement.UpdateOperation;
 import gate.sql.update.Update;
 import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.Vetoed;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
 import java.io.IOException;
@@ -42,6 +43,7 @@ import javax.sql.DataSource;
  *
  * @author davins
  */
+@Vetoed
 public class Link implements AutoCloseable
 {
 

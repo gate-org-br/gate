@@ -20,21 +20,22 @@ import java.util.function.Function;
 
 /**
  * Represents a JSON object as a java Map.
+ *
  * <p>
  * This class provides a comprehensive API for creating, manipulating, and
  * converting JSON objects in Java. It implements the {@link Map} interface with
  * String keys and {@link JsonElement} values, allowing standard Java collection
- * operations.
- * </p>
+ * operations.</p>
+ *
  * <p>
- * The class supports:
+ * The class supports:</p>
+ *
  * <ul>
  * <li>Type-safe getters and setters for primitive types</li>
  * <li>Conversion to and from Java objects</li>
  * <li>JSON parsing and formatting</li>
  * <li>Optional-based value retrieval to handle missing keys safely</li>
  * </ul>
- * </p>
  *
  * @author Davi Nunes da Silva
  */

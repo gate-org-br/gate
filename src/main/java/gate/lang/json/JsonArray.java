@@ -21,13 +21,16 @@ import java.util.stream.Stream;
 
 /**
  * Represents a JSON array as a List of JsonElement.
+ *
  * <p>
  * This class provides a comprehensive API for creating, manipulating, and
  * converting JSON arrays in Java. It implements the {@link List} interface with
- * {@link JsonElement} elements, allowing standard Java collection operations.
- * </p>
+ * {@link JsonElement} elements, allowing standard Java collection
+ * operations.</p>
+ *
  * <p>
- * The class supports:
+ * The class supports:</p>
+ *
  * <ul>
  * <li>Type-safe adders for primitive types</li>
  * <li>Conversion to and from Java collections</li>
@@ -35,7 +38,6 @@ import java.util.stream.Stream;
  * <li>Optional-based value retrieval to handle missing indices safely</li>
  * <li>Stream-based factory methods for functional programming</li>
  * </ul>
- * </p>
  *
  * @author Davi Nunes da Silva
  */

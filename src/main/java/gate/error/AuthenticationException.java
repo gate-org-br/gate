@@ -1,39 +1,72 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.UnauthorizedExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Signals that the user could not be authenticated.
+ * Exception thrown when an authentication attempt fails.
+ *
+ * <p>
+ * This exception indicates that the client was not able to prove its identity,
+ * either due to invalid credentials, expired authentication data, or failed
+ * security validations (such as OAuth state, PKCE, nonce, or token checks).
+ * </p>
+ *
+ * <p>
+ * When thrown, it is automatically handled by {@link HttpExceptionCatcher},
+ * resulting in an HTTP 401 (Unauthorized) response.
+ * </p>
  */
-@Catcher(UnauthorizedExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class AuthenticationException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Creates an AuthenticationException with a default message and the
+	 * underlying cause.
+	 *
+	 * @param cause the original exception that caused the authentication
+	 * failure
+	 */
+	public AuthenticationException(Throwable cause)
+	{
+		super("Usuario/Senha inválidos", cause);
+	}
+
+	/**
+	 * Creates an AuthenticationException with a custom message.
+	 *
+	 * @param message the message describing the authentication error
+	 */
+	public AuthenticationException(String message)
+	{
+		super(message);
+	}
+
+	/**
+	 * Creates an AuthenticationException with a custom message and an
+	 * underlying cause.
+	 *
+	 * @param message the message describing the authentication error
+	 * @param cause the original exception that caused the failure
+	 */
+	public AuthenticationException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
+
+	/**
+	 * Returns the HTTP status code associated with this exception.
+	 *
+	 * @return 401 (Unauthorized)
+	 */
 	@Override
 	public int getStatusCode()
 	{
 		return HttpServletResponse.SC_UNAUTHORIZED;
 	}
 
-	/**
-	 * Constructs an AuthenticationException.
-	 */
-	public AuthenticationException()
-	{
-		super("Usuario/Senha inválidos");
-	}
-
-	/**
-	 * Constructs an AuthenticationException with the specified message.
-	 *
-	 * @param message the error message
-	 */
-	public AuthenticationException(String message)
-	{
-		super(message);
-	}
 }

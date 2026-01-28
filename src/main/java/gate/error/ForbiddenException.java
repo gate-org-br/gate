@@ -1,13 +1,13 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.ForbiddenExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that the current user has no access to a resource.
  */
-@Catcher(ForbiddenExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class ForbiddenException extends HttpException
 {
 

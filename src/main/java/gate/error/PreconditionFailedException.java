@@ -1,13 +1,13 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.NotFoundExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Signals that a request precondition was not fulfilled.
  */
-@Catcher(NotFoundExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class PreconditionFailedException extends HttpException
 {
 

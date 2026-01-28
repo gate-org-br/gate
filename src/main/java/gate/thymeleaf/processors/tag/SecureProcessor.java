@@ -1,17 +1,17 @@
 package gate.thymeleaf.processors.tag;
 
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
-import gate.Call;
+import gate.Calls;
 import gate.annotation.Current;
 import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
+import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -22,6 +22,9 @@ public class SecureProcessor extends TagProcessor
 	@Inject
 	@Current
 	User user;
+
+	@Inject
+	Calls actionRegistry;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -38,11 +41,12 @@ public class SecureProcessor extends TagProcessor
 	{
 		try
 		{
-			if (Call.of(((IWebContext) context).getExchange(),
+			RequestCommand command = new RequestCommand(
 				element.getAttributeValue("module"),
 				element.getAttributeValue("screen"),
-				element.getAttributeValue("action"))
-				.checkAccess(user))
+				element.getAttributeValue("action"));
+
+			if (actionRegistry.canAccess(user, command))
 			{
 				handler.removeTags();
 			} else if (element.hasAttribute("otherwise"))

@@ -1,25 +1,21 @@
 package gate.thymeleaf.processors.tag.anchor;
 
-import gate.Call;
-import gate.entity.User;
-import gate.io.URL;
-import gate.thymeleaf.ELExpressionFactory;
-import gate.type.Attributes;
-import gate.util.Parameters;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 
+import gate.Call;
+import gate.entity.User;
+import gate.io.URL;
+import gate.type.Attributes;
+import gate.util.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
+
 @ApplicationScoped
 public class ShortcutProcessor extends AnchorProcessor
 {
-
-	@Inject
-	ELExpressionFactory expression;
 
 	public ShortcutProcessor()
 	{
@@ -27,7 +23,8 @@ public class ShortcutProcessor extends AnchorProcessor
 	}
 
 	@Override
-	protected void process(ITemplateContext context,
+	protected void process(
+		ITemplateContext context,
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
@@ -36,16 +33,20 @@ public class ShortcutProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		if (call.checkAccess(user) && condition(attributes))
-			if ("POST".equalsIgnoreCase(method(attributes)))
-				button(context, model, handler, element, call, attributes, parameters);
-			else
-				link(context, model, handler, element, call, attributes, parameters);
-		else
+		if (!call.accessRule().allows(user) || !condition(attributes))
+		{
 			model.reset();
+			return;
+		}
+
+		if ("POST".equalsIgnoreCase(method(attributes)))
+			renderButton(context, model, handler, element, call, attributes, parameters);
+		else
+			renderLink(context, model, handler, element, call, attributes, parameters);
 	}
 
-	public void button(ITemplateContext context,
+	private void renderButton(
+		ITemplateContext context,
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
@@ -53,17 +54,18 @@ public class ShortcutProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("formaction", URL.toString(call.command(), parameters.toString()));
+		attributes.put(
+			"formaction",
+			URL.toString(call.command(), parameters.toString()));
 
-		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
+		target(call, attributes)
+			.ifPresent(t -> attributes.put("formtarget", t));
 
-		if (element instanceof IStandaloneElementTag)
-			replaceWith(context, model, handler, "<button " + attributes + ">" + getIcon(call) + "</button>");
-		else
-			replaceTag(context, model, handler, "button", attributes);
+		render(context, model, handler, element, "button", attributes, call);
 	}
 
-	public void link(ITemplateContext context,
+	private void renderLink(
+		ITemplateContext context,
 		IModel model,
 		IElementModelStructureHandler handler,
 		IProcessableElementTag element,
@@ -71,20 +73,45 @@ public class ShortcutProcessor extends AnchorProcessor
 		Attributes attributes,
 		Parameters parameters)
 	{
-		attributes.put("href", URL.toString(call.command(), parameters.toString()));
+		attributes.put(
+			"href",
+			URL.toString(call.command(), parameters.toString()));
 
-		target(call, attributes).ifPresent(target -> attributes.put("target", target));
+		target(call, attributes)
+			.ifPresent(t -> attributes.put("target", t));
 
-		if (element instanceof IStandaloneElementTag)
-			replaceWith(context, model, handler, "<a " + attributes + ">" + getIcon(call) + "</a>");
-		else
-			replaceTag(context, model, handler, "a", attributes);
+		render(context, model, handler, element, "a", attributes, call);
 	}
 
-	private String getIcon(Call call)
+	private void render(
+		ITemplateContext context,
+		IModel model,
+		IElementModelStructureHandler handler,
+		IProcessableElementTag element,
+		String tag,
+		Attributes attributes,
+		Call call)
 	{
-		return call.getIcon().map(e -> "<g-icon>" + e + "</g-icon>")
-			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
-			.orElse("?");
+		if (element instanceof IStandaloneElementTag)
+			replaceWith(
+				context,
+				model,
+				handler,
+				"<" + tag + " " + attributes + ">" + buildIcon(call) + "</" + tag + ">");
+		else
+			replaceTag(context, model, handler, tag, attributes);
+	}
+
+	private String buildIcon(Call call)
+	{
+		var meta = call.metadata();
+
+		if (meta.icon() != null)
+			return "<g-icon>" + meta.icon() + "</g-icon>";
+
+		if (meta.emoji() != null)
+			return "<e>" + meta.emoji() + "</e>";
+
+		return "?";
 	}
 }

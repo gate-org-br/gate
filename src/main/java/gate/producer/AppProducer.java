@@ -1,5 +1,12 @@
 package gate.producer;
 
+import java.io.Serializable;
+import java.lang.reflect.Modifier;
+import java.util.Objects;
+
+import org.slf4j.Logger;
+
+import gate.Calls;
 import gate.annotation.Current;
 import gate.base.Control;
 import gate.base.Dao;
@@ -18,10 +25,6 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
-import java.io.Serializable;
-import java.lang.reflect.Modifier;
-import java.util.Objects;
-import org.slf4j.Logger;
 
 /**
  *
@@ -53,6 +56,9 @@ public class AppProducer implements Serializable
 	@Inject
 	AppControl control;
 
+	@Inject
+	Calls actionRegistry;
+
 	@PostConstruct
 	public void prepare()
 	{
@@ -63,7 +69,10 @@ public class AppProducer implements Serializable
 		var types = instances.stream().map(e -> (Class<Screen>) e.getClass())
 			.map(e -> e.isSynthetic() ? e.getSuperclass() : e)
 			.filter(type -> !Modifier.isAbstract(type.getModifiers()))
-			.filter(type -> type.getSimpleName().endsWith("Screen")).toList();
+			.filter(type -> type.getSimpleName().endsWith("Screen"))
+			.filter(Screen.class::isAssignableFrom)
+			.map(e -> (Class< Screen>) e)
+			.toList();
 
 		app = App.getInstance(id, servletContext.getInitParameter("name"),
 			servletContext.getInitParameter("description"), types);
@@ -71,6 +80,8 @@ public class AppProducer implements Serializable
 		try
 		{
 			control.update(app);
+
+			actionRegistry.register(types);
 		} catch (ConstraintViolationException ex)
 		{
 			logger.error("Erro trying to update app data " + ex.getMessage(), ex);
@@ -91,8 +102,7 @@ public class AppProducer implements Serializable
 
 		public void update(App app) throws ConstraintViolationException
 		{
-			try (Link link = Link.of("Gate");
-				AppDao dao = new AppDao(link))
+			try (Link link = Link.of("Gate"); AppDao dao = new AppDao(link))
 			{
 				link.beginTran();
 				dao.delete(app);

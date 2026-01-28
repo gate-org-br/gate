@@ -1,10 +1,6 @@
 package gate.error;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import java.util.List;
-
-@ApplicationScoped
-public abstract class HttpException extends AppException
+public abstract class HttpException extends RuntimeException
 {
 
 	public HttpException(String message)
@@ -12,19 +8,14 @@ public abstract class HttpException extends AppException
 		super(message);
 	}
 
-	public HttpException(List<String> messages)
-	{
-		super(messages);
-	}
-
 	public HttpException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
 
-	public HttpException(List<String> messages, Throwable cause)
+	public HttpException(Throwable cause)
 	{
-		super(messages, cause);
+		super(cause);
 	}
 
 	public abstract int getStatusCode();

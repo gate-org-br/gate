@@ -1,11 +1,11 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.BadRequestExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 import gate.type.RequestCommand;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Catcher(BadRequestExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class BadRequestException extends HttpException
 {
 
@@ -19,6 +19,16 @@ public class BadRequestException extends HttpException
 	public BadRequestException(String message)
 	{
 		super(message);
+	}
+
+	public BadRequestException(Throwable cause)
+	{
+		super(cause);
+	}
+
+	public BadRequestException(String message, Throwable cause)
+	{
+		super(message, cause);
 	}
 
 	public BadRequestException(RequestCommand requestCommand)

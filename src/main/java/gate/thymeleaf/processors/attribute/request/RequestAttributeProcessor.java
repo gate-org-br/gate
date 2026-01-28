@@ -1,18 +1,8 @@
 package gate.thymeleaf.processors.attribute.request;
 
-import gate.Call;
-import gate.annotation.Asynchronous;
-import gate.annotation.Current;
-import gate.entity.User;
-import gate.io.URL;
-import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.ELExpressionFactory;
-import gate.thymeleaf.processors.attribute.AttributeProcessor;
-import gate.util.Parameters;
-import jakarta.enterprise.inject.spi.CDI;
-import jakarta.inject.Inject;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -20,11 +10,27 @@ import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.web.IWebExchange;
 
+import gate.Call;
+import gate.Calls;
+import gate.annotation.Current;
+import gate.entity.User;
+import gate.io.URL;
+import gate.thymeleaf.ELExpression;
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.processors.attribute.AttributeProcessor;
+import gate.type.RequestCommand;
+import gate.util.Parameters;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+
 public class RequestAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpressionFactory ELExpressionFactory;
+	ELExpressionFactory expressionFactory;
+
+	@Inject
+	Calls actionRegistry;
 
 	public RequestAttributeProcessor(String name)
 	{
@@ -32,9 +38,11 @@ public class RequestAttributeProcessor extends AttributeProcessor
 	}
 
 	@Override
-	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
+	public void process(
+		ITemplateContext context,
+		IProcessableElementTag element,
+		IElementTagStructureHandler handler)
 	{
-
 		String module = element.getAttributeValue("g:module");
 		String screen = element.getAttributeValue("g:screen");
 		String action = element.getAttributeValue("g:action");
@@ -45,104 +53,124 @@ public class RequestAttributeProcessor extends AttributeProcessor
 
 		IWebExchange exchange = ((IWebContext) context).getExchange();
 
-		Call call = Call.of(exchange, module, screen, action);
+		RequestCommand command
+			= new RequestCommand(module, screen, action)
+				.with(
+					exchange.getRequest().getParameterValue("MODULE"),
+					(String) exchange.getRequest().getParameterValue("SCREEN"),
+					(String) exchange.getRequest().getParameterValue("ACTION"));
 
-		User user = CDI.current().select(User.class, Current.LITERAL).get();
+		Call call = actionRegistry.get(command)
+			.orElseThrow(()
+				-> new IllegalArgumentException("Invalid command: " + command));
+
+		User user = CDI.current()
+			.select(User.class, Current.LITERAL)
+			.get();
 
 		Parameters parameters = new Parameters();
-
-		ELExpression expression = ELExpressionFactory.create();
+		ELExpression expression = expressionFactory.create();
 
 		Stream.of(element.getAllAttributes())
 			.filter(e -> e.getValue() != null)
 			.filter(e -> e.getAttributeCompleteName().startsWith("_"))
 			.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
-			.forEach(e -> parameters.put(e.getAttributeCompleteName().substring(1),
-			expression.evaluate(e.getValue())));
+			.forEach(e
+				-> parameters.put(
+				e.getAttributeCompleteName().substring(1),
+				expression.evaluate(e.getValue())));
 
-		if (call.checkAccess(user))
+		if (!call.accessRule().allows(user))
 		{
-			if (!element.hasAttribute("style"))
-				call.getColor().ifPresent(e -> handler.setAttribute("style", "color: " + e));
+			if (element.getElementCompleteName().equalsIgnoreCase("a")
+				|| element.getElementCompleteName().equalsIgnoreCase("button"))
+				handler.removeElement();
 
-			if (!element.hasAttribute("data-alert"))
-				call.getAlert().ifPresent(e -> handler.setAttribute("data-alert", e));
+			return;
+		}
 
-			if (!element.hasAttribute("data-confirm"))
-				call.getConfirm().ifPresent(e -> handler.setAttribute("data-confirm", e));
+		var meta = call.metadata();
 
-			if (!element.hasAttribute("data-tooltip"))
-				call.getTooltip().ifPresent(e -> handler.setAttribute("data-tooltip", e));
+		if (!element.hasAttribute("style") && meta.color() != null)
+			handler.setAttribute("style", "color: " + meta.color());
 
-			if (!element.hasAttribute("title"))
-			{
-				call.getName().ifPresent(e -> handler.setAttribute("title", e));
-				call.getDescription().ifPresent(e -> handler.setAttribute("title", e));
-			}
+		if (!element.hasAttribute("data-alert") && meta.alert() != null)
+			handler.setAttribute("data-alert", meta.alert());
+
+		if (!element.hasAttribute("data-confirm") && meta.confirm() != null)
+			handler.setAttribute("data-confirm", meta.confirm());
+
+		if (!element.hasAttribute("data-tooltip") && meta.tooltip() != null)
+			handler.setAttribute("data-tooltip", meta.tooltip());
+
+		if (!element.hasAttribute("title"))
+		{
+			if (meta.description() != null)
+				handler.setAttribute("title", meta.description());
+			else if (meta.name() != null)
+				handler.setAttribute("title", meta.name());
+		}
+
+		String url = URL.toString(call.command(), parameters.toString());
+
+		switch (element.getElementCompleteName().toLowerCase())
+		{
+			case "a" ->
+				handler.setAttribute("href", url);
+
+			case "button" ->
+				handler.setAttribute("formaction", url);
+
+			case "form" ->
+				handler.setAttribute("action", url);
+
+			case "img" ->
+				handler.setAttribute("src", url);
+
+			default ->
+				handler.setAttribute("data-action", url);
+		}
+
+		if (call.asynchronous())
+		{
+			String target
+				= element.hasAttribute("target")
+				? element.getAttributeValue("target")
+				: null;
+
+			String resolved
+				= target != null && !target.startsWith("@progress")
+				? "@progress > " + target
+				: "@progress";
 
 			switch (element.getElementCompleteName().toLowerCase())
 			{
-				case "a":
-					handler.setAttribute("href", URL.toString(call.command(), parameters.toString()));
+				case "a", "form" ->
+					handler.setAttribute("target", resolved);
 
-					if (call.method().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("target",
-							element.hasAttribute("target")
-							&& !element.getAttributeValue("target").startsWith("@progress")
-							? "@progress > " + element.getAttributeValue("target")
-							: "@progress");
+				case "button" ->
+					handler.setAttribute("formtarget", resolved);
 
-					break;
-				case "button":
-					handler.setAttribute("formaction", URL.toString(call.command(), parameters.toString()));
-
-					if (call.method().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("formtarget",
-							element.hasAttribute("formtarget")
-							&& !element.getAttributeValue("formtarget").startsWith("@progress")
-							? "@progress > " + element.getAttributeValue("formtarget")
-							: "@progress");
-					break;
-
-				case "form":
-					handler.setAttribute("action", URL.toString(call.command(), parameters.toString()));
-
-					if (call.method().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("target",
-							element.hasAttribute("target")
-							&& !element.getAttributeValue("target").startsWith("@progress")
-							? "@progress > " + element.getAttributeValue("target")
-							: "@progress");
-					break;
-				case "img":
-					handler.setAttribute("src", URL.toString(call.command(), parameters.toString()));
-					break;
-				default:
-					handler.setAttribute("data-action", URL.toString(call.command(), parameters.toString()));
-
-					if (call.method().isAnnotationPresent(Asynchronous.class))
-						handler.setAttribute("data-target",
-							element.hasAttribute("data-target")
-							&& !element.getAttributeValue("data-target").startsWith("@progress")
-							? "@progress > " + element.getAttributeValue("data-target")
-							: "@progress");
-					break;
+				default ->
+					handler.setAttribute("data-target", resolved);
 			}
+		}
 
-			if (element instanceof IStandaloneElementTag
-				&& (element.getElementCompleteName().toLowerCase().equals("a")
-				|| element.getElementCompleteName().toLowerCase().equals("button")))
-			{
-				StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-				call.getName().ifPresent(body::add);
-				call.getIcon().map(e -> "<g-icon>" + e + "</g-icon>")
-					.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"))
-					.ifPresent(body::add);
-				handler.setBody(body.toString(), true);
-			}
-		} else if (element.getElementCompleteName().toLowerCase().equals("a")
-			|| element.getElementCompleteName().toLowerCase().equals("button"))
-			handler.removeElement();
+		if (element instanceof IStandaloneElementTag
+			&& (element.getElementCompleteName().equalsIgnoreCase("a")
+			|| element.getElementCompleteName().equalsIgnoreCase("button")))
+		{
+			StringJoiner body = new StringJoiner("").setEmptyValue("unnamed");
+
+			if (meta.name() != null)
+				body.add(meta.name());
+
+			if (meta.icon() != null)
+				body.add("<g-icon>" + meta.icon() + "</g-icon>");
+			else if (meta.emoji() != null)
+				body.add("<e>" + meta.emoji() + "</e>");
+
+			handler.setBody(body.toString(), true);
+		}
 	}
-
 }

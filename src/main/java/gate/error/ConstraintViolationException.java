@@ -1,15 +1,16 @@
 package gate.error;
 
-import gate.annotation.Catcher;
-import gate.catcher.ConflictExceptionCatcher;
 import java.sql.SQLException;
+
+import gate.annotation.Catcher;
+import gate.catcher.HttpExceptionCatcher;
 
 /**
  * Signals an attempt to violate a database constraint.
  *
  * @author davins
  */
-@Catcher(ConflictExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class ConstraintViolationException extends AppException
 {
 

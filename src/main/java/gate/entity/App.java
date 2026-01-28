@@ -1,23 +1,26 @@
 package gate.entity;
 
+import java.io.Serializable;
+import java.lang.reflect.Method;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import gate.NameResolver;
 import gate.annotation.Converter;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
+import gate.base.Screen;
 import gate.converter.AppConverter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
-import jakarta.enterprise.context.Dependent;
-import java.io.Serializable;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import jakarta.enterprise.context.ApplicationScoped;
 
-@Dependent
 @Icon("2189")
 @Name("Aplicação")
+@ApplicationScoped
 @Converter(AppConverter.class)
 public class App implements Serializable
 {
@@ -54,7 +57,7 @@ public class App implements Serializable
 	}
 
 	public static App getInstance(String id, String name, String description,
-		List<Class<?>> screens)
+		List<Class<Screen>> screens)
 	{
 		App app = new App();
 		app.id = id;
@@ -63,13 +66,13 @@ public class App implements Serializable
 
 		app.modules = screens.stream()
 			.filter(type -> type.getSimpleName().length() > 6)
-			.map(type -> type.getPackage()).distinct().map(pack ->
+			.map(type -> type.getPackage().getName()).distinct().map(pack ->
 		{
 			Module module = new Module();
-			module.id = pack.getName();
+			module.id = pack;
 
 			screens.stream()
-				.filter(e -> e.getPackage().getName().equals(pack.getName()))
+				.filter(e -> e.getPackage().getName().equals(pack))
 				.filter(type -> type.getSimpleName().equals("Screen")).findAny().ifPresent(type ->
 			{
 				Name.Extractor.extract(type).ifPresent(e -> module.name = e);
@@ -78,7 +81,7 @@ public class App implements Serializable
 			});
 
 			module.screens = screens.stream()
-				.filter(e -> e.getPackage().getName().equals(pack.getName()))
+				.filter(e -> e.getPackage().getName().equals(pack))
 				.map(Module.Screen::of)
 				.toList();
 
@@ -268,11 +271,7 @@ public class App implements Serializable
 			private static Screen of(Class<?> type)
 			{
 				var screen = new Screen();
-				if (type.getEnclosingClass() != null)
-					screen.id = type.getEnclosingClass().getSimpleName() + "$"
-						+ type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
-				else
-					screen.id = type.getSimpleName().substring(0, type.getSimpleName().length() - 6);
+				screen.id = NameResolver.screen(type);
 
 				Name.Extractor.extract(type).ifPresent(e -> screen.name = e);
 				Description.Extractor.extract(type).ifPresent(e -> screen.description = e);
@@ -353,7 +352,7 @@ public class App implements Serializable
 				private static Action of(Method method)
 				{
 					var action = new Action();
-					action.id = method.getName().substring(4);
+					action.id = NameResolver.action(method);
 					Name.Extractor.extract(method).ifPresent(e -> action.name = e);
 					Description.Extractor.extract(method).ifPresent(e -> action.description = e);
 					Icon.Extractor.extract(method).ifPresent(e -> action.icon = e.getCode());

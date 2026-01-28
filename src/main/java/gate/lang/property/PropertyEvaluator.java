@@ -1,14 +1,14 @@
 package gate.lang.property;
 
-import gate.error.PropertyError;
-import gate.util.Reflection;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import gate.error.PropertyError;
+import gate.util.Reflection;
 
 class PropertyEvaluator
 {
@@ -23,8 +23,9 @@ class PropertyEvaluator
 
 	public Object evaluate(Object object)
 	{
-		try (PropertyScanner scanner = new PropertyScanner(property))
+		try
 		{
+			PropertyScanner scanner = new PropertyScanner(property);
 			token = scanner.next();
 
 			if (token != null && object != null)
@@ -35,7 +36,7 @@ class PropertyEvaluator
 			}
 
 			return object;
-		} catch (ReflectiveOperationException | IOException ex)
+		} catch (ReflectiveOperationException ex)
 		{
 			throw new PropertyError("Invalid property name: %s.", property);
 		}
@@ -88,28 +89,28 @@ class PropertyEvaluator
 			List<Object> parameters = parameters(scanner);
 
 			Method method = Reflection
-					.findMethod(object.getClass(),
-							name,
-							parameters.stream()
-									.map(Object::getClass)
-									.toArray(Class[]::new))
-					.orElse(null);
+				.findMethod(object.getClass(),
+					name,
+					parameters.stream()
+						.map(Object::getClass)
+						.toArray(Class[]::new))
+				.orElse(null);
 
 			if (method == null)
 				method = Reflection.findMethod(object.getClass(), name,
-						parameters.stream().map(Object::getClass)
-								.map(e -> switch (e.getSimpleName())
-						{
-							case "Integer" ->
-								int.class;
-							case "Boolean" ->
-								boolean.class;
-							case "Character" ->
-								char.class;
-							default ->
-								e;
-						}).toArray(Class[]::new))
-						.orElse(null);
+					parameters.stream().map(Object::getClass)
+						.map(e -> switch (e.getSimpleName())
+					{
+						case "Integer" ->
+							int.class;
+						case "Boolean" ->
+							boolean.class;
+						case "Character" ->
+							char.class;
+						default ->
+							e;
+					}).toArray(Class[]::new))
+					.orElse(null);
 
 			if (method != null)
 				return method.invoke(object, parameters.toArray());
@@ -122,13 +123,13 @@ class PropertyEvaluator
 				return map.get(name);
 
 			Method getter = Reflection.findMethod(object.getClass(), "get"
-					+ Character.toUpperCase(name.charAt(0))
-					+ name.substring(1)).orElse(null);
+				+ Character.toUpperCase(name.charAt(0))
+				+ name.substring(1)).orElse(null);
 			if (getter != null)
 				return getter.invoke(object);
 
 			Field field = Reflection.findField(object.getClass(), name)
-					.orElse(null);
+				.orElse(null);
 
 			if (field != null)
 				return field.get(object);
@@ -164,8 +165,8 @@ class PropertyEvaluator
 	private Object parameter(PropertyScanner scanner)
 	{
 		if (token instanceof Boolean
-				|| token instanceof Number
-				|| token instanceof String)
+			|| token instanceof Number
+			|| token instanceof String)
 		{
 			Object result = token;
 			token = scanner.next();
@@ -197,10 +198,10 @@ class PropertyEvaluator
 		if (name != null)
 		{
 			if (object instanceof Object[] array
-					&& name instanceof Number number)
+				&& name instanceof Number number)
 				return array[number.intValue()];
 			else if (object instanceof List<?> list
-					&& name instanceof Number number)
+				&& name instanceof Number number)
 				return list.get(number.intValue());
 			else if (object instanceof Map<?, ?> map)
 				return map.get(name);
