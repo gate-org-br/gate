@@ -121,10 +121,10 @@ public class OIDCAuthenticator implements Authenticator
 			else if (request.getAuthorization() instanceof BasicAuthorization basicAuthorization)
 				return resourceOwnerPasswordCredentialsFlow(control, basicAuthorization);
 			else
-				throw new AuthFailedException();
+				throw new AuthenticationException();
 		} catch (IOException | RuntimeException ex)
 		{
-			throw new AuthFailedException();
+			throw new AuthenticationException();
 		}
 	}
 
@@ -146,33 +146,33 @@ public class OIDCAuthenticator implements Authenticator
 				.set("redirect_uri", redirectUri)
 				.set("code_verifier", state.codeVerifier()))
 			.readJsonObject()
-			.orElseThrow(AuthFailedException::new);
+			.orElseThrow(AuthenticationException::new);
 
 		if (tokens.containsKey("id_token"))
 		{
 
 			var idToken = tokens.getString("id_token")
-				.orElseThrow(AuthFailedException::new);
+				.orElseThrow(AuthenticationException::new);
 			Claims claims = getClaims(idToken);
 			if (!claims.getAudience()
 				.stream().anyMatch(clientId::equals))
-				throw new AuthFailedException();
+				throw new AuthenticationException();
 
 			if (!state.nonce().equals(claims.get("nonce", String.class)))
-				throw new AuthFailedException();
+				throw new AuthenticationException();
 
 			if (claims.containsKey(userId))
 				return control.select(claims.get(userId, String.class));
 		}
 
 		String accessToken = tokens.getString("access_token")
-			.orElseThrow(AuthFailedException::new);
+			.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get()).setAuthorization(BearerAuthorization.from(accessToken))
 			.get().readJsonObject()
-			.orElseThrow(AuthFailedException::new);
+			.orElseThrow(AuthenticationException::new);
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(AuthFailedException::new));
+			.orElseThrow(AuthenticationException::new));
 	}
 
 	private User partialAuthorizationCodeFlow(GateControl control, ScreenServletRequest request)
@@ -184,16 +184,16 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			Claims claims = getClaims(token);
 			if (!claims.containsKey(userId))
-				throw new AuthFailedException();
+				throw new AuthenticationException();
 			return control.select(claims.get(userId, String.class));
 		}
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get()).setAuthorization(BearerAuthorization.from(token)).get()
 			.readJsonObject()
-			.orElseThrow(AuthFailedException::new);
+			.orElseThrow(AuthenticationException::new);
 
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(AuthFailedException::new));
+			.orElseThrow(AuthenticationException::new));
 	}
 
 	private User resourceOwnerPasswordCredentialsFlow(GateControl control, BasicAuthorization basicAuth)
@@ -204,25 +204,25 @@ public class OIDCAuthenticator implements Authenticator
 			.post(new Parameters().set("grant_type", "password").set("username", basicAuth.username())
 				.set("password", basicAuth.password()).set("client_id", clientId)
 				.set("client_secret", clientSecret).set("scope", scope))
-			.readJsonObject().orElseThrow(AuthFailedException::new);
+			.readJsonObject().orElseThrow(AuthenticationException::new);
 
 		if (tokens.containsKey("id_token"))
 		{
 			var idToken = tokens.getString("id_token")
-				.orElseThrow(AuthFailedException::new);
+				.orElseThrow(AuthenticationException::new);
 			Claims claims = getClaims(idToken);
 			if (claims.containsKey(userId))
 				return control.select(claims.get(userId, String.class));
 		}
 
 		String accessToken = tokens.getString("access_token")
-			.orElseThrow(AuthFailedException::new);
+			.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get()).setAuthorization(BearerAuthorization.from(accessToken))
-			.get().readJsonObject().orElseThrow(AuthFailedException::new);
+			.get().readJsonObject().orElseThrow(AuthenticationException::new);
 
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(AuthFailedException::new));
+			.orElseThrow(AuthenticationException::new));
 	}
 
 	@Override
@@ -240,14 +240,14 @@ public class OIDCAuthenticator implements Authenticator
 			{
 				JsonObject userInfo = new URL(userInfoEndpoint.get())
 					.setAuthorization(BearerAuthorization.from(bearerAuthorization.token())).get().readJsonObject()
-					.orElseThrow(AuthFailedException::new);
+					.orElseThrow(AuthenticationException::new);
 				return control.select(userInfo.getString(userId).orElseThrow(
-					AuthFailedException::new));
+					AuthenticationException::new));
 			}
 		} else if (authorization instanceof BasicAuthorization basicAuthorization)
 			return resourceOwnerPasswordCredentialsFlow(control, basicAuthorization);
 
-		throw new AuthFailedException();
+		throw new AuthenticationException();
 	}
 
 	@Override
@@ -265,10 +265,10 @@ public class OIDCAuthenticator implements Authenticator
 	{
 		try
 		{
-			return new URL(configurationEndpoint).get().readJsonObject().orElseThrow(() -> new AuthFailedException());
+			return new URL(configurationEndpoint).get().readJsonObject().orElseThrow(() -> new AuthenticationException());
 		} catch (IOException ex)
 		{
-			throw new AuthFailedException(ex);
+			throw new AuthenticationException(ex);
 		}
 	}
 
@@ -279,7 +279,7 @@ public class OIDCAuthenticator implements Authenticator
 			return new URL(jwksUri.get()).get().readJsonObject().flatMap(e -> e.getJsonArray("keys")).orElseThrow()
 				.stream().map(e -> (JsonObject) e)
 				.collect(Collectors.toMap(e -> e.getString("kid")
-				.orElseThrow(AuthFailedException::new),
+				.orElseThrow(AuthenticationException::new),
 					JWKSPublicKeyParser::parse));
 		} catch (IOException ex)
 		{
@@ -307,7 +307,7 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			PublicKey key = publicKeys.get().get(kid);
 			if (key == null)
-				throw new AuthFailedException();
+				throw new AuthenticationException();
 			return key;
 		}
 
@@ -315,7 +315,7 @@ public class OIDCAuthenticator implements Authenticator
 		if (publicKeys.get().size() == 1)
 			return publicKeys.get().values().iterator().next();
 
-		throw new AuthFailedException();
+		throw new AuthenticationException();
 	}
 
 	private Claims getClaims(String token)
@@ -326,7 +326,7 @@ public class OIDCAuthenticator implements Authenticator
 			.parseSignedClaims(token)
 			.getPayload();
 		if (!Objects.equals(claims.getIssuer(), issuer.get()))
-			throw new AuthFailedException();
+			throw new AuthenticationException();
 		return claims;
 	}
 
@@ -376,14 +376,14 @@ public class OIDCAuthenticator implements Authenticator
 
 			long now = System.currentTimeMillis();
 			long iat = json.getLong("iat")
-				.orElseThrow(AuthFailedException::new);
+				.orElseThrow(AuthenticationException::new);
 			if (iat > now || now - iat > TIMEOUT.toMillis())
-				throw new AuthFailedException();
+				throw new AuthenticationException();
 
 			var nonce = json.getString("nonce")
-				.orElseThrow(AuthFailedException::new);
+				.orElseThrow(AuthenticationException::new);
 			var codeVerifier = json.getString("codeVerifier")
-				.orElseThrow(AuthFailedException::new);
+				.orElseThrow(AuthenticationException::new);
 
 			return new State(nonce, codeVerifier);
 		}
@@ -397,19 +397,5 @@ public class OIDCAuthenticator implements Authenticator
 				.encodeToString(b);
 		}
 
-	}
-
-	private static class AuthFailedException extends AuthenticationException
-	{
-
-		public AuthFailedException(Exception cause)
-		{
-			super("Authentication could not be completed", cause);
-		}
-
-		public AuthFailedException()
-		{
-			super("Authentication could not be completed");
-		}
 	}
 }

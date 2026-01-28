@@ -23,7 +23,16 @@ public class AuthenticationException extends HttpException
 {
 
 	private static final long serialVersionUID = 1L;
-
+	private static final String DEFAULT_MESSAGE = "Authentication could not be completed";
+	
+	/**
+	 * Creates an AuthenticationException with a default message
+	 */
+	public AuthenticationException()
+	{
+		super(DEFAULT_MESSAGE);
+	}
+	
 	/**
 	 * Creates an AuthenticationException with a default message and the
 	 * underlying cause.
@@ -33,7 +42,7 @@ public class AuthenticationException extends HttpException
 	 */
 	public AuthenticationException(Throwable cause)
 	{
-		super("Usuario/Senha inválidos", cause);
+		super(DEFAULT_MESSAGE, cause);
 	}
 
 	/**
