@@ -30,6 +30,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 import javax.crypto.SecretKey;
 
@@ -107,6 +108,7 @@ public class OIDCAuthenticator implements Authenticator
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
 		return request.getParameter("code") != null
+				|| request.getParameter("error") != null
 				|| request.getAuthorization() instanceof BearerAuthorization
 				|| request.getAuthorization() instanceof BasicAuthorization;
 	}
@@ -115,6 +117,14 @@ public class OIDCAuthenticator implements Authenticator
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
 			throws AuthenticationException, HierarchyException, HttpException
 	{
+		if (request.getParameter("error") != null)
+		{
+			String description = Objects.requireNonNullElse(
+					request.getParameter("error_description"),
+					request.getParameter("error"));
+			throw new AuthenticationException(description);
+		}
+
 		try
 		{
 			if (request.getParameter("code") != null)
