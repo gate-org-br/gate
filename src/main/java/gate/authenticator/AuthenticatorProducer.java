@@ -39,7 +39,7 @@ public class AuthenticatorProducer implements Serializable
 	@Inject
 	HttpServletRequest request;
 
-	private final Map<String, Authenticator> authenticators = new ConcurrentHashMap<>();
+	private final Map<String, Map<String, Authenticator>> authenticators = new ConcurrentHashMap<>();
 
 	@Current
 	@Produces
@@ -47,32 +47,33 @@ public class AuthenticatorProducer implements Serializable
 	@Named("authenticator")
 	public Authenticator get()
 	{
-		String authenticator
-			= Objects.requireNonNullElse(request.getParameter("authenticator"), "default");
+		String context = app.getId().toLowerCase();
+		String index = Objects.requireNonNullElse(request.getParameter("authenticator"), "default");
 
-		return authenticators.computeIfAbsent(authenticator, index ->
-		{
-			String context = app.getId().toLowerCase();
-			AuthConfig config
-				= new AuthConfig(keys, context, index);
-
-			if (config.getProperty("type").isPresent())
-				return switch (config.getProperty("type").get())
+		return authenticators
+				.computeIfAbsent(context, k -> new ConcurrentHashMap<>())
+				.computeIfAbsent(index, key ->
 				{
-					case "database" ->
-						new DatabaseAuthenticator(control, config);
-					case "ldap" ->
-						new LDAPAuthenticator(control, config);
-					case "oidc" ->
-						new OIDCAuthenticator(control, config);
-					default ->
-						throw new AuthenticatorException("Invalid authenticator type");
-				};
+					AuthConfig config = new AuthConfig(keys, context, key);
 
-			if (!"default".equals(authenticator))
-				throw new AuthenticatorException("Invalid authenticator");
+					if (config.getProperty("type").isPresent())
+						return switch (config.getProperty("type").get())
+						{
+							case "database" ->
+								new DatabaseAuthenticator(control, config);
+							case "ldap" ->
+								new LDAPAuthenticator(control, config);
+							case "oidc" ->
+								new OIDCAuthenticator(control, config);
+							default ->
+								throw new AuthenticatorException("Invalid authenticator type");
+						};
 
-			return new DatabaseAuthenticator(control, config);
-		});
+					if (!"default".equals(key))
+						throw new AuthenticatorException("Invalid authenticator");
+
+					return new DatabaseAuthenticator(control, config);
+				});
 	}
+
 }

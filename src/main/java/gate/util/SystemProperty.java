@@ -8,7 +8,21 @@ public class SystemProperty
 
 	public static Optional<String> get(String property)
 	{
-		return Optional.ofNullable(System.getProperty(property, System.getenv(property)))
-			.or(() -> ConfigProvider.getConfig().getOptionalValue(property, String.class));
+		String value = System.getProperty(property);
+		if (value != null)
+			return Optional.of(value);
+
+		value = System.getenv(property);
+		if (value != null)
+			return Optional.of(value);
+
+		try
+		{
+			return ConfigProvider.getConfig()
+					.getOptionalValue(property, String.class);
+		} catch (Throwable ex)
+		{
+			return Optional.empty();
+		}
 	}
 }
