@@ -44,20 +44,21 @@ public class Auth extends HttpServlet
 
 			try
 			{
-				User user = authenticator.authenticate(new ScreenServletRequest(httpServletRequest), response);
+				var request = new ScreenServletRequest(httpServletRequest);
+
+				if (!authenticator.hasCredentials(request))
+					throw new BadRequestException("Missing credentials");
+
+				User user = authenticator.authenticate(request, response);
 				if (user == null)
 					throw new BadRequestException("Attempt to login without provinding valid credentials");
 
 				var token = Credentials.SubjectToken.create(user.getId());
 				control.update(user, token.iat());
 				writer.write(credentials.fromToken(token));
-			} catch (AuthenticationException ex)
-			{
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-				writer.write(ex.getMessage());
 			} catch (HttpException ex)
 			{
-				response.setStatus(ex.getStatusCode());
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 				writer.write(ex.getMessage());
 			} catch (RuntimeException ex)
 			{
