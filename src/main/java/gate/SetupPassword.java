@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/SetupPassword")
 public class SetupPassword extends HttpServlet
 {
+
 	@Inject
 	@Current
 	Authenticator authenticator;
@@ -45,7 +46,7 @@ public class SetupPassword extends HttpServlet
 
 				if (request.getAuthorization() instanceof BasicAuthorization)
 				{
-					var user = authenticator.getUser(request);
+					var user = authenticator.authenticate(request, response);
 					control.update(user, request.getBody().trim());
 				} else
 					throw new BadRequestException("Missing user credentials");

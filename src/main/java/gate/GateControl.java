@@ -2,7 +2,7 @@ package gate;
 
 import gate.entity.User;
 import gate.error.HierarchyException;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.security.hash.BCrypt;
 import gate.sql.Link;
 import gate.type.Hierarchy;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class GateControl extends gate.base.Control
 {
 
-	public User select(ID id) throws InvalidUsernameException,
+	public User select(ID id) throws InvalidUsernamePasswordException,
 		HierarchyException
 	{
 
@@ -25,9 +25,9 @@ public class GateControl extends gate.base.Control
 			User user = dao.select(id);
 
 			if (user.isDisabled())
-				throw new InvalidUsernameException();
+				throw new InvalidUsernamePasswordException();
 			if (user.getRole().getId() == null)
-				throw new InvalidUsernameException();
+				throw new InvalidUsernamePasswordException();
 
 			var roles = dao.getRoles();
 			Hierarchy.setup(roles);
@@ -37,11 +37,11 @@ public class GateControl extends gate.base.Control
 		}
 	}
 
-	public User select(String username) throws InvalidUsernameException,
+	public User select(String username) throws InvalidUsernamePasswordException,
 		HierarchyException
 	{
 		if (Toolkit.isEmpty(username) || username.length() > 64)
-			throw new InvalidUsernameException();
+			throw new InvalidUsernamePasswordException();
 
 		try (Link link = Link.of("Gate");
 			GateDao dao = new GateDao(link))
@@ -49,9 +49,9 @@ public class GateControl extends gate.base.Control
 			User user = dao.select(username);
 
 			if (user.isDisabled())
-				throw new InvalidUsernameException();
+				throw new InvalidUsernamePasswordException();
 			if (user.getRole().getId() == null)
-				throw new InvalidUsernameException();
+				throw new InvalidUsernamePasswordException();
 
 			var roles = dao.getRoles();
 			Hierarchy.setup(roles);

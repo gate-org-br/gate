@@ -4,7 +4,7 @@ import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
 import gate.error.InvalidCredentialsException;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.error.NotFoundException;
 import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
@@ -64,7 +64,7 @@ public class ResetPassword extends HttpServlet
 				messenger.post(user.getEmail(), MimeMail.of("Redefinição de senha",
 					"Utilize este token para redefinir sua senha: " + createToken(user)));
 
-			} catch (BadRequestException | InvalidUsernameException ex)
+			} catch (BadRequestException | InvalidUsernamePasswordException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				writer.write(ex.getMessage());

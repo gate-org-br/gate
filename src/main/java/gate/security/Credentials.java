@@ -1,7 +1,7 @@
 package gate.security;
 
 import gate.error.HierarchyException;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.error.UnauthorizedException;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
@@ -73,7 +73,7 @@ public class Credentials
 	}
 
 	public SubjectToken toToken(String token)
-		throws InvalidUsernameException,
+		throws InvalidUsernamePasswordException,
 		HierarchyException, UnauthorizedException
 	{
 		try

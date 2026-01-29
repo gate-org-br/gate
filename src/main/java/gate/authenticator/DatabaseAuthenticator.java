@@ -4,15 +4,12 @@ import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.HierarchyException;
-import gate.error.HttpException;
-import gate.error.InvalidPasswordException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.security.hash.BCrypt;
 import gate.security.hash.MD5;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class DatabaseAuthenticator implements Authenticator
 {
@@ -38,14 +35,7 @@ public class DatabaseAuthenticator implements Authenticator
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
-		HttpServletResponse response)
-		throws HttpException, AuthenticationException, HierarchyException, IOException
-	{
-		return getUser(request);
-	}
-
-	@Override
-	public User getUser(ScreenServletRequest request) throws AuthenticationException, IOException
+			HttpServletResponse response)
 	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
 		if (authorization == null)
@@ -56,13 +46,13 @@ public class DatabaseAuthenticator implements Authenticator
 		if (user.getPassword().length() == 32)
 		{
 			if (!MD5.of(user.getPassword())
-				.verify(authorization.password()))
-				throw new InvalidPasswordException();
+					.verify(authorization.password()))
+				throw new InvalidUsernamePasswordException();
 			control.update(user, BCrypt.digest(authorization.password()));
 
 		} else if (!BCrypt.of(user.getPassword())
-			.verify(authorization.password()))
-			throw new InvalidPasswordException();
+				.verify(authorization.password()))
+			throw new InvalidUsernamePasswordException();
 
 		return user;
 	}

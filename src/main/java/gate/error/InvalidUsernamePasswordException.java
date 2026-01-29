@@ -3,7 +3,7 @@ package gate.error;
 /**
  * Signals that the username informed by the current user is invalid.
  */
-public class InvalidUsernameException extends AuthenticationException
+public class InvalidUsernamePasswordException extends AuthenticationException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -11,8 +11,8 @@ public class InvalidUsernameException extends AuthenticationException
 	/**
 	 * Constructs an InvalidUsernameException.
 	 */
-	public InvalidUsernameException()
+	public InvalidUsernamePasswordException()
 	{
-		super("Usuário inválido");
+		super("Usuário ou senha inválidos");
 	}
 }

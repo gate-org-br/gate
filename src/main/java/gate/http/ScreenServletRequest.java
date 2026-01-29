@@ -24,8 +24,7 @@ import gate.entity.User;
 import gate.error.AppError;
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
@@ -204,10 +203,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			if (username != null || password != null)
 			{
 				if (username == null || username.isBlank())
-					throw new InvalidUsernameException();
+					throw new InvalidUsernamePasswordException();
 
 				if (password == null || password.isBlank())
-					throw new InvalidPasswordException();
+					throw new InvalidUsernamePasswordException();
 
 				return BasicAuthorization.from(username, password);
 			}

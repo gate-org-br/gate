@@ -3,12 +3,10 @@ package gate.authenticator;
 import gate.GateControl;
 import gate.entity.User;
 import gate.error.AuthenticatorException;
-import gate.error.DefaultPasswordException;
-import gate.error.HierarchyException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
+import gate.security.hash.BCrypt;
 import gate.security.hash.MD5;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
@@ -35,7 +33,7 @@ public class LDAPAuthenticator implements Authenticator
 	private final boolean databaseFallback;
 
 	public LDAPAuthenticator(GateControl control,
-		AuthConfig config)
+			AuthConfig config)
 	{
 		this.control = control;
 		this.server = config.getProperty("ldap.server").orElseThrow(() -> new AuthenticatorException("Missing ldap.server"));
@@ -43,8 +41,8 @@ public class LDAPAuthenticator implements Authenticator
 		this.clientUsername = config.getProperty("ldap.client_username").orElse(null);
 		this.clientPassword = config.getProperty("ldap.client_password").orElse(null);
 		this.databaseFallback = config.getProperty("ldap.database_fallback")
-			.map(e -> "true".equals(e))
-			.orElse(false);
+				.map(e -> "true".equals(e))
+				.orElse(false);
 		this.rootContext = config.getProperty("ldap.root_context").orElse("");
 	}
 
@@ -66,10 +64,11 @@ public class LDAPAuthenticator implements Authenticator
 		Hashtable<String, String> parameters = new Hashtable<>();
 		parameters.put(Context.SECURITY_AUTHENTICATION, "simple");
 		parameters.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-
 		parameters.put(Context.PROVIDER_URL, server);
 		parameters.put(Context.SECURITY_PRINCIPAL, username);
 		parameters.put(Context.SECURITY_CREDENTIALS, password);
+		parameters.put("com.sun.jndi.ldap.connect.timeout", "5000");
+		parameters.put("com.sun.jndi.ldap.read.timeout", "5000");
 
 		if (securityProtocol != null)
 			parameters.put(Context.SECURITY_PROTOCOL, securityProtocol);
@@ -78,7 +77,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	private String getUniqueID(String username, String password,
-		BasicAuthorization authorization) throws NamingException
+			BasicAuthorization authorization) throws NamingException
 	{
 		DirContext serverContext = getDirContext(username, password);
 		try
@@ -87,10 +86,10 @@ public class LDAPAuthenticator implements Authenticator
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
-				new Object[]
-				{
-					authorization.username(), authorization.username(), authorization.username()
-				}, controls);
+					new Object[]
+					{
+						authorization.username(), authorization.username(), authorization.username()
+					}, controls);
 
 			return enumeration.hasMore() ? enumeration.next().getNameInNamespace() : null;
 		} finally
@@ -100,14 +99,8 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	@Override
-	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-		throws gate.error.AuthenticationException, HierarchyException
-	{
-		return getUser(request);
-	}
-
-	@Override
-	public User getUser(ScreenServletRequest request)
+	public User authenticate(ScreenServletRequest request,
+			HttpServletResponse response)
 	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
 
@@ -121,21 +114,21 @@ public class LDAPAuthenticator implements Authenticator
 				if (dn == null)
 				{
 					if (!databaseFallback)
-						throw new InvalidUsernameException();
+						throw new InvalidUsernamePasswordException();
 
-					if (MD5.digest(user.getUsername()).toString()
-						.equals(user.getPassword()))
-						throw new DefaultPasswordException();
-
-					if (!MD5.digest(authorization.password())
-						.toString().equals(user.getPassword()))
-						throw new InvalidPasswordException();
+					if (user.getPassword().length() == 32)
+					{
+						if (!MD5.of(user.getPassword())
+								.verify(authorization.password()))
+							throw new InvalidUsernamePasswordException();
+						control.update(user, BCrypt.digest(authorization.password()));
+					} else if (!BCrypt.of(user.getPassword())
+							.verify(authorization.password()))
+						throw new InvalidUsernamePasswordException();
 				} else
-					getDirContext(dn, authorization.password())
-						.close();
+					getDirContext(dn, authorization.password()).close();
 			} else
-				getDirContext(authorization.username(), authorization.password())
-					.close();
+				getDirContext(authorization.username(), authorization.password()).close();
 
 			return user;
 
@@ -145,7 +138,7 @@ public class LDAPAuthenticator implements Authenticator
 		} catch (NamingException ex)
 		{
 			if (ex instanceof AuthenticationException)
-				throw new InvalidPasswordException();
+				throw new InvalidUsernamePasswordException();
 			else
 				throw new AuthenticatorException(ex);
 		}

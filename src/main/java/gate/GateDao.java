@@ -3,7 +3,7 @@ package gate;
 import gate.entity.Auth;
 import gate.entity.Role;
 import gate.entity.User;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.error.NotFoundException;
 import gate.security.hash.BCrypt;
 import gate.sql.Cursor;
@@ -26,20 +26,20 @@ class GateDao extends gate.base.Dao
 		super(link);
 	}
 
-	public User select(ID id) throws InvalidUsernameException
+	public User select(ID id) throws InvalidUsernamePasswordException
 	{
 		return getLink().from(getClass().getResource("select(ID).sql"))
 			.parameters(id, id, id)
 			.fetch(new UzerFetcher())
-			.orElseThrow(InvalidUsernameException::new);
+			.orElseThrow(InvalidUsernamePasswordException::new);
 	}
 
-	public User select(String username) throws InvalidUsernameException
+	public User select(String username) throws InvalidUsernamePasswordException
 	{
 		return getLink().from(getClass().getResource("select(String).sql"))
 			.parameters(username, username, username, username, username, username)
 			.fetch(new UzerFetcher())
-			.orElseThrow(InvalidUsernameException::new);
+			.orElseThrow(InvalidUsernamePasswordException::new);
 	}
 
 	public void update(User user, LocalDateTime activity)

@@ -4,7 +4,7 @@ import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.error.ConstraintViolationException;
 import gate.error.InvalidCredentialsException;
-import gate.error.InvalidUsernameException;
+import gate.error.InvalidUsernamePasswordException;
 import gate.error.NotFoundException;
 import gate.sql.Link;
 import gate.sql.condition.Condition;
@@ -18,7 +18,7 @@ import jakarta.enterprise.context.Dependent;
 public class PasswordControl extends gate.base.Control
 {
 
-	public User select(String username) throws InvalidUsernameException
+	public User select(String username) throws InvalidUsernamePasswordException
 	{
 		try (Link link = Link.of("Gate");
 				PasswordDao dao = new PasswordDao(link))
@@ -51,7 +51,7 @@ public class PasswordControl extends gate.base.Control
 			super(link);
 		}
 
-		public User select(String username) throws InvalidUsernameException
+		public User select(String username) throws InvalidUsernamePasswordException
 		{
 			return Select.expression("id")
 					.expression("username")
@@ -65,7 +65,7 @@ public class PasswordControl extends gate.base.Control
 					.build()
 					.connect(getLink())
 					.fetchEntity(User.class)
-					.orElseThrow(InvalidUsernameException::new);
+					.orElseThrow(InvalidUsernamePasswordException::new);
 		}
 
 		public void update(User user, BCrypt password) throws NotFoundException, ConstraintViolationException
