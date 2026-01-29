@@ -1,19 +1,11 @@
 package gate.authenticator;
 
+import gate.security.CryptoKeys;
 import gate.util.SystemProperty;
 import java.util.Optional;
 
-public class AuthConfig
-{
-
-	private final String context;
-	private final String name;
-
-	public AuthConfig(String context, String name)
+public record AuthConfig(CryptoKeys keys, String context, String name)
 	{
-		this.context = context;
-		this.name = name;
-	}
 
 	public Optional<String> getProperty(String key)
 	{
@@ -25,15 +17,5 @@ public class AuthConfig
 
 		return SystemProperty.get(context + ".auth." + name + "." + key)
 			.or(() -> SystemProperty.get("gate.auth." + name + "." + key));
-	}
-
-	public String context()
-	{
-		return context;
-	}
-
-	public String name()
-	{
-		return name;
 	}
 }

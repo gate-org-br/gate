@@ -24,9 +24,17 @@ public class AuthenticationException extends HttpException
 	 */
 	public AuthenticationException()
 	{
-		super("Usuario/Senha inválidos");
+		super("Authentication could not be completed");
 	}
 
+	/**
+	 * Constructs an AuthenticationException.
+	 */
+	public AuthenticationException(Throwable cause)
+	{
+		super("Authentication could not be completed", cause);
+	}
+	
 	/**
 	 * Constructs an AuthenticationException with the specified message.
 	 *

@@ -9,6 +9,7 @@ import gate.GateControl;
 import gate.annotation.Current;
 import gate.entity.App;
 import gate.error.AuthenticatorException;
+import gate.security.CryptoKeys;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
@@ -28,6 +29,9 @@ public class AuthenticatorProducer implements Serializable
 	App app;
 
 	@Inject
+	CryptoKeys keys;
+
+	@Inject
 	GateControl control;
 
 	@Inject
@@ -42,13 +46,13 @@ public class AuthenticatorProducer implements Serializable
 	public Authenticator get()
 	{
 		String authenticator
-			= Objects.requireNonNullElse(request.getParameter("authenticator"), "default");
+				= Objects.requireNonNullElse(request.getParameter("authenticator"), "default");
 
 		return authenticators.computeIfAbsent(authenticator, index ->
 		{
 			String context = app.getId().toLowerCase();
 			AuthConfig config
-				= new AuthConfig(context, index);
+					= new AuthConfig(keys,context, index);
 
 			if (config.getProperty("type").isPresent())
 				return switch (config.getProperty("type").get())

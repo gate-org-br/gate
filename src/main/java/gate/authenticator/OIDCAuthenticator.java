@@ -5,7 +5,6 @@ import java.security.PublicKey;
 import java.time.Duration;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import gate.GateControl;
 import gate.cache.Cache;
@@ -19,22 +18,28 @@ import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.io.URL;
 import gate.lang.json.JsonObject;
+import gate.security.Crypto;
 import gate.security.JWKSPublicKeyParser;
-import gate.security.SecuritySessions;
 import gate.util.Parameters;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.Optional;
+import javax.crypto.SecretKey;
 
-public class OIDCAuthenticator implements Authenticator {
+public class OIDCAuthenticator implements Authenticator
+{
 
 	private final GateControl control;
 	private static final Duration KEY_TIMEOUT = Duration.ofHours(1);
-	private static final String AUTH_FAILED = "Authentication could not be completed";
-	private static final SecuritySessions STATES = SecuritySessions.of(60000);
-	private static final SecuritySessions NONCES = SecuritySessions.of(60000);
 
+	private final AuthConfig config;
 	private final String provider;
 	private final String clientId;
 	private final String clientSecret;
@@ -48,14 +53,16 @@ public class OIDCAuthenticator implements Authenticator {
 	private final Cache<String> tokenEndpoint;
 	private final Cache<String> userInfoEndpoint;
 	private final Cache<String> jwksUri;
+	private final Cache<String> issuer;
 	private final Cache<Map<String, PublicKey>> publicKeys;
 
-	public OIDCAuthenticator(GateControl control, AuthConfig config) {
+	public OIDCAuthenticator(GateControl control, AuthConfig config)
+	{
+		this.config = config;
 		this.control = control;
 		clientId = config.getProperty("oidc.client_id")
 				.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
-		clientSecret = config.getProperty("oidc.client_secret")
-				.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_secret configuration parameter"));
+		clientSecret = config.getProperty("oidc.client_secret").orElse(null);
 		provider = config.getProperty("oidc.provider")
 				.orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
 		configurationEndpoint = config.getProperty("oidc.configuration_endpoint")
@@ -75,52 +82,62 @@ public class OIDCAuthenticator implements Authenticator {
 		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint")
 				.orElseGet(() -> getEndpoint("userinfo_endpoint")));
 		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
+		issuer = Cache.of(() -> configuration.get().getString("issuer")
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider")));
 		publicKeys = Cache.of(KEY_TIMEOUT, this::fetchPublicKeys);
 	}
 
 	@Override
-	public String provider(ScreenServletRequest request, HttpServletResponse response) {
+	public String provider(ScreenServletRequest request, HttpServletResponse response)
+	{
+		var state = State.create();
 		return new URL(authorizationEndpoint.get())
 				.setParameter("response_type", "code")
 				.setParameter("client_id", clientId)
 				.setParameter("redirect_uri", redirectUri)
 				.setParameter("scope", scope)
-				.setParameter("state", STATES.create())
-				.setParameter("nonce", NONCES.create())
+				.setParameter("state", state.format(config.keys().aes()))
+				.setParameter("nonce", state.nonce())
+				.setParameter("code_challenge", state.codeChallenge())
+				.setParameter("code_challenge_method", "S256")
 				.toString();
 	}
 
 	@Override
-	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException {
+	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
+	{
 		return request.getParameter("code") != null
-				|| request.getParameter("accessToken") != null
+				|| request.getAuthorization() instanceof BearerAuthorization
 				|| request.getAuthorization() instanceof BasicAuthorization;
 	}
 
 	@Override
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-			throws AuthenticationException, HierarchyException, HttpException {
-		try {
+			throws AuthenticationException, HierarchyException, HttpException
+	{
+		try
+		{
 			if (request.getParameter("code") != null)
 				return authorizationCodeFlow(control, request);
-			else if (request.getParameter("accessToken") != null)
-				return partialAuthorizationCodeFlow(control, request);
+			else if (request.getAuthorization() instanceof BearerAuthorization bearerAuthorization)
+				return clientCredentialsFlow(control, bearerAuthorization);
 			else if (request.getAuthorization() instanceof BasicAuthorization basicAuthorization)
 				return resourceOwnerPasswordCredentialsFlow(control, basicAuthorization);
 			else
 				throw new AuthenticationException("Attempt to authenticate without supplying credentials");
-		} catch (IOException | RuntimeException ex) {
-			throw new AuthenticationException(AUTH_FAILED);
+		} catch (IOException | RuntimeException ex)
+		{
+			throw new AuthenticationException(ex);
 		}
 	}
 
 	private User authorizationCodeFlow(GateControl control, ScreenServletRequest request)
-			throws HttpException, AuthenticationException, HierarchyException, IOException {
+			throws HttpException, AuthenticationException, HierarchyException, IOException
+	{
 		var code = request.getParameter("code");
 
-		var state = request.getParameter("state");
-		if (state == null || !STATES.check(state))
-			throw new AuthenticationException(AUTH_FAILED);
+		var state = State.parse(config.keys().aes(),
+				request.getParameter("state"));
 
 		var tokens = new URL(tokenEndpoint.get())
 				.post(new Parameters()
@@ -129,21 +146,26 @@ public class OIDCAuthenticator implements Authenticator {
 						.set("scope", scope)
 						.set("client_id", clientId)
 						.set("client_secret", clientSecret)
-						.set("redirect_uri", redirectUri))
+						.set("redirect_uri", redirectUri)
+						.set("code_verifier", state.codeVerifier()))
 				.readJsonObject()
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 
-		if (tokens.containsKey("id_token")) {
+		if (tokens.containsKey("id_token"))
+		{
 
-			var idToken = tokens.getString("id_token")
-					.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+			var idToken = tokens.getString("id_token").orElseThrow(AuthenticationException::new);
 
 			var claims = getClaims(idToken);
 
-			validateAudience(claims);
+			if (claims.getAudience().stream().noneMatch(clientId::equals))
+				throw new AuthenticationException();
 
-			if (!NONCES.check(claims.get("nonce", String.class)))
-				throw new AuthenticationException(AUTH_FAILED);
+			if (!this.issuer.get().equals(claims.getIssuer()))
+				throw new AuthenticationException();
+
+			if (!state.nonce().equals(claims.get("nonce", String.class)))
+				throw new AuthenticationException();
 
 			if (claims.containsKey(userId))
 				return control.select(claims.get(userId, String.class));
@@ -151,41 +173,47 @@ public class OIDCAuthenticator implements Authenticator {
 
 		String accessToken = tokens
 				.getString("access_token")
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
 				.setAuthorization(BearerAuthorization.from(accessToken))
 				.get()
 				.readJsonObject()
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 
 		return control.select(userInfo.getString(userId)
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED)));
+				.orElseThrow(AuthenticationException::new));
 	}
 
-	private User partialAuthorizationCodeFlow(GateControl control, ScreenServletRequest request)
-			throws AuthenticationException, HierarchyException, IOException {
+	private User clientCredentialsFlow(GateControl control, BearerAuthorization bearerAuthorization)
+			throws AuthenticationException, HierarchyException
+	{
+		String token = bearerAuthorization.token();
 
-		var token = request.getParameter("accessToken");
-		if (token.split("\\.").length == 3) {
-			var claims = getClaims(token);
-			if (!claims.containsKey(userId))
-				throw new AuthenticationException(AUTH_FAILED);
-			return control.select(claims.get(userId, String.class));
-		}
+		Claims claims = Jwts.parser()
+				.keyLocator(this::getPublicKey)
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
 
-		JsonObject userInfo = new URL(userInfoEndpoint.get())
-				.setAuthorization(BearerAuthorization.from(token))
-				.get()
-				.readJsonObject()
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+		String issuer = claims.getIssuer();
+		if (issuer == null || !issuer.equals(this.issuer.get()))
+			throw new AuthenticationException();
 
-		return control.select(userInfo.getString(userId)
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED)));
+		if (claims.getAudience().stream()
+				.noneMatch(clientId::equals))
+			throw new AuthenticationException();
+
+		String systemId = Optional.ofNullable(claims.get("azp", String.class))
+				.or(() -> Optional.ofNullable(claims.getSubject()))
+				.orElseThrow(AuthenticationException::new);
+
+		return control.select(systemId);
 	}
 
 	private User resourceOwnerPasswordCredentialsFlow(GateControl control, BasicAuthorization basicAuth)
-			throws AuthenticationException, HierarchyException, IOException {
+			throws AuthenticationException, HierarchyException, IOException
+	{
 
 		JsonObject tokens = new URL(tokenEndpoint.get())
 				.post(new Parameters()
@@ -196,32 +224,37 @@ public class OIDCAuthenticator implements Authenticator {
 						.set("client_secret", clientSecret)
 						.set("scope", scope))
 				.readJsonObject()
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 
-		if (tokens.containsKey("id_token")) {
+		if (tokens.containsKey("id_token"))
+		{
 			var idToken = tokens.getString("id_token")
-					.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+					.orElseThrow(AuthenticationException::new);
 			Claims claims = getClaims(idToken);
-			validateAudience(claims);
+			if (claims.getAudience().stream().noneMatch(clientId::equals))
+				throw new AuthenticationException();
+			if (!issuer.get().equals(claims.getIssuer()))
+				throw new AuthenticationException();
 			if (claims.containsKey(userId))
 				return control.select(claims.get(userId, String.class));
 		}
 
 		String accessToken = tokens.getString("access_token")
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
 				.setAuthorization(BearerAuthorization.from(accessToken))
 				.get()
 				.readJsonObject()
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 
 		return control.select(userInfo.getString(userId)
-				.orElseThrow(() -> new AuthenticationException(AUTH_FAILED)));
+				.orElseThrow(AuthenticationException::new));
 	}
 
 	@Override
-	public String logoutUri(gate.http.ScreenServletRequest request) {
+	public String logoutUri(gate.http.ScreenServletRequest request)
+	{
 		String url = logoutUri;
 		if (url == null)
 			return null;
@@ -232,19 +265,24 @@ public class OIDCAuthenticator implements Authenticator {
 				.toString();
 	}
 
-	private JsonObject fetchConfiguration() {
-		try {
+	private JsonObject fetchConfiguration()
+	{
+		try
+		{
 			return new URL(configurationEndpoint)
 					.get()
 					.readJsonObject()
-					.orElseThrow(() -> new AuthenticatorException(AUTH_FAILED));
-		} catch (IOException ex) {
+					.orElseThrow(AuthenticationException::new);
+		} catch (IOException ex)
+		{
 			throw new AuthenticatorException(ex);
 		}
 	}
 
-	private Map<String, PublicKey> fetchPublicKeys() {
-		try {
+	private Map<String, PublicKey> fetchPublicKeys()
+	{
+		try
+		{
 			return new URL(jwksUri.get())
 					.get()
 					.readJsonObject()
@@ -253,31 +291,36 @@ public class OIDCAuthenticator implements Authenticator {
 					.stream()
 					.map(e -> (JsonObject) e)
 					.collect(Collectors.toMap(e -> e.getString("kid")
-							.orElseThrow(() -> new AuthenticatorException(AUTH_FAILED)),
+					.orElseThrow(AuthenticationException::new),
 							JWKSPublicKeyParser::parse));
-		} catch (IOException ex) {
+		} catch (IOException ex)
+		{
 			throw new AuthenticatorException(ex);
 		}
 	}
 
-	private String getEndpoint(String endpointKey) {
+	private String getEndpoint(String endpointKey)
+	{
 		return configuration.get()
 				.getString(endpointKey)
-				.orElseThrow(() -> new AuthenticatorException(AUTH_FAILED));
+				.orElseThrow(AuthenticationException::new);
 	}
 
 	@Override
-	public Authenticator.Type getType() {
+	public Authenticator.Type getType()
+	{
 		return Authenticator.Type.OIDC;
 	}
 
-	private PublicKey getPublicKey(Header header) {
+	private PublicKey getPublicKey(Header header)
+	{
 		String kid = (String) header.get("kid");
 
-		if (kid != null) {
+		if (kid != null)
+		{
 			PublicKey key = publicKeys.get().get(kid);
 			if (key == null)
-				throw new AuthenticatorException(AUTH_FAILED);
+				throw new AuthenticationException();
 			return key;
 		}
 
@@ -285,10 +328,11 @@ public class OIDCAuthenticator implements Authenticator {
 		if (publicKeys.get().size() == 1)
 			return publicKeys.get().values().iterator().next();
 
-		throw new AuthenticatorException(AUTH_FAILED);
+		throw new AuthenticationException();
 	}
 
-	private Claims getClaims(String token) {
+	private Claims getClaims(String token)
+	{
 		return Jwts.parser()
 				.keyLocator(this::getPublicKey)
 				.build()
@@ -296,17 +340,73 @@ public class OIDCAuthenticator implements Authenticator {
 				.getPayload();
 	}
 
-	private void validateAudience(Claims claims) {
-		Object aud = claims.get("aud");
+	private static record State(String nonce, String codeVerifier)
+			{
 
-		if (aud instanceof String s && s.equals(clientId))
-			return;
+		private static final Duration TIMEOUT = Duration.ofMinutes(10);
 
-		if (aud instanceof Iterable<?> it && StreamSupport
-				.stream(it.spliterator(), false)
-				.anyMatch(clientId::equals))
-			return;
+		public static State create()
+		{
+			return new State(
+					random(32),
+					random(64)
+			);
+		}
 
-		throw new AuthenticationException(AUTH_FAILED);
+		public String format(SecretKey key)
+		{
+			Crypto crypto = new Crypto(key);
+			var json
+					= new JsonObject().setString("nonce", nonce)
+							.setString("codeVerifier", codeVerifier)
+							.setLong("iat", System.currentTimeMillis());
+			return crypto.encryptAndSign(json.toString());
+		}
+
+		public String codeChallenge()
+		{
+			try
+			{
+				MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+				byte[] hash = sha256.digest(codeVerifier.getBytes(StandardCharsets.US_ASCII));
+				return Base64.getUrlEncoder().withoutPadding().encodeToString(hash);
+			} catch (NoSuchAlgorithmException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+
+		public static State parse(SecretKey key, String value)
+		{
+			if (value == null)
+				throw new AuthenticationException();
+
+			Crypto crypto = new Crypto(key);
+			String plain = crypto.decryptAndVerify(value);
+
+			JsonObject json = JsonObject.parse(plain);
+
+			long now = System.currentTimeMillis();
+			long iat = json.getLong("iat").orElseThrow(AuthenticationException::new);
+			long skew = Duration.ofMinutes(1).toMillis();
+			if (iat > now + skew || now - iat > TIMEOUT.toMillis())
+				throw new AuthenticationException();
+
+			var nonce = json.getString("nonce")
+					.orElseThrow(AuthenticationException::new);
+			var codeVerifier = json.getString("codeVerifier")
+					.orElseThrow(AuthenticationException::new);
+
+			return new State(nonce, codeVerifier);
+		}
+
+		private static String random(int bytes)
+		{
+			byte[] b = new byte[bytes];
+			new SecureRandom().nextBytes(b);
+			return Base64.getUrlEncoder()
+					.withoutPadding()
+					.encodeToString(b);
+		}
 	}
 }
