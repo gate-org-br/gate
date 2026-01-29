@@ -5,7 +5,6 @@ import gate.authenticator.Authenticator;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;

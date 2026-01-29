@@ -29,6 +29,7 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
+import gate.type.TempFile;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Event;
@@ -272,6 +273,7 @@ public class Gate extends HttpServlet
 				logger.error(ex.getMessage(), ex);
 			} finally
 			{
+				TempFile.cleanup();
 				asyncContext.complete();
 			}
 		});
