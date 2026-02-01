@@ -43,11 +43,11 @@ public record Crypto(SecretKey key)
 					.withoutPadding()
 					.encodeToString(buffer.array());
 		} catch (InvalidAlgorithmParameterException |
-				 InvalidKeyException |
-				 NoSuchAlgorithmException |
-				 BadPaddingException |
-				 IllegalBlockSizeException |
-				 NoSuchPaddingException e)
+				InvalidKeyException |
+				NoSuchAlgorithmException |
+				BadPaddingException |
+				IllegalBlockSizeException |
+				NoSuchPaddingException e)
 		{
 			throw new RuntimeException(e);
 		}
@@ -82,11 +82,11 @@ public record Crypto(SecretKey key)
 		{
 			throw new SecurityException("state adulterado");
 		} catch (InvalidAlgorithmParameterException |
-				 InvalidKeyException |
-				 NoSuchAlgorithmException |
-				 BadPaddingException |
-				 IllegalBlockSizeException |
-				 NoSuchPaddingException e)
+				InvalidKeyException |
+				NoSuchAlgorithmException |
+				BadPaddingException |
+				IllegalBlockSizeException |
+				NoSuchPaddingException e)
 		{
 			throw new RuntimeException(e);
 		}

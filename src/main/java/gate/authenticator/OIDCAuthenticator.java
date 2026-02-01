@@ -97,7 +97,7 @@ public class OIDCAuthenticator implements Authenticator
 				.setParameter("client_id", clientId)
 				.setParameter("redirect_uri", redirectUri)
 				.setParameter("scope", scope)
-				.setParameter("state", state.format(config.keys().aes()))
+				.setParameter("state", state.format(config.keys().stateEncryptionKey()))
 				.setParameter("nonce", state.nonce())
 				.setParameter("code_challenge", state.codeChallenge())
 				.setParameter("code_challenge_method", "S256")
@@ -146,7 +146,7 @@ public class OIDCAuthenticator implements Authenticator
 	{
 		var code = request.getParameter("code");
 
-		var state = State.parse(config.keys().aes(),
+		var state = State.parse(config.keys().stateEncryptionKey(),
 				request.getParameter("state"));
 
 		var tokens = new URL(tokenEndpoint.get())

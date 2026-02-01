@@ -1,7 +1,9 @@
 package gate.http;
 
+import gate.i18n.I18N;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.StringJoiner;
@@ -46,6 +48,12 @@ public class ScreenServletResponse extends HttpServletResponseWrapper
 	public void deleteSubjectCookie()
 	{
 		deleteCookie(SUBJECT_COOKIE, PATH, SAME_SITE);
+	}
+
+	public void send(String text) throws IOException
+	{
+		setContentType("text/plain; charset=UTF-8");
+		getWriter().write(text);
 	}
 
 	public void enableCors(String origin)

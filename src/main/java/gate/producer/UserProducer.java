@@ -2,6 +2,8 @@ package gate.producer;
 
 import gate.GateControl;
 import gate.annotation.Current;
+import gate.cache.Cache;
+import gate.converter.Converter;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.HierarchyException;
@@ -10,10 +12,12 @@ import gate.http.BearerAuthorization;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
+import gate.util.SystemProperty;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
 
 @RequestScoped
 public class UserProducer
@@ -38,23 +42,12 @@ public class UserProducer
 
 			var auth = request.getAuthorization();
 			if (auth instanceof BearerAuthorization bearer)
-			{
-				var subject = credentials.toToken(bearer.token());
-				User user = control.select(subject.id());
-				if (user.getActivity() == null || user.getActivity().isAfter(subject.iat()))
-					throw new UnauthorizedException("Attempt to authenticate with invalid token");
-				request.setAttribute(User.class.getName(), user);
-				return user;
-			} else if (auth instanceof CookieAuthorization cookie)
-			{
-				var subject = credentials.toToken(cookie.token());
-				User user = control.select(subject.id());
-				request.setAttribute(User.class.getName(), user);
-				if (user.getActivity() == null || user.getActivity().isAfter(subject.iat()))
-					throw new UnauthorizedException("Attempt to authenticate with invalid token");
-				return user;
-			} else
-				return new User();
+				return getUser(control, credentials, httpServletRequest, bearer.token());
+
+			if (auth instanceof CookieAuthorization cookie)
+				return getUser(control, credentials, httpServletRequest, cookie.token());
+
+			return new User();
 		} catch (AuthenticationException | UnauthorizedException ex)
 		{
 			throw ex;
@@ -64,4 +57,14 @@ public class UserProducer
 		}
 	}
 
+	private User getUser(GateControl control, Credentials credentials,
+			HttpServletRequest httpServletRequest, String token)
+	{
+		var subject = credentials.toToken(token);
+		User user = control.select(subject.id());
+		if (user.getActivity() != null && subject.iat().isBefore(user.getActivity()))
+			throw new UnauthorizedException("Attempt to authenticate with invalid token");
+		httpServletRequest.setAttribute(User.class.getName(), user);
+		return user;
+	}
 }

@@ -13,7 +13,6 @@ import gate.error.MethodNotAllowedException;
 import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
 import gate.event.LoginEvent;
-import gate.event.LogoffEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
@@ -36,8 +35,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.Locale;
 import org.eclipse.microprofile.context.ThreadContext;
@@ -79,9 +76,6 @@ public class Gate extends HttpServlet
 	Instance<User> userInstance;
 
 	@Inject
-	GateControl control;
-
-	@Inject
 	Calls actionRegistry;
 
 	static
@@ -91,7 +85,7 @@ public class Gate extends HttpServlet
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
-		throws ServletException, IOException
+			throws ServletException, IOException
 	{
 		httpServletResponse.addHeader("Vary", "X-G-Fragment");
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
@@ -112,28 +106,15 @@ public class Gate extends HttpServlet
 			request.setAttribute("METHOD", request.getMethod());
 
 			if (command.equals(RequestCommand.DEFAULT)
-				&& (actionRegistry.getMainAction() == null
-				|| !authenticator.hasCredentials(request)))
+					&& (actionRegistry.getMainAction() == null
+					|| !authenticator.hasCredentials(request)))
 			{
-				if (user.getId() != null)
-				{
-					event.fire(new LogoffEvent(user));
-					control.update(user, LocalDateTime.now(ZoneOffset.UTC));
-					response.deleteSubjectCookie();
-					String logoutUri = authenticator.logoutUri(request);
-					if (logoutUri != null)
-					{
-						response.sendRedirect(logoutUri);
-						return;
-					}
-				}
-
 				String provider = authenticator.provider(request, response);
 				if (provider != null)
 					response.sendRedirect(provider);
 				else
 					handlers.select(HTMLCommandHandler.class).get().handle(httpServletRequest,
-						response, HTML);
+							response, HTML);
 				return;
 			}
 
@@ -144,22 +125,20 @@ public class Gate extends HttpServlet
 				{
 					event.fireAsync(new LoginEvent(user));
 					var token = Credentials.SubjectToken.create(user.getId());
-					control.update(user, token.iat());
 					response.createSubjectCookie(credentials.fromToken(token));
 
 					if (actionRegistry.getMainAction() != null
-						&& command.equals(RequestCommand.DEFAULT))
+							&& command.equals(RequestCommand.DEFAULT))
 					{
 						response.sendRedirect(actionRegistry.getMainAction()
-							.command().toString());
+								.command().toString());
 						return;
 					}
 				}
 				request.setAttribute(User.class.getName(), user);
 			}
 
-			Call call
-				= actionRegistry.get(command)
+			Call call = actionRegistry.get(command)
 					.orElseThrow(() -> new BadRequestException(command));
 			if (!call.allowsHttpMethod(request.getMethod().toUpperCase()))
 				throw new MethodNotAllowedException();
@@ -192,8 +171,7 @@ public class Gate extends HttpServlet
 				catcher.catches(httpServletRequest, response, ex);
 			} else
 			{
-				httpServletRequest.setAttribute("messages",
-					Collections.singletonList(ex.getMessage()));
+				httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
 				httpServletRequest.setAttribute("exception", ex);
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);
@@ -207,7 +185,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
-		Method method)
+			Method method)
 	{
 		try
 		{
@@ -215,8 +193,8 @@ public class Gate extends HttpServlet
 			if (result != null)
 			{
 				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-					? method.getAnnotation(gate.annotation.Handler.class).value()
-					: Handler.getHandler(result.getClass());
+						? method.getAnnotation(gate.annotation.Handler.class).value()
+						: Handler.getHandler(result.getClass());
 				var handler = handlers.select(type).get();
 				handler.handle(request, response, result);
 			}
@@ -229,7 +207,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
-		Screen screen, Method method)
+			Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");
@@ -250,8 +228,8 @@ public class Gate extends HttpServlet
 					if (result != null)
 					{
 						var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-							? method.getAnnotation(gate.annotation.Handler.class).value()
-							: Handler.getHandler(result.getClass());
+								? method.getAnnotation(gate.annotation.Handler.class).value()
+								: Handler.getHandler(result.getClass());
 						var handler = handlers.select(type).get();
 						handler.handle(request, response, progress, result);
 					}

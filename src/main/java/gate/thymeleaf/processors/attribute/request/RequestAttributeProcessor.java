@@ -38,10 +38,9 @@ public class RequestAttributeProcessor extends AttributeProcessor
 	}
 
 	@Override
-	public void process(
-		ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+	public void process(ITemplateContext context,
+			IProcessableElementTag element,
+			IElementTagStructureHandler handler)
 	{
 		String module = element.getAttributeValue("g:module");
 		String screen = element.getAttributeValue("g:screen");
@@ -54,36 +53,33 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		IWebExchange exchange = ((IWebContext) context).getExchange();
 
 		RequestCommand command
-			= new RequestCommand(module, screen, action)
-				.with(
-					exchange.getRequest().getParameterValue("MODULE"),
-					(String) exchange.getRequest().getParameterValue("SCREEN"),
-					(String) exchange.getRequest().getParameterValue("ACTION"));
+				= new RequestCommand(module, screen, action)
+						.with(exchange.getRequest().getParameterValue("MODULE"),
+								(String) exchange.getRequest().getParameterValue("SCREEN"),
+								(String) exchange.getRequest().getParameterValue("ACTION"));
 
 		Call call = actionRegistry.get(command)
-			.orElseThrow(()
-				-> new IllegalArgumentException("Invalid command: " + command));
+				.orElseThrow(() -> new IllegalArgumentException("Invalid command: " + command));
 
 		User user = CDI.current()
-			.select(User.class, Current.LITERAL)
-			.get();
+				.select(User.class, Current.LITERAL)
+				.get();
 
 		Parameters parameters = new Parameters();
 		ELExpression expression = expressionFactory.create();
 
 		Stream.of(element.getAllAttributes())
-			.filter(e -> e.getValue() != null)
-			.filter(e -> e.getAttributeCompleteName().startsWith("_"))
-			.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
-			.forEach(e
-				-> parameters.put(
-				e.getAttributeCompleteName().substring(1),
-				expression.evaluate(e.getValue())));
+				.filter(e -> e.getValue() != null)
+				.filter(e -> e.getAttributeCompleteName().startsWith("_"))
+				.peek(e -> handler.removeAttribute(e.getAttributeCompleteName()))
+				.forEach(e
+						-> parameters.put(e.getAttributeCompleteName().substring(1),
+						expression.evaluate(e.getValue())));
 
 		if (!call.accessRule().allows(user))
 		{
 			if (element.getElementCompleteName().equalsIgnoreCase("a")
-				|| element.getElementCompleteName().equalsIgnoreCase("button"))
+					|| element.getElementCompleteName().equalsIgnoreCase("button"))
 				handler.removeElement();
 
 			return;
@@ -134,14 +130,14 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		if (call.asynchronous())
 		{
 			String target
-				= element.hasAttribute("target")
-				? element.getAttributeValue("target")
-				: null;
+					= element.hasAttribute("target")
+					? element.getAttributeValue("target")
+					: null;
 
 			String resolved
-				= target != null && !target.startsWith("@progress")
-				? "@progress > " + target
-				: "@progress";
+					= target != null && !target.startsWith("@progress")
+					? "@progress > " + target
+					: "@progress";
 
 			switch (element.getElementCompleteName().toLowerCase())
 			{
@@ -157,8 +153,8 @@ public class RequestAttributeProcessor extends AttributeProcessor
 		}
 
 		if (element instanceof IStandaloneElementTag
-			&& (element.getElementCompleteName().equalsIgnoreCase("a")
-			|| element.getElementCompleteName().equalsIgnoreCase("button")))
+				&& (element.getElementCompleteName().equalsIgnoreCase("a")
+				|| element.getElementCompleteName().equalsIgnoreCase("button")))
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unnamed");
 
