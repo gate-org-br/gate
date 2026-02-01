@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class I18N
 {
 
-	private static final Map<String, ResourceBundle> CACHE = new ConcurrentHashMap<>();
+	private static final Map<String, Map<Locale, ResourceBundle>> CACHE = new ConcurrentHashMap<>();
 
 	private I18N()
 	{
@@ -31,11 +31,9 @@ public final class I18N
 
 	public static String get(String context, Locale locale, String key)
 	{
-		String cacheKey = context + "|" + locale.toLanguageTag();
-
-		ResourceBundle bundle = CACHE.computeIfAbsent(cacheKey,
-				k -> ResourceBundle.getBundle(context, locale));
-
+		ResourceBundle bundle = CACHE
+				.computeIfAbsent(context, e -> new ConcurrentHashMap<>())
+				.computeIfAbsent(locale, e -> ResourceBundle.getBundle(context, e));
 		return bundle.getString(key);
 	}
 }
