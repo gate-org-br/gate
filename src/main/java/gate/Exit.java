@@ -77,34 +77,38 @@ public class Exit extends HttpServlet
 		User user = userInstance.get();
 		if (user == null || user.getId() == null)
 		{
-			handlers.select(HTMLCommandHandler.class)
-					.get().handle(request, response, HTML);
+			handlers.select(HTMLCommandHandler.class).get().handle(request, response, HTML);
 			return;
 		}
 
 		ID subject = (ID) request.getParameter(ID.class, "user");
-		if (subject == null || subject.equals(user.getId()))
+		if (subject == null)
 		{
 			event.fire(new LogoffEvent(user));
 			response.deleteSubjectCookie();
+			handlers.select(HTMLCommandHandler.class).get().handle(request, response, HTML);
+			return;
+		}
 
-			if (subject != null)
-				control.update(user, LocalDateTime.now(ZoneOffset.UTC));
+		if (user.getId().equals(subject))
+		{
+			event.fire(new LogoffEvent(user));
+			response.deleteSubjectCookie();
+			control.update(user, LocalDateTime.now(ZoneOffset.UTC));
 
 			String logoutUri = authenticator.logoutUri(request);
 			if (logoutUri != null)
-			{
 				response.sendRedirect(logoutUri);
-				return;
-			}
-
-			response.send(I18N.get("auth.session.revoked"));
+			else
+				handlers.select(HTMLCommandHandler.class).get()
+						.handle(request, response, HTML);
 			return;
 		}
 
 		if (!user.isSuperUser())
 		{
-			response.sendError(HttpServletResponse.SC_FORBIDDEN, I18N.get("auth.logout.other.forbidden"));
+			response.sendError(HttpServletResponse.SC_FORBIDDEN,
+					I18N.get("auth.logout.other.forbidden"));
 			return;
 		}
 
