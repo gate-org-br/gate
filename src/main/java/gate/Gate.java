@@ -24,7 +24,6 @@ import gate.error.InternalServerException;
 import gate.error.UnauthorizedException;
 import gate.event.AppEvent;
 import gate.event.LoginEvent;
-import gate.event.LogoffEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
@@ -93,7 +92,7 @@ public class Gate extends HttpServlet
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response)
-			throws ServletException, IOException
+		throws ServletException, IOException
 	{
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
@@ -121,20 +120,8 @@ public class Gate extends HttpServlet
 			request.setAttribute("SCREEN", SCREEN);
 
 			if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-					&& !authenticator.hasCredentials(request))
+				&& !authenticator.hasCredentials(request))
 			{
-				if (user.getId() != null)
-				{
-					event.fireAsync(new LogoffEvent(user));
-					response.addCookie(CookieFactory.delete(SUBJECT_COOKIE));
-					String logoutUri = authenticator.logoutUri(request);
-					if (logoutUri != null)
-					{
-						response.sendRedirect(logoutUri);
-						return;
-					}
-				}
-
 				String provider = authenticator.provider(request, response);
 				if (provider != null)
 					response.sendRedirect(provider);
@@ -211,7 +198,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
-			Method method)
+		Method method)
 	{
 		try
 		{
@@ -219,8 +206,8 @@ public class Gate extends HttpServlet
 			if (result != null)
 			{
 				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-						? method.getAnnotation(gate.annotation.Handler.class).value()
-						: Handler.getHandler(result.getClass());
+					? method.getAnnotation(gate.annotation.Handler.class).value()
+					: Handler.getHandler(result.getClass());
 				var handler = handlers.select(type).get();
 				handler.handle(request, response, result);
 			}
@@ -233,7 +220,7 @@ public class Gate extends HttpServlet
 	}
 
 	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
-			Screen screen, Method method)
+		Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");
@@ -254,8 +241,8 @@ public class Gate extends HttpServlet
 					if (result != null)
 					{
 						var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-								? method.getAnnotation(gate.annotation.Handler.class).value()
-								: Handler.getHandler(result.getClass());
+							? method.getAnnotation(gate.annotation.Handler.class).value()
+							: Handler.getHandler(result.getClass());
 						var handler = handlers.select(type).get();
 						handler.handle(request, response, progress, result);
 					}

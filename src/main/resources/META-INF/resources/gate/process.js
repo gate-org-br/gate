@@ -75,6 +75,9 @@ export default function process(id, name, method, action, payload)
 			resolve(new Response(data, {status: 200, statusText: 'OK', headers}));
 		});
 
+
+		source.addEventListener("Failure", (event) => reject(parseEvent(event.data)));
+
 		source.addEventListener("error", e =>
 		{
 			window.top.dispatchEvent(new CustomEvent('ProcessError',

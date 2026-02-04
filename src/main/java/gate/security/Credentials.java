@@ -13,36 +13,34 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
 import java.time.Instant;
 import java.util.Date;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.crypto.SecretKey;
 
 @ApplicationScoped
 public class Credentials
 {
 
+	private final GateControl control;
+
+	private final CryptoKeys cryptoKeys;
+
 	@Inject
-	GateControl control;
-
-
-	private final SecretKey secret;
-	public static final long EXP = 3600;
-
-	public Credentials(SecretKey secret)
+	public Credentials(GateControl control,
+		CryptoKeys cryptoKeys)
 	{
-		this.secret = secret;
+		this.control = control;
+		this.cryptoKeys = cryptoKeys;
 	}
 
 	public String create(JsonObject claims)
 	{
 		return Jwts.builder()
-				.claims(claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())))
-				.expiration(Date.from(Instant.now().plusSeconds(3600)))
-				.signWith(this.secret)
-				.compact();
+			.claims(claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())))
+			.expiration(Date.from(Instant.now().plusSeconds(3600)))
+			.signWith(this.cryptoKeys.signKey())
+			.compact();
 	}
 
 	public JsonObject parse(String token) throws UnauthorizedException
@@ -50,13 +48,13 @@ public class Credentials
 		try
 		{
 			return Jwts.parser()
-					.verifyWith(this.secret)
-					.build()
-					.parseSignedClaims(token)
-					.getPayload()
-					.entrySet()
-					.stream()
-					.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
+				.verifyWith(this.cryptoKeys.signKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.entrySet()
+				.stream()
+				.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
@@ -69,10 +67,10 @@ public class Credentials
 	public String subject(User user)
 	{
 		return Jwts.builder()
-				.subject(user.getId().toString())
-				.expiration(Date.from(Instant.now().plusSeconds(3600)))
-				.signWith(this.secret)
-				.compact();
+			.subject(user.getId().toString())
+			.expiration(Date.from(Instant.now().plusSeconds(3600)))
+			.signWith(this.cryptoKeys.signKey())
+			.compact();
 	}
 
 	public User subject(String token) throws InvalidUsernameException, HierarchyException, UnauthorizedException
@@ -80,11 +78,11 @@ public class Credentials
 		try
 		{
 			return control.select(ID.valueOf(Jwts.parser()
-					.verifyWith(this.secret)
-					.build()
-					.parseSignedClaims(token)
-					.getPayload()
-					.get("sub", String.class)));
+				.verifyWith(this.cryptoKeys.signKey())
+				.build()
+				.parseSignedClaims(token)
+				.getPayload()
+				.get("sub", String.class)));
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");

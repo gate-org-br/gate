@@ -5,11 +5,11 @@ import gate.icon.Icon;
 import gate.icon.Icons;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -38,7 +38,7 @@ public class ExitProcessor extends TagModelProcessor
 			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
 				e -> e.getValue(), (a, b) -> a, Attributes::new));
 
-		attributes.put("href", "Gate");
+		attributes.put("href", "Exit");
 
 		if (element instanceof IStandaloneElementTag)
 		{
