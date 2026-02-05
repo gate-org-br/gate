@@ -39,8 +39,7 @@ public class OIDCAuthenticator implements Authenticator
 	private static final Duration KEY_TIMEOUT = Duration.ofHours(1);
 
 	private final AuthConfig config;
-	private final String provider;
-	private final String clientId;
+    private final String clientId;
 	private final String clientSecret;
 	private final String redirectUri;
 	private final String scope;
@@ -60,30 +59,31 @@ public class OIDCAuthenticator implements Authenticator
 		this.config = config;
 		this.control = control;
 		clientId = config.getProperty("oidc.client_id")
-			.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
+				.orElseThrow(() -> new AuthenticatorException("Missing oidc.client_id configuration parameter"));
 		clientSecret = config.getProperty("oidc.client_secret").orElse(null);
-		provider = config.getProperty("oidc.provider")
-			.orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
+        String provider = config.getProperty("oidc.provider")
+                .orElseThrow(() -> new AuthenticatorException("Missing oidc.provider configuration parameter"));
 		configurationEndpoint = config.getProperty("oidc.configuration_endpoint")
-			.orElse(provider + "/.well-known/openid-configuration");
+				.orElse(provider + "/.well-known/openid-configuration");
 
 		redirectUri = config.getProperty("oidc.redirect_uri")
-			.orElseThrow(() -> new AuthenticatorException("Missing oidc.redirect_uri configuration parameter"));
+				.orElseThrow(() -> new AuthenticatorException("Missing oidc.redirect_uri configuration parameter"));
 
 		userId = config.getProperty("oidc.user_id").orElse("email");
 		scope = config.getProperty("oidc.scope").orElse("openid email profile");
 		logoutUri = config.getProperty("oidc.logout_uri").orElse(null);
-		configuration = Cache.of(this::fetchConfiguration);
-		authorizationEndpoint = Cache.of(() -> config.getProperty("oidc.authorization_endpoint")
-			.orElseGet(() -> getEndpoint("authorization_endpoint")));
-		tokenEndpoint = Cache
-			.of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
-		userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint")
-			.orElseGet(() -> getEndpoint("userinfo_endpoint")));
-		jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
-		issuer = Cache.of(() -> configuration.get().getString("issuer")
-			.orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider")));
-		publicKeys = Cache.of(KEY_TIMEOUT, this::fetchPublicKeys);
+		configuration = Cache.builder(this::fetchConfiguration).build();
+		authorizationEndpoint = Cache.builder(() -> config.getProperty("oidc.authorization_endpoint")
+				.orElseGet(() -> getEndpoint("authorization_endpoint"))).build();
+		tokenEndpoint = Cache.builder(() -> config.getProperty("oidc.token_endpoint")
+				.orElseGet(() -> getEndpoint("token_endpoint"))).build();
+		userInfoEndpoint = Cache.builder(() -> config.getProperty("oidc.userinfo_endpoint")
+				.orElseGet(() -> getEndpoint("userinfo_endpoint"))).build();
+		jwksUri = Cache.builder(() -> config.getProperty("oidc.jwks_uri")
+				.orElseGet(() -> getEndpoint("jwks_uri"))).build();
+		issuer = Cache.builder(() -> configuration.get().getString("issuer")
+				.orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider"))).build();
+		publicKeys = Cache.builder(this::fetchPublicKeys).ttl(KEY_TIMEOUT).build();
 	}
 
 	@Override
@@ -91,28 +91,28 @@ public class OIDCAuthenticator implements Authenticator
 	{
 		var state = State.create();
 		return new URL(authorizationEndpoint.get())
-			.setParameter("response_type", "code")
-			.setParameter("client_id", clientId)
-			.setParameter("redirect_uri", redirectUri)
-			.setParameter("scope", scope)
-			.setParameter("state", state.format(config.keys().encryptionKey()))
-			.setParameter("nonce", state.nonce())
-			.setParameter("code_challenge", state.codeChallenge())
-			.setParameter("code_challenge_method", "S256")
-			.toString();
+				.setParameter("response_type", "code")
+				.setParameter("client_id", clientId)
+				.setParameter("redirect_uri", redirectUri)
+				.setParameter("scope", scope)
+				.setParameter("state", state.format(config.keys().encryptionKey()))
+				.setParameter("nonce", state.nonce())
+				.setParameter("code_challenge", state.codeChallenge())
+				.setParameter("code_challenge_method", "S256")
+				.toString();
 	}
 
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
 		return request.getParameter("code") != null
-			|| request.getAuthorization() instanceof BearerAuthorization
-			|| request.getAuthorization() instanceof BasicAuthorization;
+				|| request.getAuthorization() instanceof BearerAuthorization
+				|| request.getAuthorization() instanceof BasicAuthorization;
 	}
 
 	@Override
 	public User authenticate(ScreenServletRequest request, HttpServletResponse response)
-		throws AuthenticationException, HierarchyException, HttpException
+			throws HierarchyException, HttpException
 	{
 		try
 		{
@@ -131,24 +131,24 @@ public class OIDCAuthenticator implements Authenticator
 	}
 
 	private User authorizationCodeFlow(GateControl control, ScreenServletRequest request)
-		throws HttpException, AuthenticationException, HierarchyException, IOException
+			throws HttpException, HierarchyException, IOException
 	{
 		var code = request.getParameter("code");
 
 		var state = State.parse(config.keys().encryptionKey(),
-			request.getParameter("state"));
+				request.getParameter("state"));
 
 		var tokens = new URL(tokenEndpoint.get())
-			.post(new Parameters()
-				.set("grant_type", "authorization_code")
-				.set("code", code)
-				.set("scope", scope)
-				.set("client_id", clientId)
-				.set("client_secret", clientSecret)
-				.set("redirect_uri", redirectUri)
-				.set("code_verifier", state.codeVerifier()))
-			.readJsonObject()
-			.orElseThrow(AuthenticationException::new);
+				.post(new Parameters()
+						.set("grant_type", "authorization_code")
+						.set("code", code)
+						.set("scope", scope)
+						.set("client_id", clientId)
+						.set("client_secret", clientSecret)
+						.set("redirect_uri", redirectUri)
+						.set("code_verifier", state.codeVerifier()))
+				.readJsonObject()
+				.orElseThrow(AuthenticationException::new);
 
 		if (tokens.containsKey("id_token"))
 		{
@@ -171,64 +171,64 @@ public class OIDCAuthenticator implements Authenticator
 		}
 
 		String accessToken = tokens
-			.getString("access_token")
-			.orElseThrow(AuthenticationException::new);
+				.getString("access_token")
+				.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
-			.setAuthorization(BearerAuthorization.from(accessToken))
-			.get()
-			.readJsonObject()
-			.orElseThrow(AuthenticationException::new);
+				.setAuthorization(BearerAuthorization.from(accessToken))
+				.get()
+				.readJsonObject()
+				.orElseThrow(AuthenticationException::new);
 
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(AuthenticationException::new));
+				.orElseThrow(AuthenticationException::new));
 	}
 
 	private User clientCredentialsFlow(GateControl control, BearerAuthorization bearerAuthorization)
-		throws AuthenticationException, HierarchyException
+			throws AuthenticationException, HierarchyException
 	{
 		String token = bearerAuthorization.token();
 
 		Claims claims = Jwts.parser()
-			.keyLocator(this::getPublicKey)
-			.build()
-			.parseSignedClaims(token)
-			.getPayload();
+				.keyLocator(this::getPublicKey)
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
 
 		String issuer = claims.getIssuer();
 		if (issuer == null || !issuer.equals(this.issuer.get()))
 			throw new AuthenticationException();
 
 		if (claims.getAudience().stream()
-			.noneMatch(clientId::equals))
+				.noneMatch(clientId::equals))
 			throw new AuthenticationException();
 
 		String systemId = Optional.ofNullable(claims.get("azp", String.class))
-			.or(() -> Optional.ofNullable(claims.getSubject()))
-			.orElseThrow(AuthenticationException::new);
+				.or(() -> Optional.ofNullable(claims.getSubject()))
+				.orElseThrow(AuthenticationException::new);
 
 		return control.select(systemId);
 	}
 
 	private User resourceOwnerPasswordCredentialsFlow(GateControl control, BasicAuthorization basicAuth)
-		throws AuthenticationException, HierarchyException, IOException
+			throws AuthenticationException, HierarchyException, IOException
 	{
 
 		JsonObject tokens = new URL(tokenEndpoint.get())
-			.post(new Parameters()
-				.set("grant_type", "password")
-				.set("username", basicAuth.username())
-				.set("password", basicAuth.password())
-				.set("client_id", clientId)
-				.set("client_secret", clientSecret)
-				.set("scope", scope))
-			.readJsonObject()
-			.orElseThrow(AuthenticationException::new);
+				.post(new Parameters()
+						.set("grant_type", "password")
+						.set("username", basicAuth.username())
+						.set("password", basicAuth.password())
+						.set("client_id", clientId)
+						.set("client_secret", clientSecret)
+						.set("scope", scope))
+				.readJsonObject()
+				.orElseThrow(AuthenticationException::new);
 
 		if (tokens.containsKey("id_token"))
 		{
 			var idToken = tokens.getString("id_token")
-				.orElseThrow(AuthenticationException::new);
+					.orElseThrow(AuthenticationException::new);
 			Claims claims = getClaims(idToken);
 			if (claims.getAudience().stream().noneMatch(clientId::equals))
 				throw new AuthenticationException();
@@ -239,16 +239,16 @@ public class OIDCAuthenticator implements Authenticator
 		}
 
 		String accessToken = tokens.getString("access_token")
-			.orElseThrow(AuthenticationException::new);
+				.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = new URL(userInfoEndpoint.get())
-			.setAuthorization(BearerAuthorization.from(accessToken))
-			.get()
-			.readJsonObject()
-			.orElseThrow(AuthenticationException::new);
+				.setAuthorization(BearerAuthorization.from(accessToken))
+				.get()
+				.readJsonObject()
+				.orElseThrow(AuthenticationException::new);
 
 		return control.select(userInfo.getString(userId)
-			.orElseThrow(AuthenticationException::new));
+				.orElseThrow(AuthenticationException::new));
 	}
 
 	@Override
@@ -259,9 +259,9 @@ public class OIDCAuthenticator implements Authenticator
 			return null;
 
 		return new URL(url)
-			.setParameter("client_id", clientId)
-			.setParameter("post_logout_redirect_uri", request.getRequestURL().toString())
-			.toString();
+				.setParameter("client_id", clientId)
+				.setParameter("post_logout_redirect_uri", request.getRequestURL().toString())
+				.toString();
 	}
 
 	private JsonObject fetchConfiguration()
@@ -269,9 +269,9 @@ public class OIDCAuthenticator implements Authenticator
 		try
 		{
 			return new URL(configurationEndpoint)
-				.get()
-				.readJsonObject()
-				.orElseThrow(AuthenticationException::new);
+					.get()
+					.readJsonObject()
+					.orElseThrow(AuthenticationException::new);
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -283,15 +283,15 @@ public class OIDCAuthenticator implements Authenticator
 		try
 		{
 			return new URL(jwksUri.get())
-				.get()
-				.readJsonObject()
-				.flatMap(e -> e.getJsonArray("keys"))
-				.orElseThrow()
-				.stream()
-				.map(e -> (JsonObject) e)
-				.collect(Collectors.toMap(e -> e.getString("kid")
-				.orElseThrow(AuthenticationException::new),
-					JWKSPublicKeyParser::parse));
+					.get()
+					.readJsonObject()
+					.flatMap(e -> e.getJsonArray("keys"))
+					.orElseThrow()
+					.stream()
+					.map(e -> (JsonObject) e)
+					.collect(Collectors.toMap(e -> e.getString("kid")
+					.orElseThrow(AuthenticationException::new),
+							JWKSPublicKeyParser::parse));
 		} catch (IOException ex)
 		{
 			throw new AuthenticatorException(ex);
@@ -301,8 +301,8 @@ public class OIDCAuthenticator implements Authenticator
 	private String getEndpoint(String endpointKey)
 	{
 		return configuration.get()
-			.getString(endpointKey)
-			.orElseThrow(AuthenticationException::new);
+				.getString(endpointKey)
+				.orElseThrow(AuthenticationException::new);
 	}
 
 	@Override
@@ -333,22 +333,22 @@ public class OIDCAuthenticator implements Authenticator
 	private Claims getClaims(String token)
 	{
 		return Jwts.parser()
-			.keyLocator(this::getPublicKey)
-			.build()
-			.parseSignedClaims(token)
-			.getPayload();
+				.keyLocator(this::getPublicKey)
+				.build()
+				.parseSignedClaims(token)
+				.getPayload();
 	}
 
-	private static record State(String nonce, String codeVerifier)
-		{
+	private record State(String nonce, String codeVerifier)
+			{
 
 		private static final Duration TIMEOUT = Duration.ofMinutes(10);
 
 		public static State create()
 		{
 			return new State(
-				random(32),
-				random(64)
+					random(32),
+					random(64)
 			);
 		}
 
@@ -356,9 +356,9 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			Crypto crypto = new Crypto(key);
 			var json
-				= new JsonObject().setString("nonce", nonce)
-					.setString("codeVerifier", codeVerifier)
-					.setLong("iat", System.currentTimeMillis());
+					= new JsonObject().setString("nonce", nonce)
+							.setString("codeVerifier", codeVerifier)
+							.setLong("iat", System.currentTimeMillis());
 			return crypto.encryptAndSign(json.toString());
 		}
 
@@ -392,9 +392,9 @@ public class OIDCAuthenticator implements Authenticator
 				throw new AuthenticationException();
 
 			var nonce = json.getString("nonce")
-				.orElseThrow(AuthenticationException::new);
+					.orElseThrow(AuthenticationException::new);
 			var codeVerifier = json.getString("codeVerifier")
-				.orElseThrow(AuthenticationException::new);
+					.orElseThrow(AuthenticationException::new);
 
 			return new State(nonce, codeVerifier);
 		}
@@ -404,8 +404,8 @@ public class OIDCAuthenticator implements Authenticator
 			byte[] b = new byte[bytes];
 			new SecureRandom().nextBytes(b);
 			return Base64.getUrlEncoder()
-				.withoutPadding()
-				.encodeToString(b);
+					.withoutPadding()
+					.encodeToString(b);
 		}
 	}
 }

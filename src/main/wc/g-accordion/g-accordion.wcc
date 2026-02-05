@@ -42,7 +42,7 @@ customElements.define('g-accordion', class extends HTMLElement
 		if (value)
 			this.setAttribute('multiple', '');
 		else
-			this.removeAttribute('multiple', '');
+			this.removeAttribute('multiple');
 	}
 
 	expand(target)

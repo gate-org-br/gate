@@ -27,20 +27,18 @@ public @interface Alert
 			try
 			{
 
-				if (element instanceof String)
+				if (element instanceof String string)
 				{
-					String string = (String) element;
-					Optional<? extends AnnotatedElement> optional = Reflection.find(string);
+                    Optional<? extends AnnotatedElement> optional = Reflection.find(string);
 					return optional.isPresent() ? extract(optional.get()) : Optional.empty();
 				}
 
 				if (element instanceof Enum<?>)
 					return extract(element.getClass().getField(((Enum<?>) element).name()));
 
-				if (element instanceof AnnotatedElement)
+				if (element instanceof AnnotatedElement annotatedElement)
 				{
-					AnnotatedElement annotatedElement = (AnnotatedElement) element;
-					if (annotatedElement.isAnnotationPresent(Alert.class))
+                    if (annotatedElement.isAnnotationPresent(Alert.class))
 						return Optional.of(annotatedElement.getAnnotation(Alert.class).value());
 					return Optional.empty();
 				}

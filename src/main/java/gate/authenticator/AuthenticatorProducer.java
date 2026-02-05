@@ -51,8 +51,7 @@ public class AuthenticatorProducer implements Serializable
 		return authenticators.computeIfAbsent(authenticator, index ->
 		{
 			String context = app.getId().toLowerCase();
-			AuthConfig config
-					= new AuthConfig(keys,context, index);
+			AuthConfig config = new AuthConfig(keys, context, index);
 
 			if (config.getProperty("type").isPresent())
 				return switch (config.getProperty("type").get())
