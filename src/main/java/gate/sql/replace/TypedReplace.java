@@ -3,6 +3,7 @@ package gate.sql.replace;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.statement.Operation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;

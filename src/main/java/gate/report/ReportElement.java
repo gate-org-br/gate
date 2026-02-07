@@ -1,11 +1,6 @@
 package gate.report;
 
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonBoolean;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNumber;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
+import gate.lang.json.*;
 
 /**
  * A generic {@link gate.report.Report} element.

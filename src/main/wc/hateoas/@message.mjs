@@ -1,5 +1,4 @@
 import DataURL from './data-url.js';
-import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import GMessageDialog from './g-message-dialog.js';
 import ResponseHandler from './response-handler.js';

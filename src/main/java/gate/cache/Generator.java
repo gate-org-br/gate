@@ -4,5 +4,5 @@ package gate.cache;
 public interface Generator<T>
 {
 
-	public T get() throws Exception;
+	T get() throws Exception;
 }

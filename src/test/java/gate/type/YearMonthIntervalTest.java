@@ -1,14 +1,14 @@
 package gate.type;
 
+import org.junit.jupiter.api.Test;
+
 import java.text.ParseException;
 import java.time.Month;
 import java.time.YearMonth;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class YearMonthIntervalTest
 {

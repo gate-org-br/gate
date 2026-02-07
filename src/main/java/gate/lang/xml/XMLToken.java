@@ -2,6 +2,7 @@ package gate.lang.xml;
 
 import gate.error.EvaluableException;
 import gate.error.TemplateException;
+
 import java.io.IOException;
 import java.io.Writer;
 

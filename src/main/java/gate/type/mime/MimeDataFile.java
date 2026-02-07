@@ -7,12 +7,8 @@ import gate.error.ConversionException;
 import gate.handler.MimeDataFileHandler;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;

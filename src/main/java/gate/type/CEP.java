@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.CEPConverter;
+
 import java.io.Serializable;
 
 @Converter(CEPConverter.class)

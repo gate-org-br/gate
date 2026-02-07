@@ -5,6 +5,7 @@ import gate.sql.Fetchable;
 import gate.sql.Link;
 import gate.sql.SQLBuilder;
 import gate.sql.fetcher.Fetcher;
+
 import java.util.Arrays;
 import java.util.List;
 

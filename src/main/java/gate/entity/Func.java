@@ -7,6 +7,7 @@ import gate.annotation.Name;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.type.ID;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

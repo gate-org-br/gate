@@ -1,10 +1,12 @@
 package gate.converter;
 
 import gate.entity.User;
-import java.util.Locale;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ConvertersTest
 {

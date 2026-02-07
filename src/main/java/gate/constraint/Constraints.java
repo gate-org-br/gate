@@ -2,6 +2,7 @@ package gate.constraint;
 
 import gate.error.AppException;
 import gate.lang.property.Property;
+
 import java.util.List;
 
 public class Constraints

@@ -5,9 +5,10 @@ import gate.error.InvalidCredentialsException;
 import gate.type.ID;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+
+import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
-import javax.crypto.SecretKey;
 
 public class Token
 {

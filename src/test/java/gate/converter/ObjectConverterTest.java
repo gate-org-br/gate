@@ -3,12 +3,14 @@ package gate.converter;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.type.ID;
-import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class ObjectConverterTest
 {

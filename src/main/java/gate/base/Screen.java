@@ -1,12 +1,5 @@
 package gate.base;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import gate.annotation.BodyParamExtractor;
 import gate.annotation.CookieParamExtractor;
 import gate.annotation.HeaderParamExtractor;
@@ -23,6 +16,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.QueryParam;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class Screen extends Base
 {

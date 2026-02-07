@@ -3,6 +3,7 @@ package gate.constraint;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

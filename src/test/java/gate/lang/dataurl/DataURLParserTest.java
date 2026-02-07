@@ -1,10 +1,12 @@
 package gate.lang.dataurl;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.ParseException;
+
 import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
 
 public class DataURLParserTest
 {

@@ -1,11 +1,12 @@
 package gate.thymeleaf;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import java.io.Writer;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import java.io.Writer;
 
 public interface JavaScriptFileEngine
 {

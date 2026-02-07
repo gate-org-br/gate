@@ -13,14 +13,15 @@ import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import gate.util.Parameters;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
-import java.util.StringJoiner;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.web.IWebExchange;
+
+import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 public class RequestAttributeProcessor extends AttributeProcessor
 {

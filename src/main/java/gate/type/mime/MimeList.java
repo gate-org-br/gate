@@ -1,11 +1,8 @@
 package gate.type.mime;
 
 import gate.lang.contentType.ContentType;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Spliterator;
+
+import java.util.*;
 import java.util.function.Consumer;
 
 public class MimeList implements Mime, Iterable<Mime>

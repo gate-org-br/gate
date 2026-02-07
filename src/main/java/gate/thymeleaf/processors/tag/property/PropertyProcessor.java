@@ -6,14 +6,15 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import jakarta.inject.Inject;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class PropertyProcessor extends TagProcessor
 {

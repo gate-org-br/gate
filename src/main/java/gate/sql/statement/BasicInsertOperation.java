@@ -3,6 +3,7 @@ package gate.sql.statement;
 import gate.error.ConstraintViolationException;
 import gate.sql.Link;
 import gate.sql.insert.Insert;
+
 import java.util.Collection;
 import java.util.function.Consumer;
 

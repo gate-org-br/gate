@@ -7,10 +7,11 @@ import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.servlet.http.HttpServletRequest;
+import org.thymeleaf.context.LazyContextVariable;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.thymeleaf.context.LazyContextVariable;
 
 public class JaveELVariableMapper extends VariableMapper
 {

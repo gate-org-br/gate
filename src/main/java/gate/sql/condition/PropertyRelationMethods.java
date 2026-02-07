@@ -2,6 +2,7 @@ package gate.sql.condition;
 
 import gate.lang.property.Property;
 import gate.sql.Clause;
+
 import java.util.stream.Stream;
 
 interface PropertyRelationMethods extends Clause

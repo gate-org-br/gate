@@ -3,15 +3,15 @@ package gate.sql.condition;
 import gate.entity.Role;
 import gate.sql.select.Select;
 import gate.type.LocalDateTimeInterval;
+import org.junit.jupiter.api.Test;
+
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ConstantConditionTest
 {

@@ -3,6 +3,7 @@ package gate.base;
 import gate.error.AppException;
 import gate.error.NotFoundException;
 import gate.type.ID;
+
 import java.util.List;
 
 public interface Crud<T>

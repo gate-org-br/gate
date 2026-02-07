@@ -2,10 +2,11 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.SafeHTMLConverter;
-import java.io.Serializable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document.OutputSettings;
 import org.jsoup.safety.Safelist;
+
+import java.io.Serializable;
 
 @Converter(SafeHTMLConverter.class)
 public class SafeHTML implements Serializable

@@ -2,11 +2,7 @@ package gate.authenticator;
 
 import gate.GateControl;
 import gate.entity.User;
-import gate.error.AuthenticationException;
-import gate.error.DefaultPasswordException;
-import gate.error.HierarchyException;
-import gate.error.HttpException;
-import gate.error.InvalidPasswordException;
+import gate.error.*;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;

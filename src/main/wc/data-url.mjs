@@ -1,4 +1,5 @@
 import Base64 from './base64.js';
+
 export default class DataURL
 {
 	static parse(string)

@@ -1,7 +1,5 @@
 package gate.io;
 
-import gate.io.Observable;
-import gate.io.Observer;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;

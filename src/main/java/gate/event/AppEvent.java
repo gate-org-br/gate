@@ -2,6 +2,7 @@ package gate.event;
 
 import gate.entity.User;
 import gate.lang.json.JsonObject;
+
 import java.util.Objects;
 
 public class AppEvent

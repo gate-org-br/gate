@@ -3,6 +3,7 @@ package gate.report;
 import gate.annotation.Name;
 import gate.type.DataGrid;
 import gate.type.PivotTable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

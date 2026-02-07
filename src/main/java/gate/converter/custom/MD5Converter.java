@@ -1,17 +1,17 @@
 package gate.converter.custom;
 
+import gate.constraint.Constraint;
+import gate.constraint.Length;
+import gate.constraint.Pattern;
+import gate.converter.Converter;
+import gate.type.MD5;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.LinkedList;
 import java.util.List;
-
-import gate.constraint.Constraint;
-import gate.constraint.Length;
-import gate.constraint.Pattern;
-import gate.converter.Converter;
-import gate.type.MD5;
 
 public class MD5Converter implements Converter
 {

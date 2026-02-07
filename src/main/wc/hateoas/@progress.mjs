@@ -1,5 +1,4 @@
 import process from './process.js';
-import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
 let sequence = 1;

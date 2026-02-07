@@ -1,32 +1,8 @@
 package gate.http;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.error.AppError;
-import gate.error.AuthenticationException;
-import gate.error.ConversionException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.error.*;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
@@ -36,6 +12,14 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.Part;
+
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {

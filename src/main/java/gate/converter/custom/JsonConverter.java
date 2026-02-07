@@ -1,9 +1,10 @@
 package gate.converter.custom;
 
-import gate.converter.*;
+import gate.converter.ObjectConverter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonWriter;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;

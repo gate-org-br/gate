@@ -7,15 +7,11 @@ import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.lang.property.Property;
 import gate.util.Reflection;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 /**

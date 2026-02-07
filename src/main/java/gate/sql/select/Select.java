@@ -10,6 +10,7 @@ import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.Condition;
 import gate.sql.statement.Query;
 import gate.util.Resources;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;

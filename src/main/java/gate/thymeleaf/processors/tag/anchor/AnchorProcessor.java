@@ -12,17 +12,16 @@ import gate.type.Attributes;
 import gate.util.Parameters;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public abstract class AnchorProcessor extends TagModelProcessor
 {

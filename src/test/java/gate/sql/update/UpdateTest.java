@@ -7,17 +7,18 @@ import gate.error.NotFoundException;
 import gate.sql.Link;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
-
 import gate.type.ID;
 import gate.type.LocalDateInterval;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class UpdateTest
 {

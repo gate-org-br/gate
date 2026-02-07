@@ -2,6 +2,7 @@ package gate.lang.json;
 
 import gate.error.AppError;
 import gate.error.ConversionException;
+
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Optional;

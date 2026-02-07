@@ -1,13 +1,14 @@
 package gate.thymeleaf.processors.attribute;
 
 import gate.thymeleaf.Precedence;
-import java.util.List;
-import java.util.Optional;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class EnumerateAttributeProcessor extends AttributeProcessor

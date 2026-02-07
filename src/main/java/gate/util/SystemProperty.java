@@ -1,7 +1,8 @@
 package gate.util;
 
-import java.util.Optional;
 import org.eclipse.microprofile.config.ConfigProvider;
+
+import java.util.Optional;
 
 public class SystemProperty
 {

@@ -2,11 +2,8 @@ package gate.io;
 
 import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeDataFile;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+
+import java.io.*;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;

@@ -1,11 +1,8 @@
 package gate.sql.fetcher;
 
-import gate.lang.property.Property;
 import gate.sql.Cursor;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**

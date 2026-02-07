@@ -3,6 +3,7 @@ package gate.report;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
+
 import java.util.ArrayList;
 import java.util.List;
 

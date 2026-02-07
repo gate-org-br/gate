@@ -1,6 +1,7 @@
 package gate.base;
 
 import gate.sql.Link;
+
 import java.util.Objects;
 
 /**

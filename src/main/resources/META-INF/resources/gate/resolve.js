@@ -1,6 +1,6 @@
 import DOM from './dom.js';
+
 const REQUIRED = new Error();
-import EventHandler from './event-handler.js';
 const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\(([^)]*?)\)/g;
 
 function navigate(trigger, value)

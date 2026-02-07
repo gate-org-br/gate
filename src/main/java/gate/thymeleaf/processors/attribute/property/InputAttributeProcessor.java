@@ -9,11 +9,12 @@ import gate.type.Attributes;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.function.Function;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.function.Function;
 
 @ApplicationScoped
 public class InputAttributeProcessor extends FormControlAttributeProcessor

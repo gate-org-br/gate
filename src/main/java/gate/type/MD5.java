@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.custom.MD5Converter;
 import gate.error.AppError;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;

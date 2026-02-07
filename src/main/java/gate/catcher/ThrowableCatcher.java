@@ -8,10 +8,11 @@ import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
+import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UncheckedIOException;
-import org.slf4j.Logger;
 
 @ApplicationScoped
 public class ThrowableCatcher implements Catcher

@@ -3,13 +3,13 @@ package gate.handler;
 import gate.Progress;
 import gate.error.AppError;
 import gate.lang.json.JsonElement;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class JsonElementHandler implements Handler

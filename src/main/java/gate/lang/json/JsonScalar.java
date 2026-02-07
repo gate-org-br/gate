@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.handler.JsonElementHandler;
+
 import java.io.Serializable;
 
 /**

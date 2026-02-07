@@ -1,6 +1,7 @@
 package gate.sql;
 
 import gate.lang.property.Property;
+
 import java.util.stream.Stream;
 
 /**

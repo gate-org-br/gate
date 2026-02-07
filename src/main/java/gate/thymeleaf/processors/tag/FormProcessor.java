@@ -9,12 +9,13 @@ import gate.type.Attributes;
 import gate.type.Field;
 import gate.type.Form;
 import gate.util.Toolkit;
-import java.util.StringJoiner;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.StringJoiner;
 
 @ApplicationScoped
 public class FormProcessor extends PropertyProcessor

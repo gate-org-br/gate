@@ -7,8 +7,6 @@ import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Hierarchy;
 import gate.util.Toolkit;
 import jakarta.inject.Inject;
-import java.util.Objects;
-import java.util.function.Function;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
@@ -16,6 +14,9 @@ import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.web.IWebExchange;
+
+import java.util.Objects;
+import java.util.function.Function;
 
 public abstract class IterableProcessor extends TagModelProcessor
 {

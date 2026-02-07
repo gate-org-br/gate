@@ -1,6 +1,7 @@
 package gate.icon;
 
 import gate.lang.json.JsonArray;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

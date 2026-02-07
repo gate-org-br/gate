@@ -1,6 +1,7 @@
 package gate.error;
 
 import gate.sql.Link;
+
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;

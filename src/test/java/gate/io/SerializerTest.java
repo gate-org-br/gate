@@ -1,8 +1,9 @@
 package gate.io;
 
 import gate.error.ConversionException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SerializerTest
 {

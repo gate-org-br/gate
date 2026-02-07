@@ -3,6 +3,7 @@ package gate.sql.condition;
 import gate.converter.Converter;
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;

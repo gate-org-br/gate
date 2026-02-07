@@ -1,15 +1,15 @@
 package gate.type.collections;
 
 import gate.annotation.Converter;
-import gate.converter.collections.StringSetConverter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
+import gate.converter.collections.StringSetConverter;
 import gate.policonverter.StringListPoliconverter;
 import gate.policonverter.StringSetPoliconverter;
 
-import java.util.HashSet;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 

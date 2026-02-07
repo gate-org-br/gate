@@ -4,6 +4,7 @@ import gate.lang.property.Property;
 import gate.sql.GQN;
 import gate.sql.statement.Operation;
 import gate.util.Resources;
+
 import java.net.URL;
 import java.util.List;
 

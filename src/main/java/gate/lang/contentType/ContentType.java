@@ -1,6 +1,5 @@
 package gate.lang.contentType;
 
-import gate.error.AppError;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;

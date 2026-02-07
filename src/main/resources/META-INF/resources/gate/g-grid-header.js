@@ -28,7 +28,6 @@ template.innerHTML = `
 	background-color: var(--base6);
 }</style>`;
 import './g-grid-cell.js';
-import colorize from './colorize.js';
 
 customElements.define('g-grid-header', class extends HTMLElement
 {

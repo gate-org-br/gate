@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.MoneyConverter;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;

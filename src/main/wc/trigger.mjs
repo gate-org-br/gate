@@ -5,7 +5,7 @@ import resolve from './resolve.js';
 import validate from './validate.js';
 import EventHandler from './event-handler.js';
 import TriggerExtractor from './trigger-extractor.js';
-import TriggerEvent, { TriggerStartupEvent } from './trigger-event.js';
+import TriggerEvent, {TriggerStartupEvent} from './trigger-event.js';
 
 export default function trigger(cause, element, context, action)
 {

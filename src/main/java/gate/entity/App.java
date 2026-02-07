@@ -9,9 +9,10 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import jakarta.enterprise.context.Dependent;
+
 import java.io.Serializable;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

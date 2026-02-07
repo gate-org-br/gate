@@ -1,12 +1,13 @@
 package gate.handler;
 
 import gate.Progress;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
 @ApplicationScoped
 public class TextHandler implements Handler

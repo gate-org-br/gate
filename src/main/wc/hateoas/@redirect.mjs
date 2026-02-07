@@ -1,11 +1,8 @@
 /* global fetch */
 
 import './trigger.js';
-import DOM from './dom.js';
-import EventHandler from './event-handler.js';
 import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
-import {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
 
 window.addEventListener("@redirect", function (event)
 {

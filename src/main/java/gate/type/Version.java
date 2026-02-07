@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.VersionConverter;
 import gate.handler.VersionHandler;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Matcher;

@@ -3,6 +3,7 @@ package gate.entity;
 import gate.annotation.Entity;
 import gate.type.ID;
 import gate.type.mime.MimeMail;
+
 import java.time.LocalDateTime;
 
 @Entity

@@ -2,6 +2,7 @@ package gate.error;
 
 import gate.annotation.Catcher;
 import gate.catcher.ConflictExceptionCatcher;
+
 import java.sql.SQLException;
 
 /**

@@ -1,6 +1,7 @@
 package gate.lang.property;
 
 import gate.annotation.ElementType;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;

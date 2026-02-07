@@ -1,17 +1,17 @@
 package gate.type.collections;
 
-import gate.converter.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
+import gate.converter.Converter;
 import gate.converter.collections.LocalDateTimeSetConverter;
 import gate.error.ConversionException;
 import gate.policonverter.LocalDateTimeSetPoliconverter;
-import java.time.LocalDateTime;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.HashSet;
 
 @ElementType(LocalDateTime.class)
 @Policonverter(LocalDateTimeSetPoliconverter.class)

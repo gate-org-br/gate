@@ -1,11 +1,11 @@
 package gate.converter.collections;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
-import gate.type.collections.LocalDateTimeSet;
+import gate.error.ConversionException;
 import gate.type.collections.IntegerList;
+import gate.type.collections.LocalDateTimeSet;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -1,9 +1,5 @@
 package gate.lang.contentDisposition;
 
-import gate.error.AppError;
-import gate.error.ConversionException;
-import gate.lang.contentType.ContentTypeParser;
-import gate.lang.contentType.ContentTypeScanner;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;

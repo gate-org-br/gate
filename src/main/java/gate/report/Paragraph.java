@@ -1,11 +1,8 @@
 package gate.report;
 
-import gate.lang.json.JsonBoolean;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNull;
-import gate.lang.json.JsonNumber;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
+
 import java.util.Objects;
 
 public final class Paragraph extends ReportElement

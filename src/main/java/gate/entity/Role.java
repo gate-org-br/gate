@@ -1,16 +1,12 @@
 package gate.entity;
 
-import gate.annotation.Column;
-import gate.annotation.Description;
-import gate.annotation.Entity;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.annotation.Schema;
+import gate.annotation.*;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.Hierarchy;
 import gate.type.ID;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

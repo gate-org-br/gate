@@ -8,11 +8,13 @@ package gate.lang.json;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.type.ID;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
 
 /**
  *

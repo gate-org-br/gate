@@ -1,8 +1,8 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.Percentage;
 
 import java.math.BigDecimal;

@@ -6,19 +6,16 @@ import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Toolkit;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateInputException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SelectProcessor extends PropertyProcessor

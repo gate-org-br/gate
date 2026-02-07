@@ -1,6 +1,4 @@
-import DOM from './dom.js';
 import Parser from './parser.js';
-import trigger from './trigger.js';
 import CancelError from './cancel-error.js';
 import EventHandler from './event-handler.js';
 import GMessageDialog from './g-message-dialog.js';

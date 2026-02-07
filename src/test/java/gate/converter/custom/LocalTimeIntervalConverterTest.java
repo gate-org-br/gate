@@ -1,11 +1,13 @@
 package gate.converter.custom;
 
-import gate.converter.*;
+import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.type.LocalTimeInterval;
-import java.time.LocalTime;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LocalTimeIntervalConverterTest
 {

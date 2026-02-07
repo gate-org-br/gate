@@ -36,11 +36,7 @@ dialog > footer > button {
 import './g-icon.js';
 import './trigger.js';
 import './g-progress-status.js';
-import process from './process.js';
 import GWindow from './g-window.js';
-import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
-import ResponseHandler from './response-handler.js';
 
 customElements.define('g-progress-dialog', class extends GWindow
 {

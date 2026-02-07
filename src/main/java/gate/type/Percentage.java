@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.PercentageConverter;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;

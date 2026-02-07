@@ -5,15 +5,15 @@ import gate.annotation.Handler;
 import gate.converter.custom.PNGConverter;
 import gate.handler.PNGHandler;
 import gate.type.collections.StringList;
-import java.awt.Graphics;
-import java.awt.Image;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Base64;
-import javax.imageio.ImageIO;
 
 @Handler(PNGHandler.class)
 @Converter(PNGConverter.class)

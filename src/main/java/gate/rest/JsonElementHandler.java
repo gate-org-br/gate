@@ -1,7 +1,6 @@
 package gate.rest;
 
 import gate.lang.json.JsonElement;
-import gate.lang.json.JsonElement;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;

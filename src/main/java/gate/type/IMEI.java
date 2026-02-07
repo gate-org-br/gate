@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.IMEIConverter;
+
 import java.io.Serializable;
 
 @Converter(IMEIConverter.class)

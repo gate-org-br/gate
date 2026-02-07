@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.IDConverter;
 import gate.handler.IDHandler;
+
 import java.io.Serializable;
 
 @Handler(IDHandler.class)

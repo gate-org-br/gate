@@ -2,6 +2,7 @@ package gate.lang.dataurl;
 
 import gate.error.AppError;
 import gate.lang.contentType.ContentType;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;

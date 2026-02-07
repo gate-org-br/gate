@@ -4,6 +4,7 @@ import gate.error.ConstraintViolationException;
 import gate.lang.property.Property;
 import gate.sql.Link;
 import gate.sql.SQLBuilder;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;

@@ -1,6 +1,7 @@
 package gate.lang.template;
 
 import gate.error.TemplateException;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;

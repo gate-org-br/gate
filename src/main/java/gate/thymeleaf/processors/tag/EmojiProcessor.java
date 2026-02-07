@@ -5,14 +5,15 @@ import gate.annotation.Emoji;
 import gate.icon.Emojis;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class EmojiProcessor extends TagProcessor

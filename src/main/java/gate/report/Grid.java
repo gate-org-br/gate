@@ -1,21 +1,13 @@
 package gate.report;
 
 import gate.converter.Converter;
-import gate.error.ConversionException;
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNumber;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
+import gate.lang.json.*;
 import gate.language.Language;
 import gate.type.DataGrid;
 import gate.type.PivotTable;
 import gate.util.Toolkit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

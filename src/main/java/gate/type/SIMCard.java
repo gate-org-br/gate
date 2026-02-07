@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.SIMCardConverter;
+
 import java.io.Serializable;
 
 @Converter(SIMCardConverter.class)

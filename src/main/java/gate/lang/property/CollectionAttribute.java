@@ -1,14 +1,14 @@
 package gate.lang.property;
 
+import gate.annotation.ElementType;
+import gate.util.Toolkit;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import gate.annotation.ElementType;
-import gate.util.Toolkit;
 
 public class CollectionAttribute implements Attribute
 {

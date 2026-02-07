@@ -1,11 +1,12 @@
 package gate.thymeleaf.processors.tag;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import java.util.LinkedList;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+import java.util.LinkedList;
 
 @ApplicationScoped
 public class InsertProcessor extends TagModelProcessor

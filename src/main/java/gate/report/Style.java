@@ -3,6 +3,7 @@ package gate.report;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
 import gate.type.Color;
+
 import java.util.Objects;
 
 public final class Style

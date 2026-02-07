@@ -12,6 +12,7 @@ import gate.report.doc.DOC;
 import gate.report.doc.PDF;
 import gate.report.doc.XLS;
 import gate.type.mime.MimeDataFile;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;

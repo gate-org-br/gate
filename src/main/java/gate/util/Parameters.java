@@ -2,8 +2,7 @@ package gate.util;
 
 import gate.converter.Converter;
 import gate.type.Parameter;
-import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
+
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;

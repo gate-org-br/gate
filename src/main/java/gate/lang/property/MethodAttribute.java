@@ -1,7 +1,8 @@
 package gate.lang.property;
 
-import gate.error.PropertyError;
 import gate.annotation.ElementType;
+import gate.error.PropertyError;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;

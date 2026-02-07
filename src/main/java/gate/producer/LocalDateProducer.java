@@ -2,6 +2,7 @@ package gate.producer;
 
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 

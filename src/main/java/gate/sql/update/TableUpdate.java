@@ -2,12 +2,9 @@ package gate.sql.update;
 
 import gate.converter.Converter;
 import gate.sql.Proxy;
-import gate.sql.condition.CompiledCondition;
-import gate.sql.condition.Condition;
-import gate.sql.condition.ConstantCondition;
-import gate.sql.condition.ExtractorCondition;
-import gate.sql.condition.GenericCondition;
+import gate.sql.condition.*;
 import gate.sql.statement.Sentence;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;

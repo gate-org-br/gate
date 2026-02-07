@@ -1,6 +1,7 @@
 package gate.type;
 
 import gate.converter.Converter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;

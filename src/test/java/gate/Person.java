@@ -2,6 +2,7 @@ package gate;
 
 import gate.annotation.Entity;
 import gate.type.LocalDateInterval;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

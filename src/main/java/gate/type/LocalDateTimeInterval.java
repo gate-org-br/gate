@@ -4,6 +4,7 @@ import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.converter.custom.LocalDateTimeIntervalConverter;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDateTime;

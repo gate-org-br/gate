@@ -2,6 +2,7 @@ package gate.lang.template;
 
 import gate.error.TemplateException;
 import gate.lang.expression.Expression;
+
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;

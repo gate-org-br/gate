@@ -1,10 +1,5 @@
 package gate.thymeleaf.processors.tag;
 
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
-
 import gate.Call;
 import gate.annotation.Current;
 import gate.converter.Converter;
@@ -15,6 +10,10 @@ import gate.thymeleaf.ELExpressionFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class SecureProcessor extends TagProcessor

@@ -2,11 +2,12 @@ package gate.io;
 
 import gate.error.AppException;
 import gate.type.DataFile;
+import org.apache.commons.net.tftp.TFTPClient;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.SocketException;
 import java.time.Duration;
-import org.apache.commons.net.tftp.TFTPClient;
 
 public class TFTP
 {

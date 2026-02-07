@@ -5,10 +5,9 @@ import gate.converter.custom.CaptchaConverter;
 import gate.error.ConversionException;
 import gate.io.Encryptor;
 import gate.lang.json.JsonObject;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +18,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import javax.imageio.ImageIO;
 
 @Converter(CaptchaConverter.class)
 public class Captcha

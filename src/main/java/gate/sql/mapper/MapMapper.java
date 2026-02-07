@@ -1,6 +1,7 @@
 package gate.sql.mapper;
 
 import gate.sql.Cursor;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 

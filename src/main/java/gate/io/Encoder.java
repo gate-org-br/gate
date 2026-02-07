@@ -1,15 +1,10 @@
 package gate.io;
 
 import gate.error.ConversionException;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.UncheckedIOException;
-import java.util.Base64;
 import org.apache.commons.io.input.ClassLoaderObjectInputStream;
+
+import java.io.*;
+import java.util.Base64;
 
 public abstract class Encoder<T>
 {

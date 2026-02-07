@@ -5,11 +5,13 @@ import gate.constraint.Constraints;
 import gate.error.AppException;
 import gate.lang.property.Property;
 import gate.type.ID;
-import java.util.Locale;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConstraintImplTest
 {

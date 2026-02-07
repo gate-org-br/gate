@@ -3,6 +3,7 @@ package gate.sql.fetcher;
 import gate.sql.Cursor;
 import gate.type.NamedTempFile;
 import gate.type.TempFile;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;

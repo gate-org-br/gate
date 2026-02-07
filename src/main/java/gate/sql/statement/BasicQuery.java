@@ -4,6 +4,7 @@ import gate.sql.Command;
 import gate.sql.Link;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

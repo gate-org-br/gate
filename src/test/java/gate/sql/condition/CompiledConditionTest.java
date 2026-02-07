@@ -5,12 +5,14 @@ import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.GQN;
 import gate.type.ID;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
 
 public class CompiledConditionTest
 {

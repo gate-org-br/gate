@@ -5,19 +5,13 @@ import gate.error.NoSuchPropertyError;
 import gate.error.TemplateException;
 import gate.error.TemplatePropertyException;
 import gate.lang.expression.Parameters;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Used to generate documents from GTL templates

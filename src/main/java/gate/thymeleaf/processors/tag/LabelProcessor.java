@@ -8,12 +8,13 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.Optional;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.Optional;
 
 @ApplicationScoped
 public class LabelProcessor extends TagProcessor

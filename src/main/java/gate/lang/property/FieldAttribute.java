@@ -1,33 +1,15 @@
 package gate.lang.property;
 
-import gate.annotation.Code;
-import gate.annotation.Color;
-import gate.annotation.Column;
-import gate.annotation.Description;
-import gate.annotation.ElementType;
+import gate.annotation.*;
 import gate.annotation.Entity;
-import gate.annotation.Mask;
-import gate.annotation.Name;
-import gate.annotation.Placeholder;
-import gate.annotation.Tooltip;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.icon.Icon;
 import gate.util.Reflection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.*;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 class FieldAttribute implements JavaIdentifierAttribute

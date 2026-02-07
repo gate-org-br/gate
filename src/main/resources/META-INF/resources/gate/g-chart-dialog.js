@@ -52,7 +52,7 @@ g-chart {
 }</style>`;
 /* global customElements, template, fetch */
 
-import  './g-icon.js';
+import './g-icon.js';
 import GWindow from './g-window.js';
 
 export default class GChartDialog extends GWindow

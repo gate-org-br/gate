@@ -1,8 +1,6 @@
 /* global fetch */
 
 import './trigger.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
 
 window.addEventListener("@notification", function (event)
 {

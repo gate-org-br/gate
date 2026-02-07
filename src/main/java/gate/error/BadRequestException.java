@@ -4,11 +4,14 @@ import gate.annotation.Catcher;
 import gate.catcher.BadRequestExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serial;
+
 @Catcher(BadRequestExceptionCatcher.class)
 public class BadRequestException extends HttpException
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 
 	public BadRequestException()
 	{
@@ -22,7 +25,7 @@ public class BadRequestException extends HttpException
 
 	public BadRequestException(String module, String screen, String action)
 	{
-		super(String.format("Requisição inválida: MODULE=%s, SCREEN=%s, ACTION=%s",
+		super(String.format("Invalid requisition: MODULE=%s, SCREEN=%s, ACTION=%s",
 			module, screen, action));
 	}
 

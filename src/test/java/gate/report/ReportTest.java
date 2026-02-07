@@ -7,6 +7,8 @@ import gate.report.Report.Orientation;
 import gate.report.doc.PDF;
 import gate.report.doc.XLS;
 import gate.type.ID;
+import org.junit.jupiter.api.Test;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +19,6 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
 
 public class ReportTest
 {

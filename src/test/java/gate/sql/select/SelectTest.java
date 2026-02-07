@@ -11,15 +11,17 @@ import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
 import gate.sql.statement.Query;
 import gate.type.LocalDateInterval;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 
 public class SelectTest
 {

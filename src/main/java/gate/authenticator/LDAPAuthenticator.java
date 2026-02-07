@@ -2,25 +2,19 @@ package gate.authenticator;
 
 import gate.GateControl;
 import gate.entity.User;
-import gate.error.AuthenticatorException;
-import gate.error.DefaultPasswordException;
-import gate.error.HierarchyException;
-import gate.error.InvalidPasswordException;
-import gate.error.InvalidUsernameException;
+import gate.error.*;
 import gate.http.BasicAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.type.MD5;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Hashtable;
+
+import javax.naming.*;
 import javax.naming.AuthenticationException;
-import javax.naming.CommunicationException;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import java.util.Hashtable;
 
 public class LDAPAuthenticator implements Authenticator
 {

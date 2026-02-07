@@ -1,9 +1,11 @@
 package gate.lang.template;
 
 import gate.lang.expression.Parameters;
-import java.util.HashMap;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PatametersTest
 {

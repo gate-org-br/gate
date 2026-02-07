@@ -5,6 +5,7 @@ import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
 import gate.converter.collections.CharacterListConverter;
 import gate.policonverter.CharacterListPoliconverter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

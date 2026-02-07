@@ -1,6 +1,5 @@
 package gate;
 
-import static gate.Gate.SUBJECT_COOKIE;
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.entity.User;
@@ -18,7 +17,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
+
+import static gate.Gate.SUBJECT_COOKIE;
 
 @WebServlet(value = "/Exit")
 public class Exit extends HttpServlet

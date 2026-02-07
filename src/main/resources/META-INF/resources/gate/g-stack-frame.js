@@ -52,10 +52,6 @@ dialog {
 import './trigger.js';
 import GModal from './g-modal.js';
 import stylesheets from './stylesheets.js';
-import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
-import ResponseHandler from './response-handler.js';
-import { TriggerResolveEvent } from './trigger-event.js';
 
 function resize(iframe)
 {

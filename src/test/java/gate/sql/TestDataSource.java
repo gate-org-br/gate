@@ -6,8 +6,9 @@
 package gate.sql;
 
 import gate.error.ConstraintViolationException;
-import java.sql.SQLException;
 import org.h2.jdbcx.JdbcDataSource;
+
+import java.sql.SQLException;
 
 public class TestDataSource
 {

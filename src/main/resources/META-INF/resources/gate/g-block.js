@@ -40,7 +40,6 @@ g-digital-clock
 /* global customElements, template */
 
 import './g-progress.js';
-import DOM from './dom.js';
 import GWindow from './g-window.js';
 
 export default class GBlock extends GWindow

@@ -5,20 +5,17 @@ import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Vetoed;
 import jakarta.inject.Inject;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.IProcessor;
-import org.thymeleaf.processor.element.IElementProcessor;
-import org.thymeleaf.processor.element.IElementTagProcessor;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
-import org.thymeleaf.processor.element.MatchingAttributeName;
-import org.thymeleaf.processor.element.MatchingElementName;
+import org.thymeleaf.processor.element.*;
 import org.thymeleaf.templatemode.TemplateMode;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class SetAttributeProcessor extends AbstractProcessorDialect

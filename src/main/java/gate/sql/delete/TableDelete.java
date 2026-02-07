@@ -4,8 +4,9 @@ import gate.sql.SQLBuilder;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.GenericCondition;
-import java.util.Collections;
 import gate.sql.statement.Sentence;
+
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**

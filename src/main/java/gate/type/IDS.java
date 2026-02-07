@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.ElementType;
 import gate.converter.custom.IDSConverter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

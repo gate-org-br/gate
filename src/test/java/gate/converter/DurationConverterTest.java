@@ -1,9 +1,11 @@
 package gate.converter;
 
 import gate.error.ConversionException;
-import java.time.Duration;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DurationConverterTest
 {

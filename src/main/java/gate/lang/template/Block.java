@@ -5,12 +5,9 @@ import gate.error.TemplateException;
 import gate.lang.expression.Expression;
 import gate.lang.expression.Parameters;
 import gate.util.Toolkit;
+
 import java.io.Writer;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 class Block implements Evaluable
 {

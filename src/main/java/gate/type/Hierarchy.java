@@ -1,6 +1,7 @@
 package gate.type;
 
 import gate.error.HierarchyException;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;

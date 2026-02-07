@@ -1,6 +1,7 @@
 package gate.lang.property;
 
 import gate.error.PropertyError;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;

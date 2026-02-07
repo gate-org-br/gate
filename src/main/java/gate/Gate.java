@@ -1,15 +1,5 @@
 package gate;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import org.eclipse.microprofile.context.ThreadContext;
-import org.slf4j.Logger;
-
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.Current;
@@ -17,11 +7,7 @@ import gate.authenticator.Authenticator;
 import gate.base.Screen;
 import gate.catcher.Catcher;
 import gate.entity.User;
-import gate.error.AppException;
-import gate.error.AuthenticationException;
-import gate.error.ForbiddenException;
-import gate.error.InternalServerException;
-import gate.error.UnauthorizedException;
+import gate.error.*;
 import gate.event.AppEvent;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
@@ -43,6 +29,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 @MultipartConfig
 @WebServlet(value = "/Gate/*", asyncSupported = true)

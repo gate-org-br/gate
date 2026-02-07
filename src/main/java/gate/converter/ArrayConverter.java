@@ -5,6 +5,7 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import gate.util.Reflection;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;

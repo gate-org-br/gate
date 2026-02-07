@@ -122,13 +122,6 @@ section {
 }</style>`;
 /* global customElements */
 
-import GBlock from './g-block.js';
-import loading from './loading.js';
-import EventHandler from './event-handler.js';
-import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
-import ResponseHandler from './response-handler.js';
-
 
 customElements.define('g-side-menu', class extends HTMLElement
 {

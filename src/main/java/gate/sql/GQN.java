@@ -4,6 +4,7 @@ import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.PropertyCondition;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;

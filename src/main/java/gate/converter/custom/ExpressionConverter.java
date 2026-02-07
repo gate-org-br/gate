@@ -1,15 +1,15 @@
 package gate.converter.custom;
 
+import gate.constraint.Constraint;
+import gate.converter.Converter;
+import gate.error.ConversionException;
+import gate.lang.expression.Expression;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
-
-import gate.constraint.Constraint;
-import gate.converter.Converter;
-import gate.error.ConversionException;
-import gate.lang.expression.Expression;
 
 public class ExpressionConverter implements Converter
 {

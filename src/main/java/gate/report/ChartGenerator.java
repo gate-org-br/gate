@@ -1,14 +1,6 @@
 package gate.report;
 
 import gate.converter.Converter;
-import static gate.report.Chart.Format.AREA;
-import static gate.report.Chart.Format.BAR;
-import static gate.report.Chart.Format.COLUMN;
-import static gate.report.Chart.Format.LINE;
-import static gate.report.Chart.Format.PIE;
-import java.awt.Font;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -17,6 +9,10 @@ import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
+
+import java.awt.*;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 public class ChartGenerator
 {

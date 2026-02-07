@@ -1,6 +1,7 @@
 package gate.lang.property;
 
 import gate.error.PropertyError;
+
 import java.lang.reflect.Type;
 import java.util.Objects;
 

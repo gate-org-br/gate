@@ -6,13 +6,14 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Sequence;
 import gate.type.Attributes;
 import gate.util.Toolkit;
-import java.util.StringJoiner;
-import java.util.function.Function;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.StringJoiner;
+import java.util.function.Function;
 
 @ApplicationScoped
 public class TextProcessor extends PropertyProcessor

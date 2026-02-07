@@ -6,12 +6,14 @@ import gate.sql.Link;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 public class MapListFetcherTest
 {

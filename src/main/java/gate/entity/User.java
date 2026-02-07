@@ -1,7 +1,6 @@
 package gate.entity;
 
 import gate.annotation.*;
-import gate.annotation.Entity;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;

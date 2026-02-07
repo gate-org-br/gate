@@ -1,7 +1,8 @@
 package gate.util;
 
-import java.util.Comparator;
 import gate.lang.property.Property;
+
+import java.util.Comparator;
 
 public class PropertyComparator implements Comparator<Object>
 {

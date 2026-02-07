@@ -9,13 +9,14 @@ import gate.type.Attributes;
 import gate.util.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.Optional;
-import java.util.StringJoiner;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+import java.util.Optional;
+import java.util.StringJoiner;
 
 @ApplicationScoped
 public class LinkProcessor extends AnchorProcessor

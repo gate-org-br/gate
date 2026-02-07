@@ -5,11 +5,7 @@ import gate.entity.App;
 import gate.entity.Mail;
 import gate.entity.Server;
 import gate.error.AppException;
-import gate.type.mime.Mime;
-import gate.type.mime.MimeDataFile;
-import gate.type.mime.MimeList;
-import gate.type.mime.MimeMail;
-import gate.type.mime.MimeText;
+import gate.type.mime.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
@@ -20,12 +16,11 @@ import jakarta.mail.internet.MimeBodyPart;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.servlet.ServletContextListener;
+import org.slf4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
-
-import org.slf4j.Logger;
 
 @ApplicationScoped
 public class Messenger implements ServletContextListener

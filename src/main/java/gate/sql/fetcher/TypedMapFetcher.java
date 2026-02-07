@@ -1,6 +1,7 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

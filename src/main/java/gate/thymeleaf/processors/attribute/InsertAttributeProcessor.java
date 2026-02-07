@@ -2,15 +2,16 @@ package gate.thymeleaf.processors.attribute;
 
 import gate.type.Attributes;
 import jakarta.enterprise.context.ApplicationScoped;
-import java.util.LinkedList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.web.IWebExchange;
+
+import java.util.LinkedList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class InsertAttributeProcessor extends AttributeModelProcessor

@@ -8,18 +8,12 @@ import gate.producer.AppProducer;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.delete.Delete;
 import gate.sql.select.Select;
-import gate.sql.statement.BasicInsertOperation;
-import gate.sql.statement.DeleteOperation;
-import gate.sql.statement.InsertOperation;
-import gate.sql.statement.Operation;
-import gate.sql.statement.Query;
-import gate.sql.statement.SearchOperation;
-import gate.sql.statement.SelectOperation;
-import gate.sql.statement.Sentence;
-import gate.sql.statement.UpdateOperation;
+import gate.sql.statement.*;
 import gate.sql.update.Update;
 import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.inject.spi.CDI;
+
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -31,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import javax.sql.DataSource;
 
 /**
  * Holds the connection to the database and provides a clean interface for transaction management,

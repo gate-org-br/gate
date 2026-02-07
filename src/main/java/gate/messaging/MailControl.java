@@ -10,6 +10,7 @@ import gate.sql.Link;
 import gate.sql.LinkSource;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
+
 import java.util.List;
 import java.util.Optional;
 

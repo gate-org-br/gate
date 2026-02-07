@@ -2,6 +2,7 @@ package gate.sql.select;
 
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+
 import java.util.stream.Stream;
 
 public interface Selectable extends Clause

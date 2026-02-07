@@ -1,6 +1,7 @@
 package gate.sql;
 
 import gate.error.ConstraintViolationException;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;

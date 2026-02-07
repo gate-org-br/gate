@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.SHA512Converter;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.security.MessageDigest;

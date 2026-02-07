@@ -3,6 +3,7 @@ package gate.sql.select;
 import gate.sql.Clause;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.statement.Query;
+
 import java.util.stream.Collectors;
 
 public abstract class WithRollupSelect implements SelectClause, Orderable, Limitable

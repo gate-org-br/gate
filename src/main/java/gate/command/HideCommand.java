@@ -2,6 +2,7 @@ package gate.command;
 
 import gate.annotation.Handler;
 import gate.handler.HideCommandHandler;
+
 import java.util.Collections;
 import java.util.List;
 

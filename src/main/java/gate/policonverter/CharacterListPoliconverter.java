@@ -2,6 +2,7 @@ package gate.policonverter;
 
 import gate.type.collections.CharacterList;
 import jakarta.servlet.http.Part;
+
 import java.util.stream.Stream;
 
 public class CharacterListPoliconverter implements Policonverter

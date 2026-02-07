@@ -8,16 +8,17 @@ import gate.type.Attributes;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.exceptions.TemplateInputException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.exceptions.TemplateInputException;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class SelectAttributeProcessor extends FormControlAttributeProcessor

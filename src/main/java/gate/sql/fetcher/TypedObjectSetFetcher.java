@@ -1,6 +1,7 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 

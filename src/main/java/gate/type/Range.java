@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.RangeConverter;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;

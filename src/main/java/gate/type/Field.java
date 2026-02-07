@@ -15,6 +15,7 @@ import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
 import gate.type.collections.StringList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.EMailConverter;
+
 import java.io.Serializable;
 import java.util.regex.Pattern;
 

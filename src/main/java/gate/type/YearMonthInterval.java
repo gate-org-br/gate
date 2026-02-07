@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.YearMonthIntervalConverter;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.YearMonth;

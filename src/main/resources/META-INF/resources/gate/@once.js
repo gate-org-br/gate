@@ -1,7 +1,6 @@
 /* global fetch */
 
 import './trigger.js';
-import TriggerEvent from './trigger-event.js';
 
 let REGISTRY = new WeakSet();
 

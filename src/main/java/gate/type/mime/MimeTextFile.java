@@ -8,12 +8,8 @@ import gate.error.ConversionException;
 import gate.handler.MimeTextFileHandler;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+
+import java.io.*;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;

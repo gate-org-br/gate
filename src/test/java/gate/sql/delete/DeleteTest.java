@@ -9,11 +9,13 @@ import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.type.ID;
-import java.sql.SQLException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DeleteTest
 {

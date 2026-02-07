@@ -5,14 +5,11 @@ import gate.error.ConstraintViolationException;
 import gate.error.DatabaseException;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Command implements AutoCloseable, Fetchable

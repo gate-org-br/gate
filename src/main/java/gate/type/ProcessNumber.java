@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.ProcessNumberConverter;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 

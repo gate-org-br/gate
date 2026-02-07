@@ -4,6 +4,7 @@ import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonString;
 import gate.sql.Cursor;
+
 import java.util.stream.Collectors;
 
 /**

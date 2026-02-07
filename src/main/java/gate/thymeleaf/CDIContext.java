@@ -5,11 +5,12 @@ import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.util.AnnotationLiteral;
+import org.thymeleaf.context.IContext;
+import org.thymeleaf.context.LazyContextVariable;
+
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
-import org.thymeleaf.context.IContext;
-import org.thymeleaf.context.LazyContextVariable;
 
 public class CDIContext implements IContext
 {

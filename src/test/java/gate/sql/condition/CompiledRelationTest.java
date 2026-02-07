@@ -1,10 +1,12 @@
 package gate.sql.condition;
 
 import gate.sql.select.Select;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 
 public class CompiledRelationTest
 {

@@ -2,6 +2,7 @@ package gate.authenticator;
 
 import gate.security.CryptoKeys;
 import gate.util.SystemProperty;
+
 import java.util.Optional;
 
 public record AuthConfig(CryptoKeys keys, String context, String name)

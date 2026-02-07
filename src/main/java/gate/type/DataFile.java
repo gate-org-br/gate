@@ -8,30 +8,19 @@ import gate.error.ConversionException;
 import gate.handler.DataFileHandler;
 import gate.io.GateInputStream;
 import gate.io.Processor;
+import gate.io.Reader;
+import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.UncheckedIOException;
+
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import gate.io.Reader;
-import gate.lang.contentType.ContentType;
-import java.lang.reflect.InvocationTargetException;
 
 @Handler(DataFileHandler.class)
 @Converter(DataFileConverter.class)

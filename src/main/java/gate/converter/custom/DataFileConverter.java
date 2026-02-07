@@ -6,12 +6,8 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.type.DataFile;
 import jakarta.servlet.http.Part;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+
+import java.io.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

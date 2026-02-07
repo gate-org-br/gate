@@ -2,6 +2,7 @@ package gate.annotation;
 
 import gate.icon.Emojis;
 import gate.util.Reflection;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

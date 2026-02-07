@@ -1,9 +1,9 @@
 package gate.type.collections;
 
 import gate.annotation.Converter;
-import gate.converter.collections.IntegerListConverter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
+import gate.converter.collections.IntegerListConverter;
 import gate.policonverter.IntegerListPoliconverter;
 
 import java.util.ArrayList;

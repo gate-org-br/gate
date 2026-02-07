@@ -1,6 +1,7 @@
 package gate.type.mime;
 
 import gate.lang.contentType.ContentType;
+
 import java.io.Serializable;
 
 /**

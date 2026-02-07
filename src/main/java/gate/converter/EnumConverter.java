@@ -3,6 +3,7 @@ package gate.converter;
 import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

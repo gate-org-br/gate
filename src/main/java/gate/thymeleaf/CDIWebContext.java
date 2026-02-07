@@ -1,9 +1,10 @@
 package gate.thymeleaf;
 
 import jakarta.enterprise.inject.spi.BeanManager;
-import java.util.Locale;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.web.IWebExchange;
+
+import java.util.Locale;
 
 public class CDIWebContext extends CDIContext implements IWebContext
 {

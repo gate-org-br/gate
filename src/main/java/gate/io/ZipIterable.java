@@ -2,6 +2,7 @@ package gate.io;
 
 import gate.Progress;
 import gate.type.DataFile;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

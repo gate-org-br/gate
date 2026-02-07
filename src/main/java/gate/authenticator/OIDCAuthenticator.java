@@ -19,6 +19,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletResponse;
+
+import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -30,7 +32,6 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.crypto.SecretKey;
 
 public class OIDCAuthenticator implements Authenticator
 {

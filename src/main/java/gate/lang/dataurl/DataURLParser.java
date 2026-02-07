@@ -1,6 +1,7 @@
 package gate.lang.dataurl;
 
 import gate.lang.contentType.ContentType;
+
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.text.ParseException;

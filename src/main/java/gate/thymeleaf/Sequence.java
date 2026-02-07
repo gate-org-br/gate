@@ -1,6 +1,7 @@
 package gate.thymeleaf;
 
 import jakarta.enterprise.context.ApplicationScoped;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 @ApplicationScoped

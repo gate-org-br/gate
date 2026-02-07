@@ -4,6 +4,7 @@ import gate.sql.Batch;
 import gate.sql.Executable;
 import gate.sql.Link;
 import gate.sql.SQLBuilder;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;

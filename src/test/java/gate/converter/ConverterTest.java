@@ -11,12 +11,14 @@ import gate.lang.json.JsonNumber;
 import gate.lang.json.JsonObject;
 import gate.lang.json.JsonString;
 import gate.type.LocalDateInterval;
-import java.time.LocalDate;
-import java.util.Locale;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.util.Locale;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConverterTest
 {

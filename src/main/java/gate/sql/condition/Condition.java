@@ -3,6 +3,7 @@ package gate.sql.condition;
 import gate.lang.property.Property;
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+
 import java.util.stream.Stream;
 
 /**

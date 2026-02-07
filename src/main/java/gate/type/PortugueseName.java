@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.custom.PortugueseNameConverter;
 import gate.language.Language;
+
 import java.util.regex.Pattern;
 
 @Converter(PortugueseNameConverter.class)

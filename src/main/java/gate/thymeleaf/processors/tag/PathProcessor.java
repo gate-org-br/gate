@@ -5,14 +5,15 @@ import gate.annotation.Name;
 import gate.base.Screen;
 import gate.type.Attributes;
 import jakarta.enterprise.context.ApplicationScoped;
-import java.lang.reflect.AnnotatedElement;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.Optional;
+import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class PathProcessor extends TagProcessor

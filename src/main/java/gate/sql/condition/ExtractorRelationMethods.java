@@ -1,6 +1,7 @@
 package gate.sql.condition;
 
 import gate.sql.Clause;
+
 import java.util.stream.Stream;
 
 interface ExtractorRelationMethods<T> extends Clause

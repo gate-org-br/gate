@@ -1,8 +1,8 @@
 package gate.type;
 
+import gate.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
-import gate.converter.Converter;
 
 import java.util.HashSet;
 import java.util.Set;

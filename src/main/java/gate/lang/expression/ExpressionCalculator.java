@@ -1,6 +1,7 @@
 package gate.lang.expression;
 
 import gate.error.ExpressionException;
+
 import java.math.BigDecimal;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

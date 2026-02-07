@@ -1,11 +1,13 @@
 package gate.type;
 
+import org.junit.jupiter.api.Test;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 
 public class VersionTest
 {

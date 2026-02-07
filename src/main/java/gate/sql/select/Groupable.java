@@ -1,6 +1,7 @@
 package gate.sql.select;
 
 import gate.sql.Clause;
+
 import java.util.List;
 import java.util.Objects;
 

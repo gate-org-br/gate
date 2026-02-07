@@ -1,7 +1,5 @@
 /* global customElements */
 
-import Scroll from './scroll.js';
-
 export default class GModal extends HTMLElement
 {
 	constructor()

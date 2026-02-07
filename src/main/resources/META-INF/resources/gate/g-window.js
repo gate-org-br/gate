@@ -102,6 +102,7 @@ dialog > footer {
 
 import GModal from './g-modal.js';
 import stylesheets from './stylesheets.js';
+
 export default class GWindow extends GModal
 {
 	constructor()

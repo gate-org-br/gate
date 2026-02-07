@@ -68,7 +68,6 @@ input {
 }</style>`;
 /* global customElements */
 
-import GContextMenu from './g-context-menu.js';
 import GMessageDialog from './g-message-dialog.js';
 
 customElements.define('g-selectn', class extends HTMLElement

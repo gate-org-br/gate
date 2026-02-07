@@ -4,7 +4,6 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagProcessor;
@@ -12,6 +11,8 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
 import org.thymeleaf.templatemode.TemplateMode;
+
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class ExpressionProcessor implements IElementTagProcessor, Processor

@@ -6,13 +6,9 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.contentType.ContentType;
 import gate.lang.csv.CSVFormatter;
-import gate.report.Column;
-import gate.report.Doc;
-import gate.report.Grid;
-import gate.report.Report;
-import gate.report.ReportElement;
+import gate.report.*;
 import gate.util.Toolkit;
-import java.io.IOException;
+
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;

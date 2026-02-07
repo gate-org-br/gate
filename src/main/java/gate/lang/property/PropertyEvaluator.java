@@ -2,6 +2,7 @@ package gate.lang.property;
 
 import gate.error.PropertyError;
 import gate.util.Reflection;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

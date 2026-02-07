@@ -11,6 +11,7 @@ import gate.type.Parameter;
 import gate.util.Parameters;
 import gate.util.Toolkit;
 import jakarta.ws.rs.HttpMethod;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,12 +23,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 @Handler(URLHandler.class)
 public class URL

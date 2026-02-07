@@ -1,17 +1,6 @@
 package gate.thymeleaf;
 
-import jakarta.el.ArrayELResolver;
-import jakarta.el.BeanELResolver;
-import jakarta.el.CompositeELResolver;
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.FunctionMapper;
-import jakarta.el.ListELResolver;
-import jakarta.el.MapELResolver;
-import jakarta.el.ResourceBundleELResolver;
-import jakarta.el.StaticFieldELResolver;
-import jakarta.el.VariableMapper;
+import jakarta.el.*;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.servlet.http.HttpServletRequest;
 

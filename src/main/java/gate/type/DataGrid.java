@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.DataGridConverter;
 import gate.lang.json.JsonArray;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

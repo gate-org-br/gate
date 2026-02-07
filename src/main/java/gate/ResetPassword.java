@@ -1,8 +1,5 @@
 package gate;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
@@ -20,6 +17,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.Writer;
 
 @MultipartConfig
 @WebServlet("/ResetPassword")

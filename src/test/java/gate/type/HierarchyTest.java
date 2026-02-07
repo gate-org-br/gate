@@ -1,11 +1,13 @@
 package gate.type;
 
 import gate.error.AppException;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 
 public class HierarchyTest
 {

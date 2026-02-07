@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.converter.Converter;
 import gate.lang.json.JsonObject;
+
 import java.io.Serializable;
 import java.util.Objects;
 

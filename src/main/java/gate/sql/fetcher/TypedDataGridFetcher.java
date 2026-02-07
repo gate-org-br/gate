@@ -1,8 +1,9 @@
 package gate.sql.fetcher;
 
-import gate.sql.Cursor;
 import gate.error.AppError;
+import gate.sql.Cursor;
 import gate.type.DataGrid;
+
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 

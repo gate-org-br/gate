@@ -1,31 +1,17 @@
 package gate;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.Optional;
-import java.util.StringJoiner;
-
-import org.thymeleaf.web.IWebExchange;
-
-import gate.annotation.Alert;
-import gate.annotation.Annotations;
-import gate.annotation.Authorization;
-import gate.annotation.Color;
-import gate.annotation.Confirm;
-import gate.annotation.Description;
-import gate.annotation.Disabled;
-import gate.annotation.Emoji;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.annotation.Public;
-import gate.annotation.Security;
-import gate.annotation.Superuser;
-import gate.annotation.Tooltip;
+import gate.annotation.*;
 import gate.base.Screen;
 import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.util.Toolkit;
 import jakarta.servlet.http.HttpServletRequest;
+import org.thymeleaf.web.IWebExchange;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Optional;
+import java.util.StringJoiner;
 
 public class Call
 {

@@ -3,6 +3,7 @@ package gate.sql.fetcher;
 import gate.error.AppError;
 import gate.sql.Cursor;
 import gate.type.PivotTable;
+
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 

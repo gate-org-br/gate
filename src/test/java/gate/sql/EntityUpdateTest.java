@@ -6,11 +6,13 @@ import gate.error.AppException;
 import gate.error.ConstraintViolationException;
 import gate.error.NotFoundException;
 import gate.type.ID;
-import java.sql.SQLException;
-import java.text.ParseException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+import java.text.ParseException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class EntityUpdateTest
 {

@@ -2,6 +2,7 @@ package gate.lang.template;
 
 import gate.error.TemplateException;
 import gate.io.ByteArrayReader;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

@@ -1,6 +1,7 @@
 package gate.producer;
 
 import gate.Call;
+import gate.annotation.MainAction;
 import gate.base.Screen;
 import gate.error.BadRequestException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -8,8 +9,8 @@ import jakarta.enterprise.inject.AmbiguousResolutionException;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
+
 import java.util.stream.Stream;
-import gate.annotation.MainAction;
 
 public class MainActionProducer {
 

@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.MACAddressConverter;
+
 import java.util.regex.Pattern;
 
 @Converter(MACAddressConverter.class)

@@ -6,6 +6,7 @@ import gate.error.ExpressionException;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyScanner;
 import gate.lang.template.Evaluable;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.*;

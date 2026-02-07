@@ -12,6 +12,7 @@ import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.stream.CheckedStream;
 import gate.type.collections.StringList;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

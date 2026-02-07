@@ -1,6 +1,7 @@
 package gate.sql.condition;
 
 import gate.sql.Clause;
+
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;

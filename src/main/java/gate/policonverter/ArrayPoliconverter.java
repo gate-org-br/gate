@@ -3,6 +3,7 @@ package gate.policonverter;
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import jakarta.servlet.http.Part;
+
 import java.lang.reflect.Array;
 
 public class ArrayPoliconverter implements Policonverter

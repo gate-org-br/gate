@@ -1,6 +1,10 @@
 package gate.lang.template;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import gate.entity.Role;
+import gate.entity.User;
+import gate.error.TemplateException;
+import gate.lang.json.JsonObject;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,12 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
-import gate.entity.Role;
-import gate.entity.User;
-import gate.error.TemplateException;
-import gate.lang.json.JsonObject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TemplateTest
 {

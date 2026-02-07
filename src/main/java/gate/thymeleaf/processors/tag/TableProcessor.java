@@ -3,14 +3,15 @@ package gate.thymeleaf.processors.tag;
 import gate.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class TableProcessor extends TagModelProcessor

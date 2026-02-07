@@ -1,12 +1,14 @@
 package gate.converter.custom;
 
-import gate.converter.*;
+import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.type.LocalDateTimeInterval;
+import org.junit.jupiter.api.Test;
+
 import java.time.LocalDateTime;
 import java.time.Month;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 
 public class LocalDateTimeIntervalConverterTest
 {

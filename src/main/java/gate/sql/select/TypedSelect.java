@@ -5,12 +5,9 @@ import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.OrderBy;
 import gate.sql.OrderBy.Ordering;
-import gate.sql.condition.CompiledCondition;
-import gate.sql.condition.Condition;
-import gate.sql.condition.ConstantCondition;
-import gate.sql.condition.GenericCondition;
-import gate.sql.condition.PropertyCondition;
+import gate.sql.condition.*;
 import gate.sql.statement.Query;
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;

@@ -1,6 +1,7 @@
 package gate.io;
 
 import gate.stream.CheckedPredicate;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

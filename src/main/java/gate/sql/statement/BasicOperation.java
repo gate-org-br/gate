@@ -5,6 +5,7 @@ import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.Command;
 import gate.sql.Link;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;

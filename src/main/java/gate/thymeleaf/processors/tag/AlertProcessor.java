@@ -6,13 +6,14 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.List;
-import java.util.StringJoiner;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.web.IWebExchange;
+
+import java.util.List;
+import java.util.StringJoiner;
 
 @ApplicationScoped
 public class AlertProcessor extends TagProcessor

@@ -1,7 +1,6 @@
 /* global fetch */
 
 import './trigger.js';
-import DOM from './dom.js';
 import DataURL from './data-url.js';
 import Formatter from './formatter.js';
 import RequestBuilder from './request-builder.js';

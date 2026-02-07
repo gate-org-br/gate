@@ -4,6 +4,7 @@ import gate.sql.Clause;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.GenericCondition;
+
 import java.util.stream.Stream;
 
 /**

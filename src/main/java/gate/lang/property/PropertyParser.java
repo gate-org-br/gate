@@ -1,19 +1,15 @@
 package gate.lang.property;
 
-import gate.error.PropertyError;
 import gate.converter.Converter;
 import gate.error.ConversionException;
+import gate.error.PropertyError;
 import gate.util.Reflection;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 class PropertyParser
 {

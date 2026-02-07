@@ -4,6 +4,7 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.util.Reflection;
+
 import java.lang.reflect.Type;
 import java.util.HashSet;
 import java.util.Set;

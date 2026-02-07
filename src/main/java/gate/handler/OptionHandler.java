@@ -1,12 +1,5 @@
 package gate.handler;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.lang.property.Entity;
@@ -15,6 +8,13 @@ import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class OptionHandler implements Handler

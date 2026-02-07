@@ -10,6 +10,7 @@ import gate.lang.json.JsonString;
 import gate.lang.json.JsonToken;
 import gate.type.collections.StringList;
 import gate.util.Reflection;
+
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

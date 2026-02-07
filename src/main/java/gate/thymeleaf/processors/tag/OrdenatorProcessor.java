@@ -3,13 +3,14 @@ package gate.thymeleaf.processors.tag;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
-import java.util.Optional;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+import java.util.Optional;
 
 @ApplicationScoped
 public class OrdenatorProcessor extends TagModelProcessor

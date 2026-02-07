@@ -2,6 +2,7 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.AppError;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

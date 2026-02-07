@@ -2,6 +2,7 @@ package gate.sql.fetcher;
 
 import gate.lang.property.Property;
 import gate.sql.Cursor;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashSet;
 import java.util.List;

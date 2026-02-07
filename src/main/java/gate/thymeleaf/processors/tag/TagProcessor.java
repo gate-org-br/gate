@@ -2,7 +2,6 @@ package gate.thymeleaf.processors.tag;
 
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.processors.Processor;
-import java.util.Optional;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.ElementNames;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -11,6 +10,8 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
 import org.thymeleaf.templatemode.TemplateMode;
+
+import java.util.Optional;
 
 public class TagProcessor implements IElementTagProcessor, Processor
 {

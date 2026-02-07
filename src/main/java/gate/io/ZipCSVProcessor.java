@@ -3,6 +3,7 @@ package gate.io;
 import gate.lang.csv.CSVParser;
 import gate.lang.csv.Row;
 import gate.stream.CheckedPredicate;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;

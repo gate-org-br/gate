@@ -1,12 +1,7 @@
 package gate;
 
 import gate.annotation.Entity;
-import gate.constraint.Max;
-import gate.constraint.Maxlength;
-import gate.constraint.Min;
-import gate.constraint.Pattern;
-import gate.constraint.Required;
-import gate.constraint.Step;
+import gate.constraint.*;
 import gate.type.ID;
 
 /**

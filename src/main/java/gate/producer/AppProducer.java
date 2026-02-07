@@ -20,10 +20,11 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
+import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import org.slf4j.Logger;
 
 /**
  *

@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Icon;
 import gate.annotation.Name;
+
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Objects;

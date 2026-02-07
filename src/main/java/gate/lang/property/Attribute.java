@@ -4,20 +4,9 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
 import gate.icon.Icon;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.stream.Stream;
 
 public interface Attribute

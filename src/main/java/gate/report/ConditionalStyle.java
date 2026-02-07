@@ -1,6 +1,7 @@
 package gate.report;
 
 import gate.lang.json.JsonObject;
+
 import java.util.function.Predicate;
 
 public class ConditionalStyle

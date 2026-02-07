@@ -8,12 +8,13 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.thymeleaf.context.IContext;
+import org.thymeleaf.web.servlet.JakartaServletWebApplication;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
 import java.io.Writer;
-import org.thymeleaf.context.IContext;
-import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 @ApplicationScoped
 public class JavaScriptHandler implements Handler

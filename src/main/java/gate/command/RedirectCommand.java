@@ -4,6 +4,7 @@ import gate.annotation.Handler;
 import gate.error.AppException;
 import gate.handler.RedirectCommandHandler;
 import gate.util.Parameters;
+
 import java.util.Arrays;
 import java.util.List;
 

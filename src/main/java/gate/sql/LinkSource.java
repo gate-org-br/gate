@@ -3,6 +3,7 @@ package gate.sql;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.literal.NamedLiteral;
 import jakarta.enterprise.inject.spi.CDI;
+
 import javax.sql.DataSource;
 
 public interface LinkSource

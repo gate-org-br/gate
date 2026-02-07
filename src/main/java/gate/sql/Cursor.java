@@ -7,7 +7,6 @@ import gate.lang.property.PropertyGraph;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;

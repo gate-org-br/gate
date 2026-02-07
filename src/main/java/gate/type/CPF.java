@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.CPFConverter;
+
 import java.io.Serializable;
 import java.util.regex.Pattern;
 

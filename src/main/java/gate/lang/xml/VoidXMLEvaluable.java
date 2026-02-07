@@ -1,6 +1,7 @@
 package gate.lang.xml;
 
 import gate.error.EvaluableException;
+
 import java.io.Writer;
 
 class VoidXMLEvaluable implements XMLEvaluable

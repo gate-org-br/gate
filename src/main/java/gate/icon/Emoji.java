@@ -1,6 +1,7 @@
 package gate.icon;
 
 import gate.annotation.Icon;
+
 import java.util.Objects;
 
 /**

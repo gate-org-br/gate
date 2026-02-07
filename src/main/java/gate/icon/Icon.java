@@ -1,6 +1,7 @@
 package gate.icon;
 
 import gate.lang.json.JsonObject;
+
 import java.util.Objects;
 
 public class Icon implements Glyph

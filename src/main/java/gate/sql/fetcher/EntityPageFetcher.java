@@ -3,6 +3,7 @@ package gate.sql.fetcher;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 import gate.util.Page;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;

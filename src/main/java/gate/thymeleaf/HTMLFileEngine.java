@@ -4,11 +4,12 @@ import gate.thymeleaf.processors.attribute.property.NotAttributeProcessor;
 import gate.thymeleaf.processors.attribute.property.SetAttributeProcessor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.io.Writer;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.IContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
+
+import java.io.Writer;
 
 public interface HTMLFileEngine
 {

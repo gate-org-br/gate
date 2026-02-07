@@ -3,6 +3,7 @@ package gate.sql.fetcher;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.sql.Cursor;
+
 import java.util.stream.Collectors;
 
 /**

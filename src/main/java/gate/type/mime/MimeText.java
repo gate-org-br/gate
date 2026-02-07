@@ -8,7 +8,7 @@ import gate.error.ConversionException;
 import gate.handler.MimeTextHandler;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
-import static gate.sql.update.Update.type;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;

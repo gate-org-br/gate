@@ -8,12 +8,13 @@ import gate.util.Page;
 import gate.util.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.StringJoiner;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.web.IWebExchange;
+
+import java.util.StringJoiner;
 
 @ApplicationScoped
 public class PaginatorAttributeProcessor extends AttributeProcessor

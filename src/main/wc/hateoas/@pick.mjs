@@ -1,6 +1,4 @@
-import DOM from './dom.js';
 import VALUES from './values.js';
-import Return from './@return.js';
 import DataURL from './data-url.js';
 import GFramePicker from './g-frame-picker.js';
 import GFetchPicker from './g-fetch-picker.js';

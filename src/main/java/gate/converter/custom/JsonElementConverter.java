@@ -3,16 +3,8 @@ package gate.converter.custom;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonBoolean;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNull;
-import gate.lang.json.JsonNumber;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonString;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
+import gate.lang.json.*;
+
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

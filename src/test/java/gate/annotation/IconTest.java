@@ -1,8 +1,9 @@
 package gate.annotation;
 
 import gate.type.Sex;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Icon("gate.type.LocalDateInterval")
 public class IconTest

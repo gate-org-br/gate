@@ -1,10 +1,7 @@
 package gate.sql.fetcher;
 
-import gate.lang.property.PropertyGraph;
 import gate.sql.Cursor;
 
-import javax.swing.text.html.Option;
-import java.util.Collection;
 import java.util.Optional;
 
 /**

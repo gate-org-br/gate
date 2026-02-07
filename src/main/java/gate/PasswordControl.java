@@ -2,11 +2,7 @@ package gate;
 
 import gate.annotation.DataSource;
 import gate.entity.User;
-import gate.error.BadRequestException;
-import gate.error.ConstraintViolationException;
-import gate.error.InvalidCredentialsException;
-import gate.error.InvalidUsernameException;
-import gate.error.NotFoundException;
+import gate.error.*;
 import gate.sql.Link;
 import gate.sql.LinkSource;
 import gate.sql.condition.Condition;

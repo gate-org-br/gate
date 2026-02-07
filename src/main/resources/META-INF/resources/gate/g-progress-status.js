@@ -65,6 +65,7 @@ g-logger
 /* global customElements */
 
 import './g-logger.js';
+
 customElements.define('g-progress-status', class extends HTMLElement
 {
 	constructor()
