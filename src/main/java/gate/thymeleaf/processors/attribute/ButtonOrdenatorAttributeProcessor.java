@@ -41,14 +41,14 @@ public class ButtonOrdenatorAttributeProcessor extends AttributeProcessor
         if (property.equals(orderBy))
         {
             queryString.put("orderBy", desc);
-            handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
+            handler.setAttribute("formaction", String.format("Gate?%s", queryString));
         } else if (desc.equals(orderBy))
         {
-            handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
+            handler.setAttribute("formaction", String.format("Gate?%s", queryString));
         } else
         {
             queryString.put("orderBy", property);
-            handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
+            handler.setAttribute("formaction", String.format("Gate?%s", queryString));
         }
     }
 }

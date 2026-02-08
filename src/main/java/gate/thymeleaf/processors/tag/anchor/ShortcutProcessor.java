@@ -3,11 +3,9 @@ package gate.thymeleaf.processors.tag.anchor;
 import gate.Call;
 import gate.entity.User;
 import gate.io.URLBuilder;
-import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -17,10 +15,6 @@ import org.thymeleaf.processor.element.IElementModelStructureHandler;
 @ApplicationScoped
 public class ShortcutProcessor extends AnchorProcessor
 {
-
-    @Inject
-    ELExpressionFactory expression;
-
     public ShortcutProcessor()
     {
         super("shortcut");

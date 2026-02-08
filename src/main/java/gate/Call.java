@@ -235,6 +235,6 @@ public class Call
     @Override
     public String toString()
     {
-        return URLBuilder.build(module, screen, action).toString();
+        return URLBuilder.build(module, screen, action);
     }
 }

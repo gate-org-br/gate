@@ -23,7 +23,7 @@ import org.thymeleaf.web.IWebExchange;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
-public class RequestAttributeProcessor extends AttributeProcessor
+public abstract class RequestAttributeProcessor extends AttributeProcessor
 {
 
     @Inject

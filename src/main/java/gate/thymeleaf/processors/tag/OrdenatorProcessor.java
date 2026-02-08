@@ -48,7 +48,7 @@ public class OrdenatorProcessor extends TagModelProcessor
             if (property.equals(orderBy))
             {
                 queryString.put("orderBy", desc);
-                attributes.put("formaction", String.format("Gate?%s", queryString.toString()));
+                attributes.put("formaction", String.format("Gate?%s", queryString));
                 replaceTag(context, model, handler, "<button " + attributes + ">&uarr;", "</button>");
             } else if (desc.equals(orderBy))
             {
