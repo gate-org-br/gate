@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
-@ApplicationScoped
 public abstract class HttpExceptionCatcher implements Catcher
 {
 

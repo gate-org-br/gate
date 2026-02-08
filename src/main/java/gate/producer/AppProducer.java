@@ -29,9 +29,9 @@ import java.util.Objects;
 /**
  *
  * @author davins
- *
+ * <p>
  *         Produces an App object with current application data.
- *
+ * <p>
  *         Produces a Collection of App objects with all current gate based applications deployed on
  *         the container.
  *

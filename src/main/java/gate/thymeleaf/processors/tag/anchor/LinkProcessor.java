@@ -3,7 +3,7 @@ package gate.thymeleaf.processors.tag.anchor;
 import gate.Call;
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.io.URL;
+import gate.io.URLBuilder;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
@@ -22,101 +22,101 @@ import java.util.StringJoiner;
 public class LinkProcessor extends AnchorProcessor
 {
 
-	@Inject
-	ELExpressionFactory expression;
+    @Inject
+    ELExpressionFactory expression;
 
-	public LinkProcessor()
-	{
-		super("link");
-	}
+    public LinkProcessor()
+    {
+        super("link");
+    }
 
-	@Override
-	protected void process(ITemplateContext context,
-		IModel model,
-		IElementModelStructureHandler handler,
-		IProcessableElementTag element,
-		User user,
-		Call call,
-		Attributes attributes,
-		Parameters parameters)
-	{
-		if (call.checkAccess(user))
-			if (condition(attributes))
-				if ("POST".equalsIgnoreCase(method(attributes)))
-					button(context, model, handler, element, call, attributes, parameters);
-				else
-					link(context, model, handler, element, call, attributes, parameters);
-			else
-				otherwise(attributes).ifPresentOrElse(e -> replaceWith(context, model, handler, e), model::reset);
-		else
-			model.reset();
-	}
+    @Override
+    protected void process(ITemplateContext context,
+                           IModel model,
+                           IElementModelStructureHandler handler,
+                           IProcessableElementTag element,
+                           User user,
+                           Call call,
+                           Attributes attributes,
+                           Parameters parameters)
+    {
+        if (call.checkAccess(user))
+            if (condition(attributes))
+                if ("POST".equalsIgnoreCase(method(attributes)))
+                    button(context, model, handler, element, call, attributes, parameters);
+                else
+                    link(context, model, handler, element, call, attributes, parameters);
+            else
+                otherwise(attributes).ifPresentOrElse(e -> replaceWith(context, model, handler, e), model::reset);
+        else
+            model.reset();
+    }
 
-	private void button(ITemplateContext context,
-		IModel model,
-		IElementModelStructureHandler handler,
-		IProcessableElementTag element,
-		Call call,
-		Attributes attributes,
-		Parameters parameters)
-	{
-		attributes.put("formaction", URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
-			parameters.toString()));
+    private void button(ITemplateContext context,
+                        IModel model,
+                        IElementModelStructureHandler handler,
+                        IProcessableElementTag element,
+                        Call call,
+                        Attributes attributes,
+                        Parameters parameters)
+    {
+        attributes.put("formaction", URLBuilder.build(call.getModule(),
+                call.getScreen(),
+                call.getAction(),
+                parameters));
 
-		attributes.put("form", element.getAttributeValue("form"));
-		target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
+        attributes.put("form", element.getAttributeValue("form"));
+        target(call, attributes).ifPresent(target -> attributes.put("formtarget", target));
 
-		if (element instanceof IStandaloneElementTag)
-		{
-			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-			call.getName().ifPresent(body::add);
-			getIcon(call).ifPresent(body::add);
-			replaceWith(context, model, handler, "<button " + attributes + ">" + body + "</button>");
-		} else
-			replaceTag(context, model, handler, "button", attributes);
-	}
+        if (element instanceof IStandaloneElementTag)
+        {
+            StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
+            call.getName().ifPresent(body::add);
+            getIcon(call).ifPresent(body::add);
+            replaceWith(context, model, handler, "<button " + attributes + ">" + body + "</button>");
+        } else
+            replaceTag(context, model, handler, "button", attributes);
+    }
 
-	private void link(ITemplateContext context,
-		IModel model,
-		IElementModelStructureHandler handler,
-		IProcessableElementTag element,
-		Call call,
-		Attributes attributes,
-		Parameters parameters)
-	{
-		attributes.put("href", URL.toString(call.getModule(),
-			call.getScreen(),
-			call.getAction(),
-			parameters.toString()));
+    private void link(ITemplateContext context,
+                      IModel model,
+                      IElementModelStructureHandler handler,
+                      IProcessableElementTag element,
+                      Call call,
+                      Attributes attributes,
+                      Parameters parameters)
+    {
+        attributes.put("href", URLBuilder.build(call.getModule(),
+                call.getScreen(),
+                call.getAction(),
+                parameters));
 
-		target(call, attributes).ifPresent(target -> attributes.put("target", target));
+        target(call, attributes).ifPresent(target -> attributes.put("target", target));
 
-		if (element instanceof IStandaloneElementTag)
-		{
-			StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
-			call.getName().ifPresent(body::add);
-			getIcon(call).ifPresent(body::add);
-			replaceWith(context, model, handler, "<a " + attributes + ">" + body + "</a>");
-		} else
-			replaceTag(context, model, handler, "a", attributes);
-	}
+        if (element instanceof IStandaloneElementTag)
+        {
+            StringJoiner body = new StringJoiner("").setEmptyValue("unamed");
+            call.getName().ifPresent(body::add);
+            getIcon(call).ifPresent(body::add);
+            replaceWith(context, model, handler, "<a " + attributes + ">" + body + "</a>");
+        } else
+            replaceTag(context, model, handler, "a", attributes);
+    }
 
-	private Optional<String> otherwise(Attributes attributes)
-	{
-		if (!attributes.containsKey("otherwise"))
-			return Optional.empty();
-		Object otherwise = attributes.remove("otherwise");
-		otherwise = expression.create().evaluate((String) otherwise);
-		if (otherwise == null)
-			return Optional.empty();
-		return Optional.of(Converter.toText(otherwise));
-	}
+    private Optional<String> otherwise(Attributes attributes)
+    {
+        if (!attributes.containsKey("otherwise"))
+            return Optional.empty();
+        Object otherwise = attributes.remove("otherwise");
+        otherwise = expression.create().evaluate((String) otherwise);
+        if (otherwise == null)
+            return Optional.empty();
+        return Optional.of(Converter.toText(otherwise));
+    }
 
-	private Optional<String> getIcon(Call call)
-	{
-		return call.getIcon().map(e -> "<i>" + e + "</i>")
-			.or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"));
-	}
+    private Optional<String> getIcon(Call call)
+    {
+        return call.getIcon().map(e -> "<i>" + e + "</i>")
+                .or(() -> call.getEmoji().map(e -> "<e>" + e + "</e>"));
+    }
 }

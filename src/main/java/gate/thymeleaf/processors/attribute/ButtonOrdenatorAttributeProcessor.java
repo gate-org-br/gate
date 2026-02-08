@@ -15,40 +15,40 @@ import java.util.Optional;
 public class ButtonOrdenatorAttributeProcessor extends AttributeProcessor
 {
 
-	public ButtonOrdenatorAttributeProcessor()
-	{
-		super("button", "ordenator");
-	}
+    public ButtonOrdenatorAttributeProcessor()
+    {
+        super("button", "ordenator");
+    }
 
-	@Override
-	public void process(ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
-	{
-		String property = Optional.ofNullable(element.getAttributeValue("g:ordenator")).orElseThrow(()
-			-> new TemplateProcessingException("Missing required property on g:ordenator"));
+    @Override
+    public void process(ITemplateContext context,
+                        IProcessableElementTag element,
+                        IElementTagStructureHandler handler)
+    {
+        String property = Optional.ofNullable(element.getAttributeValue("g:ordenator")).orElseThrow(()
+                -> new TemplateProcessingException("Missing required property on g:ordenator"));
 
-		IWebContext webContext = (IWebContext) context;
-		IWebRequest request = webContext.getExchange().getRequest();
-		String orderBy = request.getParameterValue("orderBy");
-		Parameters queryString = Parameters.parse(request.getQueryString());
-		Optional.ofNullable(element.getAttributeValue("arguments"))
-			.map(Parameters::parse).ifPresent(queryString::putAll);
-		queryString.remove("orderBy");
+        IWebContext webContext = (IWebContext) context;
+        IWebRequest request = webContext.getExchange().getRequest();
+        String orderBy = request.getParameterValue("orderBy");
+        Parameters queryString = Parameters.parse(request.getQueryString());
+        Optional.ofNullable(element.getAttributeValue("arguments"))
+                .map(Parameters::parse).ifPresent(queryString::put);
+        queryString.remove("orderBy");
 
-		String desc = "-" + property;
+        String desc = "-" + property;
 
-		if (property.equals(orderBy))
-		{
-			queryString.put("orderBy", desc);
-			handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
-		} else if (desc.equals(orderBy))
-		{
-			handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
-		} else
-		{
-			queryString.put("orderBy", property);
-			handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
-		}
-	}
+        if (property.equals(orderBy))
+        {
+            queryString.put("orderBy", desc);
+            handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
+        } else if (desc.equals(orderBy))
+        {
+            handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
+        } else
+        {
+            queryString.put("orderBy", property);
+            handler.setAttribute("formaction", String.format("Gate?%s", queryString.toString()));
+        }
+    }
 }

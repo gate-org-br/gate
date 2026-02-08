@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag.anchor;
 
 import gate.Call;
 import gate.entity.User;
-import gate.io.URL;
+import gate.io.URLBuilder;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Parameters;
@@ -17,44 +17,44 @@ import org.thymeleaf.processor.element.IElementModelStructureHandler;
 public class TRProcessor extends AnchorProcessor
 {
 
-	@Inject
-	ELExpressionFactory expression;
+    @Inject
+    ELExpressionFactory expression;
 
-	public TRProcessor()
-	{
-		super("tr");
-	}
+    public TRProcessor()
+    {
+        super("tr");
+    }
 
-	@Override
-	protected void process(ITemplateContext context,
-		IModel model,
-		IElementModelStructureHandler handler,
-		IProcessableElementTag element,
-		User user,
-		Call call,
-		Attributes attributes,
-		Parameters parameters)
-	{
-		if (condition(attributes))
-		{
-			if (call.checkAccess(user)
-				&& (element.hasAttribute("module")
-				|| element.hasAttribute("screen")
-				|| element.hasAttribute("action")
-				|| element.hasAttribute("method")
-				|| element.hasAttribute("target")))
-			{
+    @Override
+    protected void process(ITemplateContext context,
+                           IModel model,
+                           IElementModelStructureHandler handler,
+                           IProcessableElementTag element,
+                           User user,
+                           Call call,
+                           Attributes attributes,
+                           Parameters parameters)
+    {
+        if (condition(attributes))
+        {
+            if (call.checkAccess(user)
+                    && (element.hasAttribute("module")
+                    || element.hasAttribute("screen")
+                    || element.hasAttribute("action")
+                    || element.hasAttribute("method")
+                    || element.hasAttribute("target")))
+            {
 
-				target(call, attributes).ifPresent(target -> attributes.put("data-target", target));
-				attributes.put("data-action", URL.toString(call.getModule(), call.getScreen(),
-					call.getAction(), parameters.toString()));
-				if ("POST".equalsIgnoreCase(method(attributes)))
-					attributes.put("data-method", "post");
-			}
+                target(call, attributes).ifPresent(target -> attributes.put("data-target", target));
+                attributes.put("data-action", URLBuilder.build(call.getModule(), call.getScreen(),
+                        call.getAction(), parameters.toString()));
+                if ("POST".equalsIgnoreCase(method(attributes)))
+                    attributes.put("data-method", "post");
+            }
 
-			replaceTag(context, model, handler, "tr", attributes);
-		} else
-			model.reset();
-	}
+            replaceTag(context, model, handler, "tr", attributes);
+        } else
+            model.reset();
+    }
 
 }

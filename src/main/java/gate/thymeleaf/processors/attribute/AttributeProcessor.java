@@ -17,66 +17,67 @@ import java.util.Optional;
 public abstract class AttributeProcessor implements IElementTagProcessor, Processor
 {
 
-	private final String element;
-	private final String attribute;
-	private final MatchingElementName matchingElementName;
-	private final MatchingAttributeName matchingAttributeName;
+    private final String element;
+    private final String attribute;
+    private final MatchingElementName matchingElementName;
+    private final MatchingAttributeName matchingAttributeName;
 
-	public AttributeProcessor(String element, String attribute)
-	{
-		this.element = element;
-		this.attribute = attribute;
-		this.matchingElementName = element != null
-			? MatchingElementName.forElementName(TemplateMode.HTML,
-				ElementNames.forName(TemplateMode.HTML, null, element)) : null;
+    public AttributeProcessor(String element, String attribute)
+    {
+        this.element = element;
+        this.attribute = attribute;
+        this.matchingElementName = element != null
+                ? MatchingElementName.forElementName(TemplateMode.HTML,
+                ElementNames.forName(TemplateMode.HTML, null, element)) : null;
 
-		this.matchingAttributeName = attribute != null ? MatchingAttributeName.forAttributeName(TemplateMode.HTML,
-			AttributeNames.forName(TemplateMode.HTML, "g", attribute)) : null;
-	}
+        this.matchingAttributeName = attribute != null ? MatchingAttributeName.forAttributeName(TemplateMode.HTML,
+                AttributeNames.forName(TemplateMode.HTML, "g", attribute)) : null;
+    }
 
-	@Override
-	public abstract void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler);
+    @Override
+    public abstract void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler);
 
-	@Override
-	public MatchingElementName getMatchingElementName()
-	{
-		return matchingElementName;
-	}
+    @Override
+    public MatchingElementName getMatchingElementName()
+    {
+        return matchingElementName;
+    }
 
-	@Override
-	public MatchingAttributeName getMatchingAttributeName()
-	{
-		return matchingAttributeName;
-	}
+    @Override
+    public MatchingAttributeName getMatchingAttributeName()
+    {
+        return matchingAttributeName;
+    }
 
-	@Override
-	public TemplateMode getTemplateMode()
-	{
-		return TemplateMode.HTML;
-	}
+    @Override
+    public TemplateMode getTemplateMode()
+    {
+        return TemplateMode.HTML;
+    }
 
-	@Override
-	public int getPrecedence()
-	{
-		return Precedence.DEFAULT;
-	}
+    @Override
+    public int getPrecedence()
+    {
+        return Precedence.DEFAULT;
+    }
 
-	public String getElement()
-	{
-		return element;
-	}
+    public String getElement()
+    {
+        return element;
+    }
 
-	public String getAttribute()
-	{
-		return attribute;
-	}
+    public String getAttribute()
+    {
+        return attribute;
+    }
 
-	public Optional<String> extract(IProcessableElementTag element, IElementTagStructureHandler handler, String attribute)
-	{
-		if (!element.hasAttribute(attribute))
-			return Optional.empty();
-		String result = element.getAttributeValue(attribute);
-		handler.removeAttribute(attribute);
-		return Optional.ofNullable(result);
-	}
+    public Optional<String> extract(IProcessableElementTag element, IElementTagStructureHandler handler, String attribute)
+    {
+        if (!element.hasAttribute(attribute))
+            return Optional.empty();
+        String result = element.getAttributeValue(attribute);
+        handler.removeAttribute(attribute);
+        return Optional.ofNullable(result);
+    }
+
 }
