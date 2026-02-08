@@ -40,14 +40,14 @@ public class LinkOrdenatorAttributeProcessor extends AttributeProcessor
         if (property.equals(orderBy))
         {
             queryString.put("orderBy", desc);
-            handler.setAttribute("href", String.format("Gate?%s", queryString.toString()));
+            handler.setAttribute("href", String.format("Gate?%s", queryString));
         } else if (desc.equals(orderBy))
         {
-            handler.setAttribute("href", String.format("Gate?%s", queryString.toString()));
+            handler.setAttribute("href", String.format("Gate?%s", queryString));
         } else
         {
             queryString.put("orderBy", property);
-            handler.setAttribute("href", String.format("Gate?%s", queryString.toString()));
+            handler.setAttribute("href", String.format("Gate?%s", queryString));
         }
     }
 }

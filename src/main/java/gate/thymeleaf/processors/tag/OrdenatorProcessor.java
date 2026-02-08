@@ -52,12 +52,12 @@ public class OrdenatorProcessor extends TagModelProcessor
                 replaceTag(context, model, handler, "<button " + attributes + ">&uarr;", "</button>");
             } else if (desc.equals(orderBy))
             {
-                attributes.put("formaction", String.format("Gate?%s", queryString.toString()));
+                attributes.put("formaction", String.format("Gate?%s", queryString));
                 replaceTag(context, model, handler, "<button " + attributes + ">&darr;", "</button>");
             } else
             {
                 queryString.put("orderBy", property);
-                attributes.put("formaction", String.format("Gate?%s", queryString.toString()));
+                attributes.put("formaction", String.format("Gate?%s", queryString));
                 replaceTag(context, model, handler, "<button " + attributes + ">", "</button>");
             }
         } else
@@ -66,16 +66,16 @@ public class OrdenatorProcessor extends TagModelProcessor
             if (property.equals(orderBy))
             {
                 queryString.put("orderBy", desc);
-                attributes.put("href", String.format("Gate?%s", queryString.toString()));
+                attributes.put("href", String.format("Gate?%s", queryString));
                 replaceTag(context, model, handler, "<a " + attributes + ">&uarr;", "</a>");
             } else if (desc.equals(orderBy))
             {
-                attributes.put("href", String.format("Gate?%s", queryString.toString()));
+                attributes.put("href", String.format("Gate?%s", queryString));
                 replaceTag(context, model, handler, "<a " + attributes + ">&darr;", "</a>");
             } else
             {
                 queryString.put("orderBy", property);
-                attributes.put("href", String.format("Gate?%s", queryString.toString()));
+                attributes.put("href", String.format("Gate?%s", queryString));
                 replaceTag(context, model, handler, "<a " + attributes + ">", "</a>");
             }
         }
