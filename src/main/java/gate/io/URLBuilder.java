@@ -1,7 +1,11 @@
 package gate.io;
 
+import gate.annotation.Handler;
+import gate.handler.URLBuilderHandler;
 import gate.util.Parameters;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,6 +25,7 @@ import java.util.Objects;
  * It does not perform any HTTP execution.
  * </p>
  */
+@Handler(URLBuilderHandler.class)
 public class URLBuilder
 {
 
@@ -156,6 +161,17 @@ public class URLBuilder
     {
         parameters.put(query);
         return this;
+    }
+
+    public URI build()
+    {
+        try
+        {
+            return new URI(toString());
+        } catch (URISyntaxException e)
+        {
+            throw new IllegalArgumentException("Invalid URI: " + this, e);
+        }
     }
 
     /**

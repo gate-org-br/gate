@@ -10,7 +10,7 @@ import gate.error.HttpException;
 import gate.http.BasicAuthorization;
 import gate.http.BearerAuthorization;
 import gate.http.ScreenServletRequest;
-import gate.io.URL;
+import gate.io.HttpCall;
 import gate.io.URLBuilder;
 import gate.lang.json.JsonObject;
 import gate.security.Crypto;
@@ -140,8 +140,8 @@ public class OIDCAuthenticator implements Authenticator
         var state = State.parse(config.keys().encryptionKey(),
                 request.getParameter("state"));
 
-        var tokens = new URL(new URLBuilder(tokenEndpoint.get()).toString())
-                .post(new Parameters()
+        var tokens = HttpCall.post(new URLBuilder(tokenEndpoint.get()).toString())
+                .form(new Parameters()
                         .put("grant_type", "authorization_code")
                         .put("code", code)
                         .put("scope", scope)
@@ -149,6 +149,7 @@ public class OIDCAuthenticator implements Authenticator
                         .put("client_secret", clientSecret)
                         .put("redirect_uri", redirectUri)
                         .put("code_verifier", state.codeVerifier()))
+                .execute()
                 .readJsonObject()
                 .orElseThrow(AuthenticationException::new);
 
@@ -176,9 +177,9 @@ public class OIDCAuthenticator implements Authenticator
                 .getString("access_token")
                 .orElseThrow(AuthenticationException::new);
 
-        JsonObject userInfo = new URL(userInfoEndpoint.get())
-                .setAuthorization(BearerAuthorization.from(accessToken))
-                .get()
+        JsonObject userInfo = HttpCall.get(userInfoEndpoint.get())
+                .authorization(BearerAuthorization.from(accessToken))
+                .execute()
                 .readJsonObject()
                 .orElseThrow(AuthenticationException::new);
 
@@ -216,14 +217,16 @@ public class OIDCAuthenticator implements Authenticator
             throws AuthenticationException, HierarchyException, IOException
     {
 
-        JsonObject tokens = new URL(tokenEndpoint.get())
-                .post(new Parameters()
+        JsonObject tokens = HttpCall
+                .post(tokenEndpoint.get())
+                .form(new Parameters()
                         .put("grant_type", "password")
                         .put("username", basicAuth.username())
                         .put("password", basicAuth.password())
                         .put("client_id", clientId)
                         .put("client_secret", clientSecret)
                         .put("scope", scope))
+                .execute()
                 .readJsonObject()
                 .orElseThrow(AuthenticationException::new);
 
@@ -243,9 +246,10 @@ public class OIDCAuthenticator implements Authenticator
         String accessToken = tokens.getString("access_token")
                 .orElseThrow(AuthenticationException::new);
 
-        JsonObject userInfo = new URL(userInfoEndpoint.get())
-                .setAuthorization(BearerAuthorization.from(accessToken))
-                .get()
+        JsonObject userInfo = HttpCall
+                .get(userInfoEndpoint.get())
+                .authorization(BearerAuthorization.from(accessToken))
+                .execute()
                 .readJsonObject()
                 .orElseThrow(AuthenticationException::new);
 
@@ -270,8 +274,9 @@ public class OIDCAuthenticator implements Authenticator
     {
         try
         {
-            return new URL(configurationEndpoint)
-                    .get()
+            return HttpCall
+                    .get(configurationEndpoint)
+                    .execute()
                     .readJsonObject()
                     .orElseThrow(AuthenticationException::new);
         } catch (IOException ex)
@@ -284,8 +289,8 @@ public class OIDCAuthenticator implements Authenticator
     {
         try
         {
-            return new URL(jwksUri.get())
-                    .get()
+            return HttpCall.get(jwksUri.get())
+                    .execute()
                     .readJsonObject()
                     .flatMap(e -> e.getJsonArray("keys"))
                     .orElseThrow()

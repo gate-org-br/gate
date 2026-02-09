@@ -20,7 +20,7 @@ public @interface Security
 
     Type value();
 
-    public enum Type
+    enum Type
     {
 
         /**
