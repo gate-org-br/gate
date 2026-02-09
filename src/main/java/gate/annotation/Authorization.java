@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
+import java.util.Objects;
 
 /**
  * Override action name before authorization.
@@ -23,11 +24,12 @@ public @interface Authorization
 
     String action() default "";
 
-    public static class Extractor
+    class Extractor
     {
 
         public static Value extract(Method method, String module, String screen, String action)
         {
+            Objects.requireNonNull(method);
             if (method.isAnnotationPresent(Authorization.class))
                 return new Value(method.getAnnotation(Authorization.class));
 
@@ -43,7 +45,7 @@ public @interface Authorization
         }
     }
 
-    public static class Value
+    class Value
     {
 
         private final String module;

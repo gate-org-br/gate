@@ -7,14 +7,14 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
+/**
+ * Define the type of security to apply
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
         {
                 ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
         })
-/**
- * Define the type of security to apply
- */
 public @interface Security
 {
 
