@@ -169,7 +169,7 @@ public class Gate extends HttpServlet
             }
 
             if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-                executeAsync(user, request, response, screen, call.getMethod());
+                executeAsync(request, response, screen, call.getMethod());
             else
                 execute(httpServletRequest, response, screen, call.getMethod());
 
@@ -217,7 +217,7 @@ public class Gate extends HttpServlet
         }
     }
 
-    private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
+    private void executeAsync(ScreenServletRequest request, HttpServletResponse response,
                               Screen screen, Method method)
     {
         response.setCharacterEncoding("UTF-8");
