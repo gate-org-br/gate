@@ -73,6 +73,10 @@ public class Gate extends HttpServlet
     @Inject
     Calls actionRegistry;
 
+    @Inject
+    @SuppressWarnings("unused")
+    Heartbeat heartbeat;
+
     static
     {
         Locale.setDefault(new Locale("pt", "BR"));
