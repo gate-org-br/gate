@@ -157,7 +157,7 @@ public class Gate extends HttpServlet
                 response.enableCors(request.getHeader("Origin"));
 
             if (call.asynchronous())
-                executeAsync(user, request, response, screen, call.method());
+                executeAsync(request, response, screen, call.method());
             else
                 execute(httpServletRequest, response, screen, call.method());
 
@@ -205,7 +205,7 @@ public class Gate extends HttpServlet
         }
     }
 
-    private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
+    private void executeAsync(ScreenServletRequest request, HttpServletResponse response,
                               Screen screen, Method method)
     {
         response.setCharacterEncoding("UTF-8");
@@ -220,7 +220,7 @@ public class Gate extends HttpServlet
         {
             try (Writer writer = response.getWriter())
             {
-                Progress progress = Progress.create(user, writer);
+                Progress progress = Progress.create(writer);
                 try
                 {
                     Object result = screen.execute(method);
@@ -246,6 +246,7 @@ public class Gate extends HttpServlet
                 logger.error(ex.getMessage(), ex);
             } finally
             {
+                Progress.finish();
                 TempFile.cleanup();
                 asyncContext.complete();
             }
