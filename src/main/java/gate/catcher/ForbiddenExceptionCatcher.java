@@ -7,9 +7,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ForbiddenExceptionCatcher extends HttpExceptionCatcher
 {
 
-	public ForbiddenExceptionCatcher()
-	{
-		super(HttpServletResponse.SC_FORBIDDEN);
-	}
-
+    public ForbiddenExceptionCatcher()
+    {
+        super(HttpServletResponse.SC_FORBIDDEN);
+    }
 }
