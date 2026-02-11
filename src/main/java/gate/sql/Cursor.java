@@ -32,6 +32,7 @@ public class Cursor implements AutoCloseable, Fetchable
 
 	Cursor(Command command, ResultSet rs)
 	{
+		this.command = command;
 		this.rs = rs;
 	}
 
