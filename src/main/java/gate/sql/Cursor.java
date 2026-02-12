@@ -848,7 +848,7 @@ public class Cursor implements AutoCloseable, Fetchable
         return result;
     }
 
-    public List<String> getPropertyNames(Class<?> type)
+    public List<String> getPropertyNames()
     {
         return getColumnNames().stream()
                 .map(e -> e.contains(Converter.SEPARATOR) ? e.split(Converter.SEPARATOR)[0] : e)
@@ -902,7 +902,7 @@ public class Cursor implements AutoCloseable, Fetchable
      */
     public <T> PropertyGraph<T> getPropertyGraph(Class<T> type)
     {
-        return PropertyGraph.of(type, getPropertyNames(type));
+        return PropertyGraph.of(type, getPropertyNames());
     }
 
     /**
