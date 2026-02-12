@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import gate.error.ConstraintViolationException;
 import gate.sql.Command;
@@ -47,9 +48,9 @@ class BasicSentence implements Sentence
 	}
 
 	@Override
-	public Sentence print()
+	public Sentence print(Logger logger)
 	{
-		System.out.println(this);
+		logger.debug("{}", this);
 		return this;
 	}
 
@@ -75,9 +76,9 @@ class BasicSentence implements Sentence
 		}
 
 		@Override
-		public Extractor<T> print()
+		public Extractor<T> print(Logger logger)
 		{
-			System.out.println(this);
+			logger.debug("{}", this);
 			return this;
 		}
 
@@ -98,10 +99,10 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
-			public SQL print()
+			public SQL print(Logger logger)
 			{
-				System.out.println(this);
-				System.out.println(extractors);
+				logger.debug("{}", this);
+				logger.debug("{}", extractors);
 				return this;
 			}
 
@@ -212,10 +213,10 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
-				public Connected print()
+				public Connected print(Logger logger)
 				{
-					System.out.println(this);
-					System.out.println(extractors);
+					logger.debug("{}", this);
+					logger.debug("{}", extractors);
 					return this;
 				}
 
@@ -337,9 +338,9 @@ class BasicSentence implements Sentence
 					}
 
 					@Override
-					public Sentence.Extractor.Compiled.Connected<T> print()
+					public Sentence.Extractor.Compiled.Connected<T> print(Logger logger)
 					{
-						return Connected.this.print();
+						return Connected.this.print(logger);
 					}
 				}
 			}
@@ -375,9 +376,9 @@ class BasicSentence implements Sentence
 		}
 
 		@Override
-		public Sentence.Connected print()
+		public Sentence.Connected print(Logger logger)
 		{
-			System.out.println(this);
+			logger.debug("{}", this);
 			return this;
 		}
 
@@ -510,10 +511,10 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
-			public Sentence.Connected.Compiled print()
+			public Sentence.Connected.Compiled print(Logger logger)
 			{
-				System.out.println(this);
-				System.out.println(batch);
+				logger.debug("{}", this);
+				logger.debug("{}", batch);
 				return this;
 			}
 
@@ -615,9 +616,9 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
-				public Sentence.Connected.Compiled print()
+				public Sentence.Connected.Compiled print(Logger logger)
 				{
-					return Compiled.this.print();
+					return Compiled.this.print(logger);
 				}
 			}
 		}
@@ -638,9 +639,9 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
-			public Extractor<T> print()
+			public Extractor<T> print(Logger logger)
 			{
-				System.out.println(this);
+				logger.debug("{}", this);
 				return this;
 			}
 
@@ -751,10 +752,10 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
-				public Compiled print()
+				public Compiled print(Logger logger)
 				{
-					System.out.println(this);
-					System.out.println(extractors);
+					logger.debug("{}", this);
+					logger.debug("{}", extractors);
 					return this;
 				}
 
@@ -876,9 +877,9 @@ class BasicSentence implements Sentence
 					}
 
 					@Override
-					public Sentence.Connected.Extractor.Compiled<T> print()
+					public Sentence.Connected.Extractor.Compiled<T> print(Logger logger)
 					{
-						return Compiled.this.print();
+						return Compiled.this.print(logger);
 					}
 				}
 			}
@@ -909,10 +910,10 @@ class BasicSentence implements Sentence
 		}
 
 		@Override
-		public Sentence.Compiled print()
+		public Sentence.Compiled print(Logger logger)
 		{
-			System.out.println(this);
-			System.out.println(batch);
+			logger.debug("{}", this);
+			logger.debug("{}", batch);
 			return this;
 		}
 
@@ -1003,10 +1004,10 @@ class BasicSentence implements Sentence
 			}
 
 			@Override
-			public Sentence.Compiled.Connected print()
+			public Sentence.Compiled.Connected print(Logger logger)
 			{
-				System.out.println(this);
-				System.out.println(batch);
+				logger.debug("{}", this);
+				logger.debug("{}", batch);
 				return this;
 			}
 
@@ -1110,9 +1111,9 @@ class BasicSentence implements Sentence
 				}
 
 				@Override
-				public Sentence.Compiled.Connected print()
+				public Sentence.Compiled.Connected print(Logger logger)
 				{
-					return Connected.this.print();
+					return Connected.this.print(logger);
 				}
 			}
 		}

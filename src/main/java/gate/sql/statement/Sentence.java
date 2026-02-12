@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import gate.sql.Batch;
 import gate.sql.Executable;
@@ -83,7 +84,7 @@ public interface Sentence extends SQL
 	Compiled batch(List<List<Object>> batch);
 
 	@Override
-	Sentence print();
+	Sentence print(Logger logger);
 
 	/**
 	 * A SQL sentence compiled with a set of parameters and not linked to a database.
@@ -125,12 +126,12 @@ public interface Sentence extends SQL
 			Connected observe(Consumer<List<Object>> consumer);
 
 			@Override
-			Connected print();
+			Connected print(Logger logger);
 
 		}
 
 		@Override
-		Compiled print();
+		Compiled print(Logger logger);
 
 		/**
 		 * Compiled sentence builder.
@@ -168,7 +169,7 @@ public interface Sentence extends SQL
 		}
 
 		@Override
-		Extractor<T> print();
+		Extractor<T> print(Logger logger);
 
 		/**
 		 * A SQL sentence linked to a database and compiled with a set or parameters.
@@ -211,7 +212,7 @@ public interface Sentence extends SQL
 				Connected<T> observe(Consumer<T> consumer);
 
 				@Override
-				Connected<T> print();
+				Connected<T> print(Logger logger);
 
 			}
 
@@ -276,7 +277,7 @@ public interface Sentence extends SQL
 		Compiled batch(List<List<?>> batch);
 
 		@Override
-		Connected print();
+		Connected print(Logger logger);
 
 		/**
 		 * A SQL sentence linked to a database and compiled with a set or parameters.
@@ -301,7 +302,7 @@ public interface Sentence extends SQL
 			Compiled observe(Consumer<List<?>> consumer);
 
 			@Override
-			Compiled print();
+			Compiled print(Logger logger);
 		}
 
 		interface Extractor<T> extends SQL
@@ -334,7 +335,7 @@ public interface Sentence extends SQL
 			}
 
 			@Override
-			Extractor<T> print();
+			Extractor<T> print(Logger logger);
 
 			/**
 			 * A SQL sentence linked to a database and compiled with a set or parameters.
@@ -361,7 +362,7 @@ public interface Sentence extends SQL
 				Compiled<T> observe(Consumer<T> consumer);
 
 				@Override
-				Compiled<T> print();
+				Compiled<T> print(Logger logger);
 			}
 		}
 	}

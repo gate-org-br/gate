@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import gate.sql.Command;
 import gate.sql.Link;
@@ -52,9 +53,9 @@ class BasicQuery implements Query
 	}
 
 	@Override
-	public Query print()
+	public Query print(Logger logger)
 	{
-		System.out.println(this);
+		logger.debug("{}", this);
 		return this;
 	}
 
@@ -78,9 +79,9 @@ class BasicQuery implements Query
 		}
 
 		@Override
-		public Query.Constant print()
+		public Query.Constant print(Logger logger)
 		{
-			System.out.println(this);
+			logger.debug("{}", this);
 			return this;
 		}
 
@@ -195,9 +196,9 @@ class BasicQuery implements Query
 			}
 
 			@Override
-			public Query.Constant.Connected print()
+			public Query.Constant.Connected print(Logger logger)
 			{
-				System.out.println(this);
+				logger.debug("{}", this);
 				return this;
 			}
 
@@ -232,10 +233,10 @@ class BasicQuery implements Query
 		}
 
 		@Override
-		public Query.Compiled print()
+		public Query.Compiled print(Logger logger)
 		{
-			System.out.println(this);
-			System.out.println(parameters);
+			logger.debug("{}", this);
+			logger.debug("{}", parameters);
 			return this;
 		}
 
@@ -351,10 +352,10 @@ class BasicQuery implements Query
 			}
 
 			@Override
-			public Query.Compiled.Connected print()
+			public Query.Compiled.Connected print(Logger logger)
 			{
-				System.out.println(this);
-				System.out.println(parameters);
+				logger.debug("{}", this);
+				logger.debug("{}", parameters);
 				return this;
 			}
 
@@ -389,9 +390,9 @@ class BasicQuery implements Query
 		}
 
 		@Override
-		public Query.Connected print()
+		public Query.Connected print(Logger logger)
 		{
-			System.out.println(this);
+			logger.debug("{}", this);
 			return this;
 		}
 
@@ -513,10 +514,10 @@ class BasicQuery implements Query
 			}
 
 			@Override
-			public Query.Connected.Compiled print()
+			public Query.Connected.Compiled print(Logger logger)
 			{
-				System.out.println(this);
-				System.out.println(parameters);
+				logger.debug("{}", this);
+				logger.debug("{}", parameters);
 				return this;
 			}
 
@@ -635,9 +636,9 @@ class BasicQuery implements Query
 			}
 
 			@Override
-			public Query.Connected.Constant print()
+			public Query.Connected.Constant print(Logger logger)
 			{
-				System.out.println(this);
+				logger.debug("{}", this);
 				return this;
 			}
 

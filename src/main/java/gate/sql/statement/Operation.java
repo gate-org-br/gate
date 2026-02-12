@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import gate.error.ConstraintViolationException;
 import gate.lang.property.Property;
@@ -79,7 +80,7 @@ public interface Operation<T> extends SQL
 	}
 
 	@Override
-	Operation<T> print();
+	Operation<T> print(Logger logger);
 
 	/**
 	 * An operation compiled with the list of java objects to be operated on but not yet connected
@@ -102,7 +103,7 @@ public interface Operation<T> extends SQL
 		Connected<T> connect(Link link);
 
 		@Override
-		Compiled<T> print();
+		Compiled<T> print(Logger logger);
 
 		/**
 		 * An operation compiled with the list of java objects to be operated on and connected to a
@@ -135,7 +136,7 @@ public interface Operation<T> extends SQL
 			Connected<T> observe(Consumer<T> observer) throws ConstraintViolationException;
 
 			@Override
-			Connected<T> print();
+			Connected<T> print(Logger logger);
 
 		}
 
@@ -187,7 +188,7 @@ public interface Operation<T> extends SQL
 		}
 
 		@Override
-		Connected<T> print();
+		Connected<T> print(Logger logger);
 
 		/**
 		 * An operation compiled with the list of java objects to be operated on and connected to a
@@ -220,7 +221,7 @@ public interface Operation<T> extends SQL
 			Compiled<T> observe(Consumer<T> observer) throws ConstraintViolationException;
 
 			@Override
-			Compiled<T> print();
+			Compiled<T> print(Logger logger);
 		}
 	}
 

@@ -41,7 +41,7 @@ public class Cursor implements AutoCloseable, Fetchable
     @Override
     public <T> Stream<T> stream(Mapper<T> mapper)
     {
-        return StreamSupport.stream(new CursorSpliterator<T>()
+        return StreamSupport.stream(new CursorSpliterator<>()
         {
             @Override
             public boolean tryAdvance(Consumer<? super T> action)
