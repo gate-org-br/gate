@@ -72,17 +72,17 @@ public class OIDCAuthenticator implements Authenticator
         userId = config.getProperty("oidc.user_id").orElse("email");
         scope = config.getProperty("oidc.scope").orElse("openid email profile");
         logoutUri = config.getProperty("oidc.logout_uri").orElse(null);
-        configuration = Cache.of(this::fetchConfiguration);
-        authorizationEndpoint = Cache.of(() -> config.getProperty("oidc.authorization_endpoint")
-                .orElseGet(() -> getEndpoint("authorization_endpoint")));
+        configuration = Cache.builder(this::fetchConfiguration).build();
+        authorizationEndpoint = Cache.builder(() -> config.getProperty("oidc.authorization_endpoint")
+                .orElseGet(() -> getEndpoint("authorization_endpoint"))).build();
         tokenEndpoint = Cache
-                .of(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")));
-        userInfoEndpoint = Cache.of(() -> config.getProperty("oidc.userinfo_endpoint")
-                .orElseGet(() -> getEndpoint("userinfo_endpoint")));
-        jwksUri = Cache.of(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")));
-        issuer = Cache.of(() -> configuration.get().getString("issuer")
-                .orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider")));
-        publicKeys = Cache.of(KEY_TIMEOUT, this::fetchPublicKeys);
+                .builder(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint"))).build();
+        userInfoEndpoint = Cache.builder(() -> config.getProperty("oidc.userinfo_endpoint")
+                .orElseGet(() -> getEndpoint("userinfo_endpoint"))).build();
+        jwksUri = Cache.builder(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri"))).build();
+        issuer = Cache.builder(() -> configuration.get().getString("issuer")
+                .orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider"))).build();
+        publicKeys = Cache.builder(this::fetchPublicKeys).ttl(KEY_TIMEOUT).build();
     }
 
     @Override

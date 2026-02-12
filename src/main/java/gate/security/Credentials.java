@@ -29,19 +29,21 @@ public class Credentials
 {
 
 	private final SecretKey secret;
-	private static final Cache<Duration> IDLE_TIMEOUT = Cache.of(()
+	private static final Cache<Duration> IDLE_TIMEOUT = Cache.builder(()
 			-> SystemProperty.get("gate.auth.session.idle_timeout")
 					.map(e -> Converter.getConverter(Duration.class)
 					.ofString(Duration.class, e))
 					.map(e -> (Duration) e)
-					.orElse(Duration.ofHours(1)));
+					.orElse(Duration.ofHours(1)))
+			.build();
 
-	private static final Cache<Duration> TIMEOUT = Cache.of(()
+	private static final Cache<Duration> TIMEOUT = Cache.builder(()
 			-> SystemProperty.get("gate.auth.session.timeout")
 					.map(e -> Converter.getConverter(Duration.class)
 					.ofString(Duration.class, e))
 					.map(e -> (Duration) e)
-					.orElse(Duration.ofHours(24)));
+					.orElse(Duration.ofHours(24)))
+			.build();
 
 	@Inject
 	public Credentials(CryptoKeys cryptoKeys)

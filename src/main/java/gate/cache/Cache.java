@@ -1,74 +1,66 @@
 package gate.cache;
 
-import java.time.Duration;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
+/**
+ * Lazy cache with automatic value generation, TTL support and retry mechanism.
+ *
+ * <p>
+ * Thread-safe implementation that generates values on-demand and caches them until they expire or become invalid.
+ *
+ * <p>
+ * Usage example:
+ * <pre>{@code
+ * Cache<UserData> cache = Cache.builder(() -> fetchUserFromDB())
+ *     .ttl(Duration.ofMinutes(5))
+ *     .retry(Duration.ofSeconds(30))
+ *     .build();
+ *
+ * UserData user = cache.get();  // generates and caches
+ * UserData same = cache.get();  // returns cached value
+ *
+ * cache.invalidate();           // forces regeneration
+ * UserData fresh = cache.get(); // generates new value
+ * }</pre>
+ *
+ * @param <T> type of the cached value
+ */
 public interface Cache<T>
 {
 
 	/**
-	 * Retrieves a cached value.
+	 * Returns the cached value, generating it if necessary.
 	 *
-	 * @return The cached value.
+	 * <p>
+	 * The value is regenerated if:
+	 * <ul>
+	 * <li>No value is cached yet
+	 * <li>TTL has expired
+	 * <li>Custom predicate validation fails
+	 * <li>Retry period has expired after a previous failure
+	 * </ul>
+	 *
+	 * @return the cached or newly generated value
+	 * @throws RuntimeException if generation fails and no retry is configured, or if retry period has expired
 	 */
 	T get();
 
 	/**
-	 * Invalidates current value.
+	 * Invalidates the cached value, forcing regeneration on next {@code get()} call.
+	 *
+	 * <p>
+	 * This method is thread-safe and can be called concurrently with {@code get()}. Use this when you know the cached
+	 * data is stale and should be refreshed immediately.
 	 */
-   	void invalidate();
+	void invalidate();
 
 	/**
-	 * Creates a cache for a lazily supplied value.
+	 * Creates a new builder for configuring a cache.
 	 *
-	 * @param <E> the value java type.
-	 * @param supplier The supplier function to obtain the cached value.
-	 * @return A Cache instance.
+	 * @param <T> type of the cached value
+	 * @param generator function that generates the cached value
+	 * @return builder instance for configuration
 	 */
-	static <E> Cache<E> of(Supplier<E> supplier)
+	static <T> Builder<T> builder(Generator<T> generator)
 	{
-		return new LazyCache<>(supplier);
+		return new Builder<>(generator);
 	}
-
-	/**
-	 * Creates a cache for a lazily supplied value that expires after a timeout.
-	 *
-	 * @param <E> the value java type.
-	 * @param supplier The supplier function to obtain the cached value.
-	 * @param timeout The cache timeout duration in milliseconds.
-	 * @return A Cache instance.
-	 */
-	static <E> Cache<E> of(Duration timeout, Supplier<E> supplier)
-	{
-		return new TimeoutCache<>(timeout, supplier);
-	}
-
-	/**
-	 * Creates a cache for a lazily supplied value that expires if a predicate is not met.
-	 *
-	 * @param <E> the value java type.
-	 * @param predicate The predicate to determine if the cached value is still valid.
-	 * @param supplier The supplier function to obtain the cached value.
-	 * @return A Cache instance.
-	 */
-	static <E> Cache<E> of(Predicate<E> predicate, Supplier<E> supplier)
-	{
-		return new PredicateCache<>(predicate, supplier);
-	}
-
-	/**
-	 * Creates a cache for a lazily supplied value that expires after a timeout or if a predicate is not met.
-	 *
-	 * @param <E> the value java type.
-	 * @param timeout The cache timeout duration in milliseconds.
-	 * @param predicate The predicate to determine if the cached value is still valid.
-	 * @param supplier The supplier function to obtain the cached value.
-	 * @return A Cache instance.
-	 */
-	static <E> Cache<E> of(Duration timeout, Predicate<E> predicate, Supplier<E> supplier)
-	{
-		return new PredicateTimeoutCache<>(timeout, predicate, supplier);
-	}
-
 }
