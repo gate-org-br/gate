@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import gate.sql.Command;
 import gate.sql.Fetchable;
@@ -49,7 +50,7 @@ public interface Query extends SQL, Compilable
 	Constant constant();
 
 	@Override
-	Query print();
+	Query print(Logger logger);
 
 	@Override
 	String toString();
@@ -74,7 +75,7 @@ public interface Query extends SQL, Compilable
 		Connected connect(Link connection);
 
 		@Override
-		Compiled print();
+		Compiled print(Logger logger);
 
 		@Override
 		String toString();
@@ -100,7 +101,7 @@ public interface Query extends SQL, Compilable
 			<T> T fetch(Fetcher<T> handler);
 
 			@Override
-			Connected print();
+			Connected print(Logger logger);
 
 			@Override
 			String toString();
@@ -142,7 +143,7 @@ public interface Query extends SQL, Compilable
 		Connected connect(Link connection);
 
 		@Override
-		Constant print();
+		Constant print(Logger logger);
 
 		@Override
 		String toString();
@@ -168,7 +169,7 @@ public interface Query extends SQL, Compilable
 			<T> T fetch(Fetcher<T> handler);
 
 			@Override
-			Connected print();
+			Connected print(Logger logger);
 
 			@Override
 			String toString();
@@ -225,7 +226,7 @@ public interface Query extends SQL, Compilable
 		Constant constant();
 
 		@Override
-		Connected print();
+		Connected print(Logger logger);
 
 		@Override
 		String toString();
@@ -249,7 +250,7 @@ public interface Query extends SQL, Compilable
 			<T> T fetch(Fetcher<T> handler);
 
 			@Override
-			Compiled print();
+			Compiled print(Logger logger);
 
 			@Override
 			String toString();
@@ -274,7 +275,7 @@ public interface Query extends SQL, Compilable
 			<T> T fetch(Fetcher<T> handler);
 
 			@Override
-			Constant print();
+			Constant print(Logger logger);
 
 			@Override
 			String toString();

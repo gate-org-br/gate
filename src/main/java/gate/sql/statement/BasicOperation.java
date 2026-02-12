@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import gate.error.ConstraintViolationException;
 import gate.lang.property.Entity;
@@ -59,9 +60,9 @@ class BasicOperation<T> implements Operation<T>
 	}
 
 	@Override
-	public Operation<T> print()
+	public Operation<T> print(Logger logger)
 	{
-		System.out.println(this);
+		logger.debug("{}", this);
 		return this;
 	}
 
@@ -90,9 +91,9 @@ class BasicOperation<T> implements Operation<T>
 		}
 
 		@Override
-		public Compiled print()
+		public Compiled print(Logger logger)
 		{
-			System.out.println(this);
+			logger.debug("{}", this);
 			return this;
 		}
 
@@ -155,9 +156,9 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Connected print()
+			public Connected print(Logger logger)
 			{
-				System.out.println(this);
+				logger.debug("{}", this);
 				return this;
 			}
 
@@ -222,9 +223,9 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
-				public Operation.Compiled.Connected<T> print()
+				public Operation.Compiled.Connected<T> print(Logger logger)
 				{
-					System.out.println(this);
+					logger.debug("{}", this);
 					return this;
 				}
 			}
@@ -262,9 +263,9 @@ class BasicOperation<T> implements Operation<T>
 		}
 
 		@Override
-		public Operation.Connected<T> print()
+		public Operation.Connected<T> print(Logger logger)
 		{
-			System.out.println(this);
+			logger.debug("{}", this);
 			return this;
 		}
 
@@ -326,10 +327,10 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Operation.Connected.Compiled<T> print()
+			public Operation.Connected.Compiled<T> print(Logger logger)
 			{
-				System.out.println(this);
-				System.out.println(values);
+				logger.debug("{}", this);
+				logger.debug("{}", values);
 				return this;
 			}
 
@@ -394,9 +395,9 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
-				public Operation.Connected.Compiled<T> print()
+				public Operation.Connected.Compiled<T> print(Logger logger)
 				{
-					System.out.println(this);
+					logger.debug("{}", this);
 					return this;
 				}
 			}

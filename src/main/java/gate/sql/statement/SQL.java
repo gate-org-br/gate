@@ -1,4 +1,5 @@
 package gate.sql.statement;
+import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface SQL
 	 *
 	 * @return the same statement allowing for chained invocations
 	 */
-	SQL print();
+	SQL print(Logger logger);
 
 	/**
 	 * Returns the list of parameters associated with this SQL.
