@@ -232,9 +232,9 @@ public class URLBuilder
                                Parameters arguments)
     {
         Parameters parameters = new Parameters(arguments);
-        parameters.put("MODULE=" + module);
-        parameters.put("SCREEN=" + screen);
-        parameters.put("ACTION=" + action);
+        parameters.put("MODULE", module);
+        parameters.put("SCREEN", screen);
+        parameters.put("ACTION", action);
         return parameters.isEmpty() ? "Gate" : "Gate?" + parameters;
     }
 
