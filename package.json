@@ -4,6 +4,7 @@
     "build": "node build.mjs"
   },
   "devDependencies": {
+    "esbuild": "^0.25.12",
     "glob": "^13.0.3",
     "less": "^4.5.1"
   }

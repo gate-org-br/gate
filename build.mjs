@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import {glob} from "glob";
 import less from "less";
+import {transform} from "esbuild";
 import {fileURLToPath} from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -139,6 +140,27 @@ async function createIconData() {
     );
 }
 
+async function minifyJavaScript() {
+    const files = await glob(`${resources}/*.js`);
+
+    for (const file of files) {
+        const data = await fs.readFile(file, "utf8");
+        const sourceMapFile = `${path.basename(file)}.map`;
+        const result = await transform(data, {
+            loader: "js",
+            minify: true,
+            sourcemap: "external",
+            sourcefile: path.basename(file)
+        });
+
+        await fs.writeFile(
+            file,
+            `${result.code}\n//# sourceMappingURL=${sourceMapFile}\n`
+        );
+        await fs.writeFile(`${file}.map`, result.map);
+    }
+}
+
 async function build() {
     await clean();
     await copyCss();
@@ -147,6 +169,7 @@ async function build() {
     await compileLess();
     await createIconList();
     await createIconData();
+    await minifyJavaScript();
 }
 
 build();
