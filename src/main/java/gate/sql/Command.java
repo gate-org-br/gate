@@ -46,7 +46,7 @@ public class Command implements AutoCloseable, Fetchable
 			return this;
 		} catch (SQLException e)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to set max rows on command", e);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class Command implements AutoCloseable, Fetchable
 			ps.setQueryTimeout(max);
 		} catch (SQLException e)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to set query timeout on command", e);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class Command implements AutoCloseable, Fetchable
 			return ps.getMaxRows();
 		} catch (SQLException e)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to obtain max rows from command", e);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Command implements AutoCloseable, Fetchable
 			return new Cursor(this, ps.executeQuery());
 		} catch (SQLException e)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to execute query and obtain cursor", e);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class Command implements AutoCloseable, Fetchable
 		} catch (SQLException e)
 		{
 			DatabaseException.handle(link, e);
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to execute update command", e);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class Command implements AutoCloseable, Fetchable
 			return new Cursor(this, ps.getGeneratedKeys());
 		} catch (SQLException e)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to obtain generated keys from command", e);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class Command implements AutoCloseable, Fetchable
 			return ps.isClosed();
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to determine whether command is closed", ex);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class Command implements AutoCloseable, Fetchable
 			ps.close();
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to close command", ex);
 		}
 	}
 
@@ -183,7 +183,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind char parameter on command", ex);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind boolean parameter on command", ex);
 		}
 	}
 
@@ -207,7 +207,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind byte parameter on command", ex);
 		}
 	}
 
@@ -219,7 +219,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind short parameter on command", ex);
 		}
 	}
 
@@ -231,7 +231,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind int parameter on command", ex);
 		}
 	}
 
@@ -243,7 +243,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind long parameter on command", ex);
 		}
 	}
 
@@ -255,7 +255,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind float parameter on command", ex);
 		}
 	}
 
@@ -267,7 +267,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index++;
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind double parameter on command", ex);
 		}
 	}
 
@@ -279,7 +279,7 @@ public class Command implements AutoCloseable, Fetchable
 			return index + 1;
 		} catch (SQLException e)
 		{
-			throw new UnsupportedOperationException(e);
+			throw new IllegalStateException("Failed to bind null parameter on command", e);
 		}
 	}
 
@@ -291,7 +291,7 @@ public class Command implements AutoCloseable, Fetchable
 				.writeToPreparedStatement(getPreparedStatement(), index, object);
 		} catch (SQLException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to bind parameter on command", ex);
 		}
 	}
 

@@ -93,7 +93,7 @@ public class EntityPageFetcher<T> implements Fetcher<Page<T>>
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException
                  | SecurityException | IllegalArgumentException | InvocationTargetException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to fetch entity page from cursor", ex);
         }
     }
 }

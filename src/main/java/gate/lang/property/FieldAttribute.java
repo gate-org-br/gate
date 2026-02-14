@@ -119,7 +119,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
 				 | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
 	}
 
@@ -223,7 +223,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.get(object);
 		} catch (InvocationTargetException | IllegalAccessException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
 	}
 
@@ -243,7 +243,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.set(object, value);
 		} catch (InvocationTargetException | IllegalAccessException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
 	}
 
@@ -258,7 +258,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return value;
 		} catch (IllegalAccessException ex)
 		{
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
 	}
 
@@ -275,7 +275,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getBoolean(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -298,7 +298,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setBoolean(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -315,7 +315,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getChar(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 
 	}
@@ -339,7 +339,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setChar(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -356,7 +356,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getByte(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 
 	}
@@ -380,7 +380,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setByte(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -397,7 +397,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getShort(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 
 	}
@@ -421,7 +421,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setShort(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -439,7 +439,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getInt(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -462,7 +462,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setInt(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -479,7 +479,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getLong(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -502,7 +502,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setLong(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -519,7 +519,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getFloat(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -542,7 +542,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setFloat(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -559,7 +559,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			return field.getDouble(object);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
@@ -582,7 +582,7 @@ class FieldAttribute implements JavaIdentifierAttribute
 			field.setDouble(object, value);
 		} catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException ex)
 		{
-			throw new UnsupportedOperationException(ex.getMessage(), ex);
+			throw new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
