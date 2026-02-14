@@ -101,7 +101,7 @@ customElements.define('g-accordion', class extends HTMLElement
 		if (value)
 			this.setAttribute('multiple', '');
 		else
-			this.removeAttribute('multiple', '');
+			this.removeAttribute('multiple');
 	}
 
 	expand(target)
@@ -114,10 +114,8 @@ customElements.define('g-accordion', class extends HTMLElement
 		if (!div || div.tagName !== 'DIV')
 		{
 			div = div ? this.insertBefore(document.createElement('div'), div) : this.appendChild(document.createElement('div'));
-			let method = target.getAttribute('method') || (target.form ||
-				{}).method || 'get';
-			let action = target.getAttribute('href') || target.getAttribute('formaction') || (target.form ||
-				{}).action;
+			let method = target.getAttribute('method') || (target.form || {}).method || 'get';
+			let action = target.getAttribute('href') || target.getAttribute('formaction') || (target.form ||	{}).action;
 			fetch(RequestBuilder.build(method, action, target.form))
 				.then(ResponseHandler.text)
 				.then((result) => document.createRange().createContextualFragment(result))

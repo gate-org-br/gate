@@ -17,7 +17,7 @@ function load(chart)
 		return Promise.all([import('./echarts.js'),
 			import('./icon-data.js')])
 			.then(([echarts, icons]) => [echarts,
-					toolbox(chart, icons.default)]);
+				toolbox(chart, icons.default)]);
 	});
 }
 
@@ -72,29 +72,31 @@ function pie(title, toolbox, value, radius, roseType)
 	let width = 100 / labels.length;
 
 	let series = labels.map((_, index) => ({
-			radius,
-			roseType,
-			type: 'pie',
-			top: 'center',
-			height: '100%',
-			width: width + '%',
-			name: value[0][index + 1],
-			left: (index * width) + '%',
-			encode: {itemName: value[0][0], value: value[0][index + 1]},
-			label: {position: 'inner', formatter: e => e.value[index + 1].toLocaleString(locale)}
-		}));
+		radius,
+		roseType,
+		type: 'pie',
+		top: 'center',
+		height: '100%',
+		width: width + '%',
+		name: value[0][index + 1],
+		left: (index * width) + '%',
+		encode: {itemName: value[0][0], value: value[0][index + 1]},
+		label: {position: 'inner', formatter: e => e.value[index + 1].toLocaleString(locale)}
+	}));
 
 	title = title ? [{text: title, x: "center"}] : [];
 	if (labels.length > 1)
 		labels.map((e, index) => ({subtext: e, left: (index * width) + width / 2 + '%', top: 25, textAlign: 'center'}))
 			.forEach(e => title.push(e));
 
-	return {title,
+	return {
+		title,
 		series,
 		tooltip,
 		toolbox,
 		legend: {bottom: 0},
-		dataset: {source: value}};
+		dataset: {source: value}
+	};
 }
 
 customElements.define('g-chart-backup', class extends HTMLElement
@@ -122,8 +124,8 @@ customElements.define('g-chart-backup', class extends HTMLElement
 		this.#value = [value[0],
 			...value.slice(1)
 				.map(row => row.map((col, index) => index
-							? format.parse(col)
-							: col))];
+					? format.parse(col)
+					: col))];
 		this.refresh();
 	}
 
@@ -242,10 +244,12 @@ customElements.define('g-chart-backup', class extends HTMLElement
 				xAxis: category,
 				yAxis: values,
 				series: Array(value[0].length - 1)
-					.fill({type: 'bar',
+					.fill({
+						type: 'bar',
 						barGap: 0,
 						seriesLayoutBy: 'column',
-						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
+						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}
+					})
 			});
 		});
 	}
@@ -268,10 +272,16 @@ customElements.define('g-chart-backup', class extends HTMLElement
 				yAxis: category,
 				xAxis: values,
 				series: Array(value[0].length - 1)
-					.fill({type: 'bar',
+					.fill({
+						type: 'bar',
 						barGap: 0,
 						seriesLayoutBy: 'column',
-						label: {show: true, position: 'right', formatter: e => e.value[e.encode.x].toLocaleString(locale)}})
+						label: {
+							show: true,
+							position: 'right',
+							formatter: e => e.value[e.encode.x].toLocaleString(locale)
+						}
+					})
 			});
 		});
 
@@ -296,9 +306,11 @@ customElements.define('g-chart-backup', class extends HTMLElement
 				xAxis: category,
 				yAxis: values,
 				series: Array(value[0].length - 1)
-					.fill({type: 'line',
+					.fill({
+						type: 'line',
 						seriesLayoutBy: 'column',
-						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}})
+						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)}
+					})
 			});
 		});
 	}
@@ -321,10 +333,16 @@ customElements.define('g-chart-backup', class extends HTMLElement
 				xAxis: category,
 				yAxis: values,
 				series: Array(value[0].length - 1)
-					.fill({type: 'line',
+					.fill({
+						type: 'line',
 						seriesLayoutBy: 'column',
-						label: {show: true, position: 'top', formatter: e => e.value[e.encode.y].toLocaleString(locale)},
-						areaStyle: {type: 'default'}})
+						label: {
+							show: true,
+							position: 'top',
+							formatter: e => e.value[e.encode.y].toLocaleString(locale)
+						},
+						areaStyle: {type: 'default'}
+					})
 			});
 		});
 	}

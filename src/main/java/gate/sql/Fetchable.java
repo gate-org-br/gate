@@ -25,10 +25,10 @@ public interface Fetchable
     /**
      * Fetches results using the specified Fetcher.
      *
-     * @param fecher Fetcher to be used to fetch results
+     * @param fetcher Fetcher to be used to fetch results
      * @return the results fetched as a java object of the specified type
      */
-    <T> T fetch(Fetcher<T> fecher);
+    <T> T fetch(Fetcher<T> fetcher);
 
     /**
      * Fetches results using the specified Function as a mapper.

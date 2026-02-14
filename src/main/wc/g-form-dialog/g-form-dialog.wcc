@@ -5,7 +5,6 @@ import './g-icon.js';
 import './g-coolbar.js';
 import GWindow from './g-window.js';
 import CancelError from './cancel-error.js';
-import RequestBuilder from './request-builder.js';
 import ResponseHandler from './response-handler.js';
 
 export default class GFormDialog extends GWindow

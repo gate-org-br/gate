@@ -22,13 +22,13 @@ window.addEventListener("@template", function (event)
 			Handlebars.registerHelper("div", (number, value) => number / value);
 			return Handlebars.compile(element.innerHTML.replace(/<!--{{([^}]+)}}-->/g, '{{$1}}'));
 		}).then(template => fetch(RequestBuilder.build(method, action, form))
-			.then(ResponseHandler.json)
-			.then(result =>
-			{
+		.then(ResponseHandler.json)
+		.then(result =>
+		{
 
-				result = template(result);
-				return result;
-			})
-			.then(result => event.success(path, new DataURL('text/html', result).toString()))
-			.catch(error => event.failure(path, error)));
+			result = template(result);
+			return result;
+		})
+		.then(result => event.success(path, new DataURL('text/html', result).toString()))
+		.catch(error => event.failure(path, error)));
 });

@@ -15,85 +15,81 @@ import org.junit.jupiter.api.Test;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class DeleteTest
 {
 
-	@BeforeAll
-	public static void setUp()
-		throws ConstraintViolationException, SQLException
-	{
-		TestDataSource.setUp();
-	}
+    @BeforeAll
+    public static void setUp()
+            throws ConstraintViolationException, SQLException
+    {
+        TestDataSource.setUp();
+    }
 
-	@Test
-	public void test1()
-	{
-		String expected = "delete from Uzer where id = ? and name like ?";
+    @Test
+    public void test1()
+    {
+        String expected = "delete from Uzer where id = ? and name like ?";
 
-		String result = Delete.from("Uzer")
-			.where(Condition.of("id").eq()
-				.and("name").lk())
-			.build()
-			.toString();
+        String result = Delete.from("Uzer")
+                .where(Condition.of("id").eq()
+                        .and("name").lk())
+                .build()
+                .toString();
 
-		assertEquals(expected, result);
-	}
+        assertEquals(expected, result);
+    }
 
-	@Test
-	public void test2()
-	{
-		String expected = "delete from Uzer where id = ? and name like ?";
+    @Test
+    public void test2()
+    {
+        String expected = "delete from Uzer where id = ? and name like ?";
 
-		String result = Delete.from("Uzer")
-			.where(Condition.of("id").eq(1)
-				.and("name").lk("Paulo"))
-			.build()
-			.toString();
+        String result = Delete.from("Uzer")
+                .where(Condition.of("id").eq(1)
+                        .and("name").lk("Paulo"))
+                .build()
+                .toString();
 
-		assertEquals(expected, result);
-	}
+        assertEquals(expected, result);
+    }
 
-	@Test
-	public void test3()
-	{
-		String expected = "delete from Mock where id = ?";
-		String result = Delete.from(Mock.class).build().toString();
+    @Test
+    public void test3()
+    {
+        String expected = "delete from Mock where id = ?";
+        String result = Delete.from(Mock.class).build().toString();
 
-		assertEquals(expected, result);
-	}
+        assertEquals(expected, result);
+    }
 
-	@Test
-	public void test4() throws ConstraintViolationException, SQLException
-	{
+    @Test
+    public void test4() throws ConstraintViolationException, SQLException
+    {
+        try (Link link = TestDataSource.INSTANCE.getLink())
+        {
+            link
+                    .prepare(Delete.from(Person.class))
+                    .value(new Person().setId(1))
+                    .execute();
 
-		try (Link link = TestDataSource.INSTANCE.getLink())
-		{
-			try
-			{
+            int count = Select.expression("count(*)")
+                    .from("Person")
+                    .where(Condition.of("id").eq(ID.valueOf(1)))
+                    .build()
+                    .connect(link)
+                    .fetchInt();
 
-				link
-					.prepare(Delete.from(Person.class))
-					.value(new Person().setId(1))
-					.execute();
+            assertEquals(0, count);
+        }
+    }
 
-				assertEquals(0, (int) Select.expression("count(*)").from("Person")
-					.where(Condition.of("id").isEq(ID.valueOf(1).toString())).build()
-					.connect(link).fetchObject(Integer.class).get());
-			} catch (NullPointerException e)
-			{
-				fail();
-			}
-		}
-	}
+    @Test
+    public void test5()
+    {
+        String expected = "delete from Contact where 0 = 0 and Person$id = ?";
+        String result = Delete.of(Contact.class, "=person.id").toString();
 
-	@Test
-	public void test5()
-	{
-		String expected = "delete from Contact where 0 = 0 and Person$id = ?";
-		String result = Delete.of(Contact.class, "=person.id").toString();
-
-		assertEquals(expected, result);
-	}
+        assertEquals(expected, result);
+    }
 }
