@@ -74,7 +74,7 @@ public class ZipPackageFetcher implements Fetcher<NamedTempFile>
 		} catch (IOException | SQLException ex)
 		{
 			tempFile.close();
-			throw new UnsupportedOperationException(ex);
+			throw new IllegalStateException("Failed to build ZIP package from cursor", ex);
 		}
 	}
 }

@@ -158,7 +158,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.isAfterLast();
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to determine whether cursor is after the last row", ex);
         }
     }
 
@@ -171,11 +171,13 @@ public class Cursor implements AutoCloseable, Fetchable
     {
         try
         {
-            column = 1;
-            return rs.next();
+            boolean hasNext = rs.next();
+            if (hasNext)
+                column = 1;
+            return hasNext;
         } catch (SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to move cursor to the next row", e);
         }
     }
 
@@ -191,7 +193,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getRow();
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to obtain current row index from cursor", ex);
         }
     }
 
@@ -207,7 +209,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.isClosed();
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to determine whether cursor is closed", ex);
         }
 
     }
@@ -221,7 +223,7 @@ public class Cursor implements AutoCloseable, Fetchable
                 rs.close();
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to close cursor", ex);
         }
     }
 
@@ -244,17 +246,7 @@ public class Cursor implements AutoCloseable, Fetchable
      */
     public <T> T getCurrentValue(Class<T> type)
     {
-        try
-        {
-            Converter converter = Converter.getConverter(type);
-            @SuppressWarnings("unchecked")
-            T value = (T) converter.readFromResultSet(getResultSet(), column, type);
-            column += Math.max(1, converter.getSufixes().size());
-            return value;
-        } catch (ConversionException | SQLException ex)
-        {
-            throw new UnsupportedOperationException(ex);
-        }
+        return getCurrentValue(type, type);
     }
 
     public <T> T getCurrentValue(Class<T> type, Class<?> elementType)
@@ -262,13 +254,12 @@ public class Cursor implements AutoCloseable, Fetchable
         try
         {
             Converter converter = Converter.getConverter(type);
-            @SuppressWarnings("unchecked")
-            T value = (T) converter.readFromResultSet(getResultSet(), column, elementType);
+            T value = type.cast(converter.readFromResultSet(getResultSet(), column, elementType));
             column += Math.max(1, converter.getSufixes().size());
             return value;
         } catch (ConversionException | SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current value from cursor", ex);
         }
     }
 
@@ -287,7 +278,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return Converter.getConverter(type).readFromResultSet(rs, columnIndex, type);
         } catch (ConversionException | SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read value from cursor", ex);
         }
     }
 
@@ -304,7 +295,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getByte(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read byte value from cursor", ex);
         }
     }
 
@@ -320,7 +311,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getByte(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current byte value from cursor", ex);
         }
     }
 
@@ -337,7 +328,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getShort(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read short value from cursor", ex);
         }
     }
 
@@ -353,7 +344,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getShort(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current short value from cursor", ex);
         }
     }
 
@@ -370,7 +361,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getInt(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read int value from cursor", ex);
         }
     }
 
@@ -386,7 +377,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getInt(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current int value from cursor", ex);
         }
     }
 
@@ -403,7 +394,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getLong(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read long value from cursor", ex);
         }
     }
 
@@ -419,7 +410,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getLong(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current long value from cursor", ex);
         }
     }
 
@@ -436,7 +427,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getFloat(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read float value from cursor", ex);
         }
     }
 
@@ -452,7 +443,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getFloat(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current float value from cursor", ex);
         }
     }
 
@@ -469,7 +460,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getDouble(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read double value from cursor", ex);
         }
     }
 
@@ -485,7 +476,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getDouble(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current double value from cursor", ex);
         }
     }
 
@@ -502,7 +493,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getBoolean(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read boolean value from cursor", ex);
         }
     }
 
@@ -518,7 +509,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getBoolean(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current boolean value from cursor", ex);
         }
     }
 
@@ -535,7 +526,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return (char) rs.getInt(columnIndex);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read char value from cursor", ex);
         }
     }
 
@@ -551,7 +542,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return (char) rs.getInt(column++);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read current char value from cursor", ex);
         }
     }
 
@@ -571,7 +562,7 @@ public class Cursor implements AutoCloseable, Fetchable
                     type);
         } catch (ConversionException | SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to read value from cursor", e);
         }
     }
 
@@ -594,7 +585,7 @@ public class Cursor implements AutoCloseable, Fetchable
                     elementType);
         } catch (ConversionException | SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to read value from cursor", e);
         }
     }
 
@@ -614,7 +605,7 @@ public class Cursor implements AutoCloseable, Fetchable
                     type);
         } catch (ConversionException | SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to read value from cursor", e);
         }
     }
 
@@ -637,7 +628,7 @@ public class Cursor implements AutoCloseable, Fetchable
                     elementType);
         } catch (ConversionException | SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to read value from cursor", e);
         }
     }
 
@@ -654,7 +645,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getByte(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read byte value from cursor", ex);
         }
     }
 
@@ -671,7 +662,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return (char) rs.getInt(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read char value from cursor", ex);
         }
     }
 
@@ -688,7 +679,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getShort(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read short value from cursor", ex);
         }
     }
 
@@ -705,7 +696,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getInt(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read int value from cursor", ex);
         }
     }
 
@@ -722,7 +713,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getLong(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read long value from cursor", ex);
         }
     }
 
@@ -739,7 +730,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getFloat(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read float value from cursor", ex);
         }
     }
 
@@ -756,7 +747,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getDouble(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read double value from cursor", ex);
         }
     }
 
@@ -773,7 +764,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getBoolean(columnName);
         } catch (SQLException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to read boolean value from cursor", ex);
         }
     }
 
@@ -789,7 +780,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return rs.getMetaData().getColumnCount();
         } catch (SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to obtain column count from cursor", e);
         }
 
     }
@@ -810,7 +801,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return names;
         } catch (SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to obtain column names from cursor", e);
         }
     }
 
@@ -830,7 +821,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return types;
         } catch (SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to obtain column types from cursor", e);
         }
     }
 
@@ -869,7 +860,7 @@ public class Cursor implements AutoCloseable, Fetchable
             return result;
         } catch (SQLException e)
         {
-            throw new UnsupportedOperationException(e);
+            throw new IllegalStateException("Failed to obtain metadata from cursor", e);
         }
     }
 

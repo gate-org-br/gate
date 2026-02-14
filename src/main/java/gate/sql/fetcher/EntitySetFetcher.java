@@ -80,7 +80,7 @@ public class EntitySetFetcher<T> implements Fetcher<Set<T>>
         } catch (IllegalAccessException | InstantiationException | NoSuchMethodException
                  | SecurityException | IllegalArgumentException | InvocationTargetException ex)
         {
-            throw new UnsupportedOperationException(ex);
+            throw new IllegalStateException("Failed to fetch entity set from cursor", ex);
         }
     }
 
