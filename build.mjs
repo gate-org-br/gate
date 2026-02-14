@@ -41,6 +41,33 @@ async function copyModules() {
     }
 }
 
+function minifyTemplateHtml(content) {
+    return content
+        .replace(/\r\n?/g, "\n")
+        .replace(/>[\t ]*\n[\t \n]*</g, "><");
+}
+
+function escapeTemplateLiteral(content) {
+    return content
+        .replace(/\\/g, "\\\\")
+        .replace(/`/g, "\\`")
+        .replace(/\$\{/g, "\\${");
+}
+
+async function minifyCss(content, sourcefile) {
+    try {
+        const result = await transform(content, {
+            loader: "css",
+            minify: true,
+            sourcefile
+        });
+
+        return result.code;
+    } catch {
+        return content;
+    }
+}
+
 async function processWC() {
     const files = await glob("src/main/wc/**/*.wc");
 
@@ -67,20 +94,27 @@ async function processWC() {
             }
         }
 
+        const minifiedTemplate = template ? minifyTemplateHtml(template) : undefined;
+        const minifiedStyle = style
+            ? await minifyCss(style, `${path.basename(file, ".wc")}.css`)
+            : undefined;
+
         let output = script ?? "";
 
-        if (template) {
+        if (minifiedTemplate) {
             const name = path.basename(file, ".wc");
+            const escapedTemplate = escapeTemplateLiteral(minifiedTemplate);
 
-            if (style)
+            if (minifiedStyle) {
+                const escapedStyle = escapeTemplateLiteral(minifiedStyle);
                 output =
                     `let template = document.createElement("template");
-template.innerHTML = \`${template} <style data-element="${name}">${style}</style>\`;
+template.innerHTML = \`${escapedTemplate}<style data-element="${name}">${escapedStyle}</style>\`;
 ${script ?? ""}`;
-            else
+            } else
                 output =
                     `let template = document.createElement("template");
-template.innerHTML = \`${template}\`;
+template.innerHTML = \`${escapedTemplate}\`;
 
 ${script ?? ""}`;
         }
