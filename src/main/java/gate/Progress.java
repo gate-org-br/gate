@@ -100,6 +100,13 @@ public class Progress
                 .toString());
     }
 
+    public void redirect(String url)
+    {
+        dispatch("Redirect", new JsonObject()
+                .setString("url", url)
+                .toString());
+    }
+
     void abort(String message)
     {
         if (status == Progress.Status.PENDING
