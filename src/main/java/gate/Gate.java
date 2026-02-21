@@ -80,10 +80,6 @@ public class Gate extends HttpServlet
     @RequestScoped
     Instance<User> userInstance;
 
-    @Inject
-    @SuppressWarnings("unused")
-    Heartbeat heartbeat;
-
     static
     {
         Locale.setDefault(new Locale("pt", "BR"));
@@ -220,10 +216,13 @@ public class Gate extends HttpServlet
     private void executeAsync(ScreenServletRequest request, HttpServletResponse response,
                               Screen screen, Method method)
     {
+		response.setContentLengthLong(-1);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/event-stream");
+		response.setHeader("X-Accel-Buffering", "no");
+		response.setHeader("Connection", "keep-alive");
         response.setHeader("Cache-Control", "no-cache");
-        response.setHeader("Connection", "keep-alive");
+		response.setHeader("Transfer-Encoding", "chunked");
 
         AsyncContext asyncContext = request.startAsync(request, response);
         asyncContext.setTimeout(0);

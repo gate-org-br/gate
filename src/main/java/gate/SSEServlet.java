@@ -46,8 +46,10 @@ public class SSEServlet extends HttpServlet
             if (user == null || user.getId() == null)
                 throw new UnauthorizedException();
 
+			response.setContentLengthLong(-1);
             response.setCharacterEncoding("UTF-8");
-            response.setContentType("text/event-stream");
+			response.setContentType("text/event-stream");
+			response.setHeader("X-Accel-Buffering", "no");
 
             AsyncContext context = request.startAsync();
             context.setTimeout(TimeUnit.HOURS.toMillis(1));
