@@ -10,6 +10,9 @@
 	],
 	"author": "davins",
 	"contributors": [],
+	"scripts": {
+		"build": "node build.mjs"
+	},
 	"devDependencies": {
 		"grunt": "^1.6.1",
 		"grunt-contrib-clean": "^2.0.1",
@@ -18,7 +21,9 @@
 		"grunt-contrib-less": "^3.0.0",
 		"grunt-contrib-watch": "^1.1.0",
 		"grunt-import": "^1.0.3",
-		"less": "^4.2.0",
-		"fantasticon": "3.0.0"
+		"less": "^4.5.1",
+		"esbuild": "^0.25.12",
+		"glob": "^13.0.3",
+		"svgtofont": "^6.4.0"
 	}
 }

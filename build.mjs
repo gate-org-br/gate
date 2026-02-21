@@ -3,7 +3,7 @@ import path from "path";
 import {glob} from "glob";
 import less from "less";
 import {transform} from "esbuild";
-import {generateFonts} from "fantasticon";
+import svgtofont from "svgtofont";
 import {fileURLToPath} from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -209,27 +209,26 @@ async function copyIconsToResources() {
 }
 
 async function createIconFont() {
-    const files = await glob(`${resourcesIconDir}/*.svg`);
-    const codepoints = {};
+	await svgtofont({
+		src: resourcesIconDir,
+		dist: resources,
+		fontName: "Gate",
+		css: false,
+		website: false,
+		outSVGReact: false,
+		outSVGReactNative: false,
+		log: false,
+		svgicons2svgfont: {
+			normalize: true
+		},
+		getIconUnicode: (name, unicode, startUnicode) => {
+			const codepoint = Number.parseInt(name, 16);
+			if (Number.isFinite(codepoint))
+				return [String.fromCodePoint(codepoint), codepoint + 1];
 
-    for (const file of files) {
-        const code = path.basename(file, ".svg");
-        const value = Number.parseInt(code, 16);
-
-        if (Number.isFinite(value))
-            codepoints[code] = value;
-    }
-
-    await generateFonts({
-        inputDir: resourcesIconDir,
-        outputDir: resources,
-        name: "Gate",
-        assetTypes: [],
-        fontTypes: ["eot", "woff", "ttf"],
-        templates: {},
-        codepoints,
-        normalize: true
-    });
+			return [unicode, startUnicode];
+		}
+	});
 }
 
 async function minifyJavaScript()
