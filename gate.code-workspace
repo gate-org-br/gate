@@ -9,8 +9,8 @@
 			"path": "src/main/wc"
 		},
 		{
-			"name": "demo",
-			"path": "demo"
+			"name": "documentation",
+			"path": "documentation"
 		},
 		{
 			"name": "resources",
