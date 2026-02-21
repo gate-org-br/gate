@@ -7,7 +7,7 @@ public interface Orderable extends Clause
 
 	OrderedSelect orderBy(String exp);
 
-	SortedSelect ordernate(String exp);
+	SortedSelect sort(String exp);
 
 	interface Constant extends Orderable
 	{
@@ -26,10 +26,10 @@ public interface Orderable extends Clause
 		}
 
 		@Override
-		default SortedSelect.Constant ordernate(String expression)
-		{
-			return new SortedSelect.Constant(this)
+			default SortedSelect.Constant sort(String expression)
 			{
+				return new SortedSelect.Constant(this)
+				{
 				@Override
 				public String toString()
 				{
@@ -63,10 +63,10 @@ public interface Orderable extends Clause
 		}
 
 		@Override
-		default SortedSelect.Generic ordernate(String expression)
-		{
-			return new SortedSelect.Generic(this)
+			default SortedSelect.Generic sort(String expression)
 			{
+				return new SortedSelect.Generic(this)
+				{
 				@Override
 				public String toString()
 				{
@@ -101,10 +101,10 @@ public interface Orderable extends Clause
 		}
 
 		@Override
-		default SortedSelect.Compiled ordernate(String expression)
-		{
-			return new SortedSelect.Compiled(this)
+			default SortedSelect.Compiled sort(String expression)
 			{
+				return new SortedSelect.Compiled(this)
+				{
 				@Override
 				public String toString()
 				{
