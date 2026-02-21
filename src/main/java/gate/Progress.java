@@ -8,18 +8,14 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class Progress
+public class Progress implements Pinger
 {
 
     private static final int UNKNOWN = -1;
     private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
     private static final Logger LOGGER = LoggerFactory.getLogger(Progress.class);
-    private static final Set<Progress> INSTANCES = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     private long todo = UNKNOWN;
     private long done = UNKNOWN;
@@ -47,7 +43,7 @@ public class Progress
         return this;
     }
 
-    private void dispatch(String type, String message)
+    private synchronized void dispatch(String type, String message)
     {
         if (this.status != Status.DISCONNECTED)
         {
@@ -72,7 +68,7 @@ public class Progress
         dispatch("Progress", message);
     }
 
-    public void close()
+    public synchronized void close()
     {
         if (this.status != Status.DISCONNECTED)
         {
@@ -283,44 +279,40 @@ public class Progress
         Objects.requireNonNull(text);
         Progress progress = current();
         if (!Status.PENDING.equals(progress.status))
-            throw new IllegalStateException("Attempt to commit non pending task");
+            throw new IllegalStateException("Attempt to cancel non pending task");
         progress.update(Status.CANCELED, progress.todo, progress.done, text)
                 .dispatch(progress.toString());
-    }
-
-    static void heartbeat()
-    {
-        INSTANCES.removeIf(progress ->
-        {
-            if (progress.status == Status.COMMITED
-                    || progress.status == Status.CANCELED
-                    || progress.status == Status.DISCONNECTED)
-                return true;
-
-            try
-            {
-                progress.writer.write(": heartbeat\n\n");
-                progress.writer.flush();
-                return false;
-            } catch (IOException e)
-            {
-                progress.status = Status.DISCONNECTED;
-                return true;
-            }
-        });
     }
 
     static Progress create(Writer writer)
     {
         Progress progress = new Progress(writer);
-        INSTANCES.add(progress);
         CURRENT.set(progress);
         return progress;
     }
 
     static void finish()
     {
-        INSTANCES.remove(CURRENT.get());
         CURRENT.remove();
+    }
+
+    @Override
+    public synchronized boolean ping()
+    {
+        if (status == Status.COMMITED
+                || status == Status.CANCELED
+                || status == Status.DISCONNECTED)
+            return false;
+
+        try
+        {
+            writer.write(": ping\n\n");
+            writer.flush();
+            return true;
+        } catch (IOException ex)
+        {
+            status = Status.DISCONNECTED;
+            return false;
+        }
     }
 }

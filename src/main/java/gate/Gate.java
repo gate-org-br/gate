@@ -75,7 +75,7 @@ public class Gate extends HttpServlet
 
     @Inject
     @SuppressWarnings("unused")
-    Heartbeat heartbeat;
+    PingerRegistry heartbeatRegistry;
 
     static
     {
@@ -218,9 +218,11 @@ public class Gate extends HttpServlet
 
         Runnable contextualTask = threadContext.contextualRunnable(() ->
         {
+            Progress progress = null;
             try (Writer writer = response.getWriter())
             {
-                Progress progress = Progress.create(writer);
+                progress = Progress.create(writer);
+                heartbeatRegistry.register(progress);
                 try
                 {
                     Object result = screen.execute(method);
@@ -246,6 +248,8 @@ public class Gate extends HttpServlet
                 logger.error(ex.getMessage(), ex);
             } finally
             {
+                if (progress != null)
+                    heartbeatRegistry.unregister(progress);
                 Progress.finish();
                 TempFile.cleanup();
                 asyncContext.complete();

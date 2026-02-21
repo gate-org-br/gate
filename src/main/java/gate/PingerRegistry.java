@@ -7,20 +7,23 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
-class Heartbeat
+class PingerRegistry
 {
+
     @Inject
     Logger logger;
 
-    @Inject
-    SSEClients clients;
-
+    private final Set<Pinger> targets = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private ScheduledExecutorService executor;
+
     private static final long HEARTBEAT = SystemProperty.get("gate.sse.heartbeat")
             .filter(e -> !e.isBlank())
             .filter(e -> e.chars().allMatch(Character::isDigit))
@@ -36,19 +39,28 @@ class Heartbeat
 
         executor = Executors.newSingleThreadScheduledExecutor(r ->
         {
-            Thread thread = new Thread(r, "SSEHeartbeat");
+            Thread thread = new Thread(r, "Heartbeat");
             thread.setDaemon(true);
             return thread;
         });
         executor.scheduleAtFixedRate(this::tick, HEARTBEAT, HEARTBEAT, TimeUnit.SECONDS);
     }
 
+    void register(Pinger target)
+    {
+        targets.add(target);
+    }
+
+    void unregister(Pinger target)
+    {
+        targets.remove(target);
+    }
+
     void tick()
     {
         try
         {
-            clients.heartbeat();
-            Progress.heartbeat();
+            targets.removeIf(target -> !target.ping());
         } catch (RuntimeException ex)
         {
             logger.error("Error trying to send heartbeats", ex);
