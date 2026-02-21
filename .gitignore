@@ -4,7 +4,6 @@
 /nbproject/
 /node_modules/
 /.vscode/
-/documentation/node_modules/
 /.github/
 /.idea/
 /.settings/
@@ -13,4 +12,4 @@
 *.iml
 /src/main/resources/META-INF/resources/gate/
 
-/documentation/gate/
+/doc/gate/
