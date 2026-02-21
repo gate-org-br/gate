@@ -1,3 +1,0 @@
-import"./trigger.js";import f from"./dom.js";import d from"./data-url.js";import n from"./request-builder.js";window.addEventListener("@value",function(e){let r=e.composedPath(),{method:l,action:c,form:m,parameters:[a]}=e.detail,h=f.navigate(e,a).orElseThrow(`${a} is not a valid selector`);fetch(n.build(l,c,m)).then(t=>{if(!t)return Promise.resolve();if(t.ok){let i=t.headers.get("content-type");return i.startsWith("text/")?t=t.text():i.startsWith("application/json")?t=t.json():t=t.blob(),t.then(o=>{h.value=o,e.success(r,new d(i,o).toString())})}return t.text().then(i=>Promise.reject(new Error(i)))}).catch(t=>e.failure(r,t))});
-
-//# sourceMappingURL=@value.js.map

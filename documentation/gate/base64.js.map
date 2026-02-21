@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["base64.js"],
-  "sourcesContent": ["export default class Base64\n{\n\tstatic\tdecode(string)\n\t{\n\t\tconst bytes = new Uint8Array(atob(string).split('').map(char => char.charCodeAt(0)));\n\t\tconst decoder = new TextDecoder('utf-8');\n\t\treturn decoder.decode(bytes);\n\t}\n\n\tstatic\tencode(string)\n\t{\n\t\tconst encoder = new TextEncoder('utf-8');\n\t\tconst bytes = encoder.encode(string);\n\t\tlet binaryString = '';\n\t\tbytes.forEach(byte => binaryString += String.fromCharCode(byte));\n\t\treturn btoa(binaryString);\n\t}\n}"],
-  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,OAAOC,EACd,CACC,MAAMC,EAAQ,IAAI,WAAW,KAAKD,CAAM,EAAE,MAAM,EAAE,EAAE,IAAIE,GAAQA,EAAK,WAAW,CAAC,CAAC,CAAC,EAEnF,OADgB,IAAI,YAAY,OAAO,EACxB,OAAOD,CAAK,CAC5B,CAEA,OAAO,OAAOD,EACd,CAEC,MAAMC,EADU,IAAI,YAAY,OAAO,EACjB,OAAOD,CAAM,EACnC,IAAIG,EAAe,GACnB,OAAAF,EAAM,QAAQG,GAAQD,GAAgB,OAAO,aAAaC,CAAI,CAAC,EACxD,KAAKD,CAAY,CACzB,CACD",
-  "names": ["Base64", "string", "bytes", "char", "binaryString", "byte"]
-}

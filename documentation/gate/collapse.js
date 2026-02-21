@@ -1,3 +1,0 @@
-import i from"./dom.js";function e(t){t.removeAttribute("data-overflowing"),(t.scrollWidth>t.clientWidth||t.scrollWidth>t.parentNode.clientWidth||Array.from(t.querySelectorAll("td, th")).some(r=>r.scrollWidth>r.clientWidth))&&t.setAttribute("data-overflowing","true")}window.addEventListener("resize",()=>i.traverse(document,t=>t.tagName==="TABLE"&&t.hasAttribute("data-collapse"),t=>e(t))),window.addEventListener("orientationchange",()=>i.traverse(document,t=>t.tagName==="TABLE"&&t.hasAttribute("data-collapse"),t=>e(t))),window.addEventListener("connected",t=>{t.target.tagName==="TABLE"&&t.target.hasAttribute("data-collapse")&&e(t.target)});
-
-//# sourceMappingURL=collapse.js.map

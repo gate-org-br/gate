@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["g-logger.js"],
-  "sourcesContent": ["let template = document.createElement(\"template\");\ntemplate.innerHTML = `\n<style data-element=\"g-logger\">:host(*){padding:4px;cursor:pointer;overflow-y:auto;border-radius:5px;background-color:#fff}span{height:16px;display:flex;align-items:center}\n</style>`;\n/* global customElements */\n\n\ncustomElements.define('g-logger', class extends HTMLElement\n{\n\tconstructor()\n\t{\n\t\tsuper();\n\t\tthis.attachShadow({mode: \"open\"});\n\t\tthis.shadowRoot.appendChild(template.content.cloneNode(true));\n\t}\n\n\tappend(text)\n\t{\n\n\t\tthis.shadowRoot.appendChild(document.createElement(\"span\")).innerHTML = text;\n\t\tthis.shadowRoot.lastElementChild.scrollIntoView();\n\t}\n});"],
-  "mappings": "AAAA,IAAI,SAAW,SAAS,cAAc,UAAU,EAChD,SAAS,UAAY;AAAA;AAAA,UAMrB,eAAe,OAAO,WAAY,cAAc,WAChD,CACC,aACA,CACC,MAAM,EACN,KAAK,aAAa,CAAC,KAAM,MAAM,CAAC,EAChC,KAAK,WAAW,YAAY,SAAS,QAAQ,UAAU,EAAI,CAAC,CAC7D,CAEA,OAAOA,EACP,CAEC,KAAK,WAAW,YAAY,SAAS,cAAc,MAAM,CAAC,EAAE,UAAYA,EACxE,KAAK,WAAW,iBAAiB,eAAe,CACjD,CACD,CAAC",
-  "names": ["text"]
-}

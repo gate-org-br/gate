@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["picker.js"],
-  "sourcesContent": ["import './g-date-input.js';\nimport './g-date-interval-input.js';\nimport './g-time-input.js';\nimport './g-time-interval-input.js';\nimport './g-date-time-input.js';\nimport './g-date-time-interval-input.js';\nimport './g-month-input.js';\nimport './g-month-interval-input.js';\nimport './g-icon-input.js';"],
-  "mappings": "AAAA,MAAO,oBACP,MAAO,6BACP,MAAO,oBACP,MAAO,6BACP,MAAO,yBACP,MAAO,kCACP,MAAO,qBACP,MAAO,8BACP,MAAO",
-  "names": []
-}

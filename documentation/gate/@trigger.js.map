@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["@trigger.js"],
-  "sourcesContent": ["import DOM from './dom.js';\nimport trigger from './trigger.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@trigger\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {cause, method, action, parameters: [selector], form} = event.detail;\n\n\tfetch(RequestBuilder.build(method, action, form))\n\t\t.then(ResponseHandler.dataURL)\n\t\t.then(result =>\n\t\t{\n\t\t\tevent.success(path, result);\n\t\t\tDOM.navigate(event, selector).ifPresent(element => trigger(cause, element));\n\t\t})\n\t\t.catch(error => event.failure(path, error));\n});"],
-  "mappings": "AAAA,OAAOA,MAAS,WAChB,OAAOC,MAAa,eACpB,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,WAAY,SAAUC,EAC9C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,MAAAE,EAAO,OAAAC,EAAQ,OAAAC,EAAQ,WAAY,CAACC,CAAQ,EAAG,KAAAC,CAAI,EAAIN,EAAM,OAElE,MAAMF,EAAe,MAAMK,EAAQC,EAAQE,CAAI,CAAC,EAC9C,KAAKP,EAAgB,OAAO,EAC5B,KAAKQ,GACN,CACCP,EAAM,QAAQC,EAAMM,CAAM,EAC1BX,EAAI,SAASI,EAAOK,CAAQ,EAAE,UAAUG,GAAWX,EAAQK,EAAOM,CAAO,CAAC,CAC3E,CAAC,EACA,MAAMC,GAAST,EAAM,QAAQC,EAAMQ,CAAK,CAAC,CAC5C,CAAC",
-  "names": ["DOM", "trigger", "RequestBuilder", "ResponseHandler", "event", "path", "cause", "method", "action", "selector", "form", "result", "element", "error"]
-}

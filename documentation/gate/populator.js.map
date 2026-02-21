@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["populator.js"],
-  "sourcesContent": ["export default class Populator\n{\n\t#options;\n\tconstructor(options)\n\t{\n\t\tthis.#options = options;\n\t}\n\n\tpopulate(element, value = 'value', label = 'label')\n\t{\n\t\twhile (element.firstChild)\n\t\t\telement.removeChild(element.firstChild);\n\n\t\tif (element.tagName === \"SELECT\")\n\t\t{\n\t\t\telement.value = undefined;\n\t\t\telement.appendChild(document.createElement(\"option\")).setAttribute(\"value\", \"\");\n\t\t}\n\n\t\tfor (var i = 0; i < this.#options.length; i++)\n\t\t{\n\t\t\tvar option = element.appendChild(document.createElement(\"option\"));\n\t\t\toption.innerHTML = this.#options[i][label];\n\t\t\toption.setAttribute(element.tagName === \"SELECT\" ? 'value' : \"data-value\",\n\t\t\t\tthis.#options[i][value]);\n\t\t}\n\n\t\treturn this;\n\t}\n}"],
-  "mappings": "AAAA,qBAAqBA,CACrB,CACCC,GACA,YAAYC,EACZ,CACC,KAAKD,GAAWC,CACjB,CAEA,SAASC,EAASC,EAAQ,QAASC,EAAQ,QAC3C,CACC,KAAOF,EAAQ,YACdA,EAAQ,YAAYA,EAAQ,UAAU,EAEnCA,EAAQ,UAAY,WAEvBA,EAAQ,MAAQ,OAChBA,EAAQ,YAAY,SAAS,cAAc,QAAQ,CAAC,EAAE,aAAa,QAAS,EAAE,GAG/E,QAASG,EAAI,EAAGA,EAAI,KAAKL,GAAS,OAAQK,IAC1C,CACC,IAAIC,EAASJ,EAAQ,YAAY,SAAS,cAAc,QAAQ,CAAC,EACjEI,EAAO,UAAY,KAAKN,GAASK,CAAC,EAAED,CAAK,EACzCE,EAAO,aAAaJ,EAAQ,UAAY,SAAW,QAAU,aAC5D,KAAKF,GAASK,CAAC,EAAEF,CAAK,CAAC,CACzB,CAEA,OAAO,IACR,CACD",
-  "names": ["Populator", "#options", "options", "element", "value", "label", "i", "option"]
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["@dataset.js"],
-  "sourcesContent": ["import DOM from './dom.js';\nimport DataURL from './data-url.js';\n\nwindow.addEventListener(\"@dataset\", function pick(event)\n{\n\tlet path = event.composedPath();\n\tlet trigger = path[0] || event.target;\n\tlet {action, parameters: [selector]} = event.detail;\n\n\tlet table = DOM.navigate(trigger, selector || action)\n\t\t.orElseThrow(`${selector || action} is not a valid selector`);\n\n\tlet dataset = Array.from(table.querySelectorAll(\"thead > tr, tbody > tr\"))\n\t\t.map(tr => Array.from(tr.children).map(e => e.getAttribute(\"data-value\") || e.innerText));\n\n\tevent.success(path, new DataURL(\"application/json\", JSON.stringify(dataset)));\n});\n"],
-  "mappings": "AAAA,OAAOA,MAAS,WAChB,OAAOC,MAAa,gBAEpB,OAAO,iBAAiB,WAAY,SAAcC,EAClD,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1BE,EAAUD,EAAK,CAAC,GAAKD,EAAM,OAC3B,CAAC,OAAAG,EAAQ,WAAY,CAACC,CAAQ,CAAC,EAAIJ,EAAM,OAEzCK,EAAQP,EAAI,SAASI,EAASE,GAAYD,CAAM,EAClD,YAAY,GAAGC,GAAYD,CAAM,0BAA0B,EAEzDG,EAAU,MAAM,KAAKD,EAAM,iBAAiB,wBAAwB,CAAC,EACvE,IAAIE,GAAM,MAAM,KAAKA,EAAG,QAAQ,EAAE,IAAIC,GAAKA,EAAE,aAAa,YAAY,GAAKA,EAAE,SAAS,CAAC,EAEzFR,EAAM,QAAQC,EAAM,IAAIF,EAAQ,mBAAoB,KAAK,UAAUO,CAAO,CAAC,CAAC,CAC7E,CAAC",
-  "names": ["DOM", "DataURL", "event", "path", "trigger", "action", "selector", "table", "dataset", "tr", "e"]
-}

@@ -1,3 +1,0 @@
-import"./g-stack-frame.js";import s from"./data-url.js";import c from"./request-builder.js";import d from"./response-handler.js";window.addEventListener("@stack",function(e){let i=e.composedPath(),{method:r,action:o,form:l}=e.detail,a=window.top.document.createElement("g-stack-frame"),n=a.show();e.detail.parameters[0],a.setAttribute("data-loading",""),fetch(c.build(r,o,l)).then(d.text).then(t=>{n.finally(()=>e.success(i,new s("text/html",t).toString())),a.appendChild(document.createRange().createContextualFragment(t))}).catch(t=>{a.hide(),e.failure(t)}).finally(()=>a.removeAttribute("data-loading"))});
-
-//# sourceMappingURL=@stack.js.map
