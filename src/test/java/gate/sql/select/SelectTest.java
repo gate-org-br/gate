@@ -606,6 +606,20 @@ public class SelectTest
 	}
 
 	@Test
+	public void testForUpdate()
+	{
+		Query.Constant query = Select
+			.expression("id")
+			.expression("name")
+			.from("Uzer")
+			.forUpdate()
+			.build();
+
+		assertEquals("select id, name from Uzer for update", query.toString());
+		assertEquals(query.getParameters(), Collections.emptyList());
+	}
+
+	@Test
 	public void testExists()
 	{
 		try (Link link = TestDataSource.getLink())
