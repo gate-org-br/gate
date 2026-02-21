@@ -17,6 +17,21 @@ const documentationGate = path.resolve(__dirname, "documentation/gate");
 const sourceIconsDir = path.resolve(__dirname, "src/main/icons");
 const resourcesIconDir = path.join(resources, "icon");
 
+async function exists(file)
+{
+	try
+	{
+		await fs.access(file);
+		return true;
+	} catch (error)
+	{
+		if (error?.code === "ENOENT")
+			return false;
+
+		throw error;
+	}
+}
+
 async function clean()
 {
 	const files = await glob(`${resources}/*.{js,mjs,css}`);
@@ -96,23 +111,15 @@ async function processWC()
 		if (!script)
 		{
 			const wcc = file + "c";
-			try
-			{
+			if (await exists(wcc))
 				script = await fs.readFile(wcc, "utf8");
-			} catch
-			{
-			}
 		}
 
 		if (!style)
 		{
 			const wcs = file + "s";
-			try
-			{
+			if (await exists(wcs))
 				style = await fs.readFile(wcs, "utf8");
-			} catch
-			{
-			}
 		}
 
 		const minifiedTemplate = template ? minifyTemplateHtml(template) : undefined;
@@ -203,7 +210,9 @@ async function createIconData()
 }
 
 async function copyIconsToResources() {
-	await fs.access(sourceIconsDir);
+	if (!await exists(sourceIconsDir))
+		throw new Error(`Icons source directory not found: ${sourceIconsDir}`);
+
 	await fs.rm(resourcesIconDir, {recursive: true, force: true});
 	await fs.cp(sourceIconsDir, resourcesIconDir, {recursive: true});
 }
