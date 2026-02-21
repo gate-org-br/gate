@@ -1,6 +1,7 @@
 package gate.io;
 
 import gate.http.Authorization;
+import gate.lang.json.JsonElement;
 import gate.security.UnsecureHttpClient;
 import gate.util.Parameters;
 
@@ -298,6 +299,30 @@ public class HttpCall
                 "application/x-www-form-urlencoded",
                 parameters.toString().getBytes(StandardCharsets.UTF_8)
         );
+    }
+
+    /**
+     * Sets a json request body.
+     *
+     * @param json request body
+     * @return this instance
+     */
+    public HttpCall json(String json)
+    {
+        this.contentType = "application/json";
+        this.body = json.getBytes(StandardCharsets.UTF_8);
+        return this;
+    }
+
+    /**
+     * Sets a json request body.
+     *
+     * @param json request body
+     * @return this instance
+     */
+    public HttpCall json(JsonElement json)
+    {
+        return json(json.toString());
     }
 
 	/* =========================
