@@ -1,5 +1,6 @@
 package gate.type;
 
+import gate.annotation.Entity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +38,20 @@ public class PropertyReferenceTest
 	}
 
 	@Test
+	public void testEntityGetterReferenceUsesIdSuffix()
+	{
+		PropertyReference<User, Role> ref = User::getRole;
+		assertEquals("Role$id", PropertyReference.property(ref));
+	}
+
+	@Test
+	public void testEntityGetterReferenceUsesCustomEntityKey()
+	{
+		PropertyReference<User, Company> ref = User::getCompany;
+		assertEquals("Company$uuid", PropertyReference.property(ref));
+	}
+
+	@Test
 	public void testLambdaThrows()
 	{
 		PropertyReference<User, String> ref = user -> user.getName();
@@ -48,6 +63,8 @@ public class PropertyReferenceTest
 
 		private String name;
 		private boolean active;
+		private Role role;
+		private Company company;
 
 		public String getName()
 		{
@@ -58,6 +75,26 @@ public class PropertyReferenceTest
 		{
 			return active;
 		}
+
+		public Role getRole()
+		{
+			return role;
+		}
+
+		public Company getCompany()
+		{
+			return company;
+		}
+	}
+
+	@Entity
+	private static class Role
+	{
+	}
+
+	@Entity("uuid")
+	private static class Company
+	{
 	}
 
 	private record UserRecord(String name, boolean active, boolean isAdmin)
