@@ -116,7 +116,7 @@ public interface Query extends SQL, Compilable
 			/**
 			 * Creates a new compiled query.
 			 *
-			 * @return the compile query created
+			 * @return the compiled query created
 			 */
 			@Override
 			Query.Compiled build();
@@ -184,7 +184,7 @@ public interface Query extends SQL, Compilable
 			/**
 			 * Creates a new compiled query.
 			 *
-			 * @return the compile query created
+			 * @return the compiled query created
 			 */
 			@Override
 			Query.Constant build();
@@ -232,7 +232,7 @@ public interface Query extends SQL, Compilable
 		String toString();
 
 		/**
-		 * A SQL query linked to a database and compiled with a set or parameters.
+		 * A SQL query linked to a database and compiled with a set of parameters.
 		 * <p>
 		 * A connected and compiled query is ready for execution
 		 */
