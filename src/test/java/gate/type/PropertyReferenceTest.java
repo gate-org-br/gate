@@ -52,6 +52,13 @@ public class PropertyReferenceTest
 	}
 
 	@Test
+	public void testEntityMethodWithoutGetUsesEntityReference()
+	{
+		PropertyReference<UserRecord, Company> ref = UserRecord::company;
+		assertEquals("Company$uuid", PropertyReference.property(ref));
+	}
+
+	@Test
 	public void testLambdaThrows()
 	{
 		PropertyReference<User, String> ref = user -> user.getName();
@@ -97,7 +104,7 @@ public class PropertyReferenceTest
 	{
 	}
 
-	private record UserRecord(String name, boolean active, boolean isAdmin)
+	private record UserRecord(String name, boolean active, boolean isAdmin, Company company)
 	{
 	}
 }
