@@ -12,3 +12,5 @@
 /.project
 *.iml
 /src/main/resources/META-INF/resources/gate/
+
+/documentation/gate/
