@@ -1,12 +1,12 @@
 {
   "type": "module",
   "scripts": {
-	"build": "node build.mjs"
+    "build": "node build.mjs"
   },
   "devDependencies": {
-	"esbuild": "^0.25.12",
-	"fantasticon": "^4.1.0",
-	"glob": "^13.0.3",
-	"less": "^4.5.1"
+    "esbuild": "^0.25.12",
+    "glob": "^13.0.3",
+    "less": "^4.5.1",
+    "svgtofont": "^6.4.0"
   }
 }
