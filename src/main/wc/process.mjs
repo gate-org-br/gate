@@ -93,10 +93,12 @@ export default function process(id, name, method, action, payload)
 			reject("Connection closed");
 		});
 
+		source.addEventListener("close", () => resolve(null));
+
 		source.addEventListener("readystatechange", e =>
 		{
-			if (e.readyState === 4)
-				resolve(null);
+			if (e.readyState === 2)
+				reject(new Error("Connection closed without result"));
 		});
 
 		source.addEventListener("Redirect", (event) =>
