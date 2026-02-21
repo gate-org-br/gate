@@ -5,42 +5,42 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class MethodReferenceTest
+public class PropertyReferenceTest
 {
 
 	@Test
 	public void testGetterProperty()
 	{
-		MethodReference<User, String> ref = User::getName;
-		assertEquals("name", MethodReference.property(ref));
+		PropertyReference<User, String> ref = User::getName;
+		assertEquals("name", PropertyReference.property(ref));
 	}
 
 	@Test
 	public void testBooleanGetterProperty()
 	{
-		MethodReference<User, Boolean> ref = User::isActive;
-		assertEquals("active", MethodReference.property(ref));
+		PropertyReference<User, Boolean> ref = User::isActive;
+		assertEquals("active", PropertyReference.property(ref));
 	}
 
 	@Test
 	public void testRecordAccessorProperty()
 	{
-		MethodReference<UserRecord, String> ref = UserRecord::name;
-		assertEquals("name", MethodReference.property(ref));
+		PropertyReference<UserRecord, String> ref = UserRecord::name;
+		assertEquals("name", PropertyReference.property(ref));
 	}
 
 	@Test
 	public void testRecordBooleanAccessorWithIsPrefix()
 	{
-		MethodReference<UserRecord, Boolean> ref = UserRecord::isAdmin;
-		assertEquals("isAdmin", MethodReference.property(ref));
+		PropertyReference<UserRecord, Boolean> ref = UserRecord::isAdmin;
+		assertEquals("isAdmin", PropertyReference.property(ref));
 	}
 
 	@Test
 	public void testLambdaThrows()
 	{
-		MethodReference<User, String> ref = user -> user.getName();
-		assertThrows(IllegalStateException.class, () -> MethodReference.property(ref));
+		PropertyReference<User, String> ref = user -> user.getName();
+		assertThrows(IllegalStateException.class, () -> PropertyReference.property(ref));
 	}
 
 	private static class User

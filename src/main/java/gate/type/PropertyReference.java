@@ -10,23 +10,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @FunctionalInterface
-public interface MethodReference<T, R> extends Function<T, R>, Serializable
+public interface PropertyReference<T, R> extends Function<T, R>, Serializable
 {
 	Map<String, String> CACHE = new ConcurrentHashMap<>();
 
-	static String property(MethodReference<?, ?> reference)
+	static String property(PropertyReference<?, ?> reference)
 	{
 		SerializedLambda lambda = reference.serializedLambda();
 		String key = lambda.getImplClass() + "#" + lambda.getImplMethodName();
 		return CACHE.computeIfAbsent(key, unused -> resolvePropertyName(reference, lambda));
 	}
 
-	private static String resolvePropertyName(MethodReference<?, ?> reference, SerializedLambda lambda)
+	private static String resolvePropertyName(PropertyReference<?, ?> reference, SerializedLambda lambda)
 	{
 		String methodName = lambda.getImplMethodName();
 
         if (methodName.startsWith("lambda$"))
-            throw new IllegalStateException("MethodReference must be a method reference");
+            throw new IllegalStateException("PropertyReference must be a method reference");
 
 		if (reference.isRecordAccessor(lambda, methodName))
 			return methodName;
