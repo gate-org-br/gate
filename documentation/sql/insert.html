@@ -1,0 +1,116 @@
+<g-callout class='fill'>
+	<h1>Insert</h1>
+	<p>
+		In production DAOs, insert flows usually follow this sequence:
+		map fields with <code>set(...)</code>, execute through <code>Link</code>, and collect generated IDs.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Single Row + Generated Key</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Most common insert pattern.</p>
+				<g-message class='fill'>
+					<pre><code>Insert.into("Organization")
+	.set("code", value.getCode())
+	.set("name", value.getName())
+	.set("host", value.getHost())
+	.build()
+	.connect(getLink())
+	.fetchGeneratedKey(ID.class)
+	.ifPresent(value::setId);</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Explicit and readable field mapping</li>
+					<li>Generated ID is attached immediately</li>
+					<li>No manual SQL string formatting</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Insert Ignore</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Useful for idempotent association or bootstrap flows.</p>
+				<g-message class='fill'>
+					<pre><code>Insert.into("UserAccount")
+	.ignore()
+	.set("id", value.getId())
+	.set("taxId", value.getTaxId())
+	.set("ContactCenter$id", value.getContactCenter().getId())
+	.build()
+	.connect(getLink())
+	.fetchGeneratedKey(ID.class)
+	.ifPresent(value::setId);</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Safer behavior under uniqueness races</li>
+					<li>Reduces duplicate-key exceptions in controlled cases</li>
+					<li>Still supports generated key capture</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Optional Binary/Attachment Insert</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Pattern used for nullable files and payloads.</p>
+				<g-message class='fill'>
+					<pre><code>if (value != null &amp;&amp; value.getFile() != null)
+	Insert.into("Attachment")
+		.set("file", value.getFile())
+		.build()
+		.connect(getLink())
+		.fetchGeneratedKeys(ID.class)
+		.forEach(value::setId);</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Avoids inserting meaningless empty rows</li>
+					<li>Keeps null handling explicit</li>
+					<li>Works with key-list APIs</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Batch/Collection Key Propagation</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Use generated key helpers for collections when supported by your flow.</p>
+				<g-message class='fill'>
+					<pre><code>Insert.into("Department")
+	.from(Department.class)
+	.set("name", Department::getName)
+	.set("active", Department::getActive)
+	.build()
+	.connect(getLink())
+	.fetchGeneratedKey(values, ID.class, Department::setId);</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>No manual key assignment loops</li>
+					<li>Keeps batch write APIs concise</li>
+					<li>Pairs well with repository-level bulk operations</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+</g-tab-control>

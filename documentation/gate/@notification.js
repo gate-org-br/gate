@@ -1,0 +1,3 @@
+import"./trigger.js";window.addEventListener("@notification",function(e){let t=e.composedPath(),{parameters:[r,o]}=e.detail;if(!r)return e.failure(t,new Error("Missing required parameter: title"));if(!o)return e.failure(t,new Error("Missing required parameter: body"));e.resolve(t),Notification.requestPermission().then(n=>{n==="granted"&&import("./handlebars.js").then(i=>i.default).then(i=>(r=i.compile(r)(e.detail.context),o=i.compile(o)(e.detail.context),new Notification(r,{body:o}))).then(i=>i.addEventListener("click",()=>e.success(t),{once:!0}))})});
+
+//# sourceMappingURL=@notification.js.map

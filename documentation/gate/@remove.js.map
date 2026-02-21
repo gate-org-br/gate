@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@remove.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\nimport DOM from './dom.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@remove\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {method, action, parameters: [selector], form} = event.detail;\n\tlet element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);\n\n\treturn fetch(RequestBuilder.build(method, action, form))\n\t\t.then(ResponseHandler.none)\n\t\t.then(() => element.remove())\n\t\t.then(() => event.success(path))\n\t\t.catch(error => event.failure(path, error));\n});\n"],
+  "mappings": "AAEA,MAAO,eACP,OAAOA,MAAS,WAChB,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,UAAW,SAAUC,EAC7C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,OAAAE,EAAQ,OAAAC,EAAQ,WAAY,CAACC,CAAQ,EAAG,KAAAC,CAAI,EAAIL,EAAM,OACvDM,EAAUT,EAAI,SAASG,EAAOI,CAAQ,EAAE,YAAY,GAAGA,CAAQ,0BAA0B,EAE7F,OAAO,MAAMN,EAAe,MAAMI,EAAQC,EAAQE,CAAI,CAAC,EACrD,KAAKN,EAAgB,IAAI,EACzB,KAAK,IAAMO,EAAQ,OAAO,CAAC,EAC3B,KAAK,IAAMN,EAAM,QAAQC,CAAI,CAAC,EAC9B,MAAMM,GAASP,EAAM,QAAQC,EAAMM,CAAK,CAAC,CAC5C,CAAC",
+  "names": ["DOM", "RequestBuilder", "ResponseHandler", "event", "path", "method", "action", "selector", "form", "element", "error"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["proxy.js"],
+  "sourcesContent": ["export default class Proxy\n{\n\tstatic create(element)\n\t{\n\t\tlet clone = element.cloneNode(true);\n\t\tclone.onclick = event =>\n\t\t{\n\t\t\telement.click();\n\t\t\tevent.preventDefault();\n\t\t};\n\t\treturn clone;\n\t}\n\n\tstatic\tcopyStyle(source, target)\n\t{\n\t\ttarget = target.style;\n\t\tsource = getComputedStyle(source);\n\t\tfor (var i = source.length; i-- > 0; ) {\n\t\t\tvar name = source[i];\n\t\t\talert(name);\n\t\t\ttarget.setProperty(name, source.getPropertyValue(name));\n\t\t}\n\t}\n}"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,OAAOC,EACd,CACC,IAAIC,EAAQD,EAAQ,UAAU,EAAI,EAClC,OAAAC,EAAM,QAAUC,GAChB,CACCF,EAAQ,MAAM,EACdE,EAAM,eAAe,CACtB,EACOD,CACR,CAEA,OAAO,UAAUE,EAAQC,EACzB,CACCA,EAASA,EAAO,MAChBD,EAAS,iBAAiBA,CAAM,EAChC,QAASE,EAAIF,EAAO,OAAQE,KAAM,GAAK,CACtC,IAAIC,EAAOH,EAAOE,CAAC,EACnB,MAAMC,CAAI,EACVF,EAAO,YAAYE,EAAMH,EAAO,iBAAiBG,CAAI,CAAC,CACvD,CACD,CACD",
+  "names": ["Proxy", "element", "clone", "event", "source", "target", "i", "name"]
+}

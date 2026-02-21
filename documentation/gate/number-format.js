@@ -1,0 +1,3 @@
+const u=document.documentElement.lang||navigator.language;export default class m{constructor(e=u){const r=new Intl.NumberFormat(e).formatToParts(12345.6),a=[...new Intl.NumberFormat(e,{useGrouping:!1}).format(9876543210)].reverse(),n=new Map(a.map((t,o)=>[t,o]));this._locale=e,this._group=new RegExp(`[${r.find(t=>t.type==="group").value}]`,"g"),this._decimal=new RegExp(`[${r.find(t=>t.type==="decimal").value}]`),this._numeral=new RegExp(`[${a.join("")}]`,"g"),this._index=t=>n.get(t)}parse(e){return e?typeof e=="number"?e:(e=e.trim().replace(this._group,"").replace(this._decimal,".").replace(this._numeral,this._index))?+e:NaN:0}format(e){return e.toLocaleString(this._locale)}}
+
+//# sourceMappingURL=number-format.js.map

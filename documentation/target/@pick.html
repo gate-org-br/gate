@@ -1,0 +1,56 @@
+<g-callout class="fill">
+	<h1>@pick</h1>
+	<p>
+		Upon activation, the <strong>@pick</strong> target opens a dialog displaying the requested content.
+		The response should contain a corresponding <strong>@return</strong> target for each available option.
+		When activated, the <strong>@return</strong> target will pass it's parameters as an JSON array to the
+		to the next target on the @pick target's pipeline.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">
+		Example 1 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Name
+					<span>
+						<input type="hidden">
+						<input type="text" readonly>
+						<a href="./target/fetch-return.html" target="@pick > @fill"
+						   title="Selecione">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+	<a href="#">
+		Example 2 <g-icon>&#X2013;</g-icon>
+	</a>
+	<div>
+		<g-code-viewer style='height: auto'>
+			<fieldset>
+				<label>
+					Name
+					<span>
+						<input type="hidden">
+						<input type="text" readonly>
+						<a href="./target/frame-return.html" target="@pick(frame) > @fill"
+						   title="Selecione">
+							<g-icon>
+								&#X2010;
+							</g-icon>
+						</a>
+					</span>
+				</label>
+			</fieldset>
+		</g-code-viewer>
+	</div>
+</g-tab-control>

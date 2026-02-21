@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@debounce.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\n\nlet REGISTRY = new WeakMap();\n\nwindow.addEventListener(\"@debounce\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet trigger = path[0] || event.target;\n\tlet {parameters: [timeout = \"1000\"]} = event.detail;\n\n\tevent.resolve(path);\n\n\tlet prev = REGISTRY.get(trigger);\n\tif (prev)\n\t\tclearTimeout(prev);\n\n\tconst resolve = setTimeout(() =>\n\t{\n\t\tREGISTRY.delete(trigger);\n\t\tevent.success(path);\n\t}, parseInt(timeout));\n\n\tREGISTRY.set(trigger, resolve);\n});"],
+  "mappings": "AAEA,MAAO,eAEP,IAAIA,EAAW,IAAI,QAEnB,OAAO,iBAAiB,YAAa,SAAUC,EAC/C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1BE,EAAUD,EAAK,CAAC,GAAKD,EAAM,OAC3B,CAAC,WAAY,CAACG,EAAU,MAAM,CAAC,EAAIH,EAAM,OAE7CA,EAAM,QAAQC,CAAI,EAElB,IAAIG,EAAOL,EAAS,IAAIG,CAAO,EAC3BE,GACH,aAAaA,CAAI,EAElB,MAAMC,EAAU,WAAW,IAC3B,CACCN,EAAS,OAAOG,CAAO,EACvBF,EAAM,QAAQC,CAAI,CACnB,EAAG,SAASE,CAAO,CAAC,EAEpBJ,EAAS,IAAIG,EAASG,CAAO,CAC9B,CAAC",
+  "names": ["REGISTRY", "event", "path", "trigger", "timeout", "prev", "resolve"]
+}

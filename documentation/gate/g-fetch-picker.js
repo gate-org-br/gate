@@ -1,0 +1,10 @@
+let n=document.createElement("template");n.innerHTML=`
+	<dialog><header tabindex='1'><label id='caption'></label><a id='close' href='#'><g-icon>
+					&#X1011;
+				</g-icon></a></header><section><slot></slot></section><footer><g-coolbar><button id='clear' class='danger'>
+					Limpar <g-icon>&#X2018;</g-icon></button><hr><button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon></button></g-coolbar></footer></dialog>
+<style data-element="g-fetch-picker">*{box-sizing:border-box}:host(*){gap:8px;display:flex;align-items:stretch;flex-direction:column}dialog{width:100%;height:100%;border-radius:0}@media only screen and (min-width:640px){dialog{border-radius:3px;width:calc(100% - 80px);height:calc(100% - 80px)}}dialog>section{padding:8px;display:flex;align-items:stretch;flex-direction:column}
+</style>`;import o from"./@return.js";import r from"./g-window.js";export default class c extends r{constructor(){super(),this.addEventListener("cancel",()=>this.hide()),this.addEventListener("commit",()=>this.hide()),this.shadowRoot.innerHTML=this.shadowRoot.innerHTML+n.innerHTML,this.shadowRoot.getElementById("close").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.getElementById("cancel").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.getElementById("clear").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("commit",{detail:[]})))}get caption(){return this.shadowRoot.getElementById("caption").innerText}set caption(i){this.shadowRoot.getElementById("caption").innerText=i}show(){o.bind(this),super.show()}hide(){super.hide(),o.free(this)}static pick(i,a){return new Promise((s,d)=>{let e=window.top.document.createElement("g-fetch-picker");e.caption=a||"Pick one",e.show(),fetch(i).then(t=>t.text()).then(t=>e.innerHTML=t),e.addEventListener("commit",t=>s(t.detail)),e.addEventListener("cancel",()=>d(new Error("Cancel")))})}}customElements.define("g-fetch-picker",c);
+
+//# sourceMappingURL=g-fetch-picker.js.map

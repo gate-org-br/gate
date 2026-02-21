@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["g-grid-footer.js"],
+  "sourcesContent": ["let template = document.createElement(\"template\");\ntemplate.innerHTML = `\n\t<slot></slot>\n<style data-element=\"g-grid-footer\">*{box-sizing:border-box}:host(*){height:32px;cursor:inherit;display:table-row}:host(:empty){display:none}::slotted(g-grid-cell){bottom:0;position:sticky;font-weight:700;color:var(--base1);border-color:var(--base5);background-color:var(--base6)}\n</style>`;\nimport './g-grid-cell.js';\n\ncustomElements.define('g-grid-footer', class extends HTMLElement\n{\n\tconstructor()\n\t{\n\t\tsuper();\n\t\tthis._private = {};\n\t\tthis.attachShadow({mode: \"open\"});\n\t\tthis.shadowRoot.innerHTML = template.innerHTML;\n\t}\n\n\tget index()\n\t{\n\t\treturn [...this.parentNode.children].indexOf(this);\n\t}\n\n\tget length()\n\t{\n\t\treturn this.children.length;\n\t}\n\n\tcell(index = this.length)\n\t{\n\t\twhile (this.length <= index)\n\t\t\tthis.appendChild(document.createElement(\"g-grid-cell\"));\n\n\t\treturn this.children[index];\n\t}\n});"],
+  "mappings": "AAAA,IAAIA,EAAW,SAAS,cAAc,UAAU,EAChDA,EAAS,UAAY;AAAA;AAAA;AAAA,UAIrB,MAAO,mBAEP,eAAe,OAAO,gBAAiB,cAAc,WACrD,CACC,aACA,CACC,MAAM,EACN,KAAK,SAAW,CAAC,EACjB,KAAK,aAAa,CAAC,KAAM,MAAM,CAAC,EAChC,KAAK,WAAW,UAAYA,EAAS,SACtC,CAEA,IAAI,OACJ,CACC,MAAO,CAAC,GAAG,KAAK,WAAW,QAAQ,EAAE,QAAQ,IAAI,CAClD,CAEA,IAAI,QACJ,CACC,OAAO,KAAK,SAAS,MACtB,CAEA,KAAKC,EAAQ,KAAK,OAClB,CACC,KAAO,KAAK,QAAUA,GACrB,KAAK,YAAY,SAAS,cAAc,aAAa,CAAC,EAEvD,OAAO,KAAK,SAASA,CAAK,CAC3B,CACD,CAAC",
+  "names": ["template", "index"]
+}

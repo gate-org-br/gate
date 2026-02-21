@@ -1,0 +1,132 @@
+body {
+  gap: 12px;
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+body > main {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0px;
+  display: flex;
+  position: absolute;
+  align-items: stretch;
+  flex-direction: column;
+}
+body > main > header {
+  width: 100%;
+  display: flex;
+  flex: 0 0 50px;
+  color: var(--main1);
+  align-items: center;
+  background-color: var(--base2);
+}
+body > main > header > * {
+  margin: 0 8px 0 8px;
+}
+body > main > header > img {
+  width: 28px;
+  height: 30px;
+  display: flex;
+  font-size: 48px;
+  align-items: center;
+  justify-content: center;
+}
+body > main > header > *:nth-child(2) {
+  flex-grow: 1;
+  display: flex;
+  font-size: 22px;
+  align-items: center;
+  justify-content: flex-start;
+}
+body > main > header > *:nth-child(3) {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+body > main > nav {
+  margin: 0;
+  border: none;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--main3);
+  border-bottom: 1px solid var(--base3);
+}
+body > main > section {
+  margin: 0;
+  padding: 8px;
+  flex-grow: 1;
+  overflow: auto;
+  overflow-x: hidden;
+  position: relative;
+  background-color: var(--main1);
+}
+body > main > footer {
+  bottom: 0;
+  padding: 8px;
+  display: flex;
+  flex: 0 0 28px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--base1);
+  align-items: center;
+  background-color: var(--base3);
+  justify-content: space-between;
+}
+body > main > footer > label {
+  font-size: inherit;
+}
+form {
+  gap: 12px;
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+}
+article {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+}
+article > header {
+  grid-row: 1;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+article > nav {
+  grid-row: 2;
+}
+article > section {
+  grid-row: 3;
+  overflow: auto;
+  overflow-x: hidden;
+}
+article > footer {
+  grid-row: 4;
+  overflow: auto;
+  overflow-x: hidden;
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}
+article > * {
+  margin-top: 10px;
+}
+article > *:first-child {
+  margin-top: 0px;
+}
+article > *:only-child {
+  margin-top: 0px;
+}
+section {
+  gap: 12px;
+  display: flex;
+  flex-direction: column;
+}

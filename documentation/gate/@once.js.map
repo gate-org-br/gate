@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@once.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\n\nlet REGISTRY = new WeakSet();\n\nwindow.addEventListener(\"@once\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet trigger = path[0] || event.target;\n\n\tif (REGISTRY.has(trigger))\n\t\treturn event.resolve(path);\n\n\tREGISTRY.add(trigger);\n\tevent.success(path);\n});"],
+  "mappings": "AAEA,MAAO,eAEP,IAAIA,EAAW,IAAI,QAEnB,OAAO,iBAAiB,QAAS,SAAUC,EAC3C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1BE,EAAUD,EAAK,CAAC,GAAKD,EAAM,OAE/B,GAAID,EAAS,IAAIG,CAAO,EACvB,OAAOF,EAAM,QAAQC,CAAI,EAE1BF,EAAS,IAAIG,CAAO,EACpBF,EAAM,QAAQC,CAAI,CACnB,CAAC",
+  "names": ["REGISTRY", "event", "path", "trigger"]
+}

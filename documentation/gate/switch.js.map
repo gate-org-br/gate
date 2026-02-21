@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["switch.js"],
+  "sourcesContent": ["window.setInterval(() =>\n{\n\tArray.from(document.querySelectorAll(\"*[data-switch]\")).forEach(node =>\n\t{\n\t\tlet innerHTML = node.innerHTML;\n\t\tlet dataSwitch = node.getAttribute('data-switch');\n\t\tnode.innerHTML = dataSwitch;\n\t\tnode.setAttribute('data-switch', innerHTML);\n\t});\n}, 500);"],
+  "mappings": "AAAA,OAAO,YAAY,IACnB,CACC,MAAM,KAAK,SAAS,iBAAiB,gBAAgB,CAAC,EAAE,QAAQA,GAChE,CACC,IAAIC,EAAYD,EAAK,UACjBE,EAAaF,EAAK,aAAa,aAAa,EAChDA,EAAK,UAAYE,EACjBF,EAAK,aAAa,cAAeC,CAAS,CAC3C,CAAC,CACF,EAAG,GAAG",
+  "names": ["node", "innerHTML", "dataSwitch"]
+}

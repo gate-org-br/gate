@@ -1,0 +1,5 @@
+let e=document.createElement("template");e.innerHTML=`
+	<label></label>
+`;import i from"./duration.js";customElements.define("g-digital-clock",class extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=e.innerHTML,this._private={tick:()=>!this.paused&&(this.time=this.time+1)}}static get observedAttributes(){return["time","paused"]}attributeChangedCallback(){this.shadowRoot.querySelector("label").innerText=new i(Number(this.getAttribute("time"))).format(this.getAttribute("format")||"hh:mm:ss")}get paused(){return this.hasAttribute("paused")}set paused(t){t?this.setAttribute("paused",""):this.removeAttribute("paused")}get time(){return Number(this.getAttribute("time")||0)}set time(t){this.setAttribute("time",t)}connectedCallback(){window.addEventListener("ClockTick",this._private.tick)}disconnectedCallback(){window.removeEventListener("ClockTick",this._private.tick)}}),window.setInterval(()=>window.dispatchEvent(new CustomEvent("ClockTick")),1e3);
+
+//# sourceMappingURL=g-digital-clock.js.map

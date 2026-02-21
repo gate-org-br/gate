@@ -1,0 +1,3 @@
+export default class t extends HTMLElement{constructor(){super(),this.addEventListener("keydown",e=>e.stopPropagation()),this.addEventListener("keypress",e=>e.stopPropagation())}show(){return new Promise(e=>{this.addEventListener("hide",()=>e(),{once:!0}),this.parentNode||window.top.document.body.appendChild(this),this.style.display="flex",this.shadowRoot.querySelector("dialog").showModal()})}hide(){return this.parentNode&&(this.dispatchEvent(new CustomEvent("hide",{bubbles:!0,detail:{modal:this}})),this.shadowRoot.querySelector("dialog").close(),this.style.display="",this.parentNode===window.top.document.body&&this.remove()),this}}customElements.define("g-modal",t);
+
+//# sourceMappingURL=g-modal.js.map

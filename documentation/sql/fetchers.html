@@ -1,0 +1,162 @@
+<g-callout class='fill'>
+	<h1>Complete Fetchers</h1>
+	<p>
+		This page documents all built-in methods from <code>Fetchable</code>.
+		Examples are grouped by output shape and include practical guidance from real DAO usage.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Base</a>
+	<div>
+		<g-callout>
+			<p>Use base methods when default helpers are not enough.</p>
+			<ul>
+				<li><code>&lt;T&gt; T fetch(Fetcher&lt;T&gt; fetcher)</code></li>
+				<li><code>&lt;T&gt; Stream&lt;T&gt; stream(Mapper&lt;T&gt; mapper)</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>List&lt;Group&gt; grouped = query.fetch(cursor -&gt; {
+	// custom cursor traversal
+	return result;
+});
+
+Stream&lt;Person&gt; stream = query.stream(new EntityMapper&lt;&gt;(Person.class));</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">Object</a>
+	<div>
+		<g-callout>
+			<p>First-column focused fetchers for scalar and light lookup flows.</p>
+			<ul>
+				<li><code>objectStream()</code>, <code>objectStream(Class&lt;T&gt;)</code></li>
+				<li><code>fetchObject()</code>, <code>fetchObject(Class&lt;T&gt;)</code></li>
+				<li><code>fetchObjectList()</code>, <code>fetchObjectSet()</code></li>
+				<li><code>fetchObjectList(Class&lt;T&gt;)</code>, <code>fetchObjectSet(Class&lt;T&gt;)</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>Optional&lt;Integer&gt; total = query.fetchObject(Integer.class);
+List&lt;String&gt; names = query.fetchObjectList(String.class);
+Set&lt;ID&gt; ids = query.fetchObjectSet(ID.class);</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">Array</a>
+	<div>
+		<g-callout>
+			<p>Array-shaped result consumption, typed or untyped.</p>
+			<ul>
+				<li><code>fetchArray()</code>, <code>fetchIntArray()</code></li>
+				<li><code>arrayStream()</code>, <code>arrayStream(Class&lt;?&gt;...)</code></li>
+				<li><code>fetchArray(Class&lt;?&gt;...)</code></li>
+				<li><code>fetchArrayList()</code>, <code>fetchArraySet()</code></li>
+				<li><code>fetchArrayList(Class&lt;?&gt;...)</code>, <code>fetchArraySet(Class&lt;?&gt;...)</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>Optional&lt;Object[]&gt; row = query.fetchArray(Integer.class, String.class);
+List&lt;Object[]&gt; rows = query.fetchArrayList();
+Optional&lt;int[]&gt; counters = query.fetchIntArray();</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">Map</a>
+	<div>
+		<g-callout>
+			<p>Map-shaped output is very common for flexible search/list endpoints.</p>
+			<ul>
+				<li><code>mapStream()</code>, <code>mapStream(Class[] types)</code></li>
+				<li><code>fetchMap()</code>, <code>fetchMap(Class&lt;?&gt;...)</code></li>
+				<li><code>fetchMapList()</code>, <code>fetchMapList(Class&lt;?&gt;...)</code></li>
+				<li><code>fetchMapPage(int pageSize, int pageIndx, Class&lt;?&gt;...)</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>List&lt;Map&lt;String, Object&gt;&gt; rows = query.fetchMapList(String.class, String.class, LocalDateTime.class);
+Page&lt;Map&lt;String, Object&gt;&gt; page = query.fetchMapPage(20, 0, ID.class, String.class);</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">Entity</a>
+	<div>
+		<g-callout>
+			<p>Most-used group in DAO codebases for domain object mapping.</p>
+			<ul>
+				<li><code>entityStream(Class&lt;T&gt;)</code></li>
+				<li><code>fetchEntity(Class&lt;T&gt;)</code></li>
+				<li><code>fetchEntityList(Class&lt;T&gt;)</code>, <code>fetchEntitySet(Class&lt;T&gt;)</code></li>
+				<li><code>fetchEntityPage(Class&lt;T&gt;, int pageSize, int pageIndx)</code></li>
+				<li><code>fetchEntityList(Class&lt;T&gt;, List&lt;Property&gt;)</code>, <code>fetchEntitySet(Class&lt;T&gt;, List&lt;Property&gt;)</code></li>
+				<li><code>fetchEntityList(Class&lt;T&gt;, String... properties)</code>, <code>fetchEntitySet(Class&lt;T&gt;, String... properties)</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>Optional&lt;User&gt; one = query.fetchEntity(User.class);
+List&lt;User&gt; list = query.fetchEntityList(User.class);
+Page&lt;User&gt; page = query.fetchEntityPage(User.class, 50, 0);
+List&lt;User&gt; thin = query.fetchEntityList(User.class, "id", "name");</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">Grid and Pivot</a>
+	<div>
+		<g-callout>
+			<p>Analytical outputs for dashboards and KPI screens.</p>
+			<ul>
+				<li><code>fetchDataGrid()</code>, <code>fetchDataGrid(Class&lt;?&gt;...)</code></li>
+				<li><code>fetchPivotTable(Class&lt;T&gt;)</code></li>
+				<li><code>fetchPivotTable(Class&lt;T&gt;, T defaultValue)</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>DataGrid grid = query.fetchDataGrid(String.class, Integer.class, Percentage.class);
+PivotTable&lt;Double&gt; pivot = query.fetchPivotTable(Double.class, 0.0);</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">JSON and ZIP</a>
+	<div>
+		<g-callout>
+			<p>Output formats for APIs and export workflows.</p>
+			<ul>
+				<li><code>fetchJsonObject()</code></li>
+				<li><code>fetchJsonArray()</code></li>
+				<li><code>fetchJsonTree()</code></li>
+				<li><code>fetchJsonDataset()</code>, <code>fetchJsonDataset(boolean includeHeader)</code></li>
+				<li><code>fetchZipPackage()</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>Optional&lt;JsonObject&gt; one = query.fetchJsonObject();
+JsonArray rows = query.fetchJsonArray();
+JsonArray tree = query.fetchJsonTree();
+JsonArray dataset = query.fetchJsonDataset(true);
+TempFile zip = query.fetchZipPackage();</code></pre>
+		</g-message>
+	</div>
+
+	<a href="#">Primitives</a>
+	<div>
+		<g-callout>
+			<p>Scalar shortcuts for direct metric and existence flows.</p>
+			<ul>
+				<li><code>fetchBoolean()</code></li>
+				<li><code>fetchChar()</code></li>
+				<li><code>fetchByte()</code></li>
+				<li><code>fetchShort()</code></li>
+				<li><code>fetchInt()</code></li>
+				<li><code>fetchLong()</code></li>
+				<li><code>fetchFloat()</code></li>
+				<li><code>fetchDouble()</code></li>
+			</ul>
+		</g-callout>
+		<g-message class='fill'>
+			<pre><code>boolean exists = query.fetchBoolean();
+int total = query.fetchInt();
+double avg = query.fetchDouble();</code></pre>
+		</g-message>
+	</div>
+</g-tab-control>

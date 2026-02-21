@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@none.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\nimport RequestBuilder from './request-builder.js';\n\nwindow.addEventListener(\"@none\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {method, action, form} = event.detail;\n\n\treturn fetch(RequestBuilder.build(method, action, form))\n\t\t.then(() => event.success(path))\n\t\t.catch(error => event.failure(path, error));\n});"],
+  "mappings": "AAEA,MAAO,eACP,OAAOA,MAAoB,uBAE3B,OAAO,iBAAiB,QAAS,SAAUC,EAC3C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,OAAAE,EAAQ,OAAAC,EAAQ,KAAAC,CAAI,EAAIJ,EAAM,OAEnC,OAAO,MAAMD,EAAe,MAAMG,EAAQC,EAAQC,CAAI,CAAC,EACrD,KAAK,IAAMJ,EAAM,QAAQC,CAAI,CAAC,EAC9B,MAAMI,GAASL,EAAM,QAAQC,EAAMI,CAAK,CAAC,CAC5C,CAAC",
+  "names": ["RequestBuilder", "event", "path", "method", "action", "form", "error"]
+}

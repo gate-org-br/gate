@@ -1,0 +1,64 @@
+<g-callout class='fill'>
+	<h1>gate.sql</h1>
+	<p>
+		The <strong>gate.sql</strong> package provides a fluent API for SQL composition and execution,
+		with practical support for dynamic filtering, transactional writes, and typed fetchers.
+	</p>
+	<ul>
+		<li><code>Link</code>: connection, transaction, and command execution</li>
+		<li><code>Select</code> + <code>Condition</code>: composable query and predicate builders</li>
+		<li><code>Insert</code>, <code>Update</code>, <code>Delete</code>: write operations with generated key and affected-row patterns</li>
+		<li><code>Fetchable</code>: typed output mapping for entities, maps, grids, JSON, and scalar values</li>
+	</ul>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Typical Read Flow</a>
+	<div>
+		<g-callout>
+			<g-message class='fill'>
+				<pre><code>List&lt;User&gt; users = Select
+	.of(getClass().getResource("UserDao/search(User).sql"))
+	.where(Condition.TRUE
+		.and("User.name").lk(filter.getName())
+		.and("User.active").eq(filter.getActive()))
+	.orderBy("User.name")
+	.build()
+	.connect(getLink())
+	.fetchEntityList(User.class);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Typical Write Flow</a>
+	<div>
+		<g-callout>
+			<g-message class='fill'>
+				<pre><code>if (Update.table("Organization")
+	.set("name", value.getName())
+	.set("host", value.getHost())
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">How To Read This Tutorial</a>
+	<div>
+		<g-callout>
+			<p>
+				The examples were curated from real DAO usage across large codebases.
+				Not every pattern from production code is ideal, so the pages focus on patterns that are both common and robust.
+			</p>
+			<ul>
+				<li>Start with <strong>Condition</strong> and <strong>Select</strong> for query composition</li>
+				<li>Then review <strong>Insert/Update/Delete</strong> for write semantics and safety guards</li>
+				<li>Use <strong>Fetchers</strong> for output mapping choices</li>
+				<li>Finish with <strong>Production Patterns</strong> for end-to-end DAO style</li>
+			</ul>
+		</g-callout>
+	</div>
+</g-tab-control>
