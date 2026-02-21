@@ -12,35 +12,35 @@ public class MethodReferenceTest
 	public void testGetterProperty()
 	{
 		MethodReference<User, String> ref = User::getName;
-		assertEquals("name", ref.property());
+		assertEquals("name", MethodReference.property(ref));
 	}
 
 	@Test
 	public void testBooleanGetterProperty()
 	{
 		MethodReference<User, Boolean> ref = User::isActive;
-		assertEquals("active", ref.property());
+		assertEquals("active", MethodReference.property(ref));
 	}
 
 	@Test
 	public void testRecordAccessorProperty()
 	{
 		MethodReference<UserRecord, String> ref = UserRecord::name;
-		assertEquals("name", ref.property());
+		assertEquals("name", MethodReference.property(ref));
 	}
 
 	@Test
 	public void testRecordBooleanAccessorWithIsPrefix()
 	{
 		MethodReference<UserRecord, Boolean> ref = UserRecord::isAdmin;
-		assertEquals("isAdmin", ref.property());
+		assertEquals("isAdmin", MethodReference.property(ref));
 	}
 
 	@Test
 	public void testLambdaThrows()
 	{
 		MethodReference<User, String> ref = user -> user.getName();
-		assertThrows(IllegalStateException.class, ref::property);
+		assertThrows(IllegalStateException.class, () -> MethodReference.property(ref));
 	}
 
 	private static class User
