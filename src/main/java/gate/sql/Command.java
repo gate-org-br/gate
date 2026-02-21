@@ -128,6 +128,7 @@ public class Command implements AutoCloseable, Fetchable
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public <T> Optional<T> getGeneratedKey(Class<T> type)
 	{
 		try ( Cursor cursor = getGeneratedKeys())
@@ -135,6 +136,62 @@ public class Command implements AutoCloseable, Fetchable
 			return cursor.next()
 				? Optional.of(cursor.getCurrentValue(type))
 				: Optional.empty();
+		}
+	}
+
+	public char getGeneratedCharKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentCharValue() : 0;
+		}
+	}
+
+	public byte getGeneratedByteKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentByteValue() : 0;
+		}
+	}
+
+	public short getGeneratedShortKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentShortValue() : 0;
+		}
+	}
+
+	public int getGeneratedIntKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentIntValue() : 0;
+		}
+	}
+
+	public long getGeneratedLongKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentLongValue() : 0L;
+		}
+	}
+
+	public float getGeneratedFloatKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentFloatValue() : 0;
+		}
+	}
+
+	public double getGeneratedDoubleKey()
+	{
+		try ( Cursor cursor = getGeneratedKeys())
+		{
+			return cursor.next() ? cursor.getCurrentDoubleValue() : 0;
 		}
 	}
 

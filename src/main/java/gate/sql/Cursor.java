@@ -249,12 +249,15 @@ public class Cursor implements AutoCloseable, Fetchable
         return getCurrentValue(type, type);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T getCurrentValue(Class<T> type, Class<?> elementType)
     {
         try
         {
             Converter converter = Converter.getConverter(type);
-            T value = type.cast(converter.readFromResultSet(getResultSet(), column, elementType));
+            // Do not use Class#cast here because primitive classes (e.g. int.class)
+            // are not compatible with cast(Object), even when the value is boxed.
+            T value = (T) converter.readFromResultSet(getResultSet(), column, elementType);
             column += Math.max(1, converter.getSufixes().size());
             return value;
         } catch (ConversionException | SQLException ex)

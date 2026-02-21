@@ -67,6 +67,17 @@ class BasicOperation<T> implements Operation<T>
 		return this;
 	}
 
+	private void applyGeneratedEntityId(Command command, Property entityId, T value)
+	{
+		Class<?> idType = entityId.getRawType();
+		if (idType == int.class)
+			entityId.setInt(value, command.getGeneratedIntKey());
+		else if (idType == long.class)
+			entityId.setLong(value, command.getGeneratedLongKey());
+		else
+			command.getGeneratedKey(idType).ifPresent(id -> entityId.setValue(value, id));
+	}
+
 	public class Compiled implements Operation.Compiled<T>
 	{
 
@@ -127,8 +138,7 @@ class BasicOperation<T> implements Operation<T>
 									e -> command.setParameter(e.getRawType(), e.getValue(value)));
 							result += command.execute();
 							if (entityId.getValue(value) == null)
-								command.getGeneratedKey(entityId.getRawType())
-										.ifPresent(id -> entityId.setValue(value, id));
+								applyGeneratedEntityId(command, entityId, value);
 						}
 					} else
 					{
@@ -191,8 +201,7 @@ class BasicOperation<T> implements Operation<T>
 										e.getValue(value)));
 								result += command.execute();
 								if (entityId.getValue(value) == null)
-									command.getGeneratedKey(entityId.getRawType())
-											.ifPresent(id -> entityId.setValue(value, id));
+									applyGeneratedEntityId(command, entityId, value);
 								observer.accept(value);
 							}
 						} else
@@ -298,8 +307,7 @@ class BasicOperation<T> implements Operation<T>
 							properties.forEach(
 									e -> command.setParameter(e.getRawType(), e.getValue(value)));
 							result += command.execute();
-							command.getGeneratedKey(entityId.getRawType())
-									.ifPresent(id -> entityId.setValue(value, id));
+							applyGeneratedEntityId(command, entityId, value);
 						}
 					} else
 					{
@@ -363,8 +371,7 @@ class BasicOperation<T> implements Operation<T>
 										e.getValue(value)));
 								result += command.execute();
 								if (entityId.getValue(value) == null)
-									command.getGeneratedKey(entityId.getRawType())
-											.ifPresent(id -> entityId.setValue(value, id));
+									applyGeneratedEntityId(command, entityId, value);
 								observer.accept(value);
 							}
 						} else

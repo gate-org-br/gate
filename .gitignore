@@ -6,9 +6,13 @@
 /src/main/resources/META-INF/resources/gate/
 /.vscode/
 /documentation/node_modules/
+/documentation/gate/
 /.idea/
 /.classpath
 /.project
 /.settings/
 *.iml
+/tools/**/.idea/
+/tools/**/.vscode/
+/tools/**/*.iml
 package-lock.json
