@@ -52,11 +52,11 @@ export default class TriggerEvent extends CustomEvent
 
 	static of(cause, method, action, form, target, context, signal)
 	{
-		if (target == "_top"
-			|| target == "_self"
-			|| target == "_blank"
-			|| target == "_parent"
-			|| target == "_dialog")
+		if (target === "_top"
+			|| target === "_self"
+			|| target === "_blank"
+			|| target === "_parent"
+			|| target === "_dialog")
 			return new TriggerEvent(target, cause, method, action, form, [], context, [], signal);
 
 		let pipeline = Parser.pipeline(target);
