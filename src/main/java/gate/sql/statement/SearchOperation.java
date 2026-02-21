@@ -33,7 +33,7 @@ public interface SearchOperation<T>
 		 *
 		 * @param filter object to be used as a filter for query execution
 		 *
-		 * @return the results of the query fetched a an object of the specified type
+		 * @return the results of the query fetched as an object of the specified type
 		 */
 		List<T> matching(T filter);
 
@@ -42,7 +42,7 @@ public interface SearchOperation<T>
 		 *
 		 * @param parameters to be used query execution
 		 *
-		 * @return the results of the query fetched a an object of the specified type
+		 * @return the results of the query fetched as an object of the specified type
 		 */
 		List<T> parameters(List<Object> parameters);
 
@@ -51,7 +51,7 @@ public interface SearchOperation<T>
 		 *
 		 * @param parameters to be used query execution
 		 *
-		 * @return the results of the query fetched a an object of the specified type
+		 * @return the results of the query fetched as an object of the specified type
 		 */
 		default List<T> parameters(Object... parameters)
 		{

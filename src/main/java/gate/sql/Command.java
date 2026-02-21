@@ -388,7 +388,7 @@ public class Command implements AutoCloseable, Fetchable
 	{
 		try ( Cursor cursor = getCursor())
 		{
-			return cursor.fetchInt();
+			return cursor.fetchLong();
 		}
 	}
 
