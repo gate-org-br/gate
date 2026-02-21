@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@progress.js"],
+  "sourcesContent": ["import process from './process.js';\nimport ResponseHandler from './response-handler.js';\n\nlet sequence = 1;\nwindow.addEventListener(\"@progress\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet trigger = path[0] || event.target;\n\n\tlet processName = trigger.title || \"Progresso\";\n\tlet processId = trigger.id || \"proccess@\" + sequence++;\n\n\tprocess(processId, processName, event.detail.method, event.detail.action, event.detail.form)\n\t\t.then(response => response ? ResponseHandler.dataURL(response) : null)\n\t\t.then(result => result ? event.success(path, result) : event.resolve(path))\n\t\t.catch(error => event.failure(path, error));\n});\n"],
+  "mappings": "AAAA,OAAOA,MAAa,eACpB,OAAOC,MAAqB,wBAE5B,IAAIC,EAAW,EACf,OAAO,iBAAiB,YAAa,SAAUC,EAC/C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1BE,EAAUD,EAAK,CAAC,GAAKD,EAAM,OAE3BG,EAAcD,EAAQ,OAAS,YAC/BE,EAAYF,EAAQ,IAAM,YAAcH,IAE5CF,EAAQO,EAAWD,EAAaH,EAAM,OAAO,OAAQA,EAAM,OAAO,OAAQA,EAAM,OAAO,IAAI,EACzF,KAAKK,GAAYA,EAAWP,EAAgB,QAAQO,CAAQ,EAAI,IAAI,EACpE,KAAKC,GAAUA,EAASN,EAAM,QAAQC,EAAMK,CAAM,EAAIN,EAAM,QAAQC,CAAI,CAAC,EACzE,MAAMM,GAASP,EAAM,QAAQC,EAAMM,CAAK,CAAC,CAC5C,CAAC",
+  "names": ["process", "ResponseHandler", "sequence", "event", "path", "trigger", "processName", "processId", "response", "result", "error"]
+}

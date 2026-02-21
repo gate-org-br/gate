@@ -1,0 +1,117 @@
+<g-callout class='fill'>
+	<h1>Update</h1>
+	<p>
+		Update operations should make scope and safety explicit:
+		clear <code>where</code> predicates, optional assignments with <code>when(...)</code>, and row-count guards.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Standard Update</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Clear table/field mapping with ID-scoped update.</p>
+				<g-message class='fill'>
+					<pre><code>Update.table("UserAccount")
+	.set("taxId", value.getTaxId())
+	.set("Role$id", value.getRole().getId())
+	.set("ContactCenter$id", value.getContactCenter().getId())
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Update scope is explicit</li>
+					<li>Low chance of accidental full-table updates</li>
+					<li>Easy to review and maintain</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Conditional Assignments with when(...)</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Only assign optional fields when values exist.</p>
+				<g-message class='fill'>
+					<pre><code>Update.table("Category")
+	.set("name", value.getName())
+	.set("description", value.getDescription())
+	.when(value.getIcon() != null).set("icon", value.getIcon())
+	.where(Condition.of("id").eq(ID.class, value.getId()))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Prevents unintended null overwrites</li>
+					<li>Keeps optional logic inside the fluent block</li>
+					<li>Matches patch-like update semantics</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Not Found Guard</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Common production guard: fail if no row was updated.</p>
+				<g-message class='fill'>
+					<pre><code>if (Update.table("Organization")
+	.set("name", value.getName())
+	.set("host", value.getHost())
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>No silent no-op write</li>
+					<li>Makes API behavior deterministic</li>
+					<li>Good protection against stale IDs</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Batch Entity Update</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Batch pattern with entity extractors.</p>
+				<g-message class='fill'>
+					<pre><code>Update.table("Ticket")
+	.from(Ticket.class)
+	.set("notifiedUsers", Ticket::getNotifiedUsers)
+	.where(Condition.from(Ticket.class)
+		.expression("id").eq(Ticket::getId))
+	.build()
+	.connect(getLink())
+	.execute(tickets);</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Efficient for multi-row updates</li>
+					<li>Type-safe value extraction</li>
+					<li>Less repetitive than manual loops</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+</g-tab-control>

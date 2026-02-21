@@ -1,0 +1,54 @@
+<g-callout class='fill'>
+	<h1>Link</h1>
+	<p>
+		<code>Link</code> encapsulates the JDBC connection and execution/query operations.
+		You can create it from a <code>DataSource</code>, a JNDI datasource name, or a direct JDBC connection.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Connection and Query</a>
+	<div>
+		<g-callout>
+			<pre><code>try (Link link = new Link("datasourcename"))
+{
+	Optional&lt;Integer&gt; count = link
+		.from("select count(*) from Person where name like ?")
+		.parameters("A%")
+		.fetchObject(Integer.class);
+}</code></pre>
+		</g-callout>
+	</div>
+	<a href="#">Transaction</a>
+	<div>
+		<g-callout>
+			<pre><code>try (Link link = new Link("datasourcename"))
+{
+	link.beginTran();
+	try
+	{
+		link.prepare("insert into Audit (message) values (?)")
+			.parameters("created person")
+			.execute();
+		link.commit();
+	}
+	catch (Exception ex)
+	{
+		link.rollback();
+		throw ex;
+	}
+}</code></pre>
+		</g-callout>
+	</div>
+	<a href="#">SQL From Resource File</a>
+	<div>
+		<g-callout>
+			<pre><code>try (Link link = new Link("datasourcename"))
+{
+	link.prepare(getClass().getResource("InsertPerson.sql"))
+		.parameters(id, name, birthdate)
+		.execute();
+}</code></pre>
+		</g-callout>
+	</div>
+</g-tab-control>

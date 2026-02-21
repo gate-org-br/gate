@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["mutation-listener.js"],
+  "sourcesContent": ["export default class MutationListener\n{\n\t#observer;\n\t#options;\n\t#roots = new Set();\n\n\tconstructor(action, options = {\n\t\tchildList: true, subtree: true,\n\t\tattributes: true\n\t})\n\t{\n\t\tthis.#observer = new MutationObserver(action);\n\t\tthis.#options = {...options};\n\t}\n\n\thas(root)\n\t{\n\t\treturn this.#roots.has(root);\n\t}\n\n\tlisten(root)\n\t{\n\t\tif (this.#roots.has(root))\n\t\t\treturn;\n\n\t\tthis.#roots.add(root);\n\t\tthis.#observer.observe(root, this.#options);\n\t}\n\n\tpause()\n\t{\n\t\tthis.#observer.disconnect();\n\t}\n\n\tresume()\n\t{\n\t\tthis.#roots.forEach(root => this.#observer.observe(root, this.#options));\n\t}\n}"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CACCC,GACAC,GACAC,GAAS,IAAI,IAEb,YAAYC,EAAQC,EAAU,CAC7B,UAAW,GAAM,QAAS,GAC1B,WAAY,EACb,EACA,CACC,KAAKJ,GAAY,IAAI,iBAAiBG,CAAM,EAC5C,KAAKF,GAAW,CAAC,GAAGG,CAAO,CAC5B,CAEA,IAAIC,EACJ,CACC,OAAO,KAAKH,GAAO,IAAIG,CAAI,CAC5B,CAEA,OAAOA,EACP,CACK,KAAKH,GAAO,IAAIG,CAAI,IAGxB,KAAKH,GAAO,IAAIG,CAAI,EACpB,KAAKL,GAAU,QAAQK,EAAM,KAAKJ,EAAQ,EAC3C,CAEA,OACA,CACC,KAAKD,GAAU,WAAW,CAC3B,CAEA,QACA,CACC,KAAKE,GAAO,QAAQG,GAAQ,KAAKL,GAAU,QAAQK,EAAM,KAAKJ,EAAQ,CAAC,CACxE,CACD",
+  "names": ["MutationListener", "#observer", "#options", "#roots", "action", "options", "root"]
+}

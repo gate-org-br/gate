@@ -4,6 +4,6 @@
 /nbproject/
 /node_modules/
 /.vscode/
-/demo/node_modules/
+/documentation/node_modules/
 /.idea/
 package-lock.json

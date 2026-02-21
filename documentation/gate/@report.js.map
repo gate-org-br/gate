@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@report.js"],
+  "sourcesContent": ["import GReportPicker from './g-report-picker.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@report\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet trigger = path[0] || event.target;\n\tlet {method, action, form} = event.detail;\n\n\tGReportPicker.pick(trigger.title)\n\t\t.then(type =>\n\t\t{\n\t\t\tfetch(RequestBuilder.build(method, `${action}${action.indexOf(\"?\") !== -1 ? \"&\" : \"?\"}type=${type}`, form))\n\t\t\t\t.then(ResponseHandler.dataURL)\n\t\t\t\t.then(response => event.success(path, response))\n\t\t\t\t.catch(error => event.failure(path, error));\n\t\t}).catch(() => event.resolve(path));\n});\n"],
+  "mappings": "AAAA,OAAOA,MAAmB,uBAC1B,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,UAAW,SAAUC,EAC7C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1BE,EAAUD,EAAK,CAAC,GAAKD,EAAM,OAC3B,CAAC,OAAAG,EAAQ,OAAAC,EAAQ,KAAAC,CAAI,EAAIL,EAAM,OAEnCH,EAAc,KAAKK,EAAQ,KAAK,EAC9B,KAAKI,GACN,CACC,MAAMR,EAAe,MAAMK,EAAQ,GAAGC,CAAM,GAAGA,EAAO,QAAQ,GAAG,IAAM,GAAK,IAAM,GAAG,QAAQE,CAAI,GAAID,CAAI,CAAC,EACxG,KAAKN,EAAgB,OAAO,EAC5B,KAAKQ,GAAYP,EAAM,QAAQC,EAAMM,CAAQ,CAAC,EAC9C,MAAMC,GAASR,EAAM,QAAQC,EAAMO,CAAK,CAAC,CAC5C,CAAC,EAAE,MAAM,IAAMR,EAAM,QAAQC,CAAI,CAAC,CACpC,CAAC",
+  "names": ["GReportPicker", "RequestBuilder", "ResponseHandler", "event", "path", "trigger", "method", "action", "form", "type", "response", "error"]
+}

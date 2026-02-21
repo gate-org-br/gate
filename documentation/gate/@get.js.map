@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@get.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\nimport resolve from './resolve.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@get\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet trigger = path[0] || event.target;\n\tlet {parameters} = event.detail;\n\n\tlet url = parameters[0]\n\t\t|| trigger.getAttribute(\"href\")\n\t\t|| trigger.getAttribute(\"action\")\n\t\t|| trigger.getAttribute(\"formaction\")\n\t\t|| trigger.getAttribute(\"data-action\");\n\n\turl = resolve(trigger, event.detail.context, url);\n\n\treturn fetch(RequestBuilder.build(\"get\", url))\n\t\t.then(ResponseHandler.dataURL)\n\t\t.then(result => event.success(path, result))\n\t\t.catch(error => event.failure(path, error));\n});"],
+  "mappings": "AAEA,MAAO,eACP,OAAOA,MAAa,eACpB,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,OAAQ,SAAUC,EAC1C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1BE,EAAUD,EAAK,CAAC,GAAKD,EAAM,OAC3B,CAAC,WAAAG,CAAU,EAAIH,EAAM,OAErBI,EAAMD,EAAW,CAAC,GAClBD,EAAQ,aAAa,MAAM,GAC3BA,EAAQ,aAAa,QAAQ,GAC7BA,EAAQ,aAAa,YAAY,GACjCA,EAAQ,aAAa,aAAa,EAEtC,OAAAE,EAAMP,EAAQK,EAASF,EAAM,OAAO,QAASI,CAAG,EAEzC,MAAMN,EAAe,MAAM,MAAOM,CAAG,CAAC,EAC3C,KAAKL,EAAgB,OAAO,EAC5B,KAAKM,GAAUL,EAAM,QAAQC,EAAMI,CAAM,CAAC,EAC1C,MAAMC,GAASN,EAAM,QAAQC,EAAMK,CAAK,CAAC,CAC5C,CAAC",
+  "names": ["resolve", "RequestBuilder", "ResponseHandler", "event", "path", "trigger", "parameters", "url", "result", "error"]
+}

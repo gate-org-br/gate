@@ -1,0 +1,5 @@
+let n=document.createElement("template");n.innerHTML=`
+<style data-element="g-icon-selector">:host(*){width:100%;margin:8px;display:flex;overflow:auto;flex-wrap:wrap;align-items:flex-start;justify-content:flex-start}a{width:64px;speak:none;margin:8px;height:64px;display:flex;font-size:28px;font-style:normal;font-weight:400;align-items:center;font-family:gate;font-variant:normal;text-transform:none;text-decoration:none;justify-content:center;background-color:#fff}a:hover{background-color:var(--hovered)}
+</style>`;import a from"./icon-list.js";customElements.define("g-icon-selector",class extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.shadowRoot.appendChild(n.content.cloneNode(!0)),a.forEach(t=>{let e=document.createElement("a");e.href="#",e.innerHTML=`&#X${t};`,e.addEventListener("click",o=>{o.preventDefault(),this.dispatchEvent(new CustomEvent("selected",{detail:{selector:this,icon:t}}))}),this.shadowRoot.appendChild(e)})}});
+
+//# sourceMappingURL=g-icon-selector.js.map

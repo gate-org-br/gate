@@ -1,0 +1,108 @@
+<g-callout class='fill'>
+	<h1>Delete</h1>
+	<p>
+		Delete flows should be explicit about scope and outcome.
+		The best production patterns combine strict predicates and row-count validation.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Delete By ID</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Canonical delete with typed ID.</p>
+				<g-message class='fill'>
+					<pre><code>Delete.from("Attachment")
+	.where(Condition.of("id").eq(ID.class, value.getId()))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Precise and auditable deletion target</li>
+					<li>Simple to reason about and test</li>
+					<li>Avoids accidental broad deletes</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Delete + Not Found Guard</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Preferred API behavior when deleting a required record.</p>
+				<g-message class='fill'>
+					<pre><code>if (Delete.from("Organization")
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>No silent failures</li>
+					<li>Caller receives clear status semantics</li>
+					<li>Supports optimistic concurrency checks</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Delete with Subquery Predicate</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Useful when deletion key is discovered through relational lookup.</p>
+				<g-message class='fill'>
+					<pre><code>Delete.from("Attachment")
+	.where(Condition.of("Attachment.id")
+		.isEq(Select.expression("Category.Attachment$id")
+			.from("Category")
+			.where(Condition.of("Category.id").eq(category.getId()))))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Why this is useful:</p>
+				<ul>
+					<li>Encodes relationship rule in one SQL operation</li>
+					<li>Avoids extra select-then-delete roundtrip</li>
+					<li>Keeps cleanup logic consistent with relational model</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+
+	<a href="#">Full Table Delete (Administrative)</a>
+	<div>
+		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
+			<g-callout>
+				<p>Only for controlled maintenance flows.</p>
+				<g-message class='fill'>
+					<pre><code>Delete.from("Device")
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+				</g-message>
+			</g-callout>
+			<g-callout>
+				<p>Important:</p>
+				<ul>
+					<li>Use only in explicit admin/maintenance paths</li>
+					<li>Prefer transaction boundaries and audit logs</li>
+					<li>Avoid exposing this in user-facing APIs</li>
+				</ul>
+			</g-callout>
+		</div>
+	</div>
+</g-tab-control>

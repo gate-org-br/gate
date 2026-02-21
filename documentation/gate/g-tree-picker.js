@@ -1,0 +1,12 @@
+let l=document.createElement("template");l.innerHTML=`
+	<dialog><header><label id='caption'>
+				Selecione um \xEDtem
+			</label><a id='close' href="#"><g-icon>
+					&#X1011;
+				</g-icon></a></header><section><ul is='g-tree-list'></ul></section><footer><g-coolbar><button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon></button><hr><button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon></button></g-coolbar></footer></dialog>
+<style data-element="g-tree-picker">dialog{min-width:320px;max-width:800px;height:fit-content;width:calc(100% - 40px)}dialog>section{gap:4px;padding:4px;display:flex;height:400px;overflow:auto;align-items:stretch;background-color:#fff}
+</style>`;import"./g-icon.js";import"./g-tree-list.js";import s from"./g-window.js";function d(r,n){return n.map(e=>{let t=document.createElement("li"),i=t.appendChild(document.createElement("a"));if(i.innerText=e.label,i.addEventListener("click",()=>r.dispatchEvent(new CustomEvent("commit",{detail:{value:e}}))),e.children&&e.children.length){let o=t.appendChild(document.createElement("ul"));d(r,e.children).forEach(c=>o.appendChild(c))}return t})}export default class a extends s{#e;constructor(){super(),this.addEventListener("cancel",()=>this.hide()),this.addEventListener("commit",()=>this.hide()),this.shadowRoot.innerHTML=this.shadowRoot.innerHTML+l.innerHTML,this.shadowRoot.getElementById("close").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.getElementById("cancel").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.getElementById("clear").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("commit",{detail:{value:{}}})))}set caption(n){this.shadowRoot.getElementById("caption").innerHTML=n}get caption(){return this.shadowRoot.getElementById("caption").innerHTML}get options(){return this.#e||[]}set options(n){this.#e=n;let e=this.shadowRoot.querySelector("ul");e.innerHTML="",d(this,n).forEach(t=>e.appendChild(t))}static pick(n,e){if(typeof n=="string")return fetch(n).then(i=>i.ok?i.json():i.text().then(o=>{throw new Error(o)})).then(i=>a.pick(i,e));let t=window.top.document.createElement("g-tree-picker");return t.options=n,e&&(t.caption=e),t.show(),new Promise((i,o)=>{t.addEventListener("cancel",()=>o(new Error("Cancel"))),t.addEventListener("commit",c=>i(c.detail))})}}customElements.define("g-tree-picker",a);
+
+//# sourceMappingURL=g-tree-picker.js.map

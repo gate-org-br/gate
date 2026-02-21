@@ -1,0 +1,57 @@
+<g-callout class='fill'>
+	<h1>&lt;g-selectn&gt;</h1>
+	<p>
+		The <strong>&lt;g-selectn&gt;</strong> custom element streamlines the management of grouped checkboxes within an HTML form,
+		offering an intuitive solution for handling multi-selection scenarios.
+
+		By encapsulating checkboxes with the same name, this element facilitates the submission of selected values as part of the form data.
+
+		Users can interact with the g-selectn element by clicking on individual checkboxes to make specific selections.
+
+		Additionally, the element features a master checkbox, enabling users to conveniently select or deselect all options with a single click.
+
+		This inclusive functionality, combined with attributes like max, min, and required for constraining selection behavior,
+		provides a versatile and user-friendly approach to managing grouped checkbox selections. Developers can easily integrate
+		the g-selectn element into forms, enhancing the overall user experience by simplifying and optimizing the handling of multiple
+		selections.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<g-callout>
+			<p>
+				On this example, the <strong>&lt;g-selectn&gt;</strong> ensure at least 2 options
+				are selected before the form is submited. The <strong>@map</strong> trigger
+				converts the response to the string Success and dispatches it to the
+				<strong>@message</strong> trigger.
+			</p>
+		</g-callout>
+
+		<g-code-viewer ignore="<a.*/a>">
+			<form method='post' action="#">
+				<fieldset>
+					<label>
+						Options:
+						<span>
+
+							<g-selectn name='options[]' min='2'>
+								<input type="checkbox" value='1'><label>Option 1</label>
+								<input type="checkbox" value='2'><label>Option 2</label>
+								<input type="checkbox" value='3'><label>Option 3</label>
+							</g-selectn>
+
+						</span>
+					</label>
+				</fieldset>
+
+				<g-coolbar>
+					<button formtarget='_blank'>
+						Post
+					</button>
+				</g-coolbar>
+			</form>
+		</g-code-viewer>
+	</div>
+</g-tab-control>
