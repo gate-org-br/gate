@@ -6,6 +6,7 @@ import gate.annotation.Secure;
 import gate.entity.User;
 import gate.error.ForbiddenException;
 import gate.error.UnauthorizedException;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.interceptor.AroundInvoke;
@@ -15,6 +16,7 @@ import jakarta.interceptor.InvocationContext;
 @Secure
 @Dependent
 @Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
 public class AuthorizationInterceptor
 {
 	@Inject
