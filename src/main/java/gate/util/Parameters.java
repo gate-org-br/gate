@@ -117,7 +117,7 @@ public class Parameters
      */
     public Parameters put(String query)
     {
-        if (query == null || query.isEmpty())
+        if (query == null || query.isBlank())
             return this;
 
         for (String pair : query.split("&"))
@@ -130,7 +130,7 @@ public class Parameters
             String name = URLDecoder.decode(pair.substring(0, idx), StandardCharsets.UTF_8);
             String value = URLDecoder.decode(pair.substring(idx + 1), StandardCharsets.UTF_8);
 
-            if (!value.isEmpty())
+            if (!value.isBlank())
                 values.put(name, value);
         }
 
