@@ -1,9 +1,10 @@
 package gate;
 
 import gate.util.SystemProperty;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.BeforeDestroyed;
+import jakarta.enterprise.context.Initialized;
+import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import org.slf4j.Logger;
 
@@ -31,8 +32,7 @@ class PingerRegistry
             .map(Long::parseLong)
             .orElse(20L);
 
-    @PostConstruct
-    void init()
+    void init(@Observes @Initialized(ApplicationScoped.class) Object event)
     {
         if (HEARTBEAT == 0)
             return;
@@ -67,8 +67,7 @@ class PingerRegistry
         }
     }
 
-    @PreDestroy
-    void destroy()
+    void destroy(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event)
     {
         if (executor != null)
             executor.shutdownNow();
