@@ -75,7 +75,7 @@ public class Gate extends HttpServlet
 
     @Inject
     @SuppressWarnings("unused")
-    PingerRegistry heartbeatRegistry;
+    HeartbeatRegistry heartbeatRegistry;
 
     static
     {

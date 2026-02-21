@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 
-public class Progress implements Pinger
+public class Progress implements Heartbeat
 {
 
     private static final int UNKNOWN = -1;
@@ -297,7 +297,7 @@ public class Progress implements Pinger
     }
 
     @Override
-    public synchronized boolean ping()
+    public synchronized boolean heartbeat()
     {
         if (status == Status.COMMITED
                 || status == Status.CANCELED
@@ -306,7 +306,7 @@ public class Progress implements Pinger
 
         try
         {
-            writer.write(": ping\n\n");
+            writer.write(": heartbeat\n\n");
             writer.flush();
             return true;
         } catch (IOException ex)

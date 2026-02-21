@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-class SSEClient implements Pinger
+class SSEClient implements Heartbeat
 {
     private final User subject;
     private ServletOutputStream out;
@@ -50,13 +50,13 @@ class SSEClient implements Pinger
     }
 
     @Override
-    public synchronized boolean ping()
+    public synchronized boolean heartbeat()
     {
         try
         {
             if (out == null)
                 out = asyncContext.getResponse().getOutputStream();
-            out.println(": ping");
+            out.println(": heartbeat");
             out.println();
             out.flush();
             return true;

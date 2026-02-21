@@ -16,13 +16,13 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @ApplicationScoped
-class PingerRegistry
+class HeartbeatRegistry
 {
 
     @Inject
     Logger logger;
 
-    private final Set<Pinger> targets = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<Heartbeat> targets = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private ScheduledExecutorService executor;
 
     private static final long HEARTBEAT = SystemProperty.get("gate.sse.heartbeat")
@@ -46,12 +46,12 @@ class PingerRegistry
         executor.scheduleAtFixedRate(this::tick, HEARTBEAT, HEARTBEAT, TimeUnit.SECONDS);
     }
 
-    void register(Pinger target)
+    void register(Heartbeat target)
     {
         targets.add(target);
     }
 
-    void unregister(Pinger target)
+    void unregister(Heartbeat target)
     {
         targets.remove(target);
     }
@@ -60,7 +60,7 @@ class PingerRegistry
     {
         try
         {
-            targets.removeIf(target -> !target.ping());
+            targets.removeIf(target -> !target.heartbeat());
         } catch (RuntimeException ex)
         {
             logger.error("Error trying to send heartbeats", ex);

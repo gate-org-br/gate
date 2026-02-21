@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SSEClients
 {
     @Inject
-    PingerRegistry heartbeatRegistry;
+    HeartbeatRegistry heartbeatRegistry;
 
     private final Set<SSEClient> clients =
             Collections.newSetFromMap(new ConcurrentHashMap<>());
