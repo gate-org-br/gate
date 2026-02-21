@@ -8,3 +8,7 @@
 /.github/
 /.idea/
 /.settings/
+/.classpath
+/.project
+*.iml
+/src/main/resources/META-INF/resources/gate/
