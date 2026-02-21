@@ -6,10 +6,13 @@ import GMessageDialog from './g-message-dialog.js';
 export default class TriggerEvent extends CustomEvent
 {
 	#pipeline;
+
 	constructor(name, cause, method, action, form, parameters, context, pipeline)
 	{
-		super(name, {bubbles: true, composed: true, cancelable: false,
-			detail: {cause, method, action, form, parameters, context}});
+		super(name, {
+			bubbles: true, composed: true, cancelable: false,
+			detail: {cause, method, action, form, parameters, context}
+		});
 		this.#pipeline = pipeline;
 	}
 
@@ -48,11 +51,11 @@ export default class TriggerEvent extends CustomEvent
 
 	static of(cause, method, action, form, target, context)
 	{
-		if (target == "_top"
-			|| target == "_self"
-			|| target == "_blank"
-			|| target == "_parent"
-			|| target == "_dialog")
+		if (target === "_top"
+			|| target === "_self"
+			|| target === "_blank"
+			|| target === "_parent"
+			|| target === "_dialog")
 			return new TriggerEvent(target, cause, method, action, form, [], context, []);
 
 		let pipeline = Parser.pipeline(target);
