@@ -233,7 +233,7 @@ public interface Fetchable
      * @param types types of the objects to be fetched
      * @return each row as stream of maps whose keys are the column names and values are the column values as objects of the specified types
      */
-    default Stream<Map<String, Object>> mapStream(Class[] types)
+    default Stream<Map<String, Object>> mapStream(Class<?>... types)
     {
         return stream(new TypedMapMapper(types));
     }
