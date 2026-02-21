@@ -13,6 +13,7 @@ import gate.util.Resources;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class Select implements SelectClause
@@ -70,6 +71,7 @@ public class Select implements SelectClause
 	 */
 	public static SelectedSelect.Constant of(URL resource)
 	{
+		Objects.requireNonNull(resource);
 		return of(Resources.getTextResource(resource));
 	}
 
