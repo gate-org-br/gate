@@ -3,7 +3,12 @@
 /target/
 /nbproject/
 /node_modules/
+/src/main/resources/META-INF/resources/gate/
 /.vscode/
 /documentation/node_modules/
 /.idea/
+/.classpath
+/.project
+/.settings/
+*.iml
 package-lock.json
