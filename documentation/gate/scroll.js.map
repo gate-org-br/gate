@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["scroll.js"],
-  "sourcesContent": ["const PREVENT_BODY_SCROLL = e => e.preventDefault();\n\nexport default class Scroll\n{\n\tstatic disable(element)\n\t{\n\t\telement.setAttribute(\"data-scroll-disabled\", \"data-scroll-disabled\");\n\t\tArray.from(element.children).forEach(e => Scroll.disable(e));\n\t\twindow.top.document.documentElement.addEventListener(\"touchmove\", PREVENT_BODY_SCROLL, false);\n\t}\n\n\tstatic enable(element)\n\t{\n\t\telement.removeAttribute(\"data-scroll-disabled\");\n\t\tArray.from(element.children).forEach(e => Scroll.enable(e));\n\t\twindow.top.document.documentElement.removeEventListener(\"touchmove\", PREVENT_BODY_SCROLL, false);\n\t}\n}"],
-  "mappings": "AAAA,MAAMA,EAAsBC,GAAKA,EAAE,eAAe,EAElD,qBAAqBC,CACrB,CACC,OAAO,QAAQC,EACf,CACCA,EAAQ,aAAa,uBAAwB,sBAAsB,EACnE,MAAM,KAAKA,EAAQ,QAAQ,EAAE,QAAQF,GAAKC,EAAO,QAAQD,CAAC,CAAC,EAC3D,OAAO,IAAI,SAAS,gBAAgB,iBAAiB,YAAaD,EAAqB,EAAK,CAC7F,CAEA,OAAO,OAAOG,EACd,CACCA,EAAQ,gBAAgB,sBAAsB,EAC9C,MAAM,KAAKA,EAAQ,QAAQ,EAAE,QAAQF,GAAKC,EAAO,OAAOD,CAAC,CAAC,EAC1D,OAAO,IAAI,SAAS,gBAAgB,oBAAoB,YAAaD,EAAqB,EAAK,CAChG,CACD",
-  "names": ["PREVENT_BODY_SCROLL", "e", "Scroll", "element"]
-}

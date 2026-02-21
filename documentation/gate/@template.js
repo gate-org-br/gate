@@ -1,3 +1,0 @@
-import"./trigger.js";import s from"./dom.js";import a from"./data-url.js";import c from"./request-builder.js";import d from"./response-handler.js";window.addEventListener("@template",function(o){let i=o.composedPath(),{method:l,action:p,parameters:[m],form:n}=o.detail,h=s.navigate(o,m).orElseThrow(`${m} is not a valid selector`);import("./handlebars.js").then(t=>t.default).then(t=>(t.registerHelper("add",(e,r)=>e+r),t.registerHelper("sub",(e,r)=>e-r),t.registerHelper("mul",(e,r)=>e*r),t.registerHelper("div",(e,r)=>e/r),t.compile(h.innerHTML.replace(/<!--{{([^}]+)}}-->/g,"{{$1}}")))).then(t=>fetch(c.build(l,p,n)).then(d.json).then(e=>(e=t(e),e)).then(e=>o.success(i,new a("text/html",e).toString())).catch(e=>o.failure(i,e)))});
-
-//# sourceMappingURL=@template.js.map

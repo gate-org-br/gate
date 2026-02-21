@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["object-filter.js"],
-  "sourcesContent": ["export default class ObjectFilter\n{\n\n\tstatic filter(options, text)\n\t{\n\t\treturn Array.isArray(options[0])\n\t\t\t? options.filter((e, i) => i === 0 || contains(e, text))\n\t\t\t: options.filter(e => contains(e, text));\n\t}\n}\n\nfunction contains(obj, text)\n{\n\tif (!obj)\n\t\treturn false;\n\telse if (typeof obj === 'string')\n\t\treturn obj.toLowerCase().includes(text.toLowerCase());\n\telse if (typeof obj === 'number')\n\t\treturn obj.toString().includes(text);\n\telse if (Array.isArray(obj))\n\t\treturn obj.some(item => contains(item, text));\n\telse if (typeof obj === 'object')\n\t\treturn Object.values(obj).some(value => contains(value, text));\n\telse\n\t\treturn false;\n}\n"],
-  "mappings": "AAAA,qBAAqBA,CACrB,CAEC,OAAO,OAAOC,EAASC,EACvB,CACC,OAAO,MAAM,QAAQD,EAAQ,CAAC,CAAC,EAC5BA,EAAQ,OAAO,CAACE,EAAGC,IAAMA,IAAM,GAAKC,EAASF,EAAGD,CAAI,CAAC,EACrDD,EAAQ,OAAOE,GAAKE,EAASF,EAAGD,CAAI,CAAC,CACzC,CACD,CAEA,SAASG,EAASC,EAAKJ,EACvB,CACC,OAAKI,EAEI,OAAOA,GAAQ,SAChBA,EAAI,YAAY,EAAE,SAASJ,EAAK,YAAY,CAAC,EAC5C,OAAOI,GAAQ,SAChBA,EAAI,SAAS,EAAE,SAASJ,CAAI,EAC3B,MAAM,QAAQI,CAAG,EAClBA,EAAI,KAAKC,GAAQF,EAASE,EAAML,CAAI,CAAC,EACpC,OAAOI,GAAQ,SAChB,OAAO,OAAOA,CAAG,EAAE,KAAKE,GAASH,EAASG,EAAON,CAAI,CAAC,EAEtD,GAVA,EAWT",
-  "names": ["ObjectFilter", "options", "text", "e", "i", "contains", "obj", "item", "value"]
-}

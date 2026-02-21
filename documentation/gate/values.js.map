@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["values.js"],
-  "sourcesContent": ["const VALUES = new WeakMap();\nwindow.addEventListener(\"focusin\", function (event)\n{\n\tif (event.target.tagName === \"INPUT\")\n\t\tVALUES.set(event.target, event.target.value);\n});\n\nexport default VALUES;"],
-  "mappings": "AAAA,MAAMA,EAAS,IAAI,QACnB,OAAO,iBAAiB,UAAW,SAAUC,EAC7C,CACKA,EAAM,OAAO,UAAY,SAC5BD,EAAO,IAAIC,EAAM,OAAQA,EAAM,OAAO,KAAK,CAC7C,CAAC,EAED,eAAeD",
-  "names": ["VALUES", "event"]
-}

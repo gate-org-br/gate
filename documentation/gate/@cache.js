@@ -1,3 +1,0 @@
-import"./trigger.js";import o from"./request-builder.js";import d from"./response-handler.js";const t=new Map;window.addEventListener("@cache",function(e){let s=e.composedPath(),{method:a,action:c}=e.detail;if(a!=="get")throw new Error(`Attempt to cache ${a} request`);t.has(c)?e.success(s,t.get(c)):fetch(o.build(a,c)).then(d.dataURL).then(i=>t.set(c,i)).then(()=>e.success(s,t.get(c))).catch(i=>e.failure(s,i))}),window.addEventListener("@invalidate-cache",function(e){t.clear(),e.success(e.composedPath())}),window.addEventListener("trigger-success",function(e){e.detail.cause.detail.method!=="get"&&t.clear()});
-
-//# sourceMappingURL=@cache.js.map

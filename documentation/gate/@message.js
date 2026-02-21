@@ -1,3 +1,0 @@
-import p from"./data-url.js";import m from"./request-builder.js";import c from"./g-message-dialog.js";import d from"./response-handler.js";window.addEventListener("@message",function(e){e.preventDefault(),e.stopPropagation();let{method:s,action:a,form:i,parameters:r}=e.detail,n=r.filter(t=>["success","warning","error","info"].includes(t))[0]||"success",l=r.filter(t=>/^\d+$/.test(t)).map(parseInt)[0],o=e.composedPath();return fetch(m.build(s,a,i)).then(d.text).then(t=>{c.show(n,t,l),e.success(o,new p("text/plain",t).toString())}).catch(t=>e.failure(o,t))});
-
-//# sourceMappingURL=@message.js.map

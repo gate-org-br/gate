@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["trigger-extractor.js"],
-  "sourcesContent": ["export default class TriggerExtractor\n{\n\tstatic method(element)\n\t{\n\t\treturn (element.getAttribute(\"formmethod\")\n\t\t\t\t|| element.getAttribute(\"data-method\")\n\t\t\t\t|| element.getAttribute(\"method\")\n\t\t\t\t|| element.form?.method\n\t\t\t\t|| \"get\").toLowerCase();\n\t}\n\n\tstatic action(element)\n\t{\n\t\treturn element.getAttribute(\"href\")\n\t\t\t\t|| element.getAttribute(\"formaction\")\n\t\t\t\t|| element.getAttribute(\"data-action\")\n\t\t\t\t|| element.getAttribute(\"action\")\n\t\t\t\t|| element.form?.action\n\t\t\t\t|| \"\";\n\t}\n\n\tstatic target(element)\n\t{\n\t\treturn element.getAttribute(\"target\")\n\t\t\t\t|| element.getAttribute(\"formtarget\")\n\t\t\t\t|| element.getAttribute(\"data-target\")\n\t\t\t\t|| element.form?.target\n\t\t\t\t|| \"_self\";\n\t}\n}\n"],
-  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,OAAOC,EACd,CACC,OAAQA,EAAQ,aAAa,YAAY,GACpCA,EAAQ,aAAa,aAAa,GAClCA,EAAQ,aAAa,QAAQ,GAC7BA,EAAQ,MAAM,QACd,OAAO,YAAY,CACzB,CAEA,OAAO,OAAOA,EACd,CACC,OAAOA,EAAQ,aAAa,MAAM,GAC7BA,EAAQ,aAAa,YAAY,GACjCA,EAAQ,aAAa,aAAa,GAClCA,EAAQ,aAAa,QAAQ,GAC7BA,EAAQ,MAAM,QACd,EACN,CAEA,OAAO,OAAOA,EACd,CACC,OAAOA,EAAQ,aAAa,QAAQ,GAC/BA,EAAQ,aAAa,YAAY,GACjCA,EAAQ,aAAa,aAAa,GAClCA,EAAQ,MAAM,QACd,OACN,CACD",
-  "names": ["TriggerExtractor", "element"]
-}

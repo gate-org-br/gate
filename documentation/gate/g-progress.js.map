@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["g-progress.js"],
-  "sourcesContent": ["let template = document.createElement(\"template\");\ntemplate.innerHTML = `\n<style data-element=\"g-progress\">:host(*){width:100%;flex-grow:1;display:flex;align-items:stretch;background-color:var(--main6)}:host(*):before{content:\"\";animation-fill-mode:both;background-color:var(--base1);animation:progress 2s infinite ease-in-out}@keyframes progress{0%{flex-basis:0}to{flex-basis:100%}}\n</style>`;\n/* global customElements, template */\n\ncustomElements.define('g-progress', class extends HTMLElement\n{\n\tconstructor()\n\t{\n\t\tsuper();\n\t\tthis.attachShadow({mode: \"open\"});\n\t\tthis.shadowRoot.appendChild(template.content.cloneNode(true));\n\t}\n});"],
-  "mappings": "AAAA,IAAI,SAAW,SAAS,cAAc,UAAU,EAChD,SAAS,UAAY;AAAA;AAAA,UAKrB,eAAe,OAAO,aAAc,cAAc,WAClD,CACC,aACA,CACC,MAAM,EACN,KAAK,aAAa,CAAC,KAAM,MAAM,CAAC,EAChC,KAAK,WAAW,YAAY,SAAS,QAAQ,UAAU,EAAI,CAAC,CAC7D,CACD,CAAC",
-  "names": []
-}

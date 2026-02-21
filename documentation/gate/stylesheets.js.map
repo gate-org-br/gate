@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["stylesheets.js"],
-  "sourcesContent": ["export default function stylesheets(...filenames)\n{\n\treturn Array.from(filenames).map(filename =>\n\t{\n\t\tlet link = document.createElement(\"link\");\n\t\tlink.setAttribute(\"rel\", \"stylesheet\");\n\t\tlink.setAttribute(\"type\", \"text/css\");\n\t\t\tlink.setAttribute(\"href\", String(new URL(`./${filename}`, import.meta.url)));\n\t\treturn link;\n\t});\n}"],
-  "mappings": "AAAA,wBAAwBA,KAAeC,EACvC,CACC,OAAO,MAAM,KAAKA,CAAS,EAAE,IAAIC,GACjC,CACC,IAAIC,EAAO,SAAS,cAAc,MAAM,EACxC,OAAAA,EAAK,aAAa,MAAO,YAAY,EACrCA,EAAK,aAAa,OAAQ,UAAU,EACnCA,EAAK,aAAa,OAAQ,OAAO,IAAI,IAAI,KAAKD,CAAQ,GAAI,YAAY,GAAG,CAAC,CAAC,EACrEC,CACR,CAAC,CACF",
-  "names": ["stylesheets", "filenames", "filename", "link"]
-}

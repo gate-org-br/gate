@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["@redirect.js"],
-  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@redirect\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {method, action, form} = event.detail;\n\n\treturn fetch(RequestBuilder.build(method, action, form))\n\t\t.then(ResponseHandler.text)\n\t\t.then(result => window.location = result)\n\t\t.then(() => event.success(path))\n\t\t.catch(error => event.failure(path, error));\n});"],
-  "mappings": "AAEA,MAAO,eACP,OAAOA,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,YAAa,SAAUC,EAC/C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,OAAAE,EAAQ,OAAAC,EAAQ,KAAAC,CAAI,EAAIJ,EAAM,OAEnC,OAAO,MAAMF,EAAe,MAAMI,EAAQC,EAAQC,CAAI,CAAC,EACrD,KAAKL,EAAgB,IAAI,EACzB,KAAKM,GAAU,OAAO,SAAWA,CAAM,EACvC,KAAK,IAAML,EAAM,QAAQC,CAAI,CAAC,EAC9B,MAAMK,GAASN,EAAM,QAAQC,EAAMK,CAAK,CAAC,CAC5C,CAAC",
-  "names": ["RequestBuilder", "ResponseHandler", "event", "path", "method", "action", "form", "result", "error"]
-}

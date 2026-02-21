@@ -1,3 +1,0 @@
-import h from"./data-url.js";import u from"./formatter.js";import w from"./request-builder.js";import m,{POSITIONS as l}from"./g-tooltip.js";import L from"./response-handler.js";window.addEventListener("@tooltip",function(e){let i=e.composedPath(),s=i[0]||e.target,{method:n,action:c,form:f,parameters:o}=e.detail,d=o.filter(t=>l.includes(t))[0],r=o.filter(t=>!l.includes(t))[0],p=o.filter(t=>!l.includes(t))[1]||r;return fetch(w.build(n,c,f)).then(L.dataURL).then(t=>{let a=h.parse(t);a.contentType.startsWith("application/json")?m.show(s,u.JSONtoHTML(JSON.parse(a.data)),d,r,p):m.show(s,a.data,d,r,p),e.success(i,t)}).catch(t=>e.failure(i,t))});
-
-//# sourceMappingURL=@tooltip.js.map
