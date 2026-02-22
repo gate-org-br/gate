@@ -5,7 +5,6 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -107,23 +106,6 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isEq(subquery.build());
 	}
 
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause is equals to the
-	 * parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition eqGet(Supplier<Object> supplier)
-	{
-		return eq(supplier.get());
-	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Ne
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,23 +199,6 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isNe(subquery.build());
 	}
 
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause is not equals to
-	 * the parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition neGet(Supplier<Object> supplier)
-	{
-		return ne(supplier.get());
-	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lt
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,23 +290,6 @@ interface CompiledPredicateMethods extends Clause
 	{
 		Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
 		return CompiledPredicateMethods.this.isLt(subquery.build());
-	}
-
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause is less than the
-	 * specified parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition ltGet(Supplier<Object> supplier)
-	{
-		return lt(supplier.get());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -440,23 +388,6 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isLe(subquery.build());
 	}
 
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause is less than or
-	 * equals the specified parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition leGet(Supplier<Object> supplier)
-	{
-		return le(supplier.get());
-	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Gt
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,23 +479,6 @@ interface CompiledPredicateMethods extends Clause
 	{
 		Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
 		return CompiledPredicateMethods.this.isGt(subquery.build());
-	}
-
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause is greater than
-	 * the specified parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition gtGet(Supplier<Object> supplier)
-	{
-		return gt(supplier.get());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -663,23 +577,6 @@ interface CompiledPredicateMethods extends Clause
 		return CompiledPredicateMethods.this.isGe(subquery.build());
 	}
 
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause is greater than
-	 * or equals the parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition geGet(Supplier<Object> supplier)
-	{
-		return ge(supplier.get());
-	}
-
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Lk
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -728,22 +625,6 @@ interface CompiledPredicateMethods extends Clause
 				return getClause() + " like ?";
 			}
 		};
-	}
-
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates if the clause is like the parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition lkGet(Supplier<Object> supplier)
-	{
-		return lk(supplier.get());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -796,23 +677,6 @@ interface CompiledPredicateMethods extends Clause
 				return getClause() + " rlike ?";
 			}
 		};
-	}
-
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the clause matches the
-	 * regular expression.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition rxGet(Supplier<Object> supplier)
-	{
-		return rx(supplier.get());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -914,23 +778,6 @@ interface CompiledPredicateMethods extends Clause
 				return getClause() + " between ? and ?";
 			}
 		};
-	}
-
-	/**
-	 * Compares the previously specified clause with the parameter supplied by the specified
-	 * supplier, if the parameter is not null, and evaluates to true if the the clause is between
-	 * the parameter.
-	 *
-	 * @param supplier supplier from where to get the parameter to be compared with the specified
-	 *        clause
-	 *
-	 * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
-	 *
-	 * @throws java.lang.NullPointerException if any of the parameters is null
-	 */
-	default CompiledCondition bwGet(Supplier<Object> supplier)
-	{
-		return bw(supplier.get());
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1056,12 +903,6 @@ interface CompiledPredicateMethods extends Clause
 		}
 
 		@Override
-		default CompiledCondition bwGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
 		default <T> CompiledCondition bw(Class<T> type, T parameter1, T parameter2)
 		{
 			return new CompiledCondition(getClause().rollback());
@@ -1086,12 +927,6 @@ interface CompiledPredicateMethods extends Clause
 		}
 
 		@Override
-		default CompiledCondition rxGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
 		default <T> CompiledCondition rx(Class<T> type, T regex)
 		{
 			return new CompiledCondition(getClause().rollback());
@@ -1104,12 +939,6 @@ interface CompiledPredicateMethods extends Clause
 		}
 
 		@Override
-		default CompiledCondition lkGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
 		default <T> CompiledCondition lk(Class<T> type, T parameter)
 		{
 			return new CompiledCondition(getClause().rollback());
@@ -1117,12 +946,6 @@ interface CompiledPredicateMethods extends Clause
 
 		@Override
 		default CompiledCondition lk(Object parameter)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		default CompiledCondition geGet(Supplier<Object> supplier)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
@@ -1152,12 +975,6 @@ interface CompiledPredicateMethods extends Clause
 		}
 
 		@Override
-		default CompiledCondition gtGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
 		default CompiledCondition isGt(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
@@ -1177,12 +994,6 @@ interface CompiledPredicateMethods extends Clause
 
 		@Override
 		default CompiledCondition gt(Object parameter)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		default CompiledCondition leGet(Supplier<Object> supplier)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}
@@ -1212,12 +1023,6 @@ interface CompiledPredicateMethods extends Clause
 		}
 
 		@Override
-		default CompiledCondition ltGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
 		default CompiledCondition isLt(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
@@ -1242,12 +1047,6 @@ interface CompiledPredicateMethods extends Clause
 		}
 
 		@Override
-		default CompiledCondition neGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
 		default CompiledCondition isNe(Query.Compiled.Builder subquery)
 		{
 			return new CompiledCondition(getClause().rollback());
@@ -1267,12 +1066,6 @@ interface CompiledPredicateMethods extends Clause
 
 		@Override
 		default CompiledCondition ne(Object parameter)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		default CompiledCondition eqGet(Supplier<Object> supplier)
 		{
 			return new CompiledCondition(getClause().rollback());
 		}

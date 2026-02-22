@@ -130,7 +130,7 @@ interface CompiledRelationMethods extends Clause
 	 */
 	default CompiledPredicate not(Query.Compiled.Builder subquery)
 	{
-		return subquery(subquery.build());
+		return not(subquery.build());
 	}
 
 	/**

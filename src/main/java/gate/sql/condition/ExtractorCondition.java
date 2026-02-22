@@ -26,6 +26,7 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		super(clause);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorRelation<T> and()
 	{
@@ -40,6 +41,7 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorRelation<T> or()
 	{
@@ -54,60 +56,80 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> and(String expression)
 	{
 		return and().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> or(String expression)
 	{
 		return or().expression(expression);
 	}
 
+	/**
+	 * Adds a new extractor sub condition associated by an AND relation.
+	 *
+	 * @param condition the sub condition to be associated with the current condition
+	 * @return the current condition, for chained invocations
+	 */
 	@Override
 	public ExtractorCondition<T> and(ExtractorCondition<T> condition)
 	{
 		return and().condition(condition);
 	}
 
+	/**
+	 * Adds a new extractor sub condition associated by an OR relation.
+	 *
+	 * @param condition the sub condition to be associated with the current condition
+	 * @return the current condition, for chained invocations
+	 */
 	@Override
 	public ExtractorCondition<T> or(ExtractorCondition<T> condition)
 	{
 		return or().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> and(ConstantCondition condition)
 	{
 		return and().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> or(ConstantCondition condition)
 	{
 		return or().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> and(Query.Constant subquery)
 	{
 		return and().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> and(Query.Constant.Builder subquery)
 	{
 		return and().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> or(Query.Constant subquery)
 	{
 		return or().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> or(Query.Constant.Builder subquery)
 	{

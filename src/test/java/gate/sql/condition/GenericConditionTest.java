@@ -127,4 +127,38 @@ public class GenericConditionTest
 		assertEquals("column1 rlike ? and not column2 rlike ? and column3 rlike ? and not column4 rlike ? and column7 rlike ?", condition.toString());
 		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
 	}
+
+	@Test
+	public void testOrCondition()
+	{
+		GenericCondition left = Condition.of("column1").eq();
+		GenericCondition right = Condition.of("column2").eq();
+
+		Condition result = left.or(right);
+		assertEquals("column1 = ? or (column2 = ?)", result.toString());
+		assertTrue(result.getParameters().collect(Collectors.toList()).isEmpty());
+	}
+
+	@Test
+	public void testOrConstantCondition()
+	{
+		GenericCondition left = Condition.of("column1").eq();
+		ConstantCondition right = Condition.of("column2").isEq("x");
+
+		Condition result = left.or(right);
+		assertEquals("column1 = ? or (column2 = x)", result.toString());
+		assertTrue(result.getParameters().collect(Collectors.toList()).isEmpty());
+	}
+
+	@Test
+	public void testOrChain()
+	{
+		Condition condition = Condition
+				.of("column1").eq()
+				.or().expression("column2").eq()
+				.or().not("column3").eq();
+
+		assertEquals("column1 = ? or column2 = ? or not column3 = ?", condition.toString());
+		assertTrue(condition.getParameters().collect(Collectors.toList()).isEmpty());
+	}
 }

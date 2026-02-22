@@ -3,6 +3,7 @@ package gate.sql.condition;
 import gate.lang.property.Property;
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+
 import java.util.stream.Stream;
 
 /**
@@ -14,468 +15,474 @@ import java.util.stream.Stream;
 public abstract class Condition implements Clause
 {
 
-	/**
-	 * A condition that is always true.
-	 */
-	public static final ConstantCondition TRUE
-		= ConstantCondition.CONSTANT_TRUE;
-	/**
-	 * A condition that is always false.
-	 */
-	public static final ConstantCondition FALSE
-		= ConstantCondition.CONSTANT_FALSE;
+    /**
+     * A condition that is always true.
+     */
+    public static final ConstantCondition TRUE
+            = ConstantCondition.CONSTANT_TRUE;
+    /**
+     * A condition that is always false.
+     */
+    public static final ConstantCondition FALSE
+            = ConstantCondition.CONSTANT_FALSE;
 
-	static final RootClause ROOT
-		= new RootClause();
+    static final RootClause ROOT
+            = new RootClause();
 
-	private final Clause clause;
+    private final Clause clause;
 
-	Condition(Clause clause)
-	{
-		this.clause = clause;
-	}
+    Condition(Clause clause)
+    {
+        this.clause = clause;
+    }
 
-	@Override
-	public Clause getClause()
-	{
-		return clause;
-	}
+    @Override
+    public Clause getClause()
+    {
+        return clause;
+    }
 
-	@Override
-	public Clause rollback()
-	{
-		return this;
-	}
+    @Override
+    public Clause rollback()
+    {
+        return this;
+    }
 
-	@Override
-	public String toString()
-	{
-		return getClause().toString();
-	}
+    @Override
+    public String toString()
+    {
+        return getClause().toString();
+    }
 
-	/**
-	 * Creates a condition from the specified string
-	 *
-	 * @param string the string of the condition to be created
-	 * @return the new condition created
-	 */
-	public static ConstantCondition from(String string)
-	{
-		return new ConstantCondition(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.empty();
-			}
+    /**
+     * Creates a condition from the specified string
+     *
+     * @param string the string of the condition to be created
+     * @return the new condition created
+     */
+    public static ConstantCondition from(String string)
+    {
+        return new ConstantCondition(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public String toString()
-			{
-				return string;
-			}
+            @Override
+            public String toString()
+            {
+                return string;
+            }
 
-			@Override
-			public Clause rollback()
-			{
-				return this;
-			}
-		};
-	}
+            @Override
+            public Clause rollback()
+            {
+                return this;
+            }
+        };
+    }
 
-	public interface From<T>
-	{
+    public interface From<T>
+    {
+        /**
+         * Creates a new extractor predicate with the specified expression.
+         *
+         * @param expression the expression to be tested
+         * @return the current predicate, for chained invocations
+         */
+        ExtractorPredicate<T> expression(String expression);
+    }
 
-		ExtractorPredicate<T> expression(String expression);
-	}
+    /**
+     * Creates an extractor entry point for typed conditions.
+     *
+     * @param type the source type used by extractor functions
+     * @param <T>  the source type of the extractor condition
+     * @return an extractor condition entry point
+     */
+    public static <T> From<T> from(Class<T> type)
+    {
+        return (String expression) -> new ExtractorPredicate<T>(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.empty();
+            }
 
-	public static <T> From<T> from(Class<T> type)
-	{
-		return (String expression) -> new ExtractorPredicate<T>(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public String toString()
+            {
+                return expression;
+            }
+        };
+    }
 
-			@Override
-			public String toString()
-			{
-				return expression;
-			}
-		};
-	}
+    public interface When
+    {
+        /**
+         * Creates a predicate with lazy evaluation support.
+         *
+         * @param expression the expression to be tested
+         * @return the current predicate, for chained invocations
+         */
+        LazyConstantPredicate expression(String expression);
+    }
 
-	public interface When
-	{
+    /**
+     * Creates a conditional entry point that can rollback the next clause.
+     *
+     * @param assertion assertion that defines whether the next clause is applied
+     * @return a conditional entry point for lazy predicates
+     */
+    public static When when(boolean assertion)
+    {
+        return assertion
+                ? (String expression) -> new LazyConstantPredicate(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.empty();
+            }
 
-		ConstantPredicate expression(String expression);
-	}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-	public static When when(boolean assertion)
-	{
-		return assertion
-			? (String expression) -> new ConstantPredicate(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public String toString()
+            {
+                return expression;
+            }
+        }
+                : (String expression) -> new LazyConstantPredicate.Rollback(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public String toString()
-			{
-				return expression;
-			}
-		}
-			: (String expression) -> new ConstantPredicate.Rollback(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public String toString()
+            {
+                return expression;
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+    /**
+     * Creates a new predicate with the specified expression.
+     *
+     * @param expression the expression to be tested
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.ConstantPredicate
+     */
+    public static ConstantPredicate of(String expression)
+    {
+        return new ConstantPredicate(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public String toString()
-			{
-				return expression;
-			}
-		};
-	}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-	/**
-	 * Creates a new predicate with the specified expression.
-	 *
-	 * @param expression the expression to be tested
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantPredicate
-	 */
-	public static ConstantPredicate of(String expression)
-	{
-		return new ConstantPredicate(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public String toString()
+            {
+                return expression;
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+    /**
+     * Creates a new predicate with the specified expression and parameters.
+     *
+     * @param expression the expression to be tested
+     * @param parameters the parameters to be included on the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.ConstantPredicate
+     */
+    public static CompiledPredicate of(String expression, Object... parameters)
+    {
+        return new CompiledPredicate(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.of(parameters);
+            }
 
-			@Override
-			public String toString()
-			{
-				return expression;
-			}
-		};
-	}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-	/**
-	 * Creates a new predicate with the specified expression and parameters.
-	 *
-	 * @param expression the expression to be tested
-	 * @param parameters the parameters to be included on the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantPredicate
-	 */
-	public static CompiledPredicate of(String expression, Object... parameters)
-	{
-		return new CompiledPredicate(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.of(parameters);
-			}
+            @Override
+            public String toString()
+            {
+                return expression;
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+    /**
+     * Creates a new negated relation.
+     *
+     * @return the current relation, for chained invocations
+     * @see gate.sql.condition.ConstantRelation
+     */
+    public static ConstantRelation not()
+    {
+        return new ConstantRelation(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.empty();
+            }
 
-			@Override
-			public String toString()
-			{
-				return expression;
-			}
-		};
-	}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return Stream.empty();
+            }
 
-	/**
-	 * Creates a new negated relation.
-	 *
-	 * @return the current relation, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantRelation
-	 */
-	public static ConstantRelation not()
-	{
-		return new ConstantRelation(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return Stream.empty();
-			}
+            @Override
+            public String toString()
+            {
+                return "not";
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return Stream.empty();
-			}
+    /**
+     * Creates a new negated predicate with the specified expression.
+     *
+     * @param expression the expression to be tested
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.ConstantPredicate
+     */
+    public static ConstantPredicate not(String expression)
+    {
+        return not().expression(expression);
+    }
 
-			@Override
-			public String toString()
-			{
-				return "not";
-			}
-		};
-	}
+    /**
+     * Creates a new condition with the specified condition.
+     *
+     * @param condition the condition to be tested
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.ConstantPredicate
+     */
+    public static ConstantCondition of(ConstantCondition condition)
+    {
+        return new ConstantCondition(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return condition.getParameters();
+            }
 
-	/**
-	 * Creates a new negated predicate with the specified expression.
-	 *
-	 * @param expression the expression to be tested
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantPredicate
-	 */
-	public static ConstantPredicate not(String expression)
-	{
-		return not().expression(expression);
-	}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return condition.getProperties();
+            }
 
-	/**
-	 * Creates a new condition with the specified condition.
-	 *
-	 * @param condition the condition to be tested
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantPredicate
-	 */
-	public static ConstantCondition of(ConstantCondition condition)
-	{
-		return new ConstantCondition(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return condition.getParameters();
-			}
+            @Override
+            public String toString()
+            {
+                return "(" + condition + ")";
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return condition.getProperties();
-			}
+    /**
+     * Creates a new condition with the specified condition.
+     *
+     * @param condition the condition to be tested
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.ConstantPredicate
+     */
+    public static GenericCondition of(GenericCondition condition)
+    {
+        return new GenericCondition(ROOT)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return condition.getParameters();
+            }
 
-			@Override
-			public String toString()
-			{
-				return "(" + condition + ")";
-			}
-		};
-	}
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return condition.getProperties();
+            }
 
-	/**
-	 * Creates a new condition with the specified condition.
-	 *
-	 * @param condition the condition to be tested
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantPredicate
-	 */
-	public static GenericCondition of(GenericCondition condition)
-	{
-		return new GenericCondition(ROOT)
-		{
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return condition.getParameters();
-			}
+            @Override
+            public String toString()
+            {
+                return "(" + condition + ")";
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return condition.getProperties();
-			}
+    /**
+     * Creates a new condition with the specified condition.
+     *
+     * @param condition the condition to be tested
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.ConstantPredicate
+     */
+    public static CompiledCondition of(CompiledCondition condition)
+    {
 
-			@Override
-			public String toString()
-			{
-				return "(" + condition + ")";
-			}
-		};
-	}
+        return new CompiledCondition(ROOT)
+        {
 
-	/**
-	 * Creates a new condition with the specified condition.
-	 *
-	 * @param condition the condition to be tested
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.ConstantPredicate
-	 */
-	public static CompiledCondition of(CompiledCondition condition)
-	{
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return condition.getParameters();
+            }
 
-		return new CompiledCondition(ROOT)
-		{
+            @Override
+            public Stream<Property> getProperties()
+            {
+                return condition.getProperties();
+            }
 
-			@Override
-			public Stream<Object> getParameters()
-			{
-				return condition.getParameters();
-			}
+            @Override
+            public String toString()
+            {
+                return "(" + condition + ")";
+            }
+        };
+    }
 
-			@Override
-			public Stream<Property> getProperties()
-			{
-				return condition.getProperties();
-			}
+    /**
+     * Adds a new AND relation to the condition.
+     *
+     * @return the current relation, for chained invocations
+     * @see gate.sql.condition.Relation
+     */
+    public abstract Relation and();
 
-			@Override
-			public String toString()
-			{
-				return "(" + condition + ")";
-			}
-		};
-	}
+    /**
+     * Adds a new expression to the condition associated by an AND relation.
+     *
+     * @param expression the expression to be associated with the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.Predicate
+     */
+    public abstract Predicate and(String expression);
 
-	/**
-	 * Adds a new AND relation to the condition.
-	 *
-	 * @return the current relation, for chained invocations
-	 *
-	 * @see gate.sql.condition.Relation
-	 */
-	public abstract Relation and();
+    /**
+     * Adds a new sub condition to the current condition associated by an
+     * AND relation.
+     *
+     * @param condition the sub condition to be associated with the current
+     *                  condition
+     * @return the current condition, for chained invocations
+     * @see gate.sql.condition.Condition
+     */
+    public abstract Condition and(ConstantCondition condition);
 
-	/**
-	 * Adds a new expression to the condition associated by an AND relation.
-	 *
-	 * @param expression the expression to be associated with the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.Predicate
-	 */
-	public abstract Predicate and(String expression);
+    /**
+     * Adds a new sub query to the condition associated by an AND relation.
+     *
+     * @param subquery the sub query to be associated with the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.Predicate
+     */
+    public abstract Predicate and(Query.Constant subquery);
 
-	/**
-	 * Adds a new sub condition to the current condition associated by an
-	 * AND relation.
-	 *
-	 * @param condition the sub condition to be associated with the current
-	 * condition
-	 * @return the current condition, for chained invocations
-	 *
-	 * @see gate.sql.condition.Condition
-	 */
-	public abstract Condition and(ConstantCondition condition);
+    /**
+     * Adds a new sub query to the condition associated by an AND relation.
+     *
+     * @param subquery the sub query to be associated with the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.Predicate
+     */
+    public abstract Predicate and(Query.Constant.Builder subquery);
 
-	/**
-	 * Adds a new sub query to the condition associated by an AND relation.
-	 *
-	 * @param subquery the sub query to be associated with the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.Predicate
-	 */
-	public abstract Predicate and(Query.Constant subquery);
+    /**
+     * Adds a new OR relation to the condition.
+     *
+     * @return the current relation, for chained invocations
+     * @see gate.sql.condition.Relation
+     */
+    public abstract Relation or();
 
-	/**
-	 * Adds a new sub query to the condition associated by an AND relation.
-	 *
-	 * @param subquery the sub query to be associated with the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.Predicate
-	 */
-	public abstract Predicate and(Query.Constant.Builder subquery);
+    /**
+     * Adds a new expression to the condition associated by an OR relation.
+     *
+     * @param expression the expression to be associated with the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.Predicate
+     */
+    public abstract Predicate or(String expression);
 
-	/**
-	 * Adds a new OR relation to the condition.
-	 *
-	 * @return the current relation, for chained invocations
-	 *
-	 * @see gate.sql.condition.Relation
-	 */
-	public abstract Relation or();
+    /**
+     * Adds a new sub condition to the current condition associated by an OR
+     * relation.
+     *
+     * @param condition the sub condition to be associated with the current
+     *                  condition
+     * @return the current condition, for chained invocations
+     * @see gate.sql.condition.Condition
+     */
+    public abstract Condition or(ConstantCondition condition);
 
-	/**
-	 * Adds a new expression to the condition associated by an OR relation.
-	 *
-	 * @param expression the expression to be associated with the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.Predicate
-	 */
-	public abstract Predicate or(String expression);
+    /**
+     * Adds a new sub query to the condition associated by an OR relation.
+     *
+     * @param subquery the sub query to be associated with the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.Predicate
+     */
+    public abstract Predicate or(Query.Constant subquery);
 
-	/**
-	 * Adds a new sub condition to the current condition associated by an OR
-	 * relation.
-	 *
-	 * @param condition the sub condition to be associated with the current
-	 * condition
-	 * @return the current condition, for chained invocations
-	 *
-	 * @see gate.sql.condition.Condition
-	 */
-	public abstract Condition or(ConstantCondition condition);
-
-	/**
-	 * Adds a new sub query to the condition associated by an OR relation.
-	 *
-	 * @param subquery the sub query to be associated with the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.Predicate
-	 */
-	public abstract Predicate or(Query.Constant subquery);
-
-	/**
-	 * Adds a new sub query to the condition associated by an OR relation.
-	 *
-	 * @param subquery the sub query to be associated with the condition
-	 * @return the current predicate, for chained invocations
-	 *
-	 * @see gate.sql.condition.Predicate
-	 */
-	public abstract Predicate or(Query.Constant.Builder subquery);
+    /**
+     * Adds a new sub query to the condition associated by an OR relation.
+     *
+     * @param subquery the sub query to be associated with the condition
+     * @return the current predicate, for chained invocations
+     * @see gate.sql.condition.Predicate
+     */
+    public abstract Predicate or(Query.Constant.Builder subquery);
 }

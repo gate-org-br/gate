@@ -1,7 +1,6 @@
 package gate.sql.condition;
 
 import gate.sql.Clause;
-import java.util.function.Supplier;
 
 /**
  * A single predicate of a compiled condition.
@@ -195,52 +194,5 @@ public abstract class CompiledPredicate extends Predicate implements
 			return new CompiledCondition(getClause().rollback());
 		}
 
-		@Override
-		public CompiledCondition eqGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition neGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition ltGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition leGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition gtGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition geGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition lkGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
-
-		@Override
-		public CompiledCondition rxGet(Supplier<Object> supplier)
-		{
-			return new CompiledCondition(getClause().rollback());
-		}
 	}
 }

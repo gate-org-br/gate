@@ -9,7 +9,7 @@ public class CompiledPredicateTest
 {
 
 	@Test
-	public void testAnd_ConstantCondition()
+	public void testAndConstantCondition()
 	{
 		Condition condition = Condition
 			.of("column1").eq(1)
@@ -21,7 +21,7 @@ public class CompiledPredicateTest
 	}
 
 	@Test
-	public void testOr_ConstantCondition()
+	public void testOrConstantCondition()
 	{
 		Condition condition = Condition
 			.of("column1").eq(1)
@@ -33,7 +33,7 @@ public class CompiledPredicateTest
 	}
 
 	@Test
-	public void testAnd_CompiledCondition()
+	public void testAndCompiledCondition()
 	{
 		Condition condition = Condition
 			.of("column1").eq(1)
@@ -45,7 +45,7 @@ public class CompiledPredicateTest
 	}
 
 	@Test
-	public void testOr_CompiledCondition()
+	public void testOrCompiledCondition()
 	{
 		Condition condition = Condition
 			.of("column1").eq(1)

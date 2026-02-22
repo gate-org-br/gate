@@ -45,4 +45,16 @@ public class CompiledRelationTest
 		assertEquals("column1 = ? and not exists (select column2 from table1 where column3 = ?)", condition.toString());
 		assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2));
 	}
+
+	@Test
+	public void testNotCompiledBuilder()
+	{
+		Condition condition = Condition
+				.of("column1").eq(1)
+				.and().not(() -> gate.sql.statement.Query.of("select score from table2 where active = ?").parameters(9))
+				.eq(2);
+
+		assertEquals("column1 = ? and  not (select score from table2 where active = ?) = ?", condition.toString());
+		assertEquals(Arrays.asList(1, 9, 2), condition.getParameters().collect(Collectors.toList()));
+	}
 }

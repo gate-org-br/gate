@@ -18,12 +18,14 @@ public class ExtractorRelation<T> extends Relation
 		super(clause);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorRelation<T> when(boolean assertion)
 	{
 		return assertion ? this : new Rollback<>(getClause());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> expression(String expression)
 	{
@@ -40,6 +42,7 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> condition(ConstantCondition expression)
 	{
@@ -56,6 +59,7 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> subquery(Query.Constant subquery)
 	{
@@ -72,12 +76,14 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> exists(Query.Constant subquery)
 	{
@@ -95,12 +101,14 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> not(Query.Constant subquery)
 	{
@@ -117,12 +125,14 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> not(Query.Constant.Builder subquery)
 	{
 		return not(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorRelation<T> not()
 	{
@@ -139,18 +149,21 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorPredicate<T> not(String expression)
 	{
 		return not().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> not(ConstantCondition expression)
 	{
 		return not().condition(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ExtractorCondition<T> not(ExtractorCondition<T> condition)
 	{

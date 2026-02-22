@@ -17,12 +17,14 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		super(clause);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericRelation when(boolean assertion)
 	{
 		return assertion ? this : new Rollback(getClause());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate expression(String expression)
 	{
@@ -40,6 +42,7 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition condition(ConstantCondition condition)
 	{
@@ -56,6 +59,7 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericRelation not()
 	{
@@ -72,24 +76,28 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate not(String expression)
 	{
 		return not().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition not(ConstantCondition condition)
 	{
 		return not().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition not(GenericCondition condition)
 	{
 		return not().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate subquery(Query.Constant subquery)
 	{
@@ -106,12 +114,14 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate not(Query.Constant subquery)
 	{
@@ -128,12 +138,14 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate not(Query.Constant.Builder subquery)
 	{
 		return not(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition exists(Query.Constant subquery)
 	{
@@ -151,6 +163,7 @@ public class GenericRelation extends Relation implements ConstantRelationMethods
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition exists(Query.Constant.Builder subquery)
 	{

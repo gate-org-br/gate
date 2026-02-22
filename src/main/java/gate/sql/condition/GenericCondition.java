@@ -26,6 +26,7 @@ public class GenericCondition extends Condition implements GenericConditionMetho
 		super(clause);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericRelation and()
 	{
@@ -40,6 +41,7 @@ public class GenericCondition extends Condition implements GenericConditionMetho
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericRelation or()
 	{
@@ -54,75 +56,107 @@ public class GenericCondition extends Condition implements GenericConditionMetho
 		};
 	}
 
+	/**
+	 * Adds a new generic sub condition associated by an AND relation.
+	 *
+	 * @param expression the sub condition to be associated with the current condition
+	 * @return the current condition, for chained invocations
+	 */
 	@Override
 	public GenericCondition and(GenericCondition expression)
 	{
 		return and().condition(expression);
 	}
 
+	/**
+	 * Adds a new generic sub query associated by an AND relation.
+	 *
+	 * @param subquery the sub query to be associated with the condition
+	 * @return the current predicate, for chained invocations
+	 */
 	@Override
 	public GenericPredicate and(Query subquery)
 	{
 		return and().subquery(subquery);
 	}
 
+	/**
+	 * Adds a new generic sub condition associated by an OR relation.
+	 *
+	 * @param exp the sub condition to be associated with the current condition
+	 * @return the current condition, for chained invocations
+	 */
 	@Override
 	public GenericCondition or(GenericCondition exp)
 	{
-		return and().condition(exp);
+		return or().condition(exp);
 	}
 
+	/**
+	 * Adds a new generic sub query associated by an OR relation.
+	 *
+	 * @param subquery the sub query to be associated with the condition
+	 * @return the current predicate, for chained invocations
+	 */
 	@Override
 	public GenericPredicate or(Query subquery)
 	{
 		return or().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate and(Query.Constant subquery)
 	{
 		return and().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate and(Query.Constant.Builder subquery)
 	{
 		return and().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate or(Query.Constant subquery)
 	{
 		return or().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate or(Query.Constant.Builder subquery)
 	{
 		return or().subquery(subquery);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate and(String expression)
 	{
 		return and().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericPredicate or(String expression)
 	{
 		return or().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition and(ConstantCondition expression)
 	{
 		return and().condition(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition or(ConstantCondition expression)
 	{
-		return and().condition(expression);
+		return or().condition(expression);
 	}
 }

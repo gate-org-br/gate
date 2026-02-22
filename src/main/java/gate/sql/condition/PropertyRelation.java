@@ -18,12 +18,14 @@ public class PropertyRelation extends Relation
 		super(clause);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyRelation when(boolean assertion)
 	{
 		return assertion ? this : new Rollback(getClause());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyPredicate expression(String expression)
 	{
@@ -40,6 +42,7 @@ public class PropertyRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyCondition condition(ConstantCondition expression)
 	{
@@ -56,6 +59,7 @@ public class PropertyRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyPredicate subquery(Query.Constant subquery)
 	{
@@ -72,12 +76,14 @@ public class PropertyRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyPredicate subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyCondition exists(Query.Constant subquery)
 	{
@@ -95,12 +101,14 @@ public class PropertyRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyCondition exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyPredicate not(Query.Constant subquery)
 	{
@@ -117,12 +125,14 @@ public class PropertyRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyPredicate not(Query.Constant.Builder subquery)
 	{
 		return not(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyRelation not()
 	{
@@ -139,18 +149,21 @@ public class PropertyRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyPredicate not(String expression)
 	{
 		return not().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyCondition not(ConstantCondition expression)
 	{
 		return not().condition(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public PropertyCondition not(PropertyCondition condition)
 	{

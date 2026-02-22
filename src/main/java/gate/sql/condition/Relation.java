@@ -22,6 +22,12 @@ public abstract class Relation implements Clause
 	}
 
 	@Override
+	public String toString()
+	{
+		return clause.toString();
+	}
+
+	@Override
 	public Clause rollback()
 	{
 		return clause.rollback();

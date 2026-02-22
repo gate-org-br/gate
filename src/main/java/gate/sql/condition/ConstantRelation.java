@@ -21,12 +21,14 @@ public class ConstantRelation extends Relation
 		super(clause);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantRelation when(boolean assertion)
 	{
 		return assertion ? this : new Rollback(getClause());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantRelation not()
 	{
@@ -43,6 +45,7 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantPredicate expression(String expression)
 	{
@@ -59,6 +62,13 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/**
+	 * Adds a new predicate with the specified expression and parameters.
+	 *
+	 * @param expression the expression to be associated with the new predicate
+	 * @param parameters the parameters to be included on the condition
+	 * @return the new predicate created, for chained invocations
+	 */
 	@Override
 	public CompiledPredicate expression(String expression, Object... parameters)
 	{
@@ -82,12 +92,14 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantPredicate not(String expression)
 	{
 		return not().expression(expression);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantCondition condition(ConstantCondition condition)
 	{
@@ -104,24 +116,28 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantCondition not(ConstantCondition condition)
 	{
 		return not().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public GenericCondition not(GenericCondition condition)
 	{
 		return not().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public CompiledCondition not(CompiledCondition condition)
 	{
 		return not().condition(condition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantPredicate subquery(Query.Constant subquery)
 	{
@@ -138,12 +154,14 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantPredicate subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantPredicate not(Query.Constant subquery)
 	{
@@ -160,12 +178,14 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantPredicate not(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantCondition exists(Query.Constant subquery)
 	{
@@ -183,6 +203,7 @@ public class ConstantRelation extends Relation
 		};
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public ConstantCondition exists(Query.Constant.Builder subquery)
 	{
