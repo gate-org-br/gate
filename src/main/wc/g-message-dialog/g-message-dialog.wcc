@@ -193,6 +193,6 @@ export default class GMessageDialog extends GWindow
 				break;
 		}
 	}
-}
+};
 
 customElements.define('g-message-dialog', GMessageDialog);

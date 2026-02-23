@@ -34,6 +34,6 @@ export default class GMonthIntervalPicker extends GWindow
 			picker.addEventListener("commit", e => resolve(e.detail));
 		});
 	}
-}
+};
 
 customElements.define('g-month-interval-picker', GMonthIntervalPicker);

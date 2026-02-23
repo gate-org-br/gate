@@ -36,6 +36,6 @@ export default class GModal extends HTMLElement
 
 		return this;
 	}
-}
+};
 
 customElements.define('g-modal', GModal);

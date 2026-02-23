@@ -5,8 +5,8 @@
 /node_modules/
 /src/main/resources/META-INF/resources/gate/
 /.vscode/
-/documentation/node_modules/
-/documentation/gate/
+/doc/node_modules/
+/doc/gate/
 /.idea/
 /.classpath
 /.project
