@@ -1,0 +1,223 @@
+fieldset {
+  gap: 12px;
+  margin: 0;
+  padding: 12px;
+  display: grid;
+  align-items: start;
+  border-radius: 3px;
+  grid-template-columns: repeat(16, 1fr);
+  border: 1px solid var(--main2, #F0F0F0);
+}
+fieldset > * {
+  grid-column: span 16;
+}
+fieldset > legend {
+  padding: 6px;
+  display: flex;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+  align-items: center;
+  color: var(--base1, #2f5674);
+  background-color: var(--base3, #cfdce6);
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
+}
+fieldset > legend > i,
+fieldset > legend > g-icon {
+  order: -1;
+  margin-right: 4px;
+  font-size: inherit;
+}
+fieldset > legend > img {
+  order: -1;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
+fieldset > legend label {
+  height: 20px;
+  display: flex;
+  align-items: center;
+}
+fieldset > label {
+  display: flex;
+  font-size: 14px;
+  text-indent: 4px;
+  grid-column: span 16;
+  flex-direction: column;
+}
+fieldset > label > span,
+fieldset > label > form {
+  flex-grow: 1;
+  display: flex;
+  overflow: auto;
+  min-height: 38px;
+  text-indent: 4px;
+  line-height: 38px;
+  position: relative;
+  border-radius: 3px;
+  overflow-wrap: break-word;
+  background-color: var(--main2, #F0F0F0);
+  border: 1px solid var(--main3, #DDDDDD);
+}
+fieldset > label > span *,
+fieldset > label > form * {
+  border: none;
+}
+fieldset > label > span * + *,
+fieldset > label > form * + * {
+  border-left: 1px solid var(--main3, #DDDDDD);
+}
+fieldset > label > span > label,
+fieldset > label > form > label {
+  height: 100%;
+  flex-grow: 1;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 38px;
+}
+fieldset > label > span > label[data-icon],
+fieldset > label > form > label[data-icon] {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+}
+fieldset > label > span > a,
+fieldset > label > form > a,
+fieldset > label > span > button,
+fieldset > label > form > button,
+fieldset > label > span > .g-command,
+fieldset > label > form > .g-command {
+  height: 100%;
+  flex-grow: 0;
+  display: flex;
+  text-indent: 0;
+  flex-shrink: 0;
+  min-width: 36px;
+  flex-basis: 36px;
+  position: relative;
+  align-items: stretch;
+  text-decoration: none;
+  justify-content: center;
+  color: var(--text1, #000000);
+}
+fieldset > label > span > a > i,
+fieldset > label > form > a > i,
+fieldset > label > span > button > i,
+fieldset > label > form > button > i,
+fieldset > label > span > .g-command > i,
+fieldset > label > form > .g-command > i,
+fieldset > label > span > a > g-icon,
+fieldset > label > form > a > g-icon,
+fieldset > label > span > button > g-icon,
+fieldset > label > form > button > g-icon,
+fieldset > label > span > .g-command > g-icon,
+fieldset > label > form > .g-command > g-icon {
+  flex-grow: 1;
+  display: flex;
+  text-indent: 0;
+  align-items: center;
+  justify-content: center;
+}
+fieldset > label > span > a:hover,
+fieldset > label > form > a:hover,
+fieldset > label > span > button:hover,
+fieldset > label > form > button:hover,
+fieldset > label > span > .g-command:hover,
+fieldset > label > form > .g-command:hover,
+fieldset > label > span > a:focus,
+fieldset > label > form > a:focus,
+fieldset > label > span > button:focus,
+fieldset > label > form > button:focus,
+fieldset > label > span > .g-command:focus,
+fieldset > label > form > .g-command:focus {
+  background-color: var(--hovered, #FFFACD);
+}
+fieldset > label > span > *:first-child,
+fieldset > label > form > *:first-child {
+  border-radius: 3px 0 0 3px;
+}
+fieldset > label > span > *:last-child,
+fieldset > label > form > *:last-child {
+  border-radius: 0 3px 3px 0;
+}
+fieldset > label > span > *:only-child,
+fieldset > label > form > *:only-child {
+  border-radius: 3px;
+}
+fieldset > label > span > input[type='checkbox'],
+fieldset > label > form > input[type='checkbox'],
+fieldset > label > span > input[type='radio'],
+fieldset > label > form > input[type='radio'] {
+  flex-basis: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+fieldset > label > span > i,
+fieldset > label > form > i,
+fieldset > label > span > g-icon,
+fieldset > label > form > g-icon {
+  right: 0;
+  order: 1000;
+  width: 32px;
+  border: none;
+  height: 100%;
+  display: flex;
+  text-indent: 0;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+}
+fieldset > label > span[data-icon]::after,
+fieldset > label > form[data-icon]::after {
+  right: 0;
+  width: 32px;
+  border: none;
+  display: flex;
+  font-family: gate;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  content: attr(data-icon);
+}
+fieldset > fieldset {
+  margin: 0;
+}
+@media only screen and (min-width: 600px) {
+  fieldset > *[data-size="1"] {
+    grid-column: span 8;
+  }
+}
+@media only screen and (min-width: 800px) {
+  fieldset > *[data-size="1"] {
+    grid-column: span 4;
+  }
+  fieldset > *[data-size="2"] {
+    grid-column: span 8;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  fieldset > *[data-size="1"] {
+    grid-column: span 2;
+  }
+  fieldset > *[data-size="2"] {
+    grid-column: span 4;
+  }
+  fieldset > *[data-size="4"] {
+    grid-column: span 8;
+  }
+}
+@media only screen and (min-width: 1366px) {
+  fieldset > *[data-size="1"] {
+    grid-column: span 1;
+  }
+  fieldset > *[data-size="2"] {
+    grid-column: span 2;
+  }
+  fieldset > *[data-size="4"] {
+    grid-column: span 4;
+  }
+  fieldset > *[data-size="8"] {
+    grid-column: span 8;
+  }
+}
