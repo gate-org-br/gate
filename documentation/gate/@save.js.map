@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["@save.js"],
-  "sourcesContent": ["import GFilePicker from './g-file-picker.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@save\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {method, action, form} = event.detail;\n\n\tfetch(RequestBuilder.build(method, action, form))\n\t\t.then(ResponseHandler.dataURL)\n\t\t.then(GFilePicker.saveDataURL)\n\t\t.then(response => event.success(path, response))\n\t\t.catch(error => event.failure(path, error));\n});\n"],
-  "mappings": "AAAA,OAAOA,MAAiB,qBACxB,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,QAAS,SAAUC,EAC3C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,OAAAE,EAAQ,OAAAC,EAAQ,KAAAC,CAAI,EAAIJ,EAAM,OAEnC,MAAMF,EAAe,MAAMI,EAAQC,EAAQC,CAAI,CAAC,EAC9C,KAAKL,EAAgB,OAAO,EAC5B,KAAKF,EAAY,WAAW,EAC5B,KAAKQ,GAAYL,EAAM,QAAQC,EAAMI,CAAQ,CAAC,EAC9C,MAAMC,GAASN,EAAM,QAAQC,EAAMK,CAAK,CAAC,CAC5C,CAAC",
-  "names": ["GFilePicker", "RequestBuilder", "ResponseHandler", "event", "path", "method", "action", "form", "response", "error"]
-}

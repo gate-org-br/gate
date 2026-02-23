@@ -87,4 +87,8 @@ function dispatcher(mutations)
 }
 
 listener.listen(document);
-connect(document);
+
+if (document.readyState === "complete")
+	connect(document);
+else
+	window.addEventListener("load", () => connect(document), { once: true });

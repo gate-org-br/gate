@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["g-path.js"],
-  "sourcesContent": ["let template = document.createElement(\"template\");\ntemplate.innerHTML = `\n\t<slot></slot>\n<style data-element=\"g-path\">:host(*){gap:4px;height:16px;font-size:inherit;align-items:center;display:inline-flex;justify-content:flex-start}::slotted(*){gap:4px;height:100%;display:flex;font-size:inherit;align-items:center;justify-content:space-between}::slotted([data-icon]):before{display:flex;font-size:inherit;font-family:gate;align-items:center;justify-content:center;content:attr(data-icon)}::slotted(:not(:last-child)):after{display:flex;color:#999;content:\"\\\\2275\";font-size:inherit;align-items:center;font-family:gate;pointer-events:none;justify-content:center}\n</style>`;\n/* global customElements, template */\n\ncustomElements.define('g-path', class extends HTMLElement\n{\n\tconstructor()\n\t{\n\t\tsuper();\n\t\tthis.attachShadow({mode: \"open\"});\n\t\tthis.shadowRoot.appendChild(template.content.cloneNode(true));\n\t}\n});"],
-  "mappings": "AAAA,IAAI,SAAW,SAAS,cAAc,UAAU,EAChD,SAAS,UAAY;AAAA;AAAA;AAAA,UAMrB,eAAe,OAAO,SAAU,cAAc,WAC9C,CACC,aACA,CACC,MAAM,EACN,KAAK,aAAa,CAAC,KAAM,MAAM,CAAC,EAChC,KAAK,WAAW,YAAY,SAAS,QAAQ,UAAU,EAAI,CAAC,CAC7D,CACD,CAAC",
-  "names": []
-}

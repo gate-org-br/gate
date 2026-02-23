@@ -13,9 +13,10 @@ const resources = path.resolve(
 	__dirname,
 	"src/main/resources/META-INF/resources/gate"
 );
-const documentationGate = path.resolve(__dirname, "documentation/gate");
+const documentationGate = path.resolve(__dirname, "doc/gate");
 const sourceIconsDir = path.resolve(__dirname, "src/main/icons");
 const resourcesIconDir = path.join(resources, "icon");
+const shouldMinify = process.argv.includes("--minify");
 
 async function exists(file)
 {
@@ -34,7 +35,7 @@ async function exists(file)
 
 async function clean()
 {
-	const files = await glob(`${resources}/*.{js,mjs,css}`);
+	const files = await glob(`${resources}/*.{js,mjs,css,map}`);
 
 	for (const file of files)
 		await fs.unlink(file);
@@ -81,6 +82,9 @@ function escapeTemplateLiteral(content)
 
 async function minifyCss(content, sourcefile)
 {
+	if (!shouldMinify)
+		return content;
+
 	try
 	{
 		const result = await transform(content, {
@@ -271,6 +275,7 @@ async function copyResourcesToDocumentation()
 
 async function build()
 {
+	await fs.mkdir(resources, {recursive: true});
 	await clean();
 	await copyCss();
 	await copyModules();
@@ -280,7 +285,8 @@ async function build()
 	await createIconList();
 	await createIconData();
 	await createIconFont();
-	await minifyJavaScript();
+	if (shouldMinify)
+		await minifyJavaScript();
 	await copyResourcesToDocumentation();
 }
 

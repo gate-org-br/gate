@@ -1,7 +1,0 @@
-let r=document.createElement("template");r.innerHTML=`
-	<fieldset></fieldset>
-<style data-element="g-form-view">*{box-sizing:border-box}:host(*){display:flex;align-items:stretch;flex-direction:column;justify-content:stretch}fieldset{padding:0;border:none}span.multiple{padding:4px;text-indent:0;line-height:24px;white-space:pre-wrap;flex-basis:fit-content}
-</style>`;import n from"./stylesheets.js";customElements.define("g-form-view",class extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.shadowRoot.innerHTML=r.innerHTML,n("input.css","fieldset.css").forEach(s=>this.shadowRoot.appendChild(s))}set value(s){let i=this.shadowRoot.querySelector("fieldset");Array.from(i.children).forEach(e=>e.remove()),s&&(s=s.map(e=>typeof e=="string"?{name:e,required:!0}:e),s.forEach(e=>{let t=i.appendChild(document.createElement("label"));if(e.size)switch(Number(e.size)){case 0:t.setAttribute("data-size",1);break;case 1:t.setAttribute("data-size",2);break;case 2:t.setAttribute("data-size",4);break;case 3:t.setAttribute("data-size",8);break}else e.columns&&t.setAttribute("data-size",e.columns);t.innerText=e.name+": ";let a=t.appendChild(document.createElement("span"));e.multiple&&(a.className="multiple"),e.value&&(a.innerHTML=e.value.join(`
-`))}))}attributeChangedCallback(){this.value=JSON.parse(this.getAttribute("value"))}static get observedAttributes(){return["value"]}});
-
-//# sourceMappingURL=g-form-view.js.map

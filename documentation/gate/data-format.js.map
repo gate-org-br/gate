@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["data-format.js"],
-  "sourcesContent": ["export default class DataFormat\n{\n\tstatic format(bytes, decimals = 2)\n\t{\n\t\tif (bytes === 0)\n\t\t\treturn '0 Bytes';\n\n\t\tconst k = 1024;\n\t\tconst dm = decimals < 0 ? 0 : decimals;\n\t\tconst sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];\n\n\t\tconst i = Math.floor(Math.log(bytes) / Math.log(k));\n\n\t\treturn parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];\n\n\t}\n}"],
-  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,OAAOC,EAAOC,EAAW,EAChC,CACC,GAAID,IAAU,EACb,MAAO,UAER,MAAME,EAAI,KACJC,EAAKF,EAAW,EAAI,EAAIA,EACxBG,EAAQ,CAAC,QAAS,KAAM,KAAM,KAAM,KAAM,KAAM,KAAM,KAAM,IAAI,EAEhEC,EAAI,KAAK,MAAM,KAAK,IAAIL,CAAK,EAAI,KAAK,IAAIE,CAAC,CAAC,EAElD,OAAO,YAAYF,EAAQ,KAAK,IAAIE,EAAGG,CAAC,GAAG,QAAQF,CAAE,CAAC,EAAI,IAAMC,EAAMC,CAAC,CAExE,CACD",
-  "names": ["DataFormat", "bytes", "decimals", "k", "dm", "sizes", "i"]
-}

@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["loading.js"],
-  "sourcesContent": ["const id = 'gate-loading-style';\n\nconst style =\n\t`@keyframes loading\n\t{\n\t\t0% { width: 0 }\n\t\t100% { width: 100% }\n\t}`;\n\ndocument.head.insertAdjacentHTML('beforeend', `<style id='${id}'>${style}</style>`);\n\nexport default function loading(element)\n{\n\tif (element?.parentNode?.shadowRoot)\n\t{\n\t\tif (!element.parentNode.shadowRoot.getElementById(id))\n\t\t{\n\t\t\tconst styleElement = document.createElement('style');\n\t\t\tstyleElement.id = id;\n\t\t\tstyleElement.innerHTML = style;\n\t\t\telement.parentNode.shadowRoot.appendChild(styleElement);\n\t\t}\n\t}\n}\n"],
-  "mappings": "AAAA,MAAMA,EAAK,qBAELC,EACL;AAAA;AAAA;AAAA;AAAA,IAMD,SAAS,KAAK,mBAAmB,YAAa,cAAcD,CAAE,KAAKC,CAAK,UAAU,EAElF,wBAAwBC,EAAQC,EAChC,CACC,GAAIA,GAAS,YAAY,YAEpB,CAACA,EAAQ,WAAW,WAAW,eAAeH,CAAE,EACpD,CACC,MAAMI,EAAe,SAAS,cAAc,OAAO,EACnDA,EAAa,GAAKJ,EAClBI,EAAa,UAAYH,EACzBE,EAAQ,WAAW,WAAW,YAAYC,CAAY,CACvD,CAEF",
-  "names": ["id", "style", "loading", "element", "styleElement"]
-}

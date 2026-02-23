@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["submit.js"],
-  "sourcesContent": ["export default function submit(form, method, action, target)\n{\n\tlet button = document.createElement(\"button\");\n\tbutton.style.displey = \"none\";\n\tif (method)\n\t\tbutton.setAttribute(\"formmethod\", method);\n\tif (action)\n\t\tbutton.setAttribute(\"formaction\", action);\n\tif (target)\n\t\tbutton.setAttribute(\"formtarget\", target);\n\tform.appendChild(button);\n\tbutton.click();\n\tbutton.remove();\n}\n"],
-  "mappings": "AAAA,wBAAwBA,EAAOC,EAAMC,EAAQC,EAAQC,EACrD,CACC,IAAIC,EAAS,SAAS,cAAc,QAAQ,EAC5CA,EAAO,MAAM,QAAU,OACnBH,GACHG,EAAO,aAAa,aAAcH,CAAM,EACrCC,GACHE,EAAO,aAAa,aAAcF,CAAM,EACrCC,GACHC,EAAO,aAAa,aAAcD,CAAM,EACzCH,EAAK,YAAYI,CAAM,EACvBA,EAAO,MAAM,EACbA,EAAO,OAAO,CACf",
-  "names": ["submit", "form", "method", "action", "target", "button"]
-}

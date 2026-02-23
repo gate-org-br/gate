@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": ["clipboard.js"],
-  "sourcesContent": ["export default class Clipboard\n{\n\tstatic copy(data)\n\t{\n\t\tconst textarea = document.createElement('textarea');\n\t\ttextarea.value = data;\n\t\ttextarea.removeAttribute('readonly');\n\t\ttextarea.style.position = 'absolute';\n\t\ttextarea.style.left = '-9999px';\n\t\tdocument.body.appendChild(textarea);\n\t\ttextarea.select();\n\t\tdocument.execCommand('copy');\n\t\tdocument.body.removeChild(textarea);\n\t}\n}"],
-  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,KAAKC,EACZ,CACC,MAAMC,EAAW,SAAS,cAAc,UAAU,EAClDA,EAAS,MAAQD,EACjBC,EAAS,gBAAgB,UAAU,EACnCA,EAAS,MAAM,SAAW,WAC1BA,EAAS,MAAM,KAAO,UACtB,SAAS,KAAK,YAAYA,CAAQ,EAClCA,EAAS,OAAO,EAChB,SAAS,YAAY,MAAM,EAC3B,SAAS,KAAK,YAAYA,CAAQ,CACnC,CACD",
-  "names": ["Clipboard", "data", "textarea"]
-}
