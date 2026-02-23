@@ -8,6 +8,7 @@ import gate.sql.insert.Insert;
 import gate.sql.select.Select;
 import gate.sql.update.Update;
 import gate.type.ID;
+
 import java.util.List;
 
 public class CrudDao<T> extends Dao implements Crud<T>
@@ -53,7 +54,7 @@ public class CrudDao<T> extends Dao implements Crud<T>
     @Override
     public void insert(T value)
     {
-        Insert.into(type)
+        Insert.type(type)
                 .build()
                 .connect(getLink())
                 .value(value)

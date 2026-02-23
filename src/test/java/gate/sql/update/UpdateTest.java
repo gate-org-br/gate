@@ -7,344 +7,494 @@ import gate.error.NotFoundException;
 import gate.sql.Link;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
-
 import gate.type.ID;
 import gate.type.LocalDateInterval;
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.util.Optional;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class UpdateTest
 {
 
-	@BeforeAll
-	public static void setUp() throws ConstraintViolationException, SQLException
-	{
-		TestDataSource.setUp();
-	}
+    @BeforeAll
+    public static void setUp() throws ConstraintViolationException, SQLException
+    {
+        TestDataSource.setUp();
+    }
 
-	@Test
-	public void testString() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			ID id = ID.valueOf(1);
-			String name = "Jonh";
-			LocalDate birthdate = LocalDate.of(2005, 12, 31);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+    @Test
+    public void testString() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(1);
+            String name = "John";
+            LocalDate birthdate = LocalDate.of(2005, 12, 31);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
 
-			assertEquals(1, link.prepare("update Person set name = ?, birthdate = ?, contract__min = ?, contract__max = ? where id = ?")
-					.parameters(name, birthdate, contract, id)
-					.execute());
+            assertEquals(1, link.prepare("update Person set name = ?, birthdate = ?, contract__min = ?, contract__max = ? where id = ?")
+                    .parameters(name, birthdate, contract, id)
+                    .execute());
 
-			Optional<Object[]> optional
-					= link.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            Optional<Object[]> optional
+                    = link.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testResourceFile() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			ID id = ID.valueOf(2);
-			String name = "Paul";
-			LocalDate birthdate = LocalDate.of(2004, 11, 20);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2008, 1, 1), LocalDate.of(2010, 12, 31));
+    @Test
+    public void testResourceFile() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(2);
+            String name = "Paul";
+            LocalDate birthdate = LocalDate.of(2004, 11, 20);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2008, 1, 1), LocalDate.of(2010, 12, 31));
 
-			assertEquals(1, link
-					.prepare(getClass().getResource("UpdateTest/Update.sql"))
-					.parameters(name, birthdate, contract, id)
-					.execute());
+            assertEquals(1, link
+                    .prepare(getClass().getResource("UpdateTest/Update.sql"))
+                    .parameters(name, birthdate, contract, id)
+                    .execute());
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testCompiledTableBuilder() throws ConstraintViolationException, SQLException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			ID id = ID.valueOf(3);
-			String name = "Richard";
-			LocalDate birthdate = LocalDate.of(2000, 8, 9);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 1), LocalDate.of(2014, 12, 31));
+    @Test
+    public void testCompiledTableBuilder() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(3);
+            String name = "Richard";
+            LocalDate birthdate = LocalDate.of(2000, 8, 9);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 1), LocalDate.of(2014, 12, 31));
 
-			assertEquals(1, link
-					.prepare(Update
-							.table("Person")
-							.set(String.class, "name", name)
-							.set(LocalDate.class, "birthdate", birthdate)
-							.set(LocalDateInterval.class, "contract", contract)
-							.where(Condition.of("id").eq(id)))
-					.execute());
+            assertEquals(1, link
+                    .prepare(Update
+                            .table("Person")
+                            .set(String.class, "name", name)
+                            .set(LocalDate.class, "birthdate", birthdate)
+                            .set(LocalDateInterval.class, "contract", contract)
+                            .where(Condition.of("id").eq(id)))
+                    .execute());
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testGenericTableBuilder() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			ID id = ID.valueOf(4);
-			String name = "Thomas";
-			LocalDate birthdate = LocalDate.of(2000, 8, 7);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 2), LocalDate.of(2014, 12, 4));
+    @Test
+    public void testGenericTableBuilder() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(4);
+            String name = "Thomas";
+            LocalDate birthdate = LocalDate.of(2000, 8, 7);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2012, 1, 2), LocalDate.of(2014, 12, 4));
 
-			assertEquals(1, link
-					.prepare(Update
-							.table("Person")
-							.set(String.class, "name")
-							.set(LocalDate.class, "birthdate")
-							.set(LocalDateInterval.class, "contract")
-							.where(Condition.of("id").eq()))
-					.parameters(name, birthdate, contract, id)
-					.execute());
+            assertEquals(1, link
+                    .prepare(Update
+                            .table("Person")
+                            .set(String.class, "name")
+                            .set(LocalDate.class, "birthdate")
+                            .set(LocalDateInterval.class, "contract")
+                            .where(Condition.of("id").eq()))
+                    .parameters(name, birthdate, contract, id)
+                    .execute());
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testTypedBuilder() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			int id = 5;
-			String name = "Maria";
-			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+    @Test
+    public void testGenericTableBuilderWithPropertyReference() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(4);
+            String name = "Thomas2";
 
-			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+            assertEquals(1, link
+                    .prepare(Update
+                            .table(Person.class)
+                            .set(Person::getName)
+                            .where(Condition.of("id").eq()))
+                    .parameters(name, id)
+                    .execute());
 
-			assertEquals(1, link
-					.prepare(Update
-							.type(Person.class)
-							.set("id", "name", "birthdate", "contract"))
-					.value(person)
-					.execute());
+            Optional<Object[]> optional = link
+                    .from("select name from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(String.class);
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            if (optional.isPresent())
+                assertEquals(name, optional.get()[0]);
+            else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testFullTypedBuilder() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			int id = 6;
-			String name = "Newton";
-			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+    @Test
+    public void testGenericTableBuilderWithPropertyReferenceList() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(3);
+            String name = "Richard2";
+            LocalDate birthdate = LocalDate.of(2002, 2, 2);
 
-			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+            assertEquals(1, link
+                    .prepare(Update
+                            .table(Person.class)
+                            .set(Person::getName)
+                            .set(Person::getBirthdate)
+                            .where(Condition.of("id").eq()))
+                    .parameters(name, birthdate, id)
+                    .execute());
 
-			assertEquals(1, link
-					.prepare(Update
-							.type(Person.class))
-					.value(person)
-					.execute());
+            Optional<Object[]> optional = link
+                    .from("select name, birthdate from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(String.class, LocalDate.class);
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            if (optional.isPresent())
+            {
+                assertEquals(name, optional.get()[0]);
+                assertEquals(birthdate, optional.get()[1]);
+            } else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testGQN() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			int id = 7;
-			String name = "Fred";
-			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+    @Test
+    public void testCompiledTableBuilderWithPropertyReference() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(1);
+            String name = "Aline";
 
-			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+            assertEquals(1, link
+                    .prepare(Update
+                            .table(Person.class)
+                            .set(Person::getName, name)
+                            .where(Condition.of("id").eq(id)))
+                    .execute());
 
-			assertEquals(1, link
-					.update(Person.class)
-					.properties("=id", "name", "birthdate", "contract")
-					.execute(person));
+            Optional<Object[]> optional = link
+                    .from("select name from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(String.class);
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            if (optional.isPresent())
+                assertEquals(name, optional.get()[0]);
+            else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testFullGQN() throws SQLException, ConstraintViolationException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			int id = 8;
-			String name = "Alfred";
-			LocalDate birthdate = LocalDate.of(2001, 7, 19);
-			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+    @Test
+    public void testCompiledTableBuilderWithObjectAndPropertyReferences() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(2);
+            Person person = new Person()
+                    .setName("Paul2")
+                    .setBirthdate(LocalDate.of(2003, 3, 3));
 
-			Person person = new Person()
-					.setId(id)
-					.setName(name)
-					.setBirthdate(birthdate)
-					.setContract(contract);
+            assertEquals(1, link
+                    .prepare(Update
+                            .table(Person.class)
+                            .set(person, Person::getName, Person::getBirthdate)
+                            .where(Condition.of("id").eq(id)))
+                    .execute());
 
-			assertEquals(1, link
-					.update(Person.class)
-					.execute(person));
+            Optional<Object[]> optional = link
+                    .from("select name, birthdate from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(String.class, LocalDate.class);
 
-			Optional<Object[]> optional
-					= link
-							.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-							.parameters(id)
-							.fetchArray(int.class, String.class, LocalDate.class, LocalDateInterval.class);
-			if (optional.isPresent())
-			{
-				Object[] result = optional.get();
-				assertEquals(id, result[0]);
-				assertEquals(name, result[1]);
-				assertEquals(birthdate, result[2]);
-				assertEquals(contract, result[3]);
-			} else
-				fail("No result found");
-		}
-	}
+            if (optional.isPresent())
+            {
+                assertEquals(person.getName(), optional.get()[0]);
+                assertEquals(person.getBirthdate(), optional.get()[1]);
+            } else
+                fail("No result found");
+        }
+    }
 
-	@Test
-	public void testGQN2() throws ConstraintViolationException, ParseException, SQLException, NotFoundException
-	{
-		try (Link link = TestDataSource.getLink())
-		{
-			Contact expected
-					= new Contact()
-							.setId(ID.valueOf(1))
-							.setType(Contact.Type.PHONE)
-							.setVal("99999999")
-							.setPerson(new Person()
-									.setId(1));
+    @Test
+    public void testObjectUpdateBuilderWithPropertyReferences() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            ID id = ID.valueOf(2);
+            Person person = new Person()
+                    .setName("Paul3")
+                    .setBirthdate(LocalDate.of(2006, 6, 6));
 
-			assertEquals(1, link
-					.update(Contact.class)
-					.properties("=id", "type", "val", "person.id")
-					.execute(expected));
+            assertEquals(1, link
+                    .prepare(Update
+                            .table(Person.class)
+                            .from(person)
+                            .set(Person::getName, Person::getBirthdate)
+                            .where(Condition.of("id").eq(id)))
+                    .execute());
 
-			Contact result = link
-					.select(Contact.class)
-					.properties("=id", "type", "val", "person.id")
-					.matching(expected)
-					.orElseThrow(NotFoundException::new);
+            Optional<Object[]> optional = link
+                    .from("select name, birthdate from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(String.class, LocalDate.class);
 
-			assertEquals(expected.getVal(), result.getVal());
-			assertEquals(expected.getType(), result.getType());
-			assertEquals(expected.getId(), result.getId());
-			assertEquals(expected.getPerson().getId(), result.getPerson().getId());
-		}
-	}
+            if (optional.isPresent())
+            {
+                assertEquals(person.getName(), optional.get()[0]);
+                assertEquals(person.getBirthdate(), optional.get()[1]);
+            } else
+                fail("No result found");
+        }
+    }
+
+    @Test
+    public void testTypedBuilder() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            int id = 5;
+            String name = "Maria";
+            LocalDate birthdate = LocalDate.of(2001, 7, 19);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+
+            Person person = new Person()
+                    .setId(id)
+                    .setName(name)
+                    .setBirthdate(birthdate)
+                    .setContract(contract);
+
+            assertEquals(1, link
+                    .prepare(Update
+                            .type(Person.class)
+                            .set("id", "name", "birthdate", "contract"))
+                    .value(person)
+                    .execute());
+
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
+
+    @Test
+    public void testFullTypedBuilder() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            int id = 6;
+            String name = "Newton";
+            LocalDate birthdate = LocalDate.of(2001, 7, 19);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+
+            Person person = new Person()
+                    .setId(id)
+                    .setName(name)
+                    .setBirthdate(birthdate)
+                    .setContract(contract);
+
+            assertEquals(1, link
+                    .prepare(Update
+                            .type(Person.class))
+                    .value(person)
+                    .execute());
+
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
+
+    @Test
+    public void testGQN() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            int id = 7;
+            String name = "Fred";
+            LocalDate birthdate = LocalDate.of(2001, 7, 19);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+
+            Person person = new Person()
+                    .setId(id)
+                    .setName(name)
+                    .setBirthdate(birthdate)
+                    .setContract(contract);
+
+            assertEquals(1, link
+                    .update(Person.class)
+                    .properties("=id", "name", "birthdate", "contract")
+                    .execute(person));
+
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
+
+    @Test
+    public void testFullGQN() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            int id = 8;
+            String name = "Alfred";
+            LocalDate birthdate = LocalDate.of(2001, 7, 19);
+            LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2010, 1, 1), LocalDate.of(2010, 12, 31));
+
+            Person person = new Person()
+                    .setId(id)
+                    .setName(name)
+                    .setBirthdate(birthdate)
+                    .setContract(contract);
+
+            assertEquals(1, link
+                    .update(Person.class)
+                    .execute(person));
+
+            Optional<Object[]> optional
+                    = link
+                    .from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
+                    .parameters(id)
+                    .fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
+            if (optional.isPresent())
+            {
+                Object[] result = optional.get();
+                assertEquals(id, result[0]);
+                assertEquals(name, result[1]);
+                assertEquals(birthdate, result[2]);
+                assertEquals(contract, result[3]);
+            } else
+                fail("No result found");
+        }
+    }
+
+    @Test
+    public void testGQN2() throws ConstraintViolationException, NotFoundException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            Contact expected
+                    = new Contact()
+                    .setId(ID.valueOf(1))
+                    .setType(Contact.Type.PHONE)
+                    .setVal("99999999")
+                    .setPerson(new Person()
+                            .setId(1));
+
+            assertEquals(1, link
+                    .update(Contact.class)
+                    .properties("=id", "type", "val", "person.id")
+                    .execute(expected));
+
+            Contact result = link
+                    .select(Contact.class)
+                    .properties("=id", "type", "val", "person.id")
+                    .matching(expected)
+                    .orElseThrow(NotFoundException::new);
+
+            assertEquals(expected.getVal(), result.getVal());
+            assertEquals(expected.getType(), result.getType());
+            assertEquals(expected.getId(), result.getId());
+            assertEquals(expected.getPerson().getId(), result.getPerson().getId());
+        }
+    }
 }

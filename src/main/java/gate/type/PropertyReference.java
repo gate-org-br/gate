@@ -1,8 +1,5 @@
 package gate.type;
 
-import gate.annotation.Entity;
-
-import java.beans.Introspector;
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
@@ -14,48 +11,77 @@ import java.util.function.Function;
 @FunctionalInterface
 public interface PropertyReference<T, R> extends Function<T, R>, Serializable
 {
-    Map<String, String> CACHE = new ConcurrentHashMap<>();
 
-    static String property(PropertyReference<?, ?> reference)
+    Map<Class<?>, Info> INFO_CACHE = new ConcurrentHashMap<>();
+
+    /**
+     * Returns metadata extracted from this property reference.
+     *
+     * @return metadata extracted from this property reference
+     */
+    default Info info()
     {
-        SerializedLambda lambda = reference.serializedLambda();
-        String key = lambda.getImplClass() + "#" + lambda.getImplMethodName();
-        return CACHE.computeIfAbsent(key, unused -> resolvePropertyName(reference, lambda));
+        return INFO_CACHE.computeIfAbsent(getClass(),
+                unused -> createInfo(this));
     }
 
-    private static String resolvePropertyName(PropertyReference<?, ?> reference, SerializedLambda lambda)
+    /**
+     * Extracts the {@link SerializedLambda} representation of this property reference.
+     *
+     * @return serialized lambda backing this reference
+     */
+    default SerializedLambda serializedLambda()
     {
+        return info().serializedLambda();
+    }
+
+    /**
+     * Returns the owner class that declares the referenced method.
+     *
+     * @return owner class of the referenced method
+     */
+    default Class<?> getOwnerClass()
+    {
+        return info().ownerClass();
+    }
+
+    /**
+     * Returns the referenced zero-argument method when it can be resolved.
+     *
+     * @return referenced method, or empty when it cannot be resolved
+     */
+    default Optional<Method> getMethod()
+    {
+        return info().method();
+    }
+
+    private static Info createInfo(PropertyReference<?, ?> reference)
+    {
+        SerializedLambda lambda = extractSerializedLambda(reference);
+        Class<?> ownerClass = loadOwnerClass(lambda);
+
         String methodName = lambda.getImplMethodName();
+        Optional<Method> method = Optional.empty();
+        for (Method candidate : ownerClass.getMethods())
+            if (candidate.getName().equals(methodName) && candidate.getParameterCount() == 0)
+            {
+                method = Optional.of(candidate);
+                break;
+            }
 
-        if (methodName.startsWith("lambda$"))
-            throw new IllegalStateException("PropertyReference must be a method reference");
-
-        if (methodName.startsWith("get") && methodName.length() > 3)
-            return findMethod(lambda, methodName).map(Method::getReturnType)
-                    .filter(e -> e.isAnnotationPresent(Entity.class))
-                    .map(e -> e.getSimpleName() + "$" + e.getAnnotation(Entity.class).value())
-                    .orElseGet(() -> Introspector.decapitalize(methodName.substring(3)));
-
-        if (methodName.startsWith("is") && methodName.length() > 2)
-            return Introspector.decapitalize(methodName.substring(2));
-
-        return findMethod(lambda, methodName).map(Method::getReturnType)
-                .filter(e -> e.isAnnotationPresent(Entity.class))
-                .map(e -> e.getSimpleName() + "$" + e.getAnnotation(Entity.class).value())
-                .orElse(methodName);
+        return new Info(lambda, ownerClass, method);
     }
 
-
-    private SerializedLambda serializedLambda()
+    private static SerializedLambda extractSerializedLambda(PropertyReference<?, ?> reference)
     {
         try
         {
-            Method method = getClass().getDeclaredMethod("writeReplace");
+            Method method = reference.getClass().getDeclaredMethod("writeReplace");
             method.setAccessible(true);
-            Object replacement = method.invoke(this);
+            Object replacement = method.invoke(reference);
 
-            if (replacement instanceof SerializedLambda)
-                return (SerializedLambda) replacement;
+            if (replacement instanceof SerializedLambda lambda)
+                return lambda;
 
             throw new IllegalStateException("Could not extract serialized lambda");
         } catch (ReflectiveOperationException ex)
@@ -64,26 +90,23 @@ public interface PropertyReference<T, R> extends Function<T, R>, Serializable
         }
     }
 
-    private static Optional<Method> findMethod(SerializedLambda lambda, String methodName)
+    private static Class<?> loadOwnerClass(SerializedLambda lambda)
     {
         try
         {
-            Class<?> owner = loadOwner(lambda);
-            for (Method method : owner.getMethods())
-                if (method.getName().equals(methodName) && method.getParameterCount() == 0)
-                    return Optional.of(method);
-            return Optional.empty();
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            return Class.forName(lambda.getImplClass().replace('/', '.'),
+                    false, classLoader);
         } catch (ClassNotFoundException ex)
         {
             throw new IllegalStateException("Could not load method owner class", ex);
         }
     }
 
-    private static Class<?> loadOwner(SerializedLambda lambda)
-            throws ClassNotFoundException
+    /**
+     * Metadata extracted from a property reference.
+     */
+    record Info(SerializedLambda serializedLambda, Class<?> ownerClass, Optional<Method> method)
     {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        return Class.forName(lambda.getImplClass().replace('/', '.'),
-                false, classLoader);
     }
 }
