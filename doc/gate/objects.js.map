@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["objects.js"],
+  "sourcesContent": ["export default class Objects\n{\n\tstatic isEmpty(value)\n\t{\n\t\treturn !value && value !== 0\n\t\t\t&& value !== false;\n\t}\n\n\tstatic compare(s1, s2)\n\t{\n\t\tif (Objects.isEmpty(s1)\n\t\t\t&& Objects.isEmpty(s2))\n\t\t\treturn 0;\n\n\t\tif (Objects.isEmpty(s1))\n\t\t\treturn 1;\n\n\t\tif (Objects.isEmpty(s2))\n\t\t\treturn -1;\n\n\t\treturn s1 > s2 ? 1 : s1 < s2 ? -1 : 0;\n\t}\n}"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,QAAQC,EACf,CACC,MAAO,CAACA,GAASA,IAAU,GACvBA,IAAU,EACf,CAEA,OAAO,QAAQC,EAAIC,EACnB,CACC,OAAIH,EAAQ,QAAQE,CAAE,GAClBF,EAAQ,QAAQG,CAAE,EACd,EAEJH,EAAQ,QAAQE,CAAE,EACd,EAEJF,EAAQ,QAAQG,CAAE,EACd,GAEDD,EAAKC,EAAK,EAAID,EAAKC,EAAK,GAAK,CACrC,CACD",
+  "names": ["Objects", "value", "s1", "s2"]
+}

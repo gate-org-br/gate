@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@json-to-html.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport './trigger.js';\nimport DataURL from './data-url.js';\nimport Formatter from './formatter.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\n\nwindow.addEventListener(\"@json-to-html\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {method, action, form} = event.detail;\n\n\tfetch(RequestBuilder.build(method, action, form))\n\t\t.then(ResponseHandler.json)\n\t\t.then(Formatter.JSONtoHTML)\n\t\t.then(e => new DataURL(\"text/html\", e).toString())\n\t\t.then(result => event.success(path, result))\n\t\t.catch(error => event.failure(path, error));\n});"],
+  "mappings": "AAEA,MAAO,eACP,OAAOA,MAAa,gBACpB,OAAOC,MAAe,iBACtB,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAE5B,OAAO,iBAAiB,gBAAiB,SAAUC,EACnD,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,OAAAE,EAAQ,OAAAC,EAAQ,KAAAC,CAAI,EAAIJ,EAAM,OAEnC,MAAMF,EAAe,MAAMI,EAAQC,EAAQC,CAAI,CAAC,EAC9C,KAAKL,EAAgB,IAAI,EACzB,KAAKF,EAAU,UAAU,EACzB,KAAKQ,GAAK,IAAIT,EAAQ,YAAaS,CAAC,EAAE,SAAS,CAAC,EAChD,KAAKC,GAAUN,EAAM,QAAQC,EAAMK,CAAM,CAAC,EAC1C,MAAMC,GAASP,EAAM,QAAQC,EAAMM,CAAK,CAAC,CAC5C,CAAC",
+  "names": ["DataURL", "Formatter", "RequestBuilder", "ResponseHandler", "event", "path", "method", "action", "form", "e", "result", "error"]
+}

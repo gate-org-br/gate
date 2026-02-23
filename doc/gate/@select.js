@@ -1,0 +1,3 @@
+import r from"./data-url.js";import u from"./g-tree-picker.js";import m from"./g-select-picker.js";import s from"./request-builder.js";import o from"./response-handler.js";window.addEventListener("@select",function(t){let a=t.composedPath(),c=a[0]||t.target,{method:h,action:i,form:f}=t.detail;fetch(s.build(h,i,f)).then(o.json).catch(e=>{throw t.failure(a,e),e}).then(e=>{e.length&&e[0].value&&e[0].label&&e[0].children&&Object.keys(e[0]).length===3?u.pick(e,c.title).then(l=>[l.value.value,l.value.label]).then(r.ofJSON).then(l=>t.success(a,l)).catch(()=>t.resolve(a)):m.pick(e,c.title).then(l=>l.value).then(r.ofJSON).then(l=>t.success(a,l)).catch(()=>t.resolve(a))}).finally(()=>c.hasAttribute("tabindex")&&c.focus())});
+
+//# sourceMappingURL=@select.js.map

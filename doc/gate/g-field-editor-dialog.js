@@ -1,0 +1,11 @@
+let d=document.createElement("template");d.innerHTML=`
+	<dialog><header><label id='caption'></label><a id='close' href="#"><g-icon>
+					&#X1011;
+				</g-icon></a></header><section><g-field-editor></g-field-editor></section><footer><g-coolbar><button id='commit' class="primary">
+					Concluir<g-icon>&#X1000;</g-icon></button><button id='delete' class='danger'>
+					Remover<g-icon>&#X2026;</g-icon></button><hr/><button id='cancel' class="tertiary">
+					Desistir<g-icon>&#X1001;</g-icon></button></g-coolbar></footer></dialog>
+<style data-element="g-field-editor-dialog">dialog{min-width:320px;max-width:1000px;height:fit-content;width:calc(100% - 40px);max-height:calc(100% - 40px)}dialog>section{gap:4px;padding:4px;display:flex;overflow:auto;align-items:stretch;justify-content:stretch}g-field-editor{flex-grow:1}
+</style>`;import"./g-icon.js";import"./g-coolbar.js";import"./g-field-editor.js";import a from"./g-window.js";export default class n extends a{constructor(){super(),this.shadowRoot.innerHTML=this.shadowRoot.innerHTML+d.innerHTML;let e=this.shadowRoot.querySelector("g-field-editor");this.shadowRoot.getElementById("close").addEventListener("click",()=>this.hide()),this.shadowRoot.getElementById("cancel").addEventListener("click",()=>this.hide()),this.shadowRoot.getElementById("delete").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("delete"))|this.hide()),this.shadowRoot.getElementById("commit").addEventListener("click",()=>{e.validate()&&(this.dispatchEvent(new CustomEvent("commit",{detail:e.value})),this.hide())})}set caption(e){this.shadowRoot.getElementById("caption").innerHTML=e}get caption(){return this.shadowRoot.getElementById("caption").innerHTML}set value(e){this.shadowRoot.querySelector("g-field-editor").value=e,e?this.shadowRoot.getElementById("delete").removeAttribute("hidden"):this.shadowRoot.getElementById("delete").setAttribute("hidden","true")}get value(){return this.shadowRoot.querySelector("g-field-editor").value}static edit(e,i){let t=window.top.document.createElement("g-field-editor-dialog");return t.value=e,i&&(t.caption=i),t.show(),new Promise(o=>{t.addEventListener("commit",l=>o(l.detail)),t.addEventListener("delete",()=>o(null))})}}customElements.define("g-field-editor-dialog",n);
+
+//# sourceMappingURL=g-field-editor-dialog.js.map

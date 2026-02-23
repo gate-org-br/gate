@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["request-builder.js"],
+  "sourcesContent": ["export default class RequestBuilder\n{\n\tstatic build(method, action, body, contentType)\n\t{\n\t\tif (!action || action === \"#\")\n\t\t\taction = \"data:text/plain,\";\n\n\t\tlet headers = new Headers();\n\t\tif (contentType)\n\t\t\theaders.append(\"Content-Type\", contentType);\n\n\t\tif (body instanceof HTMLFormElement)\n\t\t\tbody = new FormData(body);\n\t\telse if (!body)\n\t\t\tbody = \"\";\n\n\t\tif (method === \"get\")\n\t\t\treturn new Request(action);\n\t\telse if (method === \"delete\"\n\t\t\t|| method === \"head\"\n\t\t\t|| method === \"options\")\n\t\t\treturn new Request(action, {method});\n\t\telse if (method === \"post\"\n\t\t\t|| method === \"put\"\n\t\t\t|| method === \"patch\")\n\t\t\treturn new Request(action, {method, headers, body});\n\n\t}\n}\n"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,MAAMC,EAAQC,EAAQC,EAAMC,EACnC,EACK,CAACF,GAAUA,IAAW,OACzBA,EAAS,oBAEV,IAAIG,EAAU,IAAI,QASlB,GARID,GACHC,EAAQ,OAAO,eAAgBD,CAAW,EAEvCD,aAAgB,gBACnBA,EAAO,IAAI,SAASA,CAAI,EACfA,IACTA,EAAO,IAEJF,IAAW,MACd,OAAO,IAAI,QAAQC,CAAM,EACrB,GAAID,IAAW,UAChBA,IAAW,QACXA,IAAW,UACd,OAAO,IAAI,QAAQC,EAAQ,CAAC,OAAAD,CAAM,CAAC,EAC/B,GAAIA,IAAW,QAChBA,IAAW,OACXA,IAAW,QACd,OAAO,IAAI,QAAQC,EAAQ,CAAC,OAAAD,EAAQ,QAAAI,EAAS,KAAAF,CAAI,CAAC,CAEpD,CACD",
+  "names": ["RequestBuilder", "method", "action", "body", "contentType", "headers"]
+}

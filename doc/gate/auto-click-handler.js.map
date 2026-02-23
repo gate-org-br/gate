@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["auto-click-handler.js"],
+  "sourcesContent": ["Array.from(document.querySelectorAll(\"*[data-auto-click]\"))\n\t.forEach(e => setTimeout(() => e.click(), 0));\n\nArray.from(document.querySelectorAll(\"*[data-auto-click-when-unique]\"))\n\t.filter(e => e.parentNode.children.length === 1)\n\t.forEach(e => setTimeout(() => e.click(), 0));\n"],
+  "mappings": "AAAA,MAAM,KAAK,SAAS,iBAAiB,oBAAoB,CAAC,EACxD,QAAQ,GAAK,WAAW,IAAM,EAAE,MAAM,EAAG,CAAC,CAAC,EAE7C,MAAM,KAAK,SAAS,iBAAiB,gCAAgC,CAAC,EACpE,OAAO,GAAK,EAAE,WAAW,SAAS,SAAW,CAAC,EAC9C,QAAQ,GAAK,WAAW,IAAM,EAAE,MAAM,EAAG,CAAC,CAAC",
+  "names": []
+}

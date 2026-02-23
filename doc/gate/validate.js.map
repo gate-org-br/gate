@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["validate.js"],
+  "sourcesContent": ["export default function validate(element)\n{\n\tif (element.hasAttribute(\"data-disabled\"))\n\t\treturn false;\n\n\tif (element.hasAttribute(\"data-cancel\"))\n\t\treturn alert(element.getAttribute(\"data-cancel\"), 2000) && false;\n\n\tif (element.hasAttribute(\"data-confirm\"))\n\t\treturn confirm(element.getAttribute(\"data-confirm\"));\n\n\tif (element.hasAttribute(\"data-alert\"))\n\t\treturn alert(element.getAttribute(\"data-alert\")) || true;\n\n\treturn true;\n}"],
+  "mappings": "AAAA,wBAAwBA,EAASC,EACjC,CACC,OAAIA,EAAQ,aAAa,eAAe,EAChC,GAEJA,EAAQ,aAAa,aAAa,EAC9B,MAAMA,EAAQ,aAAa,aAAa,EAAG,GAAI,GAAK,GAExDA,EAAQ,aAAa,cAAc,EAC/B,QAAQA,EAAQ,aAAa,cAAc,CAAC,EAEhDA,EAAQ,aAAa,YAAY,GAC7B,MAAMA,EAAQ,aAAa,YAAY,CAAC,GAAK,EAGtD",
+  "names": ["validate", "element"]
+}

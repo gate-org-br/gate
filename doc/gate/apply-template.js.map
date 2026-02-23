@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["apply-template.js"],
+  "sourcesContent": ["export default function applyTemplate(element, template)\n{\n\tfor (let parent = element.parentNode; parent;\n\t\tparent = parent.parentNode)\n\t\tif (parent === document)\n\t\t{\n\t\t\tdocument.head.insertAdjacentHTML('beforeend', template.innerHTML);\n\t\t\treturn;\n\t\t} else if (parent instanceof ShadowRoot)\n\t\t{\n\t\t\tif (!parent.querySelector(`[data-element='${element.getAttribute(\"is\") || element.tagName}]'`))\n\t\t\t\tparent.appendChild(template.content.cloneNode(true));\n\t\t\treturn;\n\t\t}\n\n}"],
+  "mappings": "AAAA,wBAAwBA,EAAcC,EAASC,EAC/C,CACC,QAASC,EAASF,EAAQ,WAAYE,EACrCA,EAASA,EAAO,WAChB,GAAIA,IAAW,SACf,CACC,SAAS,KAAK,mBAAmB,YAAaD,EAAS,SAAS,EAChE,MACD,SAAWC,aAAkB,WAC7B,CACMA,EAAO,cAAc,kBAAkBF,EAAQ,aAAa,IAAI,GAAKA,EAAQ,OAAO,IAAI,GAC5FE,EAAO,YAAYD,EAAS,QAAQ,UAAU,EAAI,CAAC,EACpD,MACD,CAEF",
+  "names": ["applyTemplate", "element", "template", "parent"]
+}

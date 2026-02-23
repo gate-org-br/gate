@@ -1,0 +1,3 @@
+import"./trigger.js";import u from"./dom.js";import d from"./parser.js";import f from"./data-url.js";import s from"./extractor.js";import c from"./request-builder.js";import h from"./response-handler.js";window.addEventListener("@fill",function(r){let i=r.composedPath(),l=i[0]||r.target,{method:a,action:m,form:p,parameters:t}=r.detail;!t||!t.length?t=[l.parentNode.querySelector("input[type='hidden']"),l.parentNode.querySelector("input[type='text']")]:t=t.map(e=>e!=="_"?u.navigate(l,e).orElseThrow(`Invalid selector: ${e}`):null),fetch(c.build(a,m,p)).then(h.dataURL).then(e=>{let n=f.toJSON(e);for(let o=0;o<t.length;o++)t[o]&&(t[o].value=d.unquote(s.value(n,o)));r.success(i,e)}).catch(e=>r.failure(i,e))});
+
+//# sourceMappingURL=@fill.js.map

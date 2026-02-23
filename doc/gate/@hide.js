@@ -1,0 +1,3 @@
+import"./trigger.js";import s from"./dom.js";import h from"./request-builder.js";import m from"./response-handler.js";function f(t){for(let e=t;e;e=e.parentNode||e.host||window.frameElement||window)if(e.hide||e===window)return e;throw new Error("No dialog to hide")}window.addEventListener("@hide",function(t){let e=t.composedPath(),d=e[0]||t.target,{method:a,action:l,form:n,parameters:[i]}=t.detail,o=i?s.navigate(d,i).orElseThrow(`${i} is not a valid selector`):f(d);fetch(h.build(a,l,n)).then(m.dataURL).then(r=>{o.hide?o.hide():o===window?o.close():o.setAttribute("hidden",""),t.success(e,r)}).catch(r=>t.failure(e,r))});
+
+//# sourceMappingURL=@hide.js.map
