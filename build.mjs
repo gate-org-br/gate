@@ -14,7 +14,7 @@ const resources = path.resolve(
 	"src/main/resources/META-INF/resources/gate"
 );
 const documentationGate = path.resolve(__dirname, "doc/gate");
-const sourceIconsDir = path.resolve(__dirname, "src/main/icons");
+const sourceIconsDir = path.resolve(__dirname, "src/main/icon");
 const resourcesIconDir = path.join(resources, "icon");
 const shouldMinify = process.argv.includes("--minify");
 
@@ -213,7 +213,8 @@ async function createIconData()
 	);
 }
 
-async function copyIconsToResources() {
+async function copyIconsToResources()
+{
 	if (!await exists(sourceIconsDir))
 		throw new Error(`Icons source directory not found: ${sourceIconsDir}`);
 
@@ -221,7 +222,8 @@ async function copyIconsToResources() {
 	await fs.cp(sourceIconsDir, resourcesIconDir, {recursive: true});
 }
 
-async function createIconFont() {
+async function createIconFont()
+{
 	await svgtofont({
 		src: resourcesIconDir,
 		dist: resources,
@@ -234,7 +236,8 @@ async function createIconFont() {
 		svgicons2svgfont: {
 			normalize: true
 		},
-		getIconUnicode: (name, unicode, startUnicode) => {
+		getIconUnicode: (name, unicode, startUnicode) =>
+		{
 			const codepoint = Number.parseInt(name, 16);
 			if (Number.isFinite(codepoint))
 				return [String.fromCodePoint(codepoint), codepoint + 1];
