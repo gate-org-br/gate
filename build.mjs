@@ -13,7 +13,7 @@ const resources = path.resolve(
 	__dirname,
 	"src/main/resources/META-INF/resources/gate"
 );
-const documentationGate = path.resolve(__dirname, "doc/gate");
+const documentationGate = path.resolve(__dirname, "docs/gate");
 const sourceIconsDir = path.resolve(__dirname, "src/main/icon");
 const resourcesIconDir = path.join(resources, "icon");
 const shouldMinify = process.argv.includes("--minify");
