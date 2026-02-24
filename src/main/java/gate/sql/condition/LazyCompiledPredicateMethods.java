@@ -3,43 +3,24 @@ package gate.sql.condition;
 import gate.converter.Converter;
 import gate.sql.Clause;
 
-import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-public interface LazyCompiledPredicateMethods
+public interface LazyCompiledPredicateMethods extends Clause
 {
 
     /**
-     * Compares the previously specified clause with the parameter supplied by the specified
-     * supplier, if the parameter is not null, and evaluates to true if the clause is equals to the
-     * parameter.
+     * Compares the previously specified clause with the parameter supplied by the specified supplier,
+     * if the parameter is not null, and evaluates to true if the clause is equals to the parameter.
      *
      * @param type     type of the parameter to be compared with the specified clause
-     * @param supplier supplier from where to get the parameter to be compared with the specified
-     *                 clause
+     * @param supplier supplier from where to get the parameter to be compared with the specified clause
      * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
      * @throws java.lang.NullPointerException if any of the parameters is null
      */
     default <T> CompiledCondition eq(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " = ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " = ?", supplier);
     }
 
     /**
@@ -54,24 +35,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition eq(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " = ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " = ?", supplier);
     }
 
     /**
@@ -87,23 +51,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition ne(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " <> ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " <> ?", supplier);
     }
 
     /**
@@ -118,24 +66,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition ne(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " <> ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " <> ?", supplier);
     }
 
     /**
@@ -151,23 +82,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition lt(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " < ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " < ?", supplier);
     }
 
     /**
@@ -182,24 +97,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition lt(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " < ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " < ?", supplier);
     }
 
     /**
@@ -215,23 +113,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition le(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " <= ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " <= ?", supplier);
     }
 
     /**
@@ -246,24 +128,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition le(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " <= ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " <= ?", supplier);
     }
 
     /**
@@ -279,23 +144,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition gt(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " > ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " > ?", supplier);
     }
 
     /**
@@ -310,24 +159,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition gt(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " > ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " > ?", supplier);
     }
 
     /**
@@ -343,23 +175,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition ge(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " >= ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " >= ?", supplier);
     }
 
     /**
@@ -374,24 +190,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition ge(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " >= ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " >= ?", supplier);
     }
 
     /**
@@ -406,25 +205,12 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition lk(Class<T> type, Supplier<T> supplier)
     {
-
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        Stream.of("%" + Converter.toString(parameter) + "%"));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " like ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " like ?",
+                () -> Optional.ofNullable(supplier)
+                        .map(Supplier::get)
+                        .map(Converter::toString)
+                        .map(parameter -> "%" + parameter + "%")
+                        .orElse(null));
     }
 
     /**
@@ -438,25 +224,12 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition lk(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        Stream.of("%" + Converter.toString(parameter) + "%"));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " like ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " like ?",
+                () -> Optional.ofNullable(supplier)
+                        .map(Supplier::get)
+                        .map(Converter::toString)
+                        .map(parameter -> "%" + parameter + "%")
+                        .orElse(null));
     }
 
     /**
@@ -472,24 +245,11 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition rx(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        Stream.of(Converter.toString(parameter)));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " rlike ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " rlike ?",
+                () -> Optional.ofNullable(supplier)
+                        .map(Supplier::get)
+                        .map(Converter::toString)
+                        .orElse(null));
     }
 
     /**
@@ -504,24 +264,11 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition rx(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(Converter.toString(parameter)));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " rlike ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " rlike ?",
+                () -> Optional.ofNullable(supplier)
+                        .map(Supplier::get)
+                        .map(Converter::toString)
+                        .orElse(null));
     }
 
     /**
@@ -537,23 +284,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition bw(Class<T> type, Supplier<T> supplier)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = Objects.requireNonNull(supplier.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " between ? and ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " between ? and ?", supplier);
     }
 
     /**
@@ -568,24 +299,7 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition bw(Supplier<Object> supplier)
     {
-        Objects.requireNonNull(supplier, "Attempt to compile a null supplier into a condition");
-        var parameter = supplier.get();
-        if (parameter == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " between ? and ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " between ? and ?", supplier);
     }
 
     /**
@@ -601,25 +315,7 @@ public interface LazyCompiledPredicateMethods
      */
     default <T> CompiledCondition bw(Class<T> type, Supplier<T> supplier1, Supplier<T> supplier2)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        Objects.requireNonNull(supplier1, "Attempt to compile a null supplier into a condition");
-        Objects.requireNonNull(supplier2, "Attempt to compile a null supplier into a condition");
-        var parameter1 = Objects.requireNonNull(supplier1.get(), "Attempt to compile a null parameter into a condition");
-        var parameter2 = Objects.requireNonNull(supplier2.get(), "Attempt to compile a null parameter into a condition");
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameter1, parameter2));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " between ? and ?";
-            }
-        };
+        return CompiledCondition.of(this, type, () -> " between ? and ?", supplier1, supplier2);
     }
 
     /**
@@ -634,29 +330,8 @@ public interface LazyCompiledPredicateMethods
      */
     default CompiledCondition bw(Supplier<Object> supplier1, Supplier<Object> supplier2)
     {
-        Objects.requireNonNull(supplier1, "Attempt to compile a null supplier into a condition");
-        Objects.requireNonNull(supplier2, "Attempt to compile a null supplier into a condition");
-        var parameter1 = supplier1.get();
-        var parameter2 = supplier2.get();
-        if (parameter1 == null || parameter2 == null)
-            return new CompiledCondition(getClause().rollback());
-        return new CompiledCondition(getClause())
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        Stream.of(parameter1, parameter2));
-            }
-
-            @Override
-            public String toString()
-            {
-                return LazyCompiledPredicateMethods.this + " between ? and ?";
-            }
-        };
+        return CompiledCondition.of(this, () -> " between ? and ?", supplier1, supplier2);
     }
-
 
     interface Rollback extends LazyCompiledPredicateMethods
     {
@@ -782,6 +457,4 @@ public interface LazyCompiledPredicateMethods
         }
 
     }
-
-    Clause getClause();
 }

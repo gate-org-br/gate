@@ -3,6 +3,10 @@ package gate.sql.condition;
 import gate.sql.Clause;
 import gate.sql.statement.Query;
 
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 /**
  * Parameterized condition compiled with its parameter values.
  */
@@ -26,7 +30,9 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
         super(clause);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledRelation and()
     {
@@ -41,7 +47,9 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledRelation or()
     {
@@ -56,7 +64,9 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
         };
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledPredicate and(String expression)
     {
@@ -76,7 +86,9 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
         return and().expression(expression, parameters);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledPredicate or(String expression)
     {
@@ -144,45 +156,109 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
         return or().subquery(subquery);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledCondition and(ConstantCondition condition)
     {
         return and().condition(condition);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledCondition or(ConstantCondition condition)
     {
         return or().condition(condition);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledPredicate and(Query.Constant subquery)
     {
         return and().subquery(subquery);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledPredicate and(Query.Constant.Builder subquery)
     {
         return and().subquery(subquery);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledPredicate or(Query.Constant subquery)
     {
         return or().subquery(subquery);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public CompiledPredicate or(Query.Constant.Builder subquery)
     {
         return or().subquery(subquery);
+    }
+
+    @SafeVarargs
+    static CompiledCondition of(Clause clause, Supplier<String> predicate, Supplier<Object>... suppliers)
+    {
+        if (Stream.of(suppliers).anyMatch(Objects::isNull))
+            throw new NullPointerException("Attempt to compile a null supplier into a condition");
+        return of(clause, Objects.requireNonNull(predicate.get()),
+                Stream.of(suppliers).map(Supplier::get).toArray());
+    }
+
+    @SafeVarargs
+    static <T> CompiledCondition of(Clause clause,
+                                    Class<? extends T> type,
+                                    Supplier<String> predicate,
+                                    Supplier<T>... supplier)
+    {
+        return of(clause, type, Objects.requireNonNull(predicate.get()),
+                Stream.of(supplier).map(Supplier::get).toArray());
+    }
+
+
+    static CompiledCondition of(Clause clause, String predicate, Object... parameters)
+    {
+        return Stream.of(parameters).allMatch(Objects::nonNull) ?
+                of(clause, parameters.getClass().getComponentType(),
+                        predicate, parameters)
+                : new CompiledCondition(clause.rollback());
+    }
+
+    @SafeVarargs
+    static <T> CompiledCondition of(Clause clause,
+                                    Class<? extends T> type,
+                                    String predicate, T... parameters)
+    {
+        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
+        if (Stream.of(parameters).anyMatch(Objects::isNull))
+            throw new NullPointerException("Attempt to compile a null parameters into a condition");
+        return new CompiledCondition(clause)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.concat(getClause().getParameters(), Stream.of(parameters));
+            }
+
+            @Override
+            public String toString()
+            {
+                return clause + predicate;
+            }
+        };
     }
 }

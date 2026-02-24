@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,7 +31,7 @@ public class CompiledConditionTest
                 .and("column8").eq(null)
                 .and().not("column9").eq(null);
         assertEquals("column1 = ? and not column2 = ? or column3 = ? and not column4 = ? or column7 = ?", condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()), Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -51,8 +50,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 <> ? and not column2 <> ? or column3 <> ? and not column4 <> ? or column7 <> ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -72,8 +70,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 < ? and not column2 < ? or column3 < ? and not column4 < ? or column7 < ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -92,8 +89,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 <= ? and not column2 <= ? or column3 <= ? and not column4 <= ? or column7 <= ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -113,8 +109,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 > ? and not column2 > ? or column3 > ? and not column4 > ? or column7 > ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -134,8 +129,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 >= ? and not column2 >= ? or column3 >= ? and not column4 >= ? or column7 >= ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -154,8 +148,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 like ? and not column2 like ? or column3 like ? and not column4 like ? or column7 like ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList("%1%", "%2%", "%3%", "%4%", "%7%"));
+        assertEquals(condition.getParameters().toList(), List.of("%1%", "%2%", "%3%", "%4%", "%7%"));
     }
 
     @Test
@@ -175,8 +168,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 rlike ? and not column2 rlike ? or column3 rlike ? and not column4 rlike ? or column7 rlike ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList("1", "2", "3", "4", "7"));
+        assertEquals(condition.getParameters().toList(), List.of("1", "2", "3", "4", "7"));
     }
 
     @Test
@@ -195,8 +187,7 @@ public class CompiledConditionTest
         assertEquals(
                 "column1 between ? and ? and not column2 between ? and ? or column3 between ? and ? and not column4 between ? and ? or column7 between ? and ?",
                 condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
-                Arrays.asList(1, 2, 3, 4, 7));
+        assertEquals(condition.getParameters().toList(), List.of(1, 2, 3, 4, 7));
     }
 
     @Test
@@ -240,7 +231,7 @@ public class CompiledConditionTest
                 .and(Entity.getFullColumnName(Property.getProperty(User.class, "role.name")))
                 .eq(null);
         assertEquals("Uzer.id = ? and Uzer.name = ? and Uzer$Role.id = ?", condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
+        assertEquals(condition.getParameters().toList(),
                 Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
     }
 
@@ -257,7 +248,7 @@ public class CompiledConditionTest
                         .or(Entity.getFullColumnName(Property.getProperty(User.class, "role.name")))
                         .eq(null);
         assertEquals("Uzer.id = ? or Uzer.name = ? or Uzer$Role.id = ?", condition.toString());
-        assertEquals(condition.getParameters().collect(Collectors.toList()),
+        assertEquals(condition.getParameters().toList(),
                 Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
     }
 
@@ -339,7 +330,7 @@ public class CompiledConditionTest
                 "id = ? and eq_col = ? and ne_col <> ? and lt_col < ? and le_col <= ? and gt_col > ? and ge_col >= ? and lk_col like ? and rx_col rlike ? and bw_col between ? and ?",
                 condition.toString());
         assertEquals(Arrays.asList(1, 2, 3, 4, 5, 6, 7, "%8%", "9", 10),
-                condition.getParameters().collect(Collectors.toList()));
+                condition.getParameters().toList());
     }
 
     @Test
@@ -349,10 +340,8 @@ public class CompiledConditionTest
                 .and().when(true).expression("range1").bw(() -> 2, () -> 3)
                 .and().when(true).expression("range2").bw(Integer.class, () -> 4, () -> 5);
 
-        assertEquals("id = ? and range1 between ? and ? and range2 between ? and ?",
-                condition.toString());
-        assertEquals(Arrays.asList(1, 2, 3, 4, 5),
-                condition.getParameters().collect(Collectors.toList()));
+        assertEquals("id = ? and range1 between ? and ? and range2 between ? and ?", condition.toString());
+        assertEquals(List.of(1, 2, 3, 4, 5), condition.getParameters().toList());
     }
 
     @Test
@@ -379,7 +368,6 @@ public class CompiledConditionTest
 
         assertEquals(0, counter.get());
         assertEquals("id = ?", condition.toString());
-        assertEquals(List.of(1), condition.getParameters().collect(Collectors.toList()));
+        assertEquals(List.of(1), condition.getParameters().toList());
     }
-
 }
