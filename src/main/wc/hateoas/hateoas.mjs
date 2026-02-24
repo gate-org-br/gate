@@ -55,4 +55,4 @@ import './@trigger.js';
 import './@value.js';
 import './@values.js';
 
-import './_default.js';
+import './default-targets.js';
