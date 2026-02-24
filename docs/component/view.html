@@ -1,8 +1,49 @@
 <g-callout>
 </g-callout>
 
+<style>
+	.docs-side-menu {
+		min-width: max-content;
+		display: flex;
+		padding: 8px;
+		max-height: 80vh;
+		overflow-y: auto;
+		overflow-x: hidden;
+		flex-direction: column;
+		background-color: var(--main2, #F0F0F0);
+		border: 1px solid var(--main3, #DDDDDD);
+	}
+
+	.docs-side-menu>a {
+		gap: 8px;
+		padding: 8px;
+		display: flex;
+		color: inherit;
+		cursor: pointer;
+		border-radius: 3px;
+		align-items: center;
+		text-decoration: none;
+	}
+
+	.docs-side-menu>a>g-icon,
+	.docs-side-menu>a>i,
+	.docs-side-menu>a>e {
+		order: -1;
+	}
+
+	.docs-side-menu>a:hover {
+		background-color: var(--hovered, #FFFACD);
+	}
+
+	.docs-side-menu>hr {
+		width: 100%;
+		border: none;
+		border-top: 1px solid var(--main3, #DDDDDD);
+	}
+</style>
+
 <div style='display: grid; grid-template-columns: auto 1fr; gap: 12px'>
-	<g-side-menu>
+	<aside class="docs-side-menu">
 		<a href='./component/g-callout.html' target="@inner-html(this.parent().next())">
 			g-callout<g-icon>&#x1007;</g-icon>
 		</a>
@@ -59,33 +100,33 @@
 		</a>
 		<hr>
 		<a href='./component/g-date-input.html' target="@inner-html(this.parent().next())">
-			g-date-input<g-icon>&#x2003;</g-icon>
+			g-date-picker<g-icon>&#x2003;</g-icon>
 		</a>
 		<a href='./component/g-date-interval-input.html' target="@inner-html(this.parent().next())">
-			g-date-interval-input<g-icon>&#x2003;</g-icon>
+			g-date-interval-picker<g-icon>&#x2003;</g-icon>
 		</a>
 		<a href='./component/g-date-time-input.html' target="@inner-html(this.parent().next())">
-			g-date-time-input<g-icon>&#x2003;</g-icon>
+			g-date-time-picker<g-icon>&#x2003;</g-icon>
 		</a>
 		<a href='./component/g-date-time-interval-input.html' target="@inner-html(this.parent().next())">
-			g-date-time-interval-input<g-icon>&#x2003;</g-icon>
+			g-date-time-interval-picker<g-icon>&#x2003;</g-icon>
 		</a>
 		<a href='./component/g-icon-input.html' target="@inner-html(this.parent().next())">
-			g-icon-input<g-icon>&#x2009;</g-icon>
+			g-icon-picker<g-icon>&#x2009;</g-icon>
 		</a>
 		<a href='./component/g-month-input.html' target="@inner-html(this.parent().next())">
-			g-month-input<g-icon>&#x2003;</g-icon>
+			g-month-picker<g-icon>&#x2003;</g-icon>
 		</a>
 		<a href='./component/g-month-interval-input.html' target="@inner-html(this.parent().next())">
-			g-month-interval-input<g-icon>&#x2003;</g-icon>
+			g-month-interval-picker<g-icon>&#x2003;</g-icon>
 		</a>
 		<a href='./component/g-time-input.html' target="@inner-html(this.parent().next())">
-			g-time-input<g-icon>&#x2167;</g-icon>
+			g-time-picker<g-icon>&#x2167;</g-icon>
 		</a>
 		<a href='./component/g-time-interval-input.html' target="@inner-html(this.parent().next())">
-			g-time-interval-input<g-icon>&#x2167;</g-icon>
+			g-time-interval-picker<g-icon>&#x2167;</g-icon>
 		</a>
-	</g-side-menu>
+	</aside>
 	<section>
 	</section>
 </div>

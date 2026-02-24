@@ -1,5 +1,46 @@
+<style>
+	.docs-side-menu {
+		min-width: max-content;
+		display: flex;
+		padding: 8px;
+		max-height: 80vh;
+		overflow-y: auto;
+		overflow-x: hidden;
+		flex-direction: column;
+		background-color: var(--main2, #F0F0F0);
+		border: 1px solid var(--main3, #DDDDDD);
+	}
+
+	.docs-side-menu>a {
+		gap: 8px;
+		padding: 8px;
+		display: flex;
+		color: inherit;
+		cursor: pointer;
+		border-radius: 3px;
+		align-items: center;
+		text-decoration: none;
+	}
+
+	.docs-side-menu>a>g-icon,
+	.docs-side-menu>a>i,
+	.docs-side-menu>a>e {
+		order: -1;
+	}
+
+	.docs-side-menu>a:hover {
+		background-color: var(--hovered, #FFFACD);
+	}
+
+	.docs-side-menu>hr {
+		width: 100%;
+		border: none;
+		border-top: 1px solid var(--main3, #DDDDDD);
+	}
+</style>
+
 <div style='display: grid; grid-template-columns: auto 1fr; gap: 12px'>
-	<g-side-menu>
+	<aside class="docs-side-menu">
 		<a href="./sql/overview.html" target="@inner-html(this.parent().next())">
 			Overview<g-icon>&#X1024;</g-icon>
 		</a>
@@ -31,7 +72,7 @@
 		<a href="./sql/gqn.html" target="@inner-html(this.parent().next())">
 			GQN
 		</a>
-	</g-side-menu>
+	</aside>
 	<section data-trigger='connected' data-action='./sql/overview.html' data-target='@inner-html'>
 	</section>
 </div>
