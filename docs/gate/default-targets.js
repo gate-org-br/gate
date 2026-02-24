@@ -11,9 +11,9 @@ window.addEventListener("_top", event => proccess(event, window.top));
 window.addEventListener("_parent", event => proccess(event, window.parent));
 window.addEventListener("_blank", event => proccess(event, window.open()));
 window.addEventListener("@frame", event => proccess(event, DOM.navigate(event,
-		`[name='${event.detail.parameters[0]}'], #${event.detail.parameters[0]}`)
-		.orElseThrow("Invalid target element")
-		.contentWindow));
+	`[name='${event.detail.parameters[0]}'], #${event.detail.parameters[0]}`)
+	.orElseThrow("Invalid target element")
+	.contentWindow));
 
 function proccess(event, target)
 {
@@ -35,7 +35,7 @@ function proccess(event, target)
 			.then(ResponseHandler.dataURL)
 			.then(response =>
 			{
-				dataURL = DataURL.parse(response);
+				const dataURL = DataURL.parse(response);
 				if (dataURL.contentType === "text/html")
 				{
 					let document = new DOMParser().parseFromString(dataURL.data, 'text/html');
