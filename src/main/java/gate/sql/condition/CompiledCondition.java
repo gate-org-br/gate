@@ -3,8 +3,9 @@ package gate.sql.condition;
 import gate.sql.Clause;
 import gate.sql.statement.Query;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -210,54 +211,128 @@ public class CompiledCondition extends Condition implements CompiledConditionMet
         return or().subquery(subquery);
     }
 
-    @SafeVarargs
-    static CompiledCondition of(Clause clause, Supplier<String> predicate, Supplier<Object>... suppliers)
+    static CompiledCondition of(Clause clause, String predicate,
+                                Query.Compiled.Builder subquery)
     {
-        if (Stream.of(suppliers).anyMatch(Objects::isNull))
-            throw new NullPointerException("Attempt to compile a null supplier into a condition");
-        return of(clause, Objects.requireNonNull(predicate.get()),
-                Stream.of(suppliers).map(Supplier::get).toArray());
+        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
+        return of(clause, predicate, subquery.build());
     }
 
-    @SafeVarargs
-    static <T> CompiledCondition of(Clause clause,
-                                    Class<? extends T> type,
-                                    Supplier<String> predicate,
-                                    Supplier<T>... supplier)
+    static CompiledCondition of(Clause clause, String predicate, Query.Compiled subquery)
     {
-        return of(clause, type, Objects.requireNonNull(predicate.get()),
-                Stream.of(supplier).map(Supplier::get).toArray());
-    }
-
-
-    static CompiledCondition of(Clause clause, String predicate, Object... parameters)
-    {
-        return Stream.of(parameters).allMatch(Objects::nonNull) ?
-                of(clause, parameters.getClass().getComponentType(),
-                        predicate, parameters)
-                : new CompiledCondition(clause.rollback());
-    }
-
-    @SafeVarargs
-    static <T> CompiledCondition of(Clause clause,
-                                    Class<? extends T> type,
-                                    String predicate, T... parameters)
-    {
-        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
-        if (Stream.of(parameters).anyMatch(Objects::isNull))
-            throw new NullPointerException("Attempt to compile a null parameters into a condition");
+        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
         return new CompiledCondition(clause)
         {
             @Override
             public Stream<Object> getParameters()
             {
-                return Stream.concat(getClause().getParameters(), Stream.of(parameters));
+                return Stream.concat(getClause().getParameters(),
+                        subquery.getParameters().stream());
+            }
+
+            @Override
+            public String toString()
+            {
+                return clause + predicate + "(" + subquery + ")";
+            }
+        };
+    }
+
+    static CompiledCondition of(Clause clause, String predicate, Object parameter)
+    {
+        return parameter != null
+                ? of(clause, parameter.getClass(), predicate, parameter)
+                : new CompiledCondition(clause.rollback());
+    }
+
+    static <T> CompiledCondition of(Clause clause,
+                                    Class<? extends T> type,
+                                    String predicate,
+                                    T parameter)
+    {
+        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
+        if (parameter == null)
+            throw new NullPointerException("Attempt to compile a null parameter into a condition");
+        return new CompiledCondition(clause)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.concat(getClause().getParameters(), Stream.of(parameter));
             }
 
             @Override
             public String toString()
             {
                 return clause + predicate;
+            }
+        };
+    }
+
+    static <T> CompiledCondition of(Clause clause,
+                                    String predicate,
+                                    T parameter1,
+                                    T parameter2)
+    {
+        return parameter1 != null && parameter2 != null
+                ? of(clause, Object.class, predicate, parameter1, parameter2)
+                : new CompiledCondition(clause.rollback());
+    }
+
+    static <T> CompiledCondition of(Clause clause,
+                                    Class<? extends T> type,
+                                    String predicate,
+                                    T parameter1,
+                                    T parameter2)
+    {
+        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
+        Objects.requireNonNull(parameter1, "Attempt to compile a null parameter into a condition");
+        Objects.requireNonNull(parameter2, "Attempt to compile a null parameter into a condition");
+        return new CompiledCondition(clause)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.concat(getClause().getParameters(), Stream.of(parameter1, parameter2));
+            }
+
+            @Override
+            public String toString()
+            {
+                return clause + predicate;
+            }
+        };
+    }
+
+    static <T> CompiledCondition ofList(Clause clause,
+                                        String predicate,
+                                        List<T> parameters)
+    {
+        if (parameters == null)
+            return new CompiledCondition(clause.rollback());
+        return ofList(clause, Object.class, predicate, parameters);
+    }
+
+    static <T> CompiledCondition ofList(Clause clause,
+                                        Class<? super T> type,
+                                        String predicate,
+                                        List<T> parameters)
+    {
+        Objects.requireNonNull(type, "Attempt to compile a null type into a condition");
+        Objects.requireNonNull(parameters, "Attempt to compile a null list of parameters into a condition");
+        return new CompiledCondition(clause)
+        {
+            @Override
+            public Stream<Object> getParameters()
+            {
+                return Stream.concat(getClause().getParameters(), parameters.stream());
+            }
+
+            @Override
+            public String toString()
+            {
+                return "%s %s (%s)".formatted(clause, predicate, parameters.stream().map(e -> "?")
+                        .collect(Collectors.joining(", ")));
             }
         };
     }

@@ -5,9 +5,6 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 interface CompiledPredicateMethods extends Clause
 {
@@ -49,23 +46,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isEq(Query.Compiled subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " = (" + subquery + ")";
-            }
-        };
+        return CompiledCondition.of(this, " = ", subquery);
     }
 
     /**
@@ -77,8 +58,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isEq(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isEq(subquery.build());
+        return CompiledCondition.of(this, " = ", subquery);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -118,22 +98,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isNe(Query.Compiled subquery)
     {
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " <> (" + subquery.toString() + ")";
-            }
-        };
+        return CompiledCondition.of(this, " <> ", subquery);
     }
 
     /**
@@ -145,8 +110,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isNe(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isNe(subquery.build());
+        return CompiledCondition.of(this, " <> ", subquery);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -186,22 +150,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isLt(Query.Compiled subquery)
     {
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " < (" + subquery.toString() + ")";
-            }
-        };
+        return CompiledCondition.of(this, " < ", subquery);
     }
 
     /**
@@ -213,8 +162,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isLt(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isLt(subquery.build());
+        return CompiledCondition.of(this, " < ", subquery);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -256,22 +204,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isLe(Query.Compiled subquery)
     {
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " <= (" + subquery.toString() + ")";
-            }
-        };
+        return CompiledCondition.of(this, " <= ", subquery);
     }
 
     /**
@@ -284,8 +217,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isLe(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isLe(subquery.build());
+        return CompiledCondition.of(this, " <= ", subquery);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -325,22 +257,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isGt(Query.Compiled subquery)
     {
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " > (" + subquery.toString() + ")";
-            }
-        };
+        return CompiledCondition.of(this, " > ", subquery);
     }
 
     /**
@@ -352,8 +269,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isGt(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isGt(subquery.build());
+        return CompiledCondition.of(this, " > ", subquery);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,22 +311,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isGe(Query.Compiled subquery)
     {
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " >= (" + subquery.toString() + ")";
-            }
-        };
+        return CompiledCondition.of(this, " >= ", subquery);
     }
 
     /**
@@ -423,8 +324,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isGe(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isGe(subquery.build());
+        return CompiledCondition.of(this, " >= ", subquery);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -548,6 +448,7 @@ interface CompiledPredicateMethods extends Clause
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // In
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Compares the previously specified clause with the specified parameter list, if the parameter
      * list is not null, and evaluates to true if the parameter list contains the clause.
@@ -555,11 +456,9 @@ interface CompiledPredicateMethods extends Clause
      * @param parameters parameter list to be compared with the specified clause
      * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
      */
-    @SuppressWarnings("unchecked")
     default CompiledCondition in(List<?> parameters)
     {
-        return parameters != null ? in(Object.class, (List<Object>) parameters)
-                : new CompiledCondition(getClause().rollback());
+        return CompiledCondition.ofList(this, "in", parameters);
     }
 
     /**
@@ -572,24 +471,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition in(Class<T> type, List<T> parameters)
     {
-        Objects.requireNonNull(type, "Attempt to compile a null parameter into a condition");
-        Objects.requireNonNull(parameters,
-                "Attempt to compile a null parameter list into a condition");
-        return new CompiledCondition(this)
-        {
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(), parameters.stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + Stream.generate(() -> "?").limit(parameters.size())
-                        .collect(Collectors.joining(", ", " in (", ")"));
-            }
-        };
+        return CompiledCondition.ofList(this, type, "in", parameters);
     }
 
     /**
@@ -601,22 +483,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isIn(Query.Compiled subquery)
     {
-        return new CompiledCondition(this)
-        {
-
-            @Override
-            public Stream<Object> getParameters()
-            {
-                return Stream.concat(getClause().getParameters(),
-                        subquery.getParameters().stream());
-            }
-
-            @Override
-            public String toString()
-            {
-                return getClause() + " in (" + subquery.toString() + ")";
-            }
-        };
+        return CompiledCondition.of(this, " in ", subquery);
     }
 
     /**
@@ -628,8 +495,7 @@ interface CompiledPredicateMethods extends Clause
      */
     default CompiledCondition isIn(Query.Compiled.Builder subquery)
     {
-        Objects.requireNonNull(subquery, "Attempt to compile a null subquery into a condition");
-        return CompiledPredicateMethods.this.isIn(subquery.build());
+        return CompiledCondition.of(this, " in ", subquery);
     }
 
     interface Rollback extends CompiledPredicateMethods

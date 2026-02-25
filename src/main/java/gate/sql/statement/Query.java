@@ -118,6 +118,18 @@ public interface Query extends SQL, Compilable
              */
             @Override
             Query.Compiled build();
+
+            @FunctionalInterface
+            interface Supplier
+            {
+                Builder get();
+            }
+        }
+
+        @FunctionalInterface
+        interface Supplier
+        {
+            Compiled get();
         }
     }
 
@@ -290,5 +302,17 @@ public interface Query extends SQL, Compilable
          */
         @Override
         Query build();
+
+        @FunctionalInterface
+        interface Supplier
+        {
+            Builder get();
+        }
+    }
+
+    @FunctionalInterface
+    interface Supplier
+    {
+        Query get();
     }
 }

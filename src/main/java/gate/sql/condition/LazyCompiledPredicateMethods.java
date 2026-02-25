@@ -2,7 +2,10 @@ package gate.sql.condition;
 
 import gate.converter.Converter;
 import gate.sql.Clause;
+import gate.sql.statement.Query;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -20,7 +23,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition eq(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " = ?", supplier);
+        return CompiledCondition.of(this, type, " = ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -35,7 +38,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition eq(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " = ?", supplier);
+        return CompiledCondition.of(this, " = ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -51,7 +54,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition ne(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " <> ?", supplier);
+        return CompiledCondition.of(this, type, " <> ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -66,7 +69,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition ne(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " <> ?", supplier);
+        return CompiledCondition.of(this, " <> ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -82,7 +85,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition lt(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " < ?", supplier);
+        return CompiledCondition.of(this, type, " < ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -97,7 +100,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition lt(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " < ?", supplier);
+        return CompiledCondition.of(this, " < ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -113,7 +116,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition le(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " <= ?", supplier);
+        return CompiledCondition.of(this, type, " <= ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -128,7 +131,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition le(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " <= ?", supplier);
+        return CompiledCondition.of(this, " <= ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -144,7 +147,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition gt(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " > ?", supplier);
+        return CompiledCondition.of(this, type, " > ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -159,7 +162,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition gt(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " > ?", supplier);
+        return CompiledCondition.of(this, " > ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -175,7 +178,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition ge(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " >= ?", supplier);
+        return CompiledCondition.of(this, type, " >= ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -190,7 +193,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition ge(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " >= ?", supplier);
+        return CompiledCondition.of(this, " >= ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -205,9 +208,8 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition lk(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " like ?",
-                () -> Optional.ofNullable(supplier)
-                        .map(Supplier::get)
+        return CompiledCondition.of(this, type, " like ?",
+                Optional.ofNullable(Objects.requireNonNull(supplier).get())
                         .map(Converter::toString)
                         .map(parameter -> "%" + parameter + "%")
                         .orElse(null));
@@ -224,9 +226,8 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition lk(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " like ?",
-                () -> Optional.ofNullable(supplier)
-                        .map(Supplier::get)
+        return CompiledCondition.of(this, " like ?",
+                Optional.ofNullable(Objects.requireNonNull(supplier).get())
                         .map(Converter::toString)
                         .map(parameter -> "%" + parameter + "%")
                         .orElse(null));
@@ -245,9 +246,8 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition rx(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " rlike ?",
-                () -> Optional.ofNullable(supplier)
-                        .map(Supplier::get)
+        return CompiledCondition.of(this, type, " rlike ?",
+                Optional.ofNullable(Objects.requireNonNull(supplier).get())
                         .map(Converter::toString)
                         .orElse(null));
     }
@@ -264,9 +264,8 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition rx(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " rlike ?",
-                () -> Optional.ofNullable(supplier)
-                        .map(Supplier::get)
+        return CompiledCondition.of(this, " rlike ?",
+                Optional.ofNullable(Objects.requireNonNull(supplier).get())
                         .map(Converter::toString)
                         .orElse(null));
     }
@@ -284,7 +283,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition bw(Class<T> type, Supplier<T> supplier)
     {
-        return CompiledCondition.of(this, type, () -> " between ? and ?", supplier);
+        return CompiledCondition.of(this, type, " between ? and ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -299,7 +298,7 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition bw(Supplier<Object> supplier)
     {
-        return CompiledCondition.of(this, () -> " between ? and ?", supplier);
+        return CompiledCondition.of(this, " between ? and ?", Objects.requireNonNull(supplier).get());
     }
 
     /**
@@ -315,7 +314,9 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default <T> CompiledCondition bw(Class<T> type, Supplier<T> supplier1, Supplier<T> supplier2)
     {
-        return CompiledCondition.of(this, type, () -> " between ? and ?", supplier1, supplier2);
+        return CompiledCondition.of(this, " between ? and ?",
+                Objects.requireNonNull(supplier1).get(),
+                Objects.requireNonNull(supplier2).get());
     }
 
     /**
@@ -330,8 +331,64 @@ public interface LazyCompiledPredicateMethods extends Clause
      */
     default CompiledCondition bw(Supplier<Object> supplier1, Supplier<Object> supplier2)
     {
-        return CompiledCondition.of(this, () -> " between ? and ?", supplier1, supplier2);
+        return CompiledCondition.of(this, " between ? and ?",
+                Objects.requireNonNull(supplier1).get(),
+                Objects.requireNonNull(supplier2).get());
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // In
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Compares the previously specified clause with the specified parameter list, if the parameter
+     * list is not null, and evaluates to true if the parameter list contains the clause.
+     *
+     * @param supplier parameter list to be compared with the specified clause
+     * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+     */
+    default <T> CompiledCondition in(Supplier<List<T>> supplier)
+    {
+        return CompiledCondition.ofList(this, "in", Objects.requireNonNull(supplier).get());
+    }
+
+    /**
+     * Evaluates to true if the specified parameter list contains the previously specified clause.
+     *
+     * @param type     type of the supplier to be compared with the specified clause
+     * @param supplier parameter list to be compared with the specified clause
+     * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+     * @throws java.lang.NullPointerException if any of the supplier is null
+     */
+    default <T> CompiledCondition in(Class<T> type, Supplier<List<T>> supplier)
+    {
+        return CompiledCondition.ofList(this, type, "in", Objects.requireNonNull(supplier).get());
+    }
+
+    /**
+     * Evaluates to true if the specified sub query result contains the previously specified clause.
+     *
+     * @param supplier query to be compared with the specified clause
+     * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+     * @throws java.lang.NullPointerException if any of the parameters is null
+     */
+    default CompiledCondition isIn(Query.Compiled.Supplier supplier)
+    {
+        return CompiledCondition.of(this, " in ", Objects.requireNonNull(supplier).get());
+    }
+
+    /**
+     * Evaluates to true if the specified sub query result contains the previously specified clause.
+     *
+     * @param supplier sub query to be compared with the specified clause
+     * @return the current {@link gate.sql.condition.Predicate}, for chained invocations
+     * @throws java.lang.NullPointerException if any of the parameters is null
+     */
+    default CompiledCondition isIn(Query.Compiled.Builder.Supplier supplier)
+    {
+        return CompiledCondition.of(this, " in ", Objects.requireNonNull(supplier).get());
+    }
+
 
     interface Rollback extends LazyCompiledPredicateMethods
     {
@@ -455,6 +512,5 @@ public interface LazyCompiledPredicateMethods extends Clause
         {
             return new CompiledCondition(getClause().rollback());
         }
-
     }
 }
