@@ -1,0 +1,443 @@
+<g-callout class='fill'>
+	<h1>Authentication</h1>
+	<p>
+		Gate provides an authentication system that validates user identity and establishes application sessions.
+		It supports multiple authentication sources (<code>database</code>, <code>ldap</code>, and <code>oidc</code>), selected by configuration.
+		After successful authentication, Gate issues and refreshes session tokens based on the configured session policy.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Contents</a>
+	<div>
+		<g-callout>
+			<p>
+				Gate supports configuring one or more authenticators at the same time.
+				Each authenticator defines one authentication source through <code>*.type</code> and its parameters
+				(<code>database</code>, <code>ldap</code>, or <code>oidc</code>).
+			</p>
+			<p>
+				One authenticator is always the <strong>default</strong>. It is used when no authenticator name is provided in the request.
+				In configuration terms, omitting a name is equivalent to using <code>default</code>.
+				The default authenticator is configured under <code>gate.auth.default.*</code>.
+			</p>
+			<p>
+				If the default authenticator type is not explicitly configured, Gate uses <code>database</code> as the default type.
+				Additional authenticators must be named and configured under <code>gate.auth.&lt;name&gt;.*</code>.
+				At runtime, a named authenticator is selected with <code>?authenticator=&lt;name&gt;</code>.
+			</p>
+			<p>
+				Typical usage:
+			</p>
+			<ul>
+				<li>Configure <code>default</code> for the primary user base.</li>
+				<li>Add one or more named authenticators for alternative identity providers.</li>
+				<li>Use the request parameter <code>authenticator</code> only when selecting a named authenticator.</li>
+			</ul>
+			<p>
+				You can also scope configuration by app context using <code>&lt;context&gt;.auth.*</code>.
+			</p>
+			<pre><code># Default authenticator (used when "authenticator" is not provided)
+"gate.auth.default.type": "database"
+
+# Named authenticator "corp" (selected with ?authenticator=corp)
+"gate.auth.corp.type": "oidc"
+"gate.auth.corp.oidc.client_id": "gate-corp"
+"gate.auth.corp.oidc.provider": "https://idp-corp.example.com/realms/main"
+"gate.auth.corp.oidc.redirect_uri": "https://app.example.com/Gate?authenticator=corp"
+
+# Named authenticator "partners" (selected with ?authenticator=partners)
+"gate.auth.partners.type": "ldap"
+"gate.auth.partners.ldap.server": "ldaps://ldap-partners.example.com:636"</code></pre>
+			<p>
+				If a request references an unknown authenticator name, authentication setup fails. Keep authenticator names stable
+				and consistent between frontend links and backend configuration.
+			</p>
+		</g-callout>
+	</div>
+
+	<a href="#">Database</a>
+	<div>
+		<g-callout>
+			<p>
+				Use <code>database</code> for local username/password authentication against Gate user storage.
+			</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Parameter</th>
+						<th>Required</th>
+						<th>Default</th>
+						<th>Description</th>
+						<th>Example</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>*.type</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>Sets the authenticator type.</td>
+						<td><code>"gate.auth.default.type": "database"</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+
+	<a href="#">LDAP</a>
+	<div>
+		<g-callout>
+			<p>
+				Use <code>ldap</code> to authenticate users against an LDAP directory.
+			</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Parameter</th>
+						<th>Required</th>
+						<th>Default</th>
+						<th>Description</th>
+						<th>Example</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>*.type</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>Sets the authenticator type.</td>
+						<td><code>"gate.auth.default.type": "ldap"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.ldap.server</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>LDAP server URL, including protocol and port.</td>
+						<td><code>"gate.auth.default.ldap.server": "ldaps://ldap.example.com:636"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.ldap.security_protocol</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Optional LDAP security protocol (for example, SSL).</td>
+						<td><code>"gate.auth.default.ldap.security_protocol": "ssl"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.ldap.client_username</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Technical account used for LDAP search/bind before validating user credentials.</td>
+						<td><code>"gate.auth.default.ldap.client_username": "cn=svc,dc=example,dc=com"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.ldap.client_password</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Password for the LDAP technical account.</td>
+						<td><code>"gate.auth.default.ldap.client_password": "&lt;password&gt;"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.ldap.root_context</code></td>
+						<td>No</td>
+						<td><code>""</code></td>
+						<td>Base DN used during LDAP searches.</td>
+						<td><code>"gate.auth.default.ldap.root_context": "dc=example,dc=com"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.ldap.database_fallback</code></td>
+						<td>No</td>
+						<td><code>false</code></td>
+						<td>When <code>true</code>, falls back to database password validation if LDAP lookup does not find the user.</td>
+						<td><code>"gate.auth.default.ldap.database_fallback": "true"</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+
+	<a href="#">OIDC</a>
+	<div>
+		<g-callout>
+			<p>
+				Use <code>oidc</code> to authenticate with an OpenID Connect provider.
+			</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Parameter</th>
+						<th>Required</th>
+						<th>Default</th>
+						<th>Description</th>
+						<th>Example</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>*.type</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>Sets the authenticator type.</td>
+						<td><code>"gate.auth.default.type": "oidc"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.client_id</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>OIDC client identifier registered in the identity provider.</td>
+						<td><code>"gate.auth.default.oidc.client_id": "gate-client"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.provider</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>Provider base URL used to discover OIDC endpoints.</td>
+						<td><code>"gate.auth.default.oidc.provider": "https://idp.example.com/realms/main"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.redirect_uri</code></td>
+						<td>Yes</td>
+						<td>-</td>
+						<td>Application callback URL registered in the provider.</td>
+						<td><code>"gate.auth.default.oidc.redirect_uri": "https://app.example.com/Gate"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.client_secret</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Client secret used for confidential clients.</td>
+						<td><code>"gate.auth.default.oidc.client_secret": "&lt;secret&gt;"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.scope</code></td>
+						<td>No</td>
+						<td><code>openid email profile</code></td>
+						<td>Scopes requested during authentication.</td>
+						<td><code>"gate.auth.default.oidc.scope": "openid email profile"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.user_id</code></td>
+						<td>No</td>
+						<td><code>email</code></td>
+						<td>Claim/field used to map provider identity to the Gate user.</td>
+						<td><code>"gate.auth.default.oidc.user_id": "email"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.logout_uri</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Provider logout endpoint used for federated sign-out.</td>
+						<td><code>"gate.auth.default.oidc.logout_uri": "https://idp.example.com/logout"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.configuration_endpoint</code></td>
+						<td>No</td>
+						<td><code>&lt;provider&gt;/.well-known/openid-configuration</code></td>
+						<td>Custom discovery endpoint URL.</td>
+						<td><code>"gate.auth.default.oidc.configuration_endpoint": "https://idp.example.com/.well-known/openid-configuration"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.authorization_endpoint</code></td>
+						<td>No</td>
+						<td>From discovery</td>
+						<td>Custom authorization endpoint override.</td>
+						<td><code>"gate.auth.default.oidc.authorization_endpoint": "https://idp.example.com/protocol/openid-connect/auth"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.token_endpoint</code></td>
+						<td>No</td>
+						<td>From discovery</td>
+						<td>Custom token endpoint override.</td>
+						<td><code>"gate.auth.default.oidc.token_endpoint": "https://idp.example.com/protocol/openid-connect/token"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.userinfo_endpoint</code></td>
+						<td>No</td>
+						<td>From discovery</td>
+						<td>Custom userinfo endpoint override.</td>
+						<td><code>"gate.auth.default.oidc.userinfo_endpoint": "https://idp.example.com/protocol/openid-connect/userinfo"</code></td>
+					</tr>
+					<tr>
+						<td><code>*.oidc.jwks_uri</code></td>
+						<td>No</td>
+						<td>From discovery</td>
+						<td>Custom JWKS endpoint override for token signature validation.</td>
+						<td><code>"gate.auth.default.oidc.jwks_uri": "https://idp.example.com/protocol/openid-connect/certs"</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+
+	<a href="#">Session Parameters</a>
+	<div>
+		<g-callout>
+			<p>
+				These parameters are global and apply regardless of authenticator type.
+			</p>
+			<p>
+				Duration format is <strong>not milliseconds</strong>. Use Gate duration strings:
+				<code>Nd Nh Nm Ns</code> (for example, <code>1h 30m</code>), <code>HH:MM</code>, or <code>HH:MM:SS</code>.
+				A plain number (for example, <code>30</code>) is interpreted as <strong>minutes</strong>.
+			</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Parameter</th>
+						<th>Required</th>
+						<th>Default</th>
+						<th>Description</th>
+						<th>Example</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>gate.auth.session.idle_timeout</code></td>
+						<td>No</td>
+						<td><code>1h</code></td>
+						<td>Idle session duration used to compute token expiration.</td>
+						<td><code>"gate.auth.session.idle_timeout": "45m"</code></td>
+					</tr>
+					<tr>
+						<td><code>gate.auth.session.timeout</code></td>
+						<td>No</td>
+						<td><code>24h</code></td>
+						<td>Maximum absolute session duration from token issue time.</td>
+						<td><code>"gate.auth.session.timeout": "10h"</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+
+	<a href="#">Secret Key</a>
+	<div>
+		<g-callout>
+			<p>
+				Gate uses a single <strong>secret key</strong> for authentication security.
+				From this secret key, Gate derives:
+			</p>
+			<ul>
+				<li>the key used to sign and validate session tokens;</li>
+				<li>the key used to encrypt/sign OIDC state data.</li>
+			</ul>
+			<p>
+				<strong>Key source resolution order</strong>:
+				<code>gate.key-store.file</code> first, then <code>gate.secret-key-file</code>, then <code>gate.secret-key</code>.
+			</p>
+			<p>
+				If none of the key parameters is configured, Gate generates a random in-memory key at startup.
+				This is valid behavior, but all active tokens become invalid after application restart.
+			</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Parameter</th>
+						<th>Required</th>
+						<th>Default</th>
+						<th>Description</th>
+						<th>Example</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>gate.secret-key</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Base64 master secret value from configuration/environment. Recommended when injecting secrets via secret manager.</td>
+						<td><code>"gate.secret-key": "&lt;BASE64_SECRET&gt;"</code></td>
+					</tr>
+					<tr>
+						<td><code>gate.secret-key-file</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Path to a file containing a Base64 master secret. Used only if <code>gate.key-store.file</code> is not set.</td>
+						<td><code>"gate.secret-key-file": "/etc/secrets/gate-secret.key"</code></td>
+					</tr>
+					<tr>
+						<td><code>gate.key-store.file</code></td>
+						<td>No</td>
+						<td><code>null</code></td>
+						<td>Path to JCEKS or PKCS12 keystore used as secret source. Highest priority when present.</td>
+						<td><code>"gate.key-store.file": "/etc/secrets/gate-keystore.p12"</code></td>
+					</tr>
+					<tr>
+						<td><code>gate.key-store.secret-key</code></td>
+						<td>No</td>
+						<td><code>secret-key</code></td>
+						<td>Secret key alias inside the keystore. Applies only when <code>gate.key-store.file</code> is configured.</td>
+						<td><code>"gate.key-store.secret-key": "secret-key"</code></td>
+					</tr>
+					<tr>
+						<td><code>gate.key-store.password</code></td>
+						<td>No</td>
+						<td><code>changeit</code></td>
+						<td>Keystore password used to load the key. Applies only when <code>gate.key-store.file</code> is configured.</td>
+						<td><code>"gate.key-store.password": "&lt;password&gt;"</code></td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				Choose one strategy for predictability in production: keystore, secret file, or inline Base64 secret.
+			</p>
+		</g-callout>
+	</div>
+
+	<a href="#">Complete Example</a>
+	<div>
+		<g-callout>
+			<p>
+				The following <code>application.yaml</code> shows a multi-authenticator setup with:
+				default database auth, OIDC for corporate SSO, LDAP for partners, and global session/key settings.
+			</p>
+			<pre><code># ------------------------------
+# Global session policy
+# ------------------------------
+"gate.auth.session.idle_timeout": "45m"
+"gate.auth.session.timeout": "10h"
+
+# ------------------------------
+# Secret key strategy (inline Base64)
+# ------------------------------
+"gate.secret-key": "REPLACE_WITH_BASE64_SECRET_VALUE"
+
+# ------------------------------
+# Default authenticator (implicit when no authenticator name is provided)
+# ------------------------------
+"gate.auth.default.type": "database"
+
+# ------------------------------
+# Named authenticator: corporate SSO (OIDC)
+# selected with ?authenticator=corp
+# ------------------------------
+"gate.auth.corp.type": "oidc"
+"gate.auth.corp.oidc.client_id": "gate-corp"
+"gate.auth.corp.oidc.client_secret": "REPLACE_WITH_CORP_CLIENT_SECRET"
+"gate.auth.corp.oidc.provider": "https://idp-corp.example.com/realms/main"
+"gate.auth.corp.oidc.redirect_uri": "https://app.example.com/Gate?authenticator=corp"
+"gate.auth.corp.oidc.scope": "openid profile email"
+"gate.auth.corp.oidc.user_id": "email"
+"gate.auth.corp.oidc.logout_uri": "https://idp-corp.example.com/protocol/openid-connect/logout"
+
+# ------------------------------
+# Named authenticator: partner directory (LDAP)
+# selected with ?authenticator=partners
+# ------------------------------
+"gate.auth.partners.type": "ldap"
+"gate.auth.partners.ldap.server": "ldaps://ldap-partners.example.com:636"
+"gate.auth.partners.ldap.security_protocol": "ssl"
+"gate.auth.partners.ldap.client_username": "cn=svc_gate,ou=system,dc=partners,dc=example,dc=com"
+"gate.auth.partners.ldap.client_password": "REPLACE_WITH_LDAP_SERVICE_PASSWORD"
+"gate.auth.partners.ldap.root_context": "dc=partners,dc=example,dc=com"
+"gate.auth.partners.ldap.database_fallback": "false"
+
+# ------------------------------
+# Optional: app-context override example (context = "erp")
+# ------------------------------
+# "erp.auth.default.type": "oidc"
+# "erp.auth.default.oidc.client_id": "erp-client"
+# "erp.auth.default.oidc.provider": "https://idp-erp.example.com/realms/erp"
+# "erp.auth.default.oidc.redirect_uri": "https://erp.example.com/Gate"</code></pre>
+		</g-callout>
+	</div>
+</g-tab-control>
