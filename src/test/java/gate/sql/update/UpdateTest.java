@@ -7,6 +7,7 @@ import gate.error.NotFoundException;
 import gate.sql.Link;
 import gate.sql.TestDataSource;
 import gate.sql.condition.Condition;
+import gate.sql.select.Select;
 import gate.type.ID;
 import gate.type.LocalDateInterval;
 import org.junit.jupiter.api.BeforeAll;
@@ -160,6 +161,35 @@ public class UpdateTest
                 assertEquals(contract, result[3]);
             } else
                 fail("No result found");
+        }
+    }
+
+    @Test
+    public void testGenericTableBuilderWithEntityPropertyReference() throws ConstraintViolationException
+    {
+        try (Link link = TestDataSource.getLink())
+        {
+            Contact contact = new Contact();
+            contact.setId(ID.valueOf(1));
+            contact.getPerson().setId(1);
+
+            Update.table(Contact.class)
+                    .set(Contact::getPerson, new Person().setId(2))
+                    .where(Condition.of("id").eq(contact.getId()))
+                    .build()
+                    .connect(link)
+                    .execute();
+
+            contact = Select.expression("id")
+                    .expression("Person$id").as("person.id")
+                    .from("Contact")
+                    .where(Condition.of("id").eq(1))
+                    .build()
+                    .connect(link)
+                    .fetchEntity(Contact.class)
+                    .orElseThrow();
+
+            assertEquals(2, contact.getPerson().getId());
         }
     }
 

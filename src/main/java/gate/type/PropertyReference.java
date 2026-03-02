@@ -1,7 +1,11 @@
 package gate.type;
 
+import gate.annotation.Entity;
+import gate.util.Reflection;
+
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
@@ -45,6 +49,24 @@ public interface PropertyReference<T, R> extends Function<T, R>, Serializable
         return info().ownerClass();
     }
 
+    default Object extract(Object value)
+    {
+        try
+        {
+            if (value == null)
+                return null;
+
+            if (info().extractor != null)
+                return info().extractor.invoke(value);
+
+            return value;
+        } catch (IllegalAccessException
+                 | InvocationTargetException ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
+
     /**
      * Returns the referenced zero-argument method when it can be resolved.
      *
@@ -55,21 +77,34 @@ public interface PropertyReference<T, R> extends Function<T, R>, Serializable
         return info().method();
     }
 
+    default boolean isEntity()
+    {
+        return getMethod().orElseThrow().getReturnType()
+                .isAnnotationPresent(Entity.class);
+    }
+
     private static Info createInfo(PropertyReference<?, ?> reference)
     {
         SerializedLambda lambda = extractSerializedLambda(reference);
         Class<?> ownerClass = loadOwnerClass(lambda);
 
         String methodName = lambda.getImplMethodName();
+        Method extractor = null;
         Optional<Method> method = Optional.empty();
         for (Method candidate : ownerClass.getMethods())
             if (candidate.getName().equals(methodName) && candidate.getParameterCount() == 0)
             {
                 method = Optional.of(candidate);
+
+                var type = candidate.getReturnType();
+                if (type.isAnnotationPresent(Entity.class))
+                    extractor = Reflection.findGetterByName(type,
+                                    type.getAnnotation(Entity.class).value())
+                            .orElseThrow();
                 break;
             }
 
-        return new Info(lambda, ownerClass, method);
+        return new Info(lambda, ownerClass, method, extractor);
     }
 
     private static SerializedLambda extractSerializedLambda(PropertyReference<?, ?> reference)
@@ -106,7 +141,9 @@ public interface PropertyReference<T, R> extends Function<T, R>, Serializable
     /**
      * Metadata extracted from a property reference.
      */
-    record Info(SerializedLambda serializedLambda, Class<?> ownerClass, Optional<Method> method)
+    record Info(SerializedLambda serializedLambda,
+                Class<?> ownerClass, Optional<Method> method,
+                Method extractor)
     {
     }
 }

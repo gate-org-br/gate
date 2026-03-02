@@ -379,7 +379,7 @@ public class ClassUpdate<T> implements Update
         public <R> Compiled set(PropertyReference<T, R> property, R value)
         {
             columns.add(ColumnReference.of(property) + " = ?");
-            values.add(value);
+            values.add(property.extract(value));
             return this;
         }
 
@@ -472,7 +472,7 @@ public class ClassUpdate<T> implements Update
             @Override
             public Sentence.Compiled build()
             {
-                return Sentence.of(toString()).parameters(Stream.concat(values.stream(), condition.getParameters()).collect(Collectors.toList()));
+                return Sentence.of(toString()).parameters(Stream.concat(values.stream(), condition.getParameters()).toList());
             }
 
             @Override
