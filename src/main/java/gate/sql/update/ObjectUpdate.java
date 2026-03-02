@@ -103,18 +103,15 @@ public class ObjectUpdate<T> implements Update
          * @return the same builder with the added column/value pairs
          */
         @SafeVarargs
+        @SuppressWarnings({"rawtypes", "unchecked"})
         public final Compiled set(PropertyReference<T, ?>... properties)
         {
             for (PropertyReference<T, ?> property : Objects.requireNonNull(properties))
-                setUnchecked(Objects.requireNonNull(property));
+            {
+                PropertyReference<T, Object> reference = (PropertyReference) property;
+                delegate.set(reference, reference.apply(object));
+            }
             return this;
-        }
-
-        @SuppressWarnings({"rawtypes", "unchecked"})
-        private void setUnchecked(PropertyReference<T, ?> property)
-        {
-            PropertyReference<T, Object> reference = (PropertyReference) property;
-            delegate.set(reference, reference.apply(object));
         }
 
         public ClassUpdate<T>.Compiled.CompiledWhere where(ConstantCondition condition)

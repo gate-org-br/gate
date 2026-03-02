@@ -268,7 +268,7 @@ public class ClassInsert<T> implements Insert
         {
             columns.add(ColumnReference.of(property));
             parameters.add("?");
-            values.add(value);
+            values.add(property.extract(value));
             return this;
         }
 
