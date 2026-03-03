@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.function.ObjDoubleFunction;
 import gate.util.Reflection;
 
 import java.lang.invoke.LambdaMetafactory;
@@ -10,27 +11,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.ObjDoubleConsumer;
+import java.util.function.ToDoubleFunction;
 
-class FieldAttribute extends AbstractFieldAttribute
+class DoubleFieldAttribute extends AbstractFieldAttribute
 {
-	private static final ConcurrentHashMap<Field, FieldAttribute> CACHE = new ConcurrentHashMap<>();
 
-	private final Function<Object, Object> getter;
-	private final BiConsumer<Object, Object> setter;
-	private final BiFunction<Object, Object, Object> fluentSetter;
+	private final ToDoubleFunction<Object> getter;
+	private final ObjDoubleConsumer<Object> setter;
+	private final ObjDoubleFunction<Object, Object> fluentSetter;
 
-	static FieldAttribute of(Field field)
-	{
-		return CACHE.computeIfAbsent(field, FieldAttribute::new);
-	}
-
-	private FieldAttribute(Field field)
+	DoubleFieldAttribute(Field field)
 	{
 		super(field);
+		if (field.getType() != double.class)
+			throw new IllegalArgumentException(
+					"DoubleFieldAttribute only supports double fields: %s.%s"
+							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
 		Method getterMethod = Reflection.findGetter(field).orElse(null);
 		getter = getterMethod != null ? createGetterLambda(getterMethod) : createFieldGetterLambda(field);
@@ -60,19 +57,40 @@ class FieldAttribute extends AbstractFieldAttribute
 	@Override
 	public Object getValue(Object object)
 	{
-		try
-		{
-			return getter.apply(object);
-		} catch (RuntimeException ex)
-		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException("Failed to access field attribute", ex);
-		}
+		return getDouble(object);
 	}
 
 	@Override
 	public void setValue(Object object, Object value)
+	{
+		if (!(value instanceof Number number))
+			throw new IllegalArgumentException(
+					"Attempt to write a non numeric value to a double attribute: " + value);
+		setDouble(object, number.doubleValue());
+	}
+
+	@Override
+	public Object forceValue(Object object)
+	{
+		return getDouble(object);
+	}
+
+	@Override
+	public double getDouble(Object object)
+	{
+		try
+		{
+			return getter.applyAsDouble(object);
+		} catch (RuntimeException ex)
+		{
+			throw ex instanceof IllegalStateException
+					? ex
+					: new IllegalStateException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void setDouble(Object object, double value)
 	{
 		if (setter == null && fluentSetter == null)
 			throw new UnsupportedOperationException(
@@ -89,35 +107,23 @@ class FieldAttribute extends AbstractFieldAttribute
 		{
 			throw ex instanceof IllegalStateException
 					? ex
-					: new IllegalStateException("Failed to access field attribute", ex);
+					: new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
-	@Override
-	public Object forceValue(Object object)
-	{
-		Object value = getValue(object);
-		if (value != null)
-			return value;
-
-		value = createInstance(getRawType());
-		setValue(object, value);
-		return value;
-	}
-
 	@SuppressWarnings("unchecked")
-	private static Function<Object, Object> createGetterLambda(Method method)
+	private static ToDoubleFunction<Object> createGetterLambda(Method method)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			return (Function<Object, Object>) LambdaMetafactory.metafactory(
+			return (ToDoubleFunction<Object>) LambdaMetafactory.metafactory(
 					lookup,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
+					"applyAsDouble",
+					MethodType.methodType(ToDoubleFunction.class),
+					MethodType.methodType(double.class, Object.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -128,18 +134,18 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BiConsumer<Object, Object> createSetterLambda(Method method)
+	private static ObjDoubleConsumer<Object> createSetterLambda(Method method)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			return (BiConsumer<Object, Object>) LambdaMetafactory.metafactory(
+			return (ObjDoubleConsumer<Object>) LambdaMetafactory.metafactory(
 					lookup,
 					"accept",
-					MethodType.methodType(BiConsumer.class),
-					MethodType.methodType(void.class, Object.class, Object.class),
+					MethodType.methodType(ObjDoubleConsumer.class),
+					MethodType.methodType(void.class, Object.class, double.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -150,18 +156,18 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BiFunction<Object, Object, Object> createFluentSetterLambda(Method method)
+	private static ObjDoubleFunction<Object, Object> createFluentSetterLambda(Method method)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			return (BiFunction<Object, Object, Object>) LambdaMetafactory.metafactory(
+			return (ObjDoubleFunction<Object, Object>) LambdaMetafactory.metafactory(
 					lookup,
 					"apply",
-					MethodType.methodType(BiFunction.class),
-					MethodType.methodType(Object.class, Object.class, Object.class),
+					MethodType.methodType(ObjDoubleFunction.class),
+					MethodType.methodType(Object.class, Object.class, double.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -172,18 +178,18 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Function<Object, Object> createFieldGetterLambda(Field field)
+	private static ToDoubleFunction<Object> createFieldGetterLambda(Field field)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflectGetter(field);
 
-			return (Function<Object, Object>) LambdaMetafactory.metafactory(
+			return (ToDoubleFunction<Object>) LambdaMetafactory.metafactory(
 					lookup,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
+					"applyAsDouble",
+					MethodType.methodType(ToDoubleFunction.class),
+					MethodType.methodType(double.class, Object.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -193,24 +199,22 @@ class FieldAttribute extends AbstractFieldAttribute
 		}
 	}
 
-	private static BiConsumer<Object, Object> createFieldSetterLambda(Field field)
+	@SuppressWarnings("unchecked")
+	private static ObjDoubleConsumer<Object> createFieldSetterLambda(Field field)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle handle = lookup.unreflectSetter(field)
-					.asType(MethodType.methodType(void.class, Object.class, Object.class));
+			MethodHandle impl = lookup.unreflectSetter(field);
 
-			return (target, value) ->
-			{
-				try
-				{
-					handle.invoke(target, value);
-				} catch (Throwable ex)
-				{
-					throw new IllegalStateException(ex.getMessage(), ex);
-				}
-			};
+			return (ObjDoubleConsumer<Object>) LambdaMetafactory.metafactory(
+					lookup,
+					"accept",
+					MethodType.methodType(ObjDoubleConsumer.class),
+					MethodType.methodType(void.class, Object.class, double.class),
+					impl,
+					impl.type()
+			).getTarget().invokeExact();
 		} catch (Throwable ex)
 		{
 			throw new IllegalStateException("Failed to create field setter lambda", ex);
@@ -220,7 +224,7 @@ class FieldAttribute extends AbstractFieldAttribute
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof FieldAttribute attribute
+		return obj instanceof DoubleFieldAttribute attribute
 				&& Objects.equals(field, attribute.field);
 	}
 }

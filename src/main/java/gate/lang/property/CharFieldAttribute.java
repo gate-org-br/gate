@@ -1,5 +1,8 @@
 package gate.lang.property;
 
+import gate.function.ObjCharConsumer;
+import gate.function.ObjCharFunction;
+import gate.function.ToCharFunction;
 import gate.util.Reflection;
 
 import java.lang.invoke.LambdaMetafactory;
@@ -10,27 +13,21 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
-class FieldAttribute extends AbstractFieldAttribute
+class CharFieldAttribute extends AbstractFieldAttribute
 {
-	private static final ConcurrentHashMap<Field, FieldAttribute> CACHE = new ConcurrentHashMap<>();
 
-	private final Function<Object, Object> getter;
-	private final BiConsumer<Object, Object> setter;
-	private final BiFunction<Object, Object, Object> fluentSetter;
+	private final ToCharFunction<Object> getter;
+	private final ObjCharConsumer<Object> setter;
+	private final ObjCharFunction<Object, Object> fluentSetter;
 
-	static FieldAttribute of(Field field)
-	{
-		return CACHE.computeIfAbsent(field, FieldAttribute::new);
-	}
-
-	private FieldAttribute(Field field)
+	CharFieldAttribute(Field field)
 	{
 		super(field);
+		if (field.getType() != char.class)
+			throw new IllegalArgumentException(
+					"CharFieldAttribute only supports char fields: %s.%s"
+							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
 		Method getterMethod = Reflection.findGetter(field).orElse(null);
 		getter = getterMethod != null ? createGetterLambda(getterMethod) : createFieldGetterLambda(field);
@@ -60,19 +57,40 @@ class FieldAttribute extends AbstractFieldAttribute
 	@Override
 	public Object getValue(Object object)
 	{
-		try
-		{
-			return getter.apply(object);
-		} catch (RuntimeException ex)
-		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException("Failed to access field attribute", ex);
-		}
+		return getChar(object);
 	}
 
 	@Override
 	public void setValue(Object object, Object value)
+	{
+		if (!(value instanceof Character c))
+			throw new IllegalArgumentException(
+					"Attempt to write a non char value to a char attribute: " + value);
+		setChar(object, c);
+	}
+
+	@Override
+	public Object forceValue(Object object)
+	{
+		return getChar(object);
+	}
+
+	@Override
+	public char getChar(Object object)
+	{
+		try
+		{
+			return getter.applyAsChar(object);
+		} catch (RuntimeException ex)
+		{
+			throw ex instanceof IllegalStateException
+					? ex
+					: new IllegalStateException(ex.getMessage(), ex);
+		}
+	}
+
+	@Override
+	public void setChar(Object object, char value)
 	{
 		if (setter == null && fluentSetter == null)
 			throw new UnsupportedOperationException(
@@ -89,35 +107,23 @@ class FieldAttribute extends AbstractFieldAttribute
 		{
 			throw ex instanceof IllegalStateException
 					? ex
-					: new IllegalStateException("Failed to access field attribute", ex);
+					: new IllegalStateException(ex.getMessage(), ex);
 		}
 	}
 
-	@Override
-	public Object forceValue(Object object)
-	{
-		Object value = getValue(object);
-		if (value != null)
-			return value;
-
-		value = createInstance(getRawType());
-		setValue(object, value);
-		return value;
-	}
-
 	@SuppressWarnings("unchecked")
-	private static Function<Object, Object> createGetterLambda(Method method)
+	private static ToCharFunction<Object> createGetterLambda(Method method)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			return (Function<Object, Object>) LambdaMetafactory.metafactory(
+			return (ToCharFunction<Object>) LambdaMetafactory.metafactory(
 					lookup,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
+					"applyAsChar",
+					MethodType.methodType(ToCharFunction.class),
+					MethodType.methodType(char.class, Object.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -128,18 +134,18 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BiConsumer<Object, Object> createSetterLambda(Method method)
+	private static ObjCharConsumer<Object> createSetterLambda(Method method)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			return (BiConsumer<Object, Object>) LambdaMetafactory.metafactory(
+			return (ObjCharConsumer<Object>) LambdaMetafactory.metafactory(
 					lookup,
 					"accept",
-					MethodType.methodType(BiConsumer.class),
-					MethodType.methodType(void.class, Object.class, Object.class),
+					MethodType.methodType(ObjCharConsumer.class),
+					MethodType.methodType(void.class, Object.class, char.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -150,18 +156,18 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BiFunction<Object, Object, Object> createFluentSetterLambda(Method method)
+	private static ObjCharFunction<Object, Object> createFluentSetterLambda(Method method)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			return (BiFunction<Object, Object, Object>) LambdaMetafactory.metafactory(
+			return (ObjCharFunction<Object, Object>) LambdaMetafactory.metafactory(
 					lookup,
 					"apply",
-					MethodType.methodType(BiFunction.class),
-					MethodType.methodType(Object.class, Object.class, Object.class),
+					MethodType.methodType(ObjCharFunction.class),
+					MethodType.methodType(Object.class, Object.class, char.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -172,18 +178,18 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Function<Object, Object> createFieldGetterLambda(Field field)
+	private static ToCharFunction<Object> createFieldGetterLambda(Field field)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflectGetter(field);
 
-			return (Function<Object, Object>) LambdaMetafactory.metafactory(
+			return (ToCharFunction<Object>) LambdaMetafactory.metafactory(
 					lookup,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
+					"applyAsChar",
+					MethodType.methodType(ToCharFunction.class),
+					MethodType.methodType(char.class, Object.class),
 					impl,
 					impl.type()
 			).getTarget().invokeExact();
@@ -193,24 +199,22 @@ class FieldAttribute extends AbstractFieldAttribute
 		}
 	}
 
-	private static BiConsumer<Object, Object> createFieldSetterLambda(Field field)
+	@SuppressWarnings("unchecked")
+	private static ObjCharConsumer<Object> createFieldSetterLambda(Field field)
 	{
 		try
 		{
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle handle = lookup.unreflectSetter(field)
-					.asType(MethodType.methodType(void.class, Object.class, Object.class));
+			MethodHandle impl = lookup.unreflectSetter(field);
 
-			return (target, value) ->
-			{
-				try
-				{
-					handle.invoke(target, value);
-				} catch (Throwable ex)
-				{
-					throw new IllegalStateException(ex.getMessage(), ex);
-				}
-			};
+			return (ObjCharConsumer<Object>) LambdaMetafactory.metafactory(
+					lookup,
+					"accept",
+					MethodType.methodType(ObjCharConsumer.class),
+					MethodType.methodType(void.class, Object.class, char.class),
+					impl,
+					impl.type()
+			).getTarget().invokeExact();
 		} catch (Throwable ex)
 		{
 			throw new IllegalStateException("Failed to create field setter lambda", ex);
@@ -220,7 +224,7 @@ class FieldAttribute extends AbstractFieldAttribute
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof FieldAttribute attribute
+		return obj instanceof CharFieldAttribute attribute
 				&& Objects.equals(field, attribute.field);
 	}
 }

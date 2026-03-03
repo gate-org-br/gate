@@ -1,19 +1,14 @@
 package gate.lang.property;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.error.PropertyError;
 import gate.util.Reflection;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.util.*;
 
 class PropertyParser
 {
@@ -111,7 +106,7 @@ class PropertyParser
 			try
 			{
 				Method method = attribute.getRawType().getMethod(name,
-					parameters.stream().map(Object::getClass).toArray(Class[]::new));
+						parameters.stream().map(Object::getClass).toArray(Class[]::new));
 
 				if (method.getReturnType() == null)
 					throw new PropertyError("Method %s has no return type.", method.toString());
@@ -129,16 +124,16 @@ class PropertyParser
 			if (attribute.getGenericType() instanceof ParameterizedType parameterizedType)
 			{
 				Class<?> keyType = Reflection.getRawType(
-					parameterizedType.getActualTypeArguments()[0]);
+						parameterizedType.getActualTypeArguments()[0]);
 
 				try
 				{
 					return new MapAttribute(attribute.getElementType(),
-						Converter.getConverter(keyType).ofString(keyType, name));
+							Converter.getConverter(keyType).ofString(keyType, name));
 				} catch (ConversionException ex)
 				{
 					throw new PropertyError("Error on trying to parse property: %s",
-						ex.getMessage());
+							ex.getMessage());
 				}
 			}
 
@@ -147,15 +142,34 @@ class PropertyParser
 
 		// Field access
 		for (Class<?> superclass = attribute.getRawType(); superclass != null;
-			superclass = superclass.getSuperclass())
+			 superclass = superclass.getSuperclass())
 		{
 			Field field = Arrays.stream(superclass.getDeclaredFields())
-				.filter(e -> e.getName().equals(name))
-				.findAny()
-				.orElse(null);
+					.filter(e -> e.getName().equals(name))
+					.findAny()
+					.orElse(null);
 
 			if (field != null)
-				return new FieldAttribute(field);
+			{
+				Class<?> type = field.getType();
+				if (type == boolean.class)
+					return new BooleanFieldAttribute(field);
+				if (type == char.class)
+					return new CharFieldAttribute(field);
+				if (type == byte.class)
+					return new ByteFieldAttribute(field);
+				if (type == short.class)
+					return new ShortFieldAttribute(field);
+				if (type == int.class)
+					return new IntFieldAttribute(field);
+				if (type == long.class)
+					return new LongFieldAttribute(field);
+				if (type == float.class)
+					return new FloatFieldAttribute(field);
+				if (type == double.class)
+					return new DoubleFieldAttribute(field);
+				return FieldAttribute.of(field);
+			}
 		}
 
 		return null;
@@ -246,10 +260,10 @@ class PropertyParser
 				if (name instanceof Number || name instanceof Boolean || name instanceof String)
 				{
 					if (name instanceof String
-						&& attribute.getGenericType() instanceof ParameterizedType paramType)
+							&& attribute.getGenericType() instanceof ParameterizedType paramType)
 					{
 						Class<?> keyType = Reflection.getRawType(
-							paramType.getActualTypeArguments()[0]);
+								paramType.getActualTypeArguments()[0]);
 
 						try
 						{
@@ -257,7 +271,7 @@ class PropertyParser
 						} catch (ConversionException ex)
 						{
 							throw new PropertyError("Error on trying to parse property: %s",
-								ex.getMessage());
+									ex.getMessage());
 						}
 					}
 

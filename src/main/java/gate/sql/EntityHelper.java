@@ -6,14 +6,10 @@ import gate.annotation.Table;
 import gate.error.PropertyError;
 import gate.sql.condition.Condition;
 import gate.type.ID;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -115,7 +111,8 @@ public class Entity
 
 	public static String getFullColumnName(Property property)
 	{
-		return FULL_COLUMN_NAMES.computeIfAbsent(property, e -> {
+		return FULL_COLUMN_NAMES.computeIfAbsent(property, e ->
+		{
 			StringJoiner name = new StringJoiner("$");
 			StringJoiner path = new StringJoiner("$");
 			for (Attribute attribute : e.getAttributes())
@@ -140,7 +137,8 @@ public class Entity
 
 	public static List<String> getJoins(Property property)
 	{
-		return JOINS.computeIfAbsent(property, e -> {
+		return JOINS.computeIfAbsent(property, e ->
+		{
 			List<String> joins = new ArrayList<>();
 			StringJoiner name = new StringJoiner("$");
 			StringJoiner path = new StringJoiner("$");
@@ -168,7 +166,7 @@ public class Entity
 		});
 	}
 
-	public static <T extends Object> T create(Class<T> type, String id)
+	public static <T> T create(Class<T> type, String id)
 			throws ReflectiveOperationException
 	{
 		T object = type.getConstructor().newInstance();
