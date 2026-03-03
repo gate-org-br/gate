@@ -1,14 +1,12 @@
 package gate.sql;
 
-import gate.lang.property.Entity;
 import gate.lang.property.Property;
-import java.util.function.BiConsumer;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.implementation.InvocationHandlerAdapter;
-import static net.bytebuddy.matcher.ElementMatchers.isDeclaredBy;
-import static net.bytebuddy.matcher.ElementMatchers.nameStartsWith;
-import static net.bytebuddy.matcher.ElementMatchers.returns;
-import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
+
+import java.util.function.BiConsumer;
+
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 public class Proxy
 {
@@ -30,9 +28,9 @@ public class Proxy
 						var clazz = method.getParameters()[0].getType();
 						String columnName = method.getName().substring(3);
 
-						if (Entity.isEntity(clazz))
+						if (EntityHelper.isEntity(clazz))
 						{
-							String id = Entity.getId(clazz);
+							String id = EntityHelper.getId(clazz);
 							columnName += "$" + id;
 							if (value != null)
 								value = Property.getProperty(clazz, id).getValue(value);
@@ -73,9 +71,9 @@ public class Proxy
 						var clazz = method.getParameters()[0].getType();
 						String columnName = method.getName().substring(3);
 
-						if (Entity.isEntity(clazz))
+						if (EntityHelper.isEntity(clazz))
 						{
-							String id = Entity.getId(clazz);
+							String id = EntityHelper.getId(clazz);
 							columnName += "$" + id;
 							if (value != null)
 								value = Property.getProperty(clazz, id).getValue(value);

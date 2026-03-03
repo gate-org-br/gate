@@ -1,11 +1,12 @@
 package gate.sql.update;
 
-import gate.lang.property.Entity;
 import gate.lang.property.Property;
+import gate.sql.EntityHelper;
 import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.PropertyCondition;
 import gate.sql.statement.Operation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +17,7 @@ import java.util.stream.Stream;
 /**
  * Update sentence builder for a java type.
  *
- * 
+ *
  */
 public class TypedUpdate<T> implements Update, Operation.Builder<T>
 {
@@ -26,7 +27,7 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	TypedUpdate(Class<T> type)
 	{
 		Objects.requireNonNull(type);
-		Entity.check(type);
+		EntityHelper.check(type);
 
 		this.type = type;
 	}
@@ -35,7 +36,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 * Adds a property to be updated.
 	 *
 	 * @param property the new property to be updated
-	 *
 	 * @return the same builder with the added property
 	 */
 	public Generic set(Property property)
@@ -47,7 +47,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 * Adds properties to be updated.
 	 *
 	 * @param properties the new properties to be updated
-	 *
 	 * @return the same builder with the added properties
 	 */
 	public Generic set(List<Property> properties)
@@ -59,7 +58,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 * Adds a property to be updated.
 	 *
 	 * @param property the new property to be updated
-	 *
 	 * @return the same builder with the added property
 	 */
 	public Generic set(String property)
@@ -71,7 +69,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 * Adds properties to be updated.
 	 *
 	 * @param properties the new properties to be updated
-	 *
 	 * @return the same builder with the added properties
 	 */
 	public Generic set(String... properties)
@@ -83,24 +80,22 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	 * Adds a condition to the builder.
 	 *
 	 * @param condition condition to be added to the builder
-	 *
 	 * @return the same builder with the added condition
 	 */
 	public Generic.ConstantWhere where(ConstantCondition condition)
 	{
-		return set(Entity.getProperties(type, (e) -> !e.isEntityId())).where(condition);
+		return set(EntityHelper.getProperties(type, (e) -> !e.isEntityId())).where(condition);
 	}
 
 	/**
 	 * Adds a condition to the builder.
 	 *
 	 * @param condition condition to be added to the builder
-	 *
 	 * @return the same builder with the added condition
 	 */
 	public Generic.GenericWhere where(PropertyCondition condition)
 	{
-		return set(Entity.getProperties(type, (e) -> !e.isEntityId())).where(condition);
+		return set(EntityHelper.getProperties(type, (e) -> !e.isEntityId())).where(condition);
 	}
 
 	/**
@@ -111,14 +106,14 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 	@Override
 	public Operation<T> build()
 	{
-		Property property = Property.getProperty(type, Entity.getId(type));
+		Property property = Property.getProperty(type, EntityHelper.getId(type));
 		return where(Condition.of(property.getColumnName()).isEq(property)).build();
 	}
 
 	@Override
 	public String toString()
 	{
-		return "update " + Entity.getFullTableName(type);
+		return "update " + EntityHelper.getFullTableName(type);
 	}
 
 	/**
@@ -140,16 +135,15 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		 * Adds a property to be updated.
 		 *
 		 * @param property the new property to be updated
-		 *
 		 * @return the same instance with the added property
 		 */
 		public Generic set(Property property)
 		{
 			properties.add(property);
 			property.getConverter()
-				.getColumns(property.getColumnName())
-				.map(e -> e + " = ?")
-				.forEach(columns::add);
+					.getColumns(property.getColumnName())
+					.map(e -> e + " = ?")
+					.forEach(columns::add);
 			return this;
 		}
 
@@ -157,7 +151,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		 * Adds properties to be updated.
 		 *
 		 * @param properties the new properties to be updated
-		 *
 		 * @return the same instance with the added properties
 		 */
 		public Generic set(List<Property> properties)
@@ -170,7 +163,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		 * Adds a property to be updated.
 		 *
 		 * @param property the new property to be updated
-		 *
 		 * @return the same instance with the added property
 		 */
 		public Generic set(String property)
@@ -182,7 +174,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		 * Adds properties to be updated.
 		 *
 		 * @param properties the new properties to be updated
-		 *
 		 * @return the same instance with the added properties
 		 */
 		public Generic set(String... properties)
@@ -194,7 +185,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		 * Adds a condition to the builder.
 		 *
 		 * @param condition condition to be added to the builder
-		 *
 		 * @return the same builder with the added condition
 		 */
 		public ConstantWhere where(ConstantCondition condition)
@@ -213,7 +203,6 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		 * Adds a condition to the builder.
 		 *
 		 * @param condition condition to be added to the builder
-		 *
 		 * @return the same builder with the added condition
 		 */
 		public GenericWhere where(PropertyCondition condition)
@@ -231,7 +220,7 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 		@Override
 		public Operation<T> build()
 		{
-			Property property = Property.getProperty(type, Entity.getId(type));
+			Property property = Property.getProperty(type, EntityHelper.getId(type));
 			return where(Condition.of(property.getColumnName()).isEq(property)).build();
 		}
 
@@ -362,10 +351,10 @@ public class TypedUpdate<T> implements Update, Operation.Builder<T>
 			public Operation<T> build()
 			{
 				return Operation.of(type,
-					Stream.concat(properties.stream(),
-						condition.getProperties())
-						.collect(Collectors.toList()),
-					toString());
+						Stream.concat(properties.stream(),
+										condition.getProperties())
+								.collect(Collectors.toList()),
+						toString());
 			}
 
 			@Override

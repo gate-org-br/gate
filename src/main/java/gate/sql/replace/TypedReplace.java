@@ -1,8 +1,9 @@
 package gate.sql.replace;
 
-import gate.lang.property.Entity;
 import gate.lang.property.Property;
+import gate.sql.EntityHelper;
 import gate.sql.statement.Operation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -10,7 +11,7 @@ import java.util.StringJoiner;
 /**
  * Replace SQL builder for a java class.
  *
- * 
+ *
  */
 public class TypedReplace<T> implements Replace, Operation.Builder<T>
 {
@@ -26,7 +27,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 	 * Adds a property to be persisted.
 	 *
 	 * @param property the new property to be persisted
-	 *
 	 * @return the same instance with the added property
 	 */
 	public Generic set(Property property)
@@ -38,7 +38,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 	 * Adds properties to be persisted.
 	 *
 	 * @param properties the new properties to be persisted
-	 *
 	 * @return the same builder with the added properties
 	 */
 	public Generic set(List<Property> properties)
@@ -50,7 +49,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 	 * Adds a property to be persisted.
 	 *
 	 * @param property the new property to be persisted
-	 *
 	 * @return the same instance with the added property
 	 */
 	public Generic set(String property)
@@ -62,7 +60,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 	 * Adds properties to be persisted.
 	 *
 	 * @param properties the new properties to be persisted
-	 *
 	 * @return the same builder with the added properties
 	 */
 	public Generic set(String... properties)
@@ -78,7 +75,7 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 	@Override
 	public Operation<T> build()
 	{
-		return set(Entity.getProperties(type, e -> !e.isEntityId())).build();
+		return set(EntityHelper.getProperties(type, e -> !e.isEntityId())).build();
 	}
 
 	/**
@@ -99,7 +96,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 		 * Adds a property to be persisted.
 		 *
 		 * @param property the new property to be persisted
-		 *
 		 * @return the same instance with the added property
 		 */
 		public Generic set(Property property)
@@ -117,7 +113,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 		 * Adds properties to be persisted.
 		 *
 		 * @param properties the new properties to be persisted
-		 *
 		 * @return the same instance with the added properties
 		 */
 		public Generic set(List<Property> properties)
@@ -130,7 +125,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 		 * Adds a property to be persisted.
 		 *
 		 * @param property the new property to be persisted
-		 *
 		 * @return the same instance with the added property
 		 */
 		public Generic set(String property)
@@ -142,7 +136,6 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 		 * Adds properties to be persisted.
 		 *
 		 * @param properties the new properties to be persisted
-		 *
 		 * @return the same instance with the added properties
 		 */
 		public Generic set(String... properties)
@@ -169,7 +162,7 @@ public class TypedReplace<T> implements Replace, Operation.Builder<T>
 		@Override
 		public String toString()
 		{
-			return "replace into " + Entity.getFullTableName(type) + " " + columns + " values " + parameters;
+			return "replace into " + EntityHelper.getFullTableName(type) + " " + columns + " values " + parameters;
 		}
 	}
 }

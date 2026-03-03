@@ -1,9 +1,12 @@
-package gate.lang.property;
+package gate.sql;
 
 import gate.annotation.Name;
 import gate.annotation.Schema;
 import gate.annotation.Table;
 import gate.error.PropertyError;
+import gate.lang.property.Attribute;
+import gate.lang.property.Property;
+import gate.lang.property.SelfAttribute;
 import gate.sql.condition.Condition;
 import gate.type.ID;
 
@@ -14,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class Entity
+public class EntityHelper
 {
 
 	private static final Map<Property, List<String>> JOINS = new ConcurrentHashMap<>();
@@ -72,7 +75,7 @@ public class Entity
 				{
 					String name = field.getName();
 					if (isEntity(field.getType()))
-						name = name + "." + Entity.getId(type);
+						name = name + "." + EntityHelper.getId(type);
 
 					Property property = Property.getProperty(type, name);
 
@@ -119,7 +122,7 @@ public class Entity
 			{
 				if (attribute instanceof SelfAttribute)
 				{
-					path.add(attribute.getTableName());
+					path.add(getTableName(attribute.getRawType()));
 				} else
 				{
 					name.add(attribute.getColumnName());
@@ -146,18 +149,18 @@ public class Entity
 			{
 				if (attribute instanceof SelfAttribute)
 				{
-					path.add(attribute.getTableName());
+					path.add(getTableName(attribute.getRawType()));
 				} else
 				{
 					name.add(attribute.getColumnName());
 					if (attribute.isEntity())
 					{
-						String id = Entity.getId(attribute.getRawType());
+						String id = EntityHelper.getId(attribute.getRawType());
 						String FK = path + "." + attribute.getColumnName() + "$" + id;
 						path.merge(name);
 						name = new StringJoiner("$");
 						String PK = path + "." + id;
-						joins.add("left join " + attribute.getFullTableName() + " as " + path
+						joins.add("left join " + getFullTableName(attribute.getRawType()) + " as " + path
 								+ " on " + Condition.of(FK).isEq(PK));
 					}
 				}
@@ -170,7 +173,7 @@ public class Entity
 			throws ReflectiveOperationException
 	{
 		T object = type.getConstructor().newInstance();
-		Property.getProperty(type, Entity.getId(type)).setValue(object, ID.valueOf(id));
+		Property.getProperty(type, EntityHelper.getId(type)).setValue(object, ID.valueOf(id));
 		return object;
 	}
 }

@@ -2,7 +2,6 @@ package gate.sql;
 
 import gate.error.AppException;
 import gate.error.NotFoundException;
-import gate.lang.property.Entity;
 import gate.sql.condition.Condition;
 import gate.sql.update.TableUpdate;
 import gate.sql.update.Update;
@@ -26,7 +25,7 @@ public abstract class EntityUpdate
 	{
 		this.id = id;
 		this.link = link;
-		this.update = Update.table(Entity.getFullTableName(type)).compiled();
+		this.update = Update.table(EntityHelper.getFullTableName(type)).compiled();
 	}
 
 	protected EntityUpdate set(String field, Object value)
@@ -38,9 +37,9 @@ public abstract class EntityUpdate
 	public void execute() throws AppException
 	{
 		if (update.where(Condition.of("id").eq(id))
-			.build()
-			.connect(link)
-			.execute() == 0)
+				.build()
+				.connect(link)
+				.execute() == 0)
 			throw new NotFoundException();
 	}
 }

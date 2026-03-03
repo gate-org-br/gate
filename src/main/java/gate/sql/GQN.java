@@ -1,9 +1,9 @@
 package gate.sql;
 
-import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.PropertyCondition;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -11,8 +11,6 @@ import java.util.stream.Stream;
 
 /**
  * Interpreter of the Gate Query Notation.
- *
- * 
  *
  * @author Davi Nunes da Silva
  */
@@ -25,7 +23,7 @@ public class GQN<T>
 	/**
 	 * Creates a new GQN from a java type and notation.
 	 *
-	 * @param type java type associated with the condition
+	 * @param type     java type associated with the condition
 	 * @param notation GQN notation to be used to create the condition
 	 */
 	public GQN(Class<T> type, String... notation)
@@ -37,19 +35,17 @@ public class GQN<T>
 	public List<Property> getProperties()
 	{
 		return Stream.of(notation)
-			.map(GQN::getProperty)
-			.map(e -> Property.getProperty(type, e))
-			.collect(Collectors.toList());
+				.map(GQN::getProperty)
+				.map(e -> Property.getProperty(type, e))
+				.collect(Collectors.toList());
 	}
 
 	/**
 	 * Creates a new condition from a java type and GQN notation.
 	 *
 	 * @param getName function used to define the column name to be associated with the property
-	 *
 	 * @return The new condition created or null if no test prefix is found
-	 *
-	 * @throws IllegalArgumentException if the GQN notation specified is invalid
+	 * @throws IllegalArgumentException       if the GQN notation specified is invalid
 	 * @throws gate.error.NoSuchPropertyError if a tested property is invalid
 	 */
 	public PropertyCondition getCondition(Function<Property, String> getName)
@@ -59,7 +55,7 @@ public class GQN<T>
 		for (String string : notation)
 		{
 			Property property = Property
-				.getProperty(type, GQN.getProperty(string));
+					.getProperty(type, GQN.getProperty(string));
 			switch (GQN.getCondition(string))
 			{
 				case "=":
@@ -104,10 +100,8 @@ public class GQN<T>
 	 * Creates a new condition for a java object and GQN notation ignoring null properties.
 	 *
 	 * @param object object to be used as condition parameter
-	 *
 	 * @return The new condition created or null if no test prefix is found
-	 *
-	 * @throws IllegalArgumentException if the GQN notation specified is invalid
+	 * @throws IllegalArgumentException       if the GQN notation specified is invalid
 	 * @throws gate.error.NoSuchPropertyError if a tested property is invalid
 	 */
 	public CompiledCondition getCondition(T object)
@@ -120,10 +114,10 @@ public class GQN<T>
 			switch (predicate)
 			{
 				case "@":
-					condition = condition.and(Entity.getFullColumnName(property)).isNull();
+					condition = condition.and(EntityHelper.getFullColumnName(property)).isNull();
 					break;
 				case "!@":
-					condition = condition.and().not(Entity.getFullColumnName(property)).isNull();
+					condition = condition.and().not(EntityHelper.getFullColumnName(property)).isNull();
 					break;
 				default:
 					Object value = property.getValue(object);
@@ -131,28 +125,28 @@ public class GQN<T>
 						switch (predicate)
 						{
 							case "=":
-								condition = condition.and(Entity.getFullColumnName(property)).eq(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).eq(value);
 								break;
 							case "!=":
-								condition = condition.and(Entity.getFullColumnName(property)).ne(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).ne(value);
 								break;
 							case ">":
-								condition = condition.and(Entity.getFullColumnName(property)).gt(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).gt(value);
 								break;
 							case "!<":
-								condition = condition.and(Entity.getFullColumnName(property)).ge(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).ge(value);
 								break;
 							case "<":
-								condition = condition.and(Entity.getFullColumnName(property)).lt(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).lt(value);
 								break;
 							case "!>":
-								condition = condition.and(Entity.getFullColumnName(property)).le(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).le(value);
 								break;
 							case "%":
-								condition = condition.and(Entity.getFullColumnName(property)).lk(value);
+								condition = condition.and(EntityHelper.getFullColumnName(property)).lk(value);
 								break;
 							case "!%":
-								condition = condition.and().not(Entity.getFullColumnName(property)).lk(value);
+								condition = condition.and().not(EntityHelper.getFullColumnName(property)).lk(value);
 								break;
 						}
 			}
@@ -349,14 +343,14 @@ public class GQN<T>
 	{
 		int i = 0;
 		while (i < GQN.length()
-			&& (GQN.charAt(i) == '!'
-			|| GQN.charAt(i) == '='
-			|| GQN.charAt(i) == '>'
-			|| GQN.charAt(i) == '<'
-			|| GQN.charAt(i) == '%'
-			|| GQN.charAt(i) == '@'
-			|| GQN.charAt(i) == '+'
-			|| GQN.charAt(i) == '-'))
+				&& (GQN.charAt(i) == '!'
+				|| GQN.charAt(i) == '='
+				|| GQN.charAt(i) == '>'
+				|| GQN.charAt(i) == '<'
+				|| GQN.charAt(i) == '%'
+				|| GQN.charAt(i) == '@'
+				|| GQN.charAt(i) == '+'
+				|| GQN.charAt(i) == '-'))
 			i++;
 
 		if (i == GQN.length())
