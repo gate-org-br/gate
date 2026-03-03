@@ -2,6 +2,7 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -120,16 +121,14 @@ public class DurationConverter implements Converter
 	{
 		Duration duration = (Duration) object;
 
-		switch (format.toLowerCase())
+		return switch (format.toLowerCase())
 		{
-			case "hh:mm":
-				return String.format("%02d:%02d", duration.toDaysPart() * 24 + duration.toHoursPart(), duration.toMinutesPart());
-			case "hh:mm:ss":
-				return String.format("%02d:%02d:%02d", duration.toDaysPart() * 24 + duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
-			case "dd:hh:mm:ss":
-				return String.format("%02d:%02d:%02d:%02d", duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
-			default:
-				return String.format(format, toString(type, duration));
-		}
+			case "hh:mm" -> String.format("%02d:%02d", duration.toDaysPart() * 24 + duration.toHoursPart(), duration.toMinutesPart());
+			case "hh:mm:ss" ->
+					String.format("%02d:%02d:%02d", duration.toDaysPart() * 24 + duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+			case "dd:hh:mm:ss" ->
+					String.format("%02d:%02d:%02d:%02d", duration.toDaysPart(), duration.toHoursPart(), duration.toMinutesPart(), duration.toSecondsPart());
+			default -> String.format(format, toString(type, duration));
+		};
 	}
 }

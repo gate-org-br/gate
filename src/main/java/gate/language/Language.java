@@ -28,7 +28,7 @@ public interface Language extends Comparator<String>
 	default String toASCII(String nonASCIIString)
 	{
 		return Normalizer.normalize(nonASCIIString,
-			Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+				Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}
 
 	/**
@@ -49,7 +49,7 @@ public interface Language extends Comparator<String>
 			return 0;
 		if (string1 != null && string2 == null)
 			return 1;
-		if (string1 == null && string2 != null)
+		if (string1 == null)
 			return -1;
 		return toASCII(string1).toLowerCase().compareTo(toASCII(string2).toLowerCase());
 	}
@@ -72,6 +72,6 @@ public interface Language extends Comparator<String>
 			return false;
 		else
 			return toASCII(string).toLowerCase()
-				.contains(toASCII(substring).toLowerCase());
+					.contains(toASCII(substring).toLowerCase());
 	}
 }

@@ -3,32 +3,24 @@ package gate.lang.contentDisposition;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class ContentDisposition
+public record ContentDisposition(String value, Map<String, String> parameters)
 {
 
-	private final String value;
-	private final Map<String, String> parameters;
-
-	public ContentDisposition(String value, Map<String, String> parameters)
+	public ContentDisposition
 	{
 		Objects.requireNonNull(parameters);
-		this.value = value;
-		this.parameters = parameters;
 	}
 
-	public String getValue()
-	{
-		return value;
-	}
 
-	public Map<String, String> getParameters()
+	@Override
+	public Map<String, String> parameters()
 	{
 		return Collections.unmodifiableMap(parameters);
 	}
@@ -41,16 +33,8 @@ public class ContentDisposition
 		if (value != null)
 			string.append(value);
 
-		parameters.entrySet().forEach(e ->
-		{
-			try
-			{
-				string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
-			} catch (UnsupportedEncodingException ex)
-			{
-				throw new UncheckedIOException(ex);
-			}
-		});
+		parameters.forEach((key, value1) ->
+				string.append(';').append(key).append('=').append(URLEncoder.encode(value1, StandardCharsets.UTF_8)));
 
 		return string.toString();
 	}

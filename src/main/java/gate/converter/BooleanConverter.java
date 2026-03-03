@@ -5,6 +5,7 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
+
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +38,7 @@ public class BooleanConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string)
 	{
-		return string != null && string.trim().length() > 0 ? Boolean.valueOf(string) : null;
+		return string != null && !string.trim().isEmpty() ? Boolean.valueOf(string) : null;
 	}
 
 	@Override
@@ -85,31 +86,36 @@ public class BooleanConverter implements Converter
 	@Override
 	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
 	{
-		switch (scanner.getCurrent().getType())
+		return switch (scanner.getCurrent().getType())
 		{
-			case TRUE:
+			case TRUE ->
+			{
 				scanner.scan();
-				return Boolean.TRUE;
-			case FALSE:
+				yield Boolean.TRUE;
+			}
+			case FALSE ->
+			{
 				scanner.scan();
-				return Boolean.FALSE;
-			case NULL:
+				yield Boolean.FALSE;
+			}
+			case NULL ->
+			{
 				scanner.scan();
-				return null;
-			default:
-				throw new ConversionException(scanner.getCurrent() + " is not a boolean");
-		}
+				yield null;
+			}
+			default -> throw new ConversionException(scanner.getCurrent() + " is not a boolean");
+		};
 	}
 
 	/**
 	 * Serializes the specified {@link java.lang.Boolean} on JSON notation.
 	 * <p>
-	 * A non null java Boolean will be formatted as their respective true or
+	 * A non-null java Boolean will be formatted as their respective true or
 	 * false JSON boolean. A null reference will be formatted as a JSON
 	 * Null.
 	 *
 	 * @throws gate.error.ConversionException if the specified object is not
-	 * a boolean
+	 *                                        a boolean
 	 */
 	@Override
 	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException

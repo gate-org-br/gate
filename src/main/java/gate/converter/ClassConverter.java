@@ -2,6 +2,7 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.error.AppError;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -35,7 +36,7 @@ public class ClassConverter implements Converter
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0 ? Thread.currentThread().getContextClassLoader().loadClass(string) : null;
+			return string != null && !string.trim().isEmpty() ? Thread.currentThread().getContextClassLoader().loadClass(string) : null;
 		} catch (ClassNotFoundException e)
 		{
 			throw new AppError(e);

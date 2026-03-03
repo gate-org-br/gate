@@ -2,6 +2,7 @@ package gate.converter;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,7 +37,7 @@ public class CharacterConverter implements Converter
 	@Override
 	public Object ofString(Class<?> type, String string)
 	{
-		return string != null && string.length() > 0 ? string.charAt(0) : null;
+		return string != null && !string.isEmpty() ? string.charAt(0) : null;
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import gate.util.Reflection;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +21,7 @@ public class CollectionConverter extends ObjectConverter
 		{
 			if (obj != null)
 			{
-				if (string.length() > 0)
+				if (!string.isEmpty())
 					string.append(", ");
 
 				string.append(Converter.toText(obj));

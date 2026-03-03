@@ -1,8 +1,8 @@
 package gate.lang.contentType;
 
-import java.text.ParseException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ContentTypeTest
 {
@@ -12,7 +12,7 @@ public class ContentTypeTest
 	}
 
 	@Test
-	public void testNoParamters() throws ParseException
+	public void testNoParameters()
 	{
 		var contentType = ContentType.valueOf("text/plain");
 		assertEquals("text", contentType.getType());
@@ -20,7 +20,7 @@ public class ContentTypeTest
 	}
 
 	@Test
-	public void testWithFilename() throws ParseException
+	public void testWithFilename()
 	{
 		var contentType = ContentType.valueOf("text/plain;filename=afe.txt");
 		assertEquals("text", contentType.getType());
