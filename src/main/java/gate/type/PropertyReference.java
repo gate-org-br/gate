@@ -1,149 +1,108 @@
 package gate.type;
 
 import gate.annotation.Entity;
-import gate.util.Reflection;
 
 import java.io.Serializable;
-import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.invoke.*;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 @FunctionalInterface
 public interface PropertyReference<T, R> extends Function<T, R>, Serializable
 {
+	/**
+	 * Returns metadata extracted from this property reference.
+	 *
+	 * @return metadata extracted from this property reference
+	 */
+	default Metadata metadata()
+	{
+		return Metadata.of(this);
+	}
 
-    Map<Class<?>, Info> INFO_CACHE = new ConcurrentHashMap<>();
+	default Object identity(Object value)
+	{
+		if (metadata().identity != null)
+			return metadata().identity.apply(value);
+		return value;
+	}
 
-    /**
-     * Returns metadata extracted from this property reference.
-     *
-     * @return metadata extracted from this property reference
-     */
-    default Info info()
-    {
-        return INFO_CACHE.computeIfAbsent(getClass(),
-                unused -> createInfo(this));
-    }
+	@SuppressWarnings("unchecked")
+	static PropertyReference<Object, Object> of(Method method)
+	{
+		if (method.getParameterCount() != 0)
+			throw new IllegalArgumentException(method + " is not a zero-arg getter");
 
-    /**
-     * Extracts the {@link SerializedLambda} representation of this property reference.
-     *
-     * @return serialized lambda backing this reference
-     */
-    default SerializedLambda serializedLambda()
-    {
-        return info().serializedLambda();
-    }
+		if ((method.getModifiers() & Modifier.STATIC) != 0)
+			throw new IllegalArgumentException(method + " is static, not a getter");
 
-    /**
-     * Returns the owner class that declares the referenced method.
-     *
-     * @return owner class of the referenced method
-     */
-    default Class<?> getOwnerClass()
-    {
-        return info().ownerClass();
-    }
+		Class<?> owner = method.getDeclaringClass();
 
-    default Object extract(Object value)
-    {
-        try
-        {
-            if (value == null)
-                return null;
+		try
+		{
+			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(owner, MethodHandles.lookup());
+			MethodHandle impl = lookup.unreflect(method);
+			MethodType sam = MethodType.methodType(Object.class, Object.class);
+			MethodType instantiated = MethodType.methodType(method.getReturnType(), owner);
 
-            if (info().extractor != null)
-                return info().extractor.invoke(value);
+			return (PropertyReference<Object, Object>) LambdaMetafactory
+					.metafactory(lookup,
+							"apply",
+							MethodType.methodType(PropertyReference.class),
+							sam,
+							impl,
+							instantiated
+					).getTarget().invokeExact();
+		} catch (Throwable e)
+		{
+			throw new IllegalArgumentException(method + " is not a valid getter", e);
+		}
+	}
 
-            return value;
-        } catch (IllegalAccessException
-                 | InvocationTargetException ex)
-        {
-            throw new RuntimeException(ex);
-        }
-    }
+	/**
+	 * Metadata extracted from a property reference.
+	 */
+	record Metadata(SerializedLambda serializedLambda,
+					Class<?> ownerClass,
+					Class<?> type,
+					PropertyReference<Object, Object> identity)
+	{
+		private static final Map<Class<?>, Metadata>
+				CACHE = new ConcurrentHashMap<>();
 
-    /**
-     * Returns the referenced zero-argument method when it can be resolved.
-     *
-     * @return referenced method, or empty when it cannot be resolved
-     */
-    default Optional<Method> getMethod()
-    {
-        return info().method();
-    }
+		private static Metadata of(PropertyReference<?, ?> reference)
+		{
+			return CACHE.computeIfAbsent(reference.getClass(), r ->
+			{
+				try
+				{
+					Method method = reference.getClass().getDeclaredMethod("writeReplace");
+					method.setAccessible(true);
+					Object replacement = method.invoke(reference);
 
-    default boolean isEntity()
-    {
-        return getMethod().orElseThrow().getReturnType()
-                .isAnnotationPresent(Entity.class);
-    }
+					if (!(replacement instanceof SerializedLambda lambda))
+						throw new IllegalStateException("Could not extract serialized lambda");
 
-    private static Info createInfo(PropertyReference<?, ?> reference)
-    {
-        SerializedLambda lambda = extractSerializedLambda(reference);
-        Class<?> ownerClass = loadOwnerClass(lambda);
+					ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+					var className = lambda.getImplClass().replace('/', '.');
+					Class<?> ownerClass = Class.forName(className, false, classLoader);
 
-        String methodName = lambda.getImplMethodName();
-        Method extractor = null;
-        Optional<Method> method = Optional.empty();
-        for (Method candidate : ownerClass.getMethods())
-            if (candidate.getName().equals(methodName) && candidate.getParameterCount() == 0)
-            {
-                method = Optional.of(candidate);
-
-                var type = candidate.getReturnType();
-                if (type.isAnnotationPresent(Entity.class))
-                    extractor = Reflection.findGetterByName(type,
-                                    type.getAnnotation(Entity.class).value())
-                            .orElseThrow();
-                break;
-            }
-
-        return new Info(lambda, ownerClass, method, extractor);
-    }
-
-    private static SerializedLambda extractSerializedLambda(PropertyReference<?, ?> reference)
-    {
-        try
-        {
-            Method method = reference.getClass().getDeclaredMethod("writeReplace");
-            method.setAccessible(true);
-            Object replacement = method.invoke(reference);
-
-            if (replacement instanceof SerializedLambda lambda)
-                return lambda;
-
-            throw new IllegalStateException("Could not extract serialized lambda");
-        } catch (ReflectiveOperationException ex)
-        {
-            throw new IllegalStateException("Could not extract serialized lambda", ex);
-        }
-    }
-
-    private static Class<?> loadOwnerClass(SerializedLambda lambda)
-    {
-        try
-        {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            return Class.forName(lambda.getImplClass().replace('/', '.'),
-                    false, classLoader);
-        } catch (ClassNotFoundException ex)
-        {
-            throw new IllegalStateException("Could not load method owner class", ex);
-        }
-    }
-
-    /**
-     * Metadata extracted from a property reference.
-     */
-    record Info(SerializedLambda serializedLambda,
-                Class<?> ownerClass, Optional<Method> method,
-                Method extractor)
-    {
-    }
+					Class<?> type = Stream.of(ownerClass.getMethods())
+							.filter(e -> e.getName().equals(lambda.getImplMethodName()))
+							.filter(e -> e.getParameterCount() == 0)
+							.findFirst()
+							.map(Method::getReturnType)
+							.orElseThrow();
+					return new Metadata(lambda, ownerClass, type, Entity.Extractor.get(type));
+				} catch (ReflectiveOperationException ex)
+				{
+					throw new IllegalStateException("Could not extract serialized lambda", ex);
+				}
+			});
+		}
+	}
 }

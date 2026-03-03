@@ -1,7 +1,7 @@
 package gate.base;
 
 import gate.error.NotFoundException;
-import gate.lang.property.Entity;
+import gate.sql.EntityHelper;
 import gate.sql.Link;
 import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
@@ -14,71 +14,71 @@ import java.util.List;
 public class CrudDao<T> extends Dao implements Crud<T>
 {
 
-    private final Class<T> type;
+	private final Class<T> type;
 
-    public CrudDao(Class<T> type)
-    {
-        this.type = type;
-    }
+	public CrudDao(Class<T> type)
+	{
+		this.type = type;
+	}
 
-    public CrudDao(Class<T> type, Link link)
-    {
-        super(link);
-        this.type = type;
-    }
+	public CrudDao(Class<T> type, Link link)
+	{
+		super(link);
+		this.type = type;
+	}
 
-    public CrudDao(Class<T> type, String datasource)
-    {
-        super(datasource);
-        this.type = type;
-    }
+	public CrudDao(Class<T> type, String datasource)
+	{
+		super(datasource);
+		this.type = type;
+	}
 
-    @Override
-    public List<T> search(T filter)
-    {
-        return getLink().search(type)
-                .properties(Entity.getFullGQN(type))
-                .matching(filter);
-    }
+	@Override
+	public List<T> search(T filter)
+	{
+		return getLink().search(type)
+				.properties(EntityHelper.getFullGQN(type))
+				.matching(filter);
+	}
 
-    @Override
-    public T select(ID id) throws NotFoundException
-    {
-        return Select.from(type).build()
-                .parameters(id)
-                .connect(getLink())
-                .fetchEntity(type)
-                .orElseThrow(NotFoundException::new);
-    }
+	@Override
+	public T select(ID id) throws NotFoundException
+	{
+		return Select.from(type).build()
+				.parameters(id)
+				.connect(getLink())
+				.fetchEntity(type)
+				.orElseThrow(NotFoundException::new);
+	}
 
-    @Override
-    public void insert(T value)
-    {
-        Insert.type(type)
-                .build()
-                .connect(getLink())
-                .value(value)
-                .execute();
-    }
+	@Override
+	public void insert(T value)
+	{
+		Insert.type(type)
+				.build()
+				.connect(getLink())
+				.value(value)
+				.execute();
+	}
 
-    @Override
-    public void update(T value)
-    {
-        Update.type(type)
-                .build()
-                .connect(getLink())
-                .value(value)
-                .execute();
-    }
+	@Override
+	public void update(T value)
+	{
+		Update.type(type)
+				.build()
+				.connect(getLink())
+				.value(value)
+				.execute();
+	}
 
-    @Override
-    public void delete(T value)
-    {
-        Delete.from(type)
-                .build()
-                .connect(getLink())
-                .value(value)
-                .execute();
-    }
+	@Override
+	public void delete(T value)
+	{
+		Delete.from(type)
+				.build()
+				.connect(getLink())
+				.value(value)
+				.execute();
+	}
 
 }

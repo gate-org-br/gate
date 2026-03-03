@@ -5,8 +5,9 @@ import gate.converter.Converter;
 import gate.converter.ObjectConverter;
 import gate.error.AppError;
 import gate.error.ConversionException;
-import gate.lang.property.Entity;
 import gate.lang.property.Property;
+import gate.sql.EntityHelper;
+
 import java.lang.reflect.InvocationTargetException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,17 +44,17 @@ public class EntityConverter extends ObjectConverter
 		{
 			if (string != null && string.trim().length() > 0)
 			{
-				Property property = Property.getProperty(type, Entity.getId(type));
+				Property property = Property.getProperty(type, EntityHelper.getId(type));
 				Object entity = type.getDeclaredConstructor().newInstance();
 				property.setValue(entity, Converter
-					.getConverter(property.getRawType())
-					.ofString(property.getRawType(), string));
+						.getConverter(property.getRawType())
+						.ofString(property.getRawType(), string));
 				return entity;
 			}
 
 			return null;
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-			| InvocationTargetException | RuntimeException e)
+				 | InvocationTargetException | RuntimeException e)
 		{
 			throw new ConversionException(String.format("%s não é uma entidade válida.", string));
 		}
@@ -66,8 +67,8 @@ public class EntityConverter extends ObjectConverter
 		{
 			if (object == null)
 				return "";
-			return Converter.toString(Property.getProperty(type, Entity.getId(type))
-				.getValue(object));
+			return Converter.toString(Property.getProperty(type, EntityHelper.getId(type))
+					.getValue(object));
 		} catch (RuntimeException e)
 		{
 			throw new AppError(e);
@@ -88,7 +89,7 @@ public class EntityConverter extends ObjectConverter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException,
-		ConversionException
+			ConversionException
 	{
 		String value = rs.getString(fields);
 		return rs.wasNull() ? null : ofString(Object.class, value);

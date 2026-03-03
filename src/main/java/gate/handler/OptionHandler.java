@@ -1,20 +1,20 @@
 package gate.handler;
 
+import gate.converter.Converter;
+import gate.error.AppError;
+import gate.lang.property.Property;
+import gate.sql.EntityHelper;
+import gate.util.Toolkit;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import gate.converter.Converter;
-import gate.error.AppError;
-import gate.lang.property.Entity;
-import gate.lang.property.Property;
-import gate.util.Toolkit;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class OptionHandler implements Handler
@@ -46,7 +46,7 @@ public class OptionHandler implements Handler
 	{
 		Objects.requireNonNull(object);
 		Class<?> type = object.getClass();
-		Property property = Property.getProperty(type, Entity.getId(type));
+		Property property = Property.getProperty(type, EntityHelper.getId(type));
 		Object id = property.getValue(object);
 		String label = object.toString();
 		String value = Converter.toString(id);

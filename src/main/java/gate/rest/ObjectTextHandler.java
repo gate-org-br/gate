@@ -2,7 +2,7 @@ package gate.rest;
 
 import gate.converter.Converter;
 import gate.converter.custom.EntityConverter;
-import gate.lang.property.Entity;
+import gate.sql.EntityHelper;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Provider;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,9 +34,9 @@ public class ObjectTextHandler implements MessageBodyWriter<Object>, MessageBody
 
 	@Override
 	public void writeTo(Object value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-		MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
+						MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		if (Entity.isEntity(type))
+		if (EntityHelper.isEntity(type))
 			entityStream.write(ENTITY_CONVERTER.toString(type, value).getBytes());
 		entityStream.write(Converter.toString(value).getBytes());
 	}
@@ -48,10 +49,10 @@ public class ObjectTextHandler implements MessageBodyWriter<Object>, MessageBody
 
 	@Override
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream in)
-		throws IOException, WebApplicationException
+			throws IOException, WebApplicationException
 	{
 		String string = new String(in.readAllBytes());
-		if (Entity.isEntity(type))
+		if (EntityHelper.isEntity(type))
 			return ENTITY_CONVERTER.ofString(type, string);
 		return Converter.fromString(type, string);
 	}

@@ -1,18 +1,17 @@
 package gate.lang.property;
 
+import gate.entity.Auth;
 import gate.entity.Role;
+import gate.entity.User;
 import gate.error.BadRequestException;
 import gate.type.ID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import gate.entity.Auth;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import gate.entity.User;
 
 class PropertyGraphTest
 {
@@ -92,11 +91,11 @@ class PropertyGraphTest
 		Assertions.assertEquals(expected, result);
 	}
 
-	private static record Point(int x, int y)
+	record Point(int x, int y)
 	{
 	}
 
-	private static record Line(Point start, Point end)
+	record Line(Point start, Point end)
 	{
 	}
 }

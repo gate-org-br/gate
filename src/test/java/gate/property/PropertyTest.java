@@ -1,31 +1,25 @@
 package gate.property;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.PropertyError;
 import gate.lang.property.Property;
 import gate.type.ID;
 import gate.type.Sex;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PropertyTest
 {
 
 	private Map<String, User> users;
 	private Role role;
-
-	public PropertyTest()
-	{
-	}
 
 	public Map<String, User> getUsers()
 	{
@@ -52,267 +46,303 @@ public class PropertyTest
 		users = new HashMap<>();
 		users.put("user1", user1);
 		users.put("user2", user2);
-
 	}
 
 	@Test
-	public void test1()
+	public void shouldSetNestedPropertyValue()
 	{
-		try
-		{
-			Mock mock = new Mock();
-			Property property = Property.getProperty(Mock.class, "mock.name");
-			property.setValue(mock, "Mock");
-			assertEquals(property.getValue(mock), "Mock");
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
-
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "mock.name");
+		property.setValue(mock, "Mock");
+		assertEquals("Mock", property.getValue(mock));
 	}
 
 	@Test
-	public void test2()
+	public void shouldGetSimplePropertyValue()
 	{
-		try
-		{
-			assertEquals(Property.getProperty(Role.class, "name").getValue(role), "Role 1");
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals("Role 1", Property.getProperty(Role.class, "name").getValue(role));
 	}
 
 	@Test
-	public void test3()
+	public void shouldThrowWhenPropertyPathStartsWithIndex()
 	{
-		try
-		{
-			Property.getProperty(Role.class, "[0]");
-			fail();
-		} catch (PropertyError e)
-		{
-
-		}
+		assertThrows(PropertyError.class, () -> Property.getProperty(Role.class, "[0]"));
 	}
 
 	@Test
-	public void test4()
+	public void shouldGetListElementNestedPropertyByIndex()
 	{
-		try
-		{
-			assertEquals(Property.getProperty(Role.class, "users[0].name").getValue(role),
-				"Usuário 1");
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals("Usuário 1", Property.getProperty(Role.class, "users[0].name").getValue(role));
 	}
 
 	@Test
-	public void test5()
+	public void shouldThrowWhenListIndexIsInvalidString()
 	{
-		try
-		{
-			Property.getProperty(Role.class, "users['teste'].name");
-			fail();
-		} catch (PropertyError e)
-		{
-
-		}
+		assertThrows(PropertyError.class, () -> Property.getProperty(Role.class, "users['teste'].name"));
 	}
 
 	@Test
-	public void test6()
+	public void shouldGetCollectionSizeThroughMethodCall()
 	{
-		try
-		{
-			assertEquals(Property.getProperty(Role.class, "users.size()").getValue(role), 2);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals(2, Property.getProperty(Role.class, "users.size()").getValue(role));
 	}
 
 	@Test
-	public void test7()
+	public void shouldGetMapNestedPropertyByDotKey()
 	{
-		try
-		{
-			assertEquals(Property.getProperty(getClass(), "users.user1.name").getValue(this),
-				"Usuário 1");
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals("Usuário 1", Property.getProperty(getClass(), "users.user1.name").getValue(this));
 	}
 
 	@Test
-	public void test8()
+	public void shouldGetMapNestedPropertyByBracketKey()
 	{
-		try
-		{
-			String expected = "Usuário 1";
-			Object result = Property.getProperty(getClass(), "users['user1'].name").getValue(this);
-			assertEquals(expected, result);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		String expected = "Usuário 1";
+		Object result = Property.getProperty(getClass(), "users['user1'].name").getValue(this);
+		assertEquals(expected, result);
 	}
 
 	@Test
-	public void test9()
+	public void shouldInvokeMethodOnListElement()
 	{
-		try
-		{
-			Object result = Property
+		Object result = Property
 				.getProperty(Role.class, "users[0].checkAccess('module', 'screen', 'action')")
 				.getValue(role);
-			assertEquals(false, result);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals(false, result);
 	}
 
 	@Test
-	public void test10()
+	public void shouldSetPrimitivePropertyValue()
 	{
-		try
-		{
-			Mock mock = new Mock();
-			Property property = Property.getProperty(Mock.class, "age");
-			property.setValue(mock, 1);
-			assertEquals(property.getValue(mock), 1);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
-
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "integer");
+		property.setValue(mock, 1);
+		assertEquals(1, property.getValue(mock));
 	}
 
 	@Test
-	public void test11()
+	public void shouldSetMapEntryByDotKey()
 	{
-		try
-		{
-			Property.getProperty(getClass(), "users.user3").setValue(this,
-				new User().setId(ID.valueOf(3)).setName("Usuário 3"));
+		Property.getProperty(getClass(), "users.user3")
+				.setValue(this, new User().setId(ID.valueOf(3)).setName("Usuário 3"));
 
-			String expected = "Usuário 3";
-			Object result = getUsers().get("user3").getName();
-
-			assertEquals(expected, result);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		String expected = "Usuário 3";
+		Object result = getUsers().get("user3").getName();
+		assertEquals(expected, result);
 	}
 
 	@Test
-	public void test12()
+	public void shouldSetBooleanPropertyValue()
 	{
-		try
-		{
-			Property.getProperty(Role.class, "active").setValue(role, true);
-			assertEquals(role.getActive(), Boolean.TRUE);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		Property.getProperty(Role.class, "active").setValue(role, true);
+		assertEquals(Boolean.TRUE, role.getActive());
 	}
 
 	@Test
-	public void test13()
+	public void shouldAppendElementUsingEmptyListIndex()
 	{
-		try
-		{
-			Property.getProperty(Role.class, "users[]").setValue(role,
-				new User().setId(ID.valueOf(3)).setName("Usuário 3"));
-			assertEquals(role.getUsers().size(), 1);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		Property.getProperty(Role.class, "users[]")
+				.setValue(role, new User().setId(ID.valueOf(3)).setName("Usuário 3"));
+		assertEquals(1, role.getUsers().size());
 	}
 
 	@Test
-	public void test14()
+	public void shouldRenderOriginalExpressionInToString()
 	{
-		try
-		{
-			assertEquals("users[1].name",
-				Property.getProperty(Role.class, "users[1].name").toString());
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals("users[1].name", Property.getProperty(Role.class, "users[1].name").toString());
 	}
 
 	@Test
-	public void test15()
+	public void shouldGenerateColumnNameForNestedProperty()
 	{
-		try
-		{
-			assertEquals(Property.getProperty(Role.class, "role.name").getColumnName(),
-				"Role$name");
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+		assertEquals("Role$name", Property.getProperty(Role.class, "role.name").getColumnName());
 	}
 
 	@Test
-	public void test17()
+	public void shouldSetBooleanPrimitivePropertyValue()
 	{
-		try
-		{
-			Mock mock = new Mock();
-			Property property = Property.getProperty(Mock.class, "active");
-			property.setValue(mock, true);
-			assertEquals(property.getValue(mock), true);
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
-
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "bool");
+		property.setValue(mock, true);
+		assertEquals(true, property.getValue(mock));
 	}
 
 	@Test
-	public void testEnumMap()
+	public void shouldSetAndGetBooleanAccessorByType()
 	{
-		try
-		{
-			Mock mock = new Mock();
-			Property property = Property.getProperty(Mock.class, "results[MALE]");
-			property.setValue(mock, "MALE RESULT");
-			assertEquals(property.getValue(mock), "MALE RESULT");
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "bool");
+		property.setBoolean(mock, true);
+		assertEquals(true, property.getValue(mock));
+	}
 
-			property = Property.getProperty(Mock.class, "results.FEMALE");
-			property.setValue(mock, "FEMALE RESULT");
-			assertEquals(property.getValue(mock), "FEMALE RESULT");
-		} catch (PropertyError e)
-		{
-			fail(e.getMessage());
-		}
+	@Test
+	public void shouldSetAndGetCharAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "character");
+		property.setChar(mock, 'x');
+		assertEquals('x', property.getValue(mock));
+	}
 
+	@Test
+	public void shouldSetAndGetByteAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "byteValue");
+		property.setByte(mock, (byte) 3);
+		assertEquals((byte) 3, property.getValue(mock));
+	}
+
+	@Test
+	public void shouldSetAndGetShortAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "shortValue");
+		property.setShort(mock, (short) 7);
+		assertEquals((short) 7, property.getValue(mock));
+	}
+
+	@Test
+	public void shouldSetAndGetIntAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "integer");
+		property.setInt(mock, 11);
+		assertEquals(11, property.getValue(mock));
+	}
+
+	@Test
+	public void shouldSetAndGetLongAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "longValue");
+		property.setLong(mock, 13L);
+		assertEquals(13L, property.getValue(mock));
+	}
+
+	@Test
+	public void shouldSetAndGetFloatAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "floatValue");
+		property.setFloat(mock, 1.5f);
+		assertEquals(1.5f, property.getValue(mock));
+	}
+
+	@Test
+	public void shouldSetAndGetDoubleAccessorByType()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "doubleValue");
+		property.setDouble(mock, 2.5d);
+		assertEquals(2.5d, property.getValue(mock));
+	}
+
+	@Test
+	public void shouldSetAndGetEnumMapValuesByBracketAndDotNotation()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "results[MALE]");
+		property.setValue(mock, "MALE RESULT");
+		assertEquals("MALE RESULT", property.getValue(mock));
+
+		property = Property.getProperty(Mock.class, "results.FEMALE");
+		property.setValue(mock, "FEMALE RESULT");
+		assertEquals("FEMALE RESULT", property.getValue(mock));
+	}
+
+
+	@Test
+	public void shouldGetAllDeclaredPropertiesFromClass()
+	{
+		assertEquals(11, Property.getProperties(Mock.class).size());
+	}
+
+	@Test
+	public void shouldReadStaticValueByObjectAndName()
+	{
+		Mock mock = new Mock();
+		mock.setName("A");
+		assertEquals("A", Property.getValue(mock, "name"));
+		assertNull(Property.getValue(null, "name"));
+	}
+
+	@Test
+	public void shouldDetectWhenPropertyValueIsEmpty()
+	{
+		Mock mock = new Mock();
+		Property property = Property.getProperty(Mock.class, "name");
+		assertTrue(property.isEmpty(mock));
+		property.setValue(mock, "X");
+		assertFalse(property.isEmpty(mock));
+	}
+
+	@Test
+	public void shouldGetPreviousPropertyFromNestedPath()
+	{
+		Property property = Property.getProperty(Mock.class, "mock.name");
+		assertEquals("mock", property.getPreviousProperty().toString());
+	}
+
+	@Test
+	public void shouldExposePropertyMetadataAndTypes()
+	{
+		Property property = Property.getProperty(Mock.class, "results[MALE]");
+		assertEquals(Mock.class, property.getOwner());
+		assertEquals(String.class, property.getRawType());
+		assertEquals(Object.class, property.getElementRawType());
+		assertEquals(Object.class, property.getElementType());
+		assertEquals(String.class, property.getType());
+		assertNull(property.getColor());
+		assertNull(property.getIcon());
+		assertNull(property.getDescription());
+		assertNull(property.getTooltip());
+		assertNull(property.getPlaceholder());
+		assertNull(property.getMask());
+		assertEquals(property.getAttributes().get(property.getAttributes().size() - 1), property.getLastAttribute());
+	}
+
+	@Test
+	public void shouldDocumentCurrentBehaviorOfPrimitiveGetters()
+	{
+		Mock mock = new Mock();
+		mock.setBool(true);
+		mock.setCharacter('z');
+		mock.setByteValue((byte) 1);
+		mock.setShortValue((short) 2);
+		mock.setInteger(3);
+		mock.setLongValue(4L);
+		mock.setFloatValue(5.0f);
+		mock.setDoubleValue(6.0d);
+
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "bool").getBoolean(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "character").getChar(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "byteValue").getByte(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "shortValue").getShort(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "integer").getInt(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "longValue").getLong(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "floatValue").getFloat(mock));
+		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "doubleValue").getDouble(mock));
 	}
 
 	@SuppressWarnings("unused")
-	private static class Mock
+	static class Mock
 	{
 
 		public Mock()
 		{
-
 		}
 
-		private int age;
 		private Mock mock;
 		private String name;
-		private boolean active;
-
+		private boolean bool;
+		private char character;
+		private byte byteValue;
+		private short shortValue;
+		private int integer;
+		private long longValue;
+		private float floatValue;
+		private double doubleValue;
 		private EnumMap<Sex, String> results;
 
 		public Mock getMock()
@@ -320,19 +350,9 @@ public class PropertyTest
 			return mock;
 		}
 
-		public void setName(String name)
+		public void setMock(Mock mock)
 		{
-			this.name = name;
-		}
-
-		public int getAge()
-		{
-			return age;
-		}
-
-		public void setAge(int age)
-		{
-			this.age = age;
+			this.mock = mock;
 		}
 
 		public String getName()
@@ -340,19 +360,89 @@ public class PropertyTest
 			return name;
 		}
 
-		public boolean getActive()
+		public void setName(String name)
 		{
-			return active;
+			this.name = name;
 		}
 
-		public void setActive(boolean active)
+		public boolean getBool()
 		{
-			this.active = active;
+			return bool;
 		}
 
-		public void setMock(Mock mock)
+		public void setBool(boolean bool)
 		{
-			this.mock = mock;
+			this.bool = bool;
+		}
+
+		public char getCharacter()
+		{
+			return character;
+		}
+
+		public void setCharacter(char character)
+		{
+			this.character = character;
+		}
+
+		public byte getByteValue()
+		{
+			return byteValue;
+		}
+
+		public void setByteValue(byte byteValue)
+		{
+			this.byteValue = byteValue;
+		}
+
+		public short getShortValue()
+		{
+			return shortValue;
+		}
+
+		public void setShortValue(short shortValue)
+		{
+			this.shortValue = shortValue;
+		}
+
+		public int getInteger()
+		{
+			return integer;
+		}
+
+		public void setInteger(int integer)
+		{
+			this.integer = integer;
+		}
+
+		public long getLongValue()
+		{
+			return longValue;
+		}
+
+		public void setLongValue(long longValue)
+		{
+			this.longValue = longValue;
+		}
+
+		public float getFloatValue()
+		{
+			return floatValue;
+		}
+
+		public void setFloatValue(float floatValue)
+		{
+			this.floatValue = floatValue;
+		}
+
+		public double getDoubleValue()
+		{
+			return doubleValue;
+		}
+
+		public void setDoubleValue(double doubleValue)
+		{
+			this.doubleValue = doubleValue;
 		}
 
 		public EnumMap<Sex, String> getResults()

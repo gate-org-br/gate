@@ -1,23 +1,13 @@
 package gate.lang.property;
 
+import gate.annotation.Entity;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
 import gate.icon.Icon;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+
+import java.lang.reflect.*;
+import java.util.*;
 import java.util.stream.Stream;
 
 public interface Attribute
@@ -49,7 +39,7 @@ public interface Attribute
 			return (Class<?>) ((ParameterizedType) type).getRawType();
 		else if (type instanceof GenericArrayType)
 			return Array.newInstance((Class<?>) ((ParameterizedType) ((GenericArrayType) type)
-				.getGenericComponentType()).getRawType(), 0).getClass();
+					.getGenericComponentType()).getRawType(), 0).getClass();
 		else
 			return null;
 	}
@@ -68,13 +58,13 @@ public interface Attribute
 				return new HashMap<>();
 
 			Constructor<?> constructor = Stream.of(type.getConstructors())
-				.filter(e -> e.getParameters().length == 0).findAny().orElse(null);
+					.filter(e -> e.getParameters().length == 0).findAny().orElse(null);
 			if (constructor == null)
 				throw new PropertyError("No default constructor found in %s.", type.getName());
 			constructor.setAccessible(true);
 			return constructor.newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-			| InvocationTargetException e)
+				 | InvocationTargetException e)
 		{
 			throw new PropertyError("Error trying to create a instance of %s.", type.getName());
 		}
@@ -84,97 +74,97 @@ public interface Attribute
 	default boolean getBoolean(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a boolean value from a non boolean attribute");
+				"Attempt to read a boolean value from a non boolean attribute");
 	}
 
 	default void setBoolean(Object object, boolean value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a boolean value to a non boolean attribute");
+				"Attempt to write a boolean value to a non boolean attribute");
 	}
 
 	default char getChar(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a char value from a non char attribute");
+				"Attempt to read a char value from a non char attribute");
 	}
 
 	default void setChar(Object object, char value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a char value to a non char attribute");
+				"Attempt to write a char value to a non char attribute");
 	}
 
 	default byte getByte(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a byte value from a non byte attribute");
+				"Attempt to read a byte value from a non byte attribute");
 	}
 
 	default void setByte(Object object, byte value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a byte value to a non byte attribute");
+				"Attempt to write a byte value to a non byte attribute");
 	}
 
 	default short getShort(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a short value from a non short attribute");
+				"Attempt to read a short value from a non short attribute");
 	}
 
 	default void setShort(Object object, short value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a short value to a non short attribute");
+				"Attempt to write a short value to a non short attribute");
 	}
 
 	default int getInt(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read an int value from a non int attribute");
+				"Attempt to read an int value from a non int attribute");
 	}
 
 	default void setInt(Object object, int value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write an int value to a non int attribute");
+				"Attempt to write an int value to a non int attribute");
 	}
 
 	default long getLong(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a long value from a non long attribute");
+				"Attempt to read a long value from a non long attribute");
 	}
 
 	default void setLong(Object object, long value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a long value to a non long attribute");
+				"Attempt to write a long value to a non long attribute");
 	}
 
 	default float getFloat(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a float value from a non float attribute");
+				"Attempt to read a float value from a non float attribute");
 	}
 
 	default void setFloat(Object object, float value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a float value to a non float attribute");
+				"Attempt to write a float value to a non float attribute");
 	}
 
 	default double getDouble(Object object)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to read a double value from a non double attribute");
+				"Attempt to read a double value from a non double attribute");
 	}
 
 	default void setDouble(Object object, double value)
 	{
 		throw new UnsupportedOperationException(
-			"Attempt to write a double value to a non double attribute");
+				"Attempt to write a double value to a non double attribute");
 	}
 
 	default String getDisplayName()
@@ -227,19 +217,9 @@ public interface Attribute
 		return null;
 	}
 
-	default String getTableName()
-	{
-		return Entity.getTableName(getRawType());
-	}
-
-	default String getFullTableName()
-	{
-		return Entity.getFullTableName(getRawType());
-	}
-
 	default boolean isEntity()
 	{
-		return Entity.isEntity(getRawType());
+		return getRawType().isAnnotationPresent(Entity.class);
 	}
 
 	default Converter getConverter()

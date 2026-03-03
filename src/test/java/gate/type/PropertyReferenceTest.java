@@ -5,107 +5,99 @@ import gate.sql.ColumnReference;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PropertyReferenceTest
 {
 
-    @Test
-    public void testGetterProperty()
-    {
-        PropertyReference<User, String> ref = User::getName;
-        assertEquals("name", ColumnReference.of(ref));
-    }
+	@Test
+	public void testGetterProperty()
+	{
+		PropertyReference<User, String> ref = User::getName;
+		assertEquals("name", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testBooleanGetterProperty()
-    {
-        PropertyReference<User, Boolean> ref = User::isActive;
-        assertEquals("active", ColumnReference.of(ref));
-    }
+	@Test
+	public void testBooleanGetterProperty()
+	{
+		PropertyReference<User, Boolean> ref = User::isActive;
+		assertEquals("active", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testRecordAccessorProperty()
-    {
-        PropertyReference<UserRecord, String> ref = UserRecord::name;
-        assertEquals("name", ColumnReference.of(ref));
-    }
+	@Test
+	public void testRecordAccessorProperty()
+	{
+		PropertyReference<UserRecord, String> ref = UserRecord::name;
+		assertEquals("name", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testRecordBooleanAccessorWithIsPrefix()
-    {
-        PropertyReference<UserRecord, Boolean> ref = UserRecord::isAdmin;
-        assertEquals("admin", ColumnReference.of(ref));
-    }
+	@Test
+	public void testRecordBooleanAccessorWithIsPrefix()
+	{
+		PropertyReference<UserRecord, Boolean> ref = UserRecord::isAdmin;
+		assertEquals("admin", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testEntityGetterReferenceUsesIdSuffix()
-    {
-        PropertyReference<User, Role> ref = User::getRole;
-        assertEquals("Role$id", ColumnReference.of(ref));
-    }
+	@Test
+	public void testEntityGetterReferenceUsesIdSuffix()
+	{
+		PropertyReference<User, Role> ref = User::getRole;
+		assertEquals("Role$id", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testEntityGetterReferenceUsesCustomEntityKey()
-    {
-        PropertyReference<User, Company> ref = User::getCompany;
-        assertEquals("Company$uuid", ColumnReference.of(ref));
-    }
+	@Test
+	public void testEntityGetterReferenceUsesCustomEntityKey()
+	{
+		PropertyReference<User, Company> ref = User::getCompany;
+		assertEquals("Company$uuid", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testEntityMethodWithoutGetUsesEntityReference()
-    {
-        PropertyReference<UserRecord, Company> ref = UserRecord::company;
-        assertEquals("Company$uuid", ColumnReference.of(ref));
-    }
+	@Test
+	public void testEntityMethodWithoutGetUsesEntityReference()
+	{
+		PropertyReference<UserRecord, Company> ref = UserRecord::company;
+		assertEquals("Company$uuid", ColumnReference.of(ref));
+	}
 
-    @Test
-    public void testLambdaThrows()
-    {
-        PropertyReference<User, String> ref = e -> e.getName();
-        assertThrows(IllegalArgumentException.class, () -> ColumnReference.of(ref));
-    }
+	private static class User
+	{
 
-    private static class User
-    {
+		private String name;
+		private boolean active;
+		private Role role;
+		private Company company;
 
-        private String name;
-        private boolean active;
-        private Role role;
-        private Company company;
+		public String getName()
+		{
+			return name;
+		}
 
-        public String getName()
-        {
-            return name;
-        }
+		public boolean isActive()
+		{
+			return active;
+		}
 
-        public boolean isActive()
-        {
-            return active;
-        }
+		public Role getRole()
+		{
+			return role;
+		}
 
-        public Role getRole()
-        {
-            return role;
-        }
+		public Company getCompany()
+		{
+			return company;
+		}
+	}
 
-        public Company getCompany()
-        {
-            return company;
-        }
-    }
+	@Entity("id")
+	public record Role(ID id)
+	{
+	}
 
-    @Entity
-    private static class Role
-    {
-    }
+	@Entity("uuid")
+	public record Company(String uuid)
+	{
+	}
 
-    @Entity("uuid")
-    private static class Company
-    {
-    }
-
-    private record UserRecord(String name, boolean active, boolean isAdmin, Company company)
-    {
-    }
+	public record UserRecord(String name, boolean active, boolean isAdmin, Company company)
+	{
+	}
 }
