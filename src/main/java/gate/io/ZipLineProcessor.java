@@ -1,6 +1,7 @@
 package gate.io;
 
-import gate.stream.CheckedPredicate;
+import gate.function.TryPredicate;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +13,7 @@ import java.util.zip.ZipInputStream;
 public class ZipLineProcessor extends AbstractProcessor<String>
 {
 
-	public ZipLineProcessor(String charset, CheckedPredicate<String> action)
+	public ZipLineProcessor(String charset, TryPredicate<String> action)
 	{
 		super(charset, action);
 	}
@@ -21,16 +22,16 @@ public class ZipLineProcessor extends AbstractProcessor<String>
 	public long process(InputStream is) throws IOException, InvocationTargetException
 	{
 		try (ZipInputStream stream = new ZipInputStream(is);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset)))
+			 BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset)))
 		{
 			long counter = 0;
 			for (ZipEntry entry = stream.getNextEntry();
-				entry != null;
-				entry = stream.getNextEntry())
+				 entry != null;
+				 entry = stream.getNextEntry())
 				if (!entry.isDirectory())
 					for (String line = reader.readLine();
-						line != null;
-						line = reader.readLine())
+						 line != null;
+						 line = reader.readLine())
 					{
 						try
 						{

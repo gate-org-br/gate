@@ -1,13 +1,14 @@
 package gate.handler;
 
 import gate.command.HideCommand;
-import gate.stream.CheckedStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
+import gate.function.Try;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
 @ApplicationScoped
 public class HideCommandHandler implements Handler
@@ -31,13 +32,10 @@ public class HideCommandHandler implements Handler
 			writer.write("    <body>");
 			writer.write("        <script type='module'>");
 			writer.write("                import GDialog from './gate/g-dialog.js';");
-
-			CheckedStream.of(IOException.class,
-				signal.getMessages().stream())
-				.map(e -> e.replace("'", "\""))
-				.map(e -> "alert('" + e + "');")
-				.forEach(writer::write);
-
+			signal.getMessages().stream()
+					.map(e -> e.replace("'", "\""))
+					.map(e -> "alert('" + e + "');")
+					.forEach(Try.of((String e) -> writer.write(e)));
 			writer.write("                GDialog.hide();");
 			writer.write("        </script>");
 			writer.write("    </body>");

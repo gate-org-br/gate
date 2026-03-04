@@ -1,35 +1,31 @@
 package gate.io;
 
-import gate.stream.CheckedConsumer;
-import gate.stream.CheckedPredicate;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import gate.function.TryConsumer;
+import gate.function.TryPredicate;
+
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 
 public class LineProcessor extends AbstractProcessor<String>
 {
 
-	public LineProcessor(CheckedConsumer<String> action)
+	public LineProcessor(TryConsumer<String> action)
 	{
 		super(action);
 	}
 
-	public LineProcessor(String charset, CheckedConsumer<String> action)
+	public LineProcessor(String charset, TryConsumer<String> action)
 	{
 		super(charset, action);
 	}
 
-	public LineProcessor(CheckedPredicate<String> action)
+	public LineProcessor(TryPredicate<String> action)
 	{
 		super(action);
 	}
 
-	public LineProcessor(String charset, CheckedPredicate<String> action)
+	public LineProcessor(String charset, TryPredicate<String> action)
 	{
 		super(charset, action);
 	}
@@ -55,25 +51,25 @@ public class LineProcessor extends AbstractProcessor<String>
 
 	}
 
-	public static long process(File file, String charset, CheckedPredicate<String> action) throws IOException, InvocationTargetException
+	public static long process(File file, String charset, TryPredicate<String> action) throws IOException, InvocationTargetException
 	{
-		try ( FileInputStream is = new FileInputStream(file))
+		try (FileInputStream is = new FileInputStream(file))
 		{
 			return new LineProcessor(charset, action).process(is);
 		}
 	}
 
-	public static long process(File file, CheckedPredicate<String> action) throws IOException, InvocationTargetException
+	public static long process(File file, TryPredicate<String> action) throws IOException, InvocationTargetException
 	{
-		try ( FileInputStream is = new FileInputStream(file))
+		try (FileInputStream is = new FileInputStream(file))
 		{
 			return new LineProcessor(action).process(is);
 		}
 	}
 
-	public static long process(URL url, String charset, CheckedPredicate<String> action) throws IOException, InvocationTargetException
+	public static long process(URL url, String charset, TryPredicate<String> action) throws IOException, InvocationTargetException
 	{
-		try ( InputStream is = url.openStream())
+		try (InputStream is = url.openStream())
 		{
 			return new LineProcessor(charset, action).process(is);
 		}

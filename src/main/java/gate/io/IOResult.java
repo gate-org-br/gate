@@ -1,10 +1,11 @@
 package gate.io;
 
+import gate.function.TryConsumer;
+import gate.function.TryPredicate;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
-import gate.stream.CheckedConsumer;
-import gate.stream.CheckedPredicate;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -28,12 +29,12 @@ public interface IOResult
 		return read(LineReader.getInstance());
 	}
 
-	default long processLines(CheckedPredicate<String> action) throws IOException, InvocationTargetException
+	default long processLines(TryPredicate<String> action) throws IOException, InvocationTargetException
 	{
 		return process(new LineProcessor(action));
 	}
 
-	default long processLines(CheckedConsumer<String> action) throws IOException, InvocationTargetException
+	default long processLines(TryConsumer<String> action) throws IOException, InvocationTargetException
 	{
 		return process(new LineProcessor(action));
 	}
@@ -53,12 +54,12 @@ public interface IOResult
 		return stream(inputStream -> new CSVSpliterator(inputStream));
 	}
 
-	default long processCSV(CheckedPredicate<List<String>> action) throws IOException, InvocationTargetException
+	default long processCSV(TryPredicate<List<String>> action) throws IOException, InvocationTargetException
 	{
 		return process(new CSVProcessor(action));
 	}
 
-	default long processCSV(CheckedConsumer<List<String>> action) throws IOException, InvocationTargetException
+	default long processCSV(TryConsumer<List<String>> action) throws IOException, InvocationTargetException
 	{
 		return process(new CSVProcessor(action));
 	}

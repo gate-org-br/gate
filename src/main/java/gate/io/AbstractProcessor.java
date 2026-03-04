@@ -1,26 +1,26 @@
 package gate.io;
 
-import gate.stream.CheckedConsumer;
-import gate.stream.CheckedPredicate;
+import gate.function.TryConsumer;
+import gate.function.TryPredicate;
 
 public abstract class AbstractProcessor<T> implements Processor<T>
 {
 
 	protected final String charset;
-	protected final CheckedPredicate<T> action;
+	protected final TryPredicate<T> action;
 
-	public AbstractProcessor(String charset, CheckedPredicate<T> action)
+	public AbstractProcessor(String charset, TryPredicate<T> action)
 	{
 		this.charset = charset;
 		this.action = action;
 	}
 
-	public AbstractProcessor(CheckedPredicate<T> action)
+	public AbstractProcessor(TryPredicate<T> action)
 	{
 		this("utf-8", action);
 	}
 
-	public AbstractProcessor(String charset, CheckedConsumer<T> action)
+	public AbstractProcessor(String charset, TryConsumer<T> action)
 	{
 		this.charset = charset;
 		this.action = e ->
@@ -30,7 +30,7 @@ public abstract class AbstractProcessor<T> implements Processor<T>
 		};
 	}
 
-	public AbstractProcessor(CheckedConsumer<T> action)
+	public AbstractProcessor(TryConsumer<T> action)
 	{
 		this("utf-8", action);
 	}

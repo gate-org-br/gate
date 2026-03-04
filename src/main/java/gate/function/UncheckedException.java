@@ -1,5 +1,8 @@
-package gate.stream;
+package gate.function;
 
+/**
+ * Runtime wrapper used to rethrow checked exceptions from Try* wrappers.
+ */
 public class UncheckedException extends RuntimeException
 {
 	
