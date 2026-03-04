@@ -9,6 +9,7 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -20,6 +21,8 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	private final ToByteFunction<Object> getter;
 	private final ObjByteConsumer<Object> setter;
 	private final ObjByteFunction<Object, Object> fluentSetter;
+	private final VarHandle fieldGetter;
+	private final VarHandle fieldSetter;
 
 	ByteFieldAttribute(Field field)
 	{
@@ -29,29 +32,11 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 					"ByteFieldAttribute only supports byte fields: %s.%s"
 							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
-		Method getterMethod = Reflection.findGetter(field).orElse(null);
-		getter = getterMethod != null ? createGetterLambda(getterMethod) : createFieldGetterLambda(field);
-
-		Method setterMethod = Reflection.findSetter(field).orElse(null);
-		if (setterMethod != null)
-			if (setterMethod.getReturnType() == void.class)
-			{
-				setter = createSetterLambda(setterMethod);
-				fluentSetter = null;
-			} else
-			{
-				setter = null;
-				fluentSetter = createFluentSetterLambda(setterMethod);
-			}
-		else if (Modifier.isFinal(field.getModifiers()))
-		{
-			setter = null;
-			fluentSetter = null;
-		} else
-		{
-			setter = createFieldSetterLambda(field);
-			fluentSetter = null;
-		}
+		getter = createGetterLambda();
+		fieldGetter = createFieldGetter();
+		setter = createSetterLambda();
+		fluentSetter = createFluentSetterLambda();
+		fieldSetter = createFieldSetter();
 	}
 
 	@Override
@@ -80,7 +65,13 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			return getter.applyAsByte(object);
+			if (getter != null)
+				return getter.applyAsByte(object);
+			if (fieldGetter != null)
+				return (byte) fieldGetter.get(object);
+			throw new UnsupportedOperationException(
+					"The property %s of class %s does not support reading"
+							.formatted(field.getName(), field.getDeclaringClass().getName()));
 		} catch (RuntimeException ex)
 		{
 			throw ex instanceof IllegalStateException
@@ -92,7 +83,7 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	@Override
 	public void setByte(Object object, byte value)
 	{
-		if (setter == null && fluentSetter == null)
+		if (setter == null && fluentSetter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -101,8 +92,10 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 		{
 			if (setter != null)
 				setter.accept(object, value);
-			else
+			else if (fluentSetter != null)
 				fluentSetter.apply(object, value);
+			else
+				fieldSetter.set(object, value);
 		} catch (RuntimeException ex)
 		{
 			throw ex instanceof IllegalStateException
@@ -112,10 +105,14 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ToByteFunction<Object> createGetterLambda(Method method)
+	private ToByteFunction<Object> createGetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findGetter(field).orElse(null);
+			if (method == null)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -134,10 +131,14 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ObjByteConsumer<Object> createSetterLambda(Method method)
+	private ObjByteConsumer<Object> createSetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null || method.getReturnType() != void.class)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -156,10 +157,14 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ObjByteFunction<Object, Object> createFluentSetterLambda(Method method)
+	private ObjByteFunction<Object, Object> createFluentSetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null || method.getReturnType() == void.class)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -178,46 +183,31 @@ class ByteFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ToByteFunction<Object> createFieldGetterLambda(Field field)
+	private VarHandle createFieldGetter()
 	{
 		try
 		{
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflectGetter(field);
+			if (getter != null)
+				return null;
 
-			return (ToByteFunction<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"applyAsByte",
-					MethodType.methodType(ToByteFunction.class),
-					MethodType.methodType(byte.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
+			return Reflection.findVarHandle(field);
+		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field getter lambda", ex);
+			throw new IllegalStateException("Failed to create field getter handle", ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static ObjByteConsumer<Object> createFieldSetterLambda(Field field)
+	private VarHandle createFieldSetter()
 	{
 		try
 		{
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflectSetter(field);
+			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+				return null;
 
-			return (ObjByteConsumer<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(ObjByteConsumer.class),
-					MethodType.methodType(void.class, Object.class, byte.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
+			return Reflection.findVarHandle(field);
+		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field setter lambda", ex);
+			throw new IllegalStateException("Failed to create field setter handle", ex);
 		}
 	}
 

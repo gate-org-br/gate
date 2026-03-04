@@ -2,10 +2,7 @@ package gate.lang.property;
 
 import gate.util.Reflection;
 
-import java.lang.invoke.LambdaMetafactory;
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
+import java.lang.invoke.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -19,6 +16,8 @@ class FieldAttribute extends AbstractFieldAttribute
 {
 	private static final ConcurrentHashMap<Field, FieldAttribute> CACHE = new ConcurrentHashMap<>();
 
+	private final VarHandle fieldGetter;
+	private final VarHandle fieldSetter;
 	private final Function<Object, Object> getter;
 	private final BiConsumer<Object, Object> setter;
 	private final BiFunction<Object, Object, Object> fluentSetter;
@@ -32,29 +31,11 @@ class FieldAttribute extends AbstractFieldAttribute
 	{
 		super(field);
 
-		Method getterMethod = Reflection.findGetter(field).orElse(null);
-		getter = getterMethod != null ? createGetterLambda(getterMethod) : createFieldGetterLambda(field);
-
-		Method setterMethod = Reflection.findSetter(field).orElse(null);
-		if (setterMethod != null)
-			if (setterMethod.getReturnType() == void.class)
-			{
-				setter = createSetterLambda(setterMethod);
-				fluentSetter = null;
-			} else
-			{
-				setter = null;
-				fluentSetter = createFluentSetterLambda(setterMethod);
-			}
-		else if (Modifier.isFinal(field.getModifiers()))
-		{
-			setter = null;
-			fluentSetter = null;
-		} else
-		{
-			setter = createFieldSetterLambda(field);
-			fluentSetter = null;
-		}
+		getter = createGetterLambda();
+		fieldGetter = createFieldGetter();
+		setter = createSetterLambda();
+		fluentSetter = createFluentSetterLambda();
+		fieldSetter = createFieldSetter();
 	}
 
 	@Override
@@ -62,7 +43,15 @@ class FieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			return getter.apply(object);
+			if (getter != null)
+				return getter.apply(object);
+
+			if (fieldGetter != null)
+				return fieldGetter.get(object);
+
+			throw new UnsupportedOperationException(
+					"The property %s of class %s does not support reading"
+							.formatted(field.getName(), field.getDeclaringClass().getName()));
 		} catch (RuntimeException ex)
 		{
 			throw ex instanceof IllegalStateException
@@ -74,7 +63,7 @@ class FieldAttribute extends AbstractFieldAttribute
 	@Override
 	public void setValue(Object object, Object value)
 	{
-		if (setter == null && fluentSetter == null)
+		if (setter == null && fluentSetter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -83,8 +72,10 @@ class FieldAttribute extends AbstractFieldAttribute
 		{
 			if (setter != null)
 				setter.accept(object, value);
-			else
+			else if (fluentSetter != null)
 				fluentSetter.apply(object, value);
+			else
+				fieldSetter.set(object, value);
 		} catch (RuntimeException ex)
 		{
 			throw ex instanceof IllegalStateException
@@ -105,14 +96,18 @@ class FieldAttribute extends AbstractFieldAttribute
 		return value;
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Function<Object, Object> createGetterLambda(Method method)
+	private Function<Object, Object> createGetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findGetter(field).orElse(null);
+			if (method == null)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
+			//noinspection unchecked
 			return (Function<Object, Object>) LambdaMetafactory.metafactory(
 					lookup,
 					"apply",
@@ -128,10 +123,14 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BiConsumer<Object, Object> createSetterLambda(Method method)
+	private BiConsumer<Object, Object> createSetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null || method.getReturnType() != void.class)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -150,10 +149,14 @@ class FieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static BiFunction<Object, Object, Object> createFluentSetterLambda(Method method)
+	private BiFunction<Object, Object, Object> createFluentSetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null || method.getReturnType() == void.class)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -171,49 +174,30 @@ class FieldAttribute extends AbstractFieldAttribute
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static Function<Object, Object> createFieldGetterLambda(Field field)
+	private VarHandle createFieldGetter()
 	{
 		try
 		{
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflectGetter(field);
-
-			return (Function<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
+			if (getter != null)
+				return null;
+			return Reflection.findVarHandle(field);
+		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field getter lambda", ex);
+			throw new IllegalStateException("Failed to create field getter handle", ex);
 		}
 	}
 
-	private static BiConsumer<Object, Object> createFieldSetterLambda(Field field)
+	private VarHandle createFieldSetter()
 	{
 		try
 		{
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle handle = lookup.unreflectSetter(field)
-					.asType(MethodType.methodType(void.class, Object.class, Object.class));
+			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+				return null;
 
-			return (target, value) ->
-			{
-				try
-				{
-					handle.invoke(target, value);
-				} catch (Throwable ex)
-				{
-					throw new IllegalStateException(ex.getMessage(), ex);
-				}
-			};
-		} catch (Throwable ex)
+			return Reflection.findVarHandle(field);
+		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field setter lambda", ex);
+			throw new IllegalStateException("Failed to create field setter handle", ex);
 		}
 	}
 

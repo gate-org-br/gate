@@ -9,6 +9,7 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -20,6 +21,8 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	private final ToCharFunction<Object> getter;
 	private final ObjCharConsumer<Object> setter;
 	private final ObjCharFunction<Object, Object> fluentSetter;
+	private final VarHandle fieldGetter;
+	private final VarHandle fieldSetter;
 
 	CharFieldAttribute(Field field)
 	{
@@ -29,29 +32,11 @@ class CharFieldAttribute extends AbstractFieldAttribute
 					"CharFieldAttribute only supports char fields: %s.%s"
 							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
-		Method getterMethod = Reflection.findGetter(field).orElse(null);
-		getter = getterMethod != null ? createGetterLambda(getterMethod) : createFieldGetterLambda(field);
-
-		Method setterMethod = Reflection.findSetter(field).orElse(null);
-		if (setterMethod != null)
-			if (setterMethod.getReturnType() == void.class)
-			{
-				setter = createSetterLambda(setterMethod);
-				fluentSetter = null;
-			} else
-			{
-				setter = null;
-				fluentSetter = createFluentSetterLambda(setterMethod);
-			}
-		else if (Modifier.isFinal(field.getModifiers()))
-		{
-			setter = null;
-			fluentSetter = null;
-		} else
-		{
-			setter = createFieldSetterLambda(field);
-			fluentSetter = null;
-		}
+		getter = createGetterLambda();
+		fieldGetter = createFieldGetter();
+		setter = createSetterLambda();
+		fluentSetter = createFluentSetterLambda();
+		fieldSetter = createFieldSetter();
 	}
 
 	@Override
@@ -80,7 +65,13 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			return getter.applyAsChar(object);
+			if (getter != null)
+				return getter.applyAsChar(object);
+			if (fieldGetter != null)
+				return (char) fieldGetter.get(object);
+			throw new UnsupportedOperationException(
+					"The property %s of class %s does not support reading"
+							.formatted(field.getName(), field.getDeclaringClass().getName()));
 		} catch (RuntimeException ex)
 		{
 			throw ex instanceof IllegalStateException
@@ -92,7 +83,7 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	@Override
 	public void setChar(Object object, char value)
 	{
-		if (setter == null && fluentSetter == null)
+		if (setter == null && fluentSetter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -101,8 +92,10 @@ class CharFieldAttribute extends AbstractFieldAttribute
 		{
 			if (setter != null)
 				setter.accept(object, value);
-			else
+			else if (fluentSetter != null)
 				fluentSetter.apply(object, value);
+			else
+				fieldSetter.set(object, value);
 		} catch (RuntimeException ex)
 		{
 			throw ex instanceof IllegalStateException
@@ -112,10 +105,14 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ToCharFunction<Object> createGetterLambda(Method method)
+	private ToCharFunction<Object> createGetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findGetter(field).orElse(null);
+			if (method == null)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -134,10 +131,14 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ObjCharConsumer<Object> createSetterLambda(Method method)
+	private ObjCharConsumer<Object> createSetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null || method.getReturnType() != void.class)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -156,10 +157,14 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ObjCharFunction<Object, Object> createFluentSetterLambda(Method method)
+	private ObjCharFunction<Object, Object> createFluentSetterLambda()
 	{
 		try
 		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null || method.getReturnType() == void.class)
+				return null;
+
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
@@ -178,46 +183,31 @@ class CharFieldAttribute extends AbstractFieldAttribute
 	}
 
 	@SuppressWarnings("unchecked")
-	private static ToCharFunction<Object> createFieldGetterLambda(Field field)
+	private VarHandle createFieldGetter()
 	{
 		try
 		{
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflectGetter(field);
+			if (getter != null)
+				return null;
 
-			return (ToCharFunction<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"applyAsChar",
-					MethodType.methodType(ToCharFunction.class),
-					MethodType.methodType(char.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
+			return Reflection.findVarHandle(field);
+		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field getter lambda", ex);
+			throw new IllegalStateException("Failed to create field getter handle", ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private static ObjCharConsumer<Object> createFieldSetterLambda(Field field)
+	private VarHandle createFieldSetter()
 	{
 		try
 		{
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflectSetter(field);
+			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+				return null;
 
-			return (ObjCharConsumer<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(ObjCharConsumer.class),
-					MethodType.methodType(void.class, Object.class, char.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
+			return Reflection.findVarHandle(field);
+		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field setter lambda", ex);
+			throw new IllegalStateException("Failed to create field setter handle", ex);
 		}
 	}
 

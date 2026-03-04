@@ -226,4 +226,10 @@ public interface Attribute
 	{
 		return Converter.getConverter(getRawType());
 	}
+
+	default boolean matches(Parameter parameter)
+	{
+		return toString().equals(parameter.getName())
+				&& parameter.getType().isAssignableFrom(getRawType());
+	}
 }

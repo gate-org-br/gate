@@ -10,8 +10,9 @@ import gate.handler.FormHandler;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
-import gate.stream.CheckedStream;
 import gate.type.collections.StringList;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class Form implements Serializable
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private List<Field> fields;
@@ -56,7 +58,7 @@ public class Form implements Serializable
 
 	public static Form valueOf(JsonArray json) throws ConversionException
 	{
-		return new Form().setFields(CheckedStream.of(ConversionException.class, json.stream())
+		return new Form().setFields(json.stream()
 				.map(e -> (JsonObject) e)
 				.map(Field::parse)
 				.collect(Collectors.toList()));
@@ -67,8 +69,8 @@ public class Form implements Serializable
 		return new Form().setFields(json
 				.entrySet().stream()
 				.map(e -> new Field()
-				.setName(e.getKey())
-				.setValue(new StringList(e.getValue().toString())))
+						.setName(e.getKey())
+						.setValue(new StringList(e.getValue().toString())))
 				.collect(Collectors.toList()));
 	}
 
@@ -84,7 +86,7 @@ public class Form implements Serializable
 
 	public JsonArray toJson()
 	{
-		return getFields().stream().map(e -> e.toJson())
+		return getFields().stream().map(Field::toJson)
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
@@ -95,7 +97,7 @@ public class Form implements Serializable
 	}
 
 	public static Map<String, Map<String, Long>>
-			getStatistics(List<Form> forms)
+	getStatistics(List<Form> forms)
 	{
 		return forms.stream()
 				.flatMap(e -> e.getFields().stream())
@@ -111,7 +113,7 @@ public class Form implements Serializable
 		return getFields().stream()
 				.filter(e -> id.equals(e.getId()))
 				.findAny()
-				.map(e -> e.getValue())
+				.map(Field::getValue)
 				.orElseGet(StringList::new);
 	}
 
@@ -120,8 +122,7 @@ public class Form implements Serializable
 		var value = getValues(id);
 		if (value.isEmpty())
 			return Optional.empty();
-		return Optional.of(value.stream()
-				.collect(Collectors.joining("\n")));
+		return Optional.of(String.join("\n", value));
 	}
 
 	public Form add(Field field)
