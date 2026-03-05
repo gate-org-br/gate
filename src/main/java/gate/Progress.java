@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Progress implements Heartbeat
@@ -142,13 +139,9 @@ public class Progress implements Heartbeat
 		return state.toString();
 	}
 
-	private static Progress current()
+	private static Optional<Progress> current()
 	{
-		Progress progress = CURRENT.get();
-		if (progress == null)
-			throw new IllegalStateException(
-					"Progress not bound to current thread");
-		return progress;
+		return Optional.ofNullable(CURRENT.get());
 	}
 
 	/**
@@ -170,13 +163,15 @@ public class Progress implements Heartbeat
 	public static void startup(long todo, String text)
 	{
 		Objects.requireNonNull(text);
-		Progress progress = current();
-		State state = progress.state;
-		if (Status.COMMITED.equals(state.status)
-				|| Status.CANCELED.equals(state.status))
-			throw new IllegalStateException("Attempt to startup finished task");
-		progress.update(Status.PENDING, todo, 0, text)
-				.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (Status.COMMITED.equals(state.status)
+					|| Status.CANCELED.equals(state.status))
+				throw new IllegalStateException("Attempt to startup finished task");
+			progress.update(Status.PENDING, todo, 0, text)
+					.dispatch(progress.toString());
+		});
 	}
 
 	/**
@@ -186,10 +181,12 @@ public class Progress implements Heartbeat
 	 */
 	public static void message(String message)
 	{
-		Progress progress = current();
-		State state = progress.state;
-		progress.update(state.status, state.todo, state.done, message)
-				.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			progress.update(state.status, state.todo, state.done, message)
+					.dispatch(progress.toString());
+		});
 	}
 
 	/**
@@ -201,13 +198,15 @@ public class Progress implements Heartbeat
 	{
 		if (step <= 0)
 			throw new IllegalArgumentException("Step must be a whole positive number");
-		Progress progress = current();
-		State state = progress.state;
-		if (Status.PENDING != state.status)
-			throw new IllegalStateException("Attempt to update non pending task");
-		progress.update(state.status, state.todo, state.done + 1, state.text);
-		if (progress.state.done % step == 0)
-			progress.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (Status.PENDING != state.status)
+				throw new IllegalStateException("Attempt to update non pending task");
+			progress.update(state.status, state.todo, state.done + 1, state.text);
+			if (progress.state.done % step == 0)
+				progress.dispatch(progress.toString());
+		});
 	}
 
 	/**
@@ -215,16 +214,18 @@ public class Progress implements Heartbeat
 	 */
 	public static void updatePercentage()
 	{
-		Progress progress = current();
-		State state = progress.state;
-		if (Status.PENDING != state.status)
-			throw new IllegalStateException("Attempt to update non pending task");
-		if (state.todo == UNKNOWN)
-			throw new IllegalStateException("updatePercentage requires a known todo size");
-		progress.update(state.status, state.todo, state.done + 1, state.text);
-		state = progress.state;
-		if (state.done % Math.max(Math.floorDiv(state.todo, 100), 1) == 0)
-			progress.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (Status.PENDING != state.status)
+				throw new IllegalStateException("Attempt to update non pending task");
+			if (state.todo == UNKNOWN)
+				throw new IllegalStateException("updatePercentage requires a known todo size");
+			progress.update(state.status, state.todo, state.done + 1, state.text);
+			state = progress.state;
+			if (state.done % Math.max(Math.floorDiv(state.todo, 100), 1) == 0)
+				progress.dispatch(progress.toString());
+		});
 	}
 
 	/**
@@ -232,9 +233,8 @@ public class Progress implements Heartbeat
 	 */
 	public static void update()
 	{
-		Progress progress = current();
-		State state = progress.state;
-		update(state.done + 1, state.text);
+		current().map(e -> e.state)
+				.ifPresent(state -> update(state.done + 1, state.text));
 	}
 
 	/**
@@ -244,9 +244,8 @@ public class Progress implements Heartbeat
 	 */
 	public static void update(long done)
 	{
-		Progress progress = current();
-		State state = progress.state;
-		update(done, state.text);
+		current().map(e -> e.state)
+				.ifPresent(state -> update(done, state.text));
 	}
 
 	/**
@@ -256,9 +255,9 @@ public class Progress implements Heartbeat
 	 */
 	public static void update(String text)
 	{
-		Progress progress = current();
-		State state = progress.state;
-		update(state.done + 1, text);
+		current().map(e -> e.state)
+				.ifPresent(state -> update(state.done + 1, text));
+
 	}
 
 	/**
@@ -269,12 +268,14 @@ public class Progress implements Heartbeat
 	 */
 	public static void update(long done, String text)
 	{
-		Progress progress = current();
-		State state = progress.state;
-		if (!Status.PENDING.equals(state.status))
-			throw new IllegalStateException("Attempt to update non pending task");
-		progress.update(state.status, state.todo, done, text)
-				.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (!Status.PENDING.equals(state.status))
+				throw new IllegalStateException("Attempt to update non pending task");
+			progress.update(state.status, state.todo, done, text)
+					.dispatch(progress.toString());
+		});
 	}
 
 	/**
@@ -285,12 +286,14 @@ public class Progress implements Heartbeat
 	public static void commit(String text)
 	{
 		Objects.requireNonNull(text);
-		Progress progress = current();
-		State state = progress.state;
-		if (!Status.PENDING.equals(state.status))
-			throw new IllegalStateException("Attempt to commit non pending task");
-		progress.update(Status.COMMITED, state.todo, state.done, text)
-				.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (!Status.PENDING.equals(state.status))
+				throw new IllegalStateException("Attempt to commit non pending task");
+			progress.update(Status.COMMITED, state.todo, state.done, text)
+					.dispatch(progress.toString());
+		});
 	}
 
 	/**
@@ -301,12 +304,14 @@ public class Progress implements Heartbeat
 	public static void cancel(String text)
 	{
 		Objects.requireNonNull(text);
-		Progress progress = current();
-		State state = progress.state;
-		if (!Status.PENDING.equals(state.status))
-			throw new IllegalStateException("Attempt to cancel non pending task");
-		progress.update(Status.CANCELED, state.todo, state.done, text)
-				.dispatch(progress.toString());
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (!Status.PENDING.equals(state.status))
+				throw new IllegalStateException("Attempt to cancel non pending task");
+			progress.update(Status.CANCELED, state.todo, state.done, text)
+					.dispatch(progress.toString());
+		});
 	}
 
 	static Progress create(User user, Writer writer)
@@ -321,8 +326,9 @@ public class Progress implements Heartbeat
 
 	static void finish()
 	{
-		Progress progress = current();
-		INSTANCES.remove(progress.uuid);
+		current()
+				.map(progress -> progress.uuid)
+				.ifPresent(INSTANCES::remove);
 		CURRENT.remove();
 	}
 
