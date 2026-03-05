@@ -1,6 +1,8 @@
 package gate;
 
+import gate.entity.User;
 import gate.lang.json.JsonObject;
+import gate.type.ID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,311 +10,348 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Progress implements Heartbeat
 {
 
-    private static final int UNKNOWN = -1;
-    private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
-    private static final Logger LOGGER = LoggerFactory.getLogger(Progress.class);
+	private static final int UNKNOWN = -1;
+	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
+	private static final Logger LOGGER = LoggerFactory.getLogger(Progress.class);
+	private final Writer writer;
+	private volatile State state = State.DEFAULT;
+	private final ID user;
+	private final String uuid;
 
-    private long todo = UNKNOWN;
-    private long done = UNKNOWN;
-    private final Writer writer;
-    private String text = "Aguarde";
-    private volatile Status status = Status.CREATED;
+	private static final Map<String, Progress> INSTANCES = new ConcurrentHashMap<>();
 
-    public enum Status
-    {
-        CREATED, PENDING, COMMITED, CANCELED, DISCONNECTED
-    }
+	public record State(Status status, long todo, long done, String text)
+	{
+		public static final State UNKNOWN = new State(Status.UNKNOWN, Progress.UNKNOWN, Progress.UNKNOWN, "");
+		public static final State DEFAULT = new State(Status.CREATED, Progress.UNKNOWN, Progress.UNKNOWN, "");
 
-    private Progress(Writer writer)
-    {
-        this.writer = writer;
-    }
+		@Override
+		public String toString()
+		{
+			return new JsonObject()
+					.setLong("todo", todo)
+					.setLong("done", done)
+					.setString("text", text)
+					.setString("event", "Progress")
+					.setString("status", status.name())
+					.toString();
+		}
+	}
 
-    private Progress update(Status status, long todo,
-                            long done, String text)
-    {
-        this.todo = todo;
-        this.done = done;
-        this.text = text;
-        this.status = status;
-        return this;
-    }
+	public enum Status
+	{
+		CREATED, PENDING, COMMITED, CANCELED, DISCONNECTED, UNKNOWN
+	}
 
-    private synchronized void dispatch(String type, String message)
-    {
-        if (this.status != Status.DISCONNECTED)
-        {
-            try
-            {
-                writer.write("event: %s\n".formatted(type));
-                writer.write("data: " + Base64.getEncoder()
-                        .encodeToString(message
-                                .getBytes(StandardCharsets.UTF_8))
-                        + "\n\n");
-                writer.flush();
-            } catch (IOException ex)
-            {
-                this.status = Status.DISCONNECTED;
-                LOGGER.info(ex.getMessage(), ex);
-            }
-        }
-    }
+	private Progress(ID user, Writer writer)
+	{
+		this.writer = writer;
+		this.user = user;
+		uuid = UUID.randomUUID().toString();
+		INSTANCES.put(uuid, this);
+	}
 
-    private void dispatch(String message)
-    {
-        dispatch("Progress", message);
-    }
+	private Progress update(Status status, long todo,
+							long done, String text)
+	{
+		this.state = new State(status, todo, done, text);
+		return this;
+	}
 
-    public synchronized void close()
-    {
-        if (this.status != Status.DISCONNECTED)
-        {
-            try
-            {
-                writer.write("event: close\n");
-                writer.write("data: Connection closed by server\n\n");
-                writer.flush();
-            } catch (IOException ex)
-            {
-                this.status = Status.DISCONNECTED;
-                LOGGER.info(ex.getMessage(), ex);
-            }
-        }
-    }
+	private synchronized void dispatch(String type, String message)
+	{
+		if (state.status() != Status.DISCONNECTED)
+		{
+			try
+			{
+				writer.write("event: %s\n".formatted(type));
+				writer.write("data: " + Base64.getEncoder()
+						.encodeToString(message
+								.getBytes(StandardCharsets.UTF_8))
+						+ "\n\n");
+				writer.flush();
+			} catch (IOException ex)
+			{
+				State state = this.state;
+				update(Status.DISCONNECTED, state.todo, state.done, state.text);
+				LOGGER.info(ex.getMessage(), ex);
+			}
+		}
+	}
 
-    public void result(String contentType,
-                       String filename,
-                       String data)
-    {
-        dispatch("Result", new JsonObject()
-                .setString("contentType", contentType)
-                .setString("filename", filename)
-                .setString("data", data)
-                .toString());
-    }
+	private void dispatch(String message)
+	{
+		dispatch("Progress", message);
+	}
 
-    public void redirect(String url)
-    {
-        dispatch("Redirect", new JsonObject()
-                .setString("url", url)
-                .toString());
-    }
+	public void close()
+	{
+		dispatch("close", "Connection closed");
+	}
 
-    void abort(String message)
-    {
-        if (status == Progress.Status.PENDING
-                || status == Progress.Status.CREATED)
-            update(Status.CANCELED, todo, done, message);
-        else
-            update(status, todo, done, message);
-        dispatch(this.toString());
+	public void result(String contentType,
+					   String filename,
+					   String data)
+	{
+		dispatch("Result", new JsonObject()
+				.setString("contentType", contentType)
+				.setString("filename", filename)
+				.setString("data", data)
+				.toString());
+	}
 
-        dispatch("Failure", new JsonObject()
-                .setString("message", message)
-                .toString());
-        close();
-    }
+	public void redirect(String url)
+	{
+		dispatch("Redirect", new JsonObject()
+				.setString("url", url)
+				.toString());
+	}
 
-    @Override
-    public String toString()
-    {
-        return new JsonObject()
-                .setLong("todo", todo)
-                .setLong("done", done)
-                .setString("text", text)
-                .setString("event", "Progress")
-                .setString("status", status.name())
-                .toString();
-    }
+	void abort(String message)
+	{
+		State state = this.state;
+		if (state.status == Progress.Status.PENDING
+				|| state.status == Progress.Status.CREATED)
+			update(Status.CANCELED, state.todo, state.done, message);
+		else
+			update(state.status, state.todo, state.done, message);
+		dispatch(this.toString());
 
-    private static Progress current()
-    {
-        Progress progress = CURRENT.get();
-        if (progress == null)
-            throw new IllegalStateException(
-                    "Progress not bound to current thread");
-        return progress;
-    }
+		dispatch("Failure", new JsonObject()
+				.setString("message", message)
+				.toString());
+		close();
+	}
 
-    /**
-     * Initiates a new task of indeterminate size.
-     *
-     * @param text description of the task being initiated
-     */
-    public static void startup(String text)
-    {
-        startup(UNKNOWN, text);
-    }
+	public String uuid()
+	{
+		return uuid;
+	}
 
-    /**
-     * Initiates a new task.
-     *
-     * @param todo size of the task being initiated
-     * @param text description of the task being initiated
-     */
-    public static void startup(long todo, String text)
-    {
-        Objects.requireNonNull(text);
-        Progress progress = current();
-        if (Status.COMMITED.equals(progress.status)
-                || Status.CANCELED.equals(progress.status))
-            throw new IllegalStateException("Attempt to startup finished task");
-        progress.update(Status.PENDING, todo, 0, text)
-                .dispatch(progress.toString());
-    }
+	@Override
+	public String toString()
+	{
+		return state.toString();
+	}
 
-    /**
-     * Display a message without updating progress.
-     *
-     * @param message message to be displayed
-     */
-    public static void message(String message)
-    {
-        Progress progress = current();
-        progress.update(progress.status, progress.todo, progress.done, message)
-                .dispatch(progress.toString());
-    }
+	private static Progress current()
+	{
+		Progress progress = CURRENT.get();
+		if (progress == null)
+			throw new IllegalStateException(
+					"Progress not bound to current thread");
+		return progress;
+	}
 
-    /**
-     * Increments the progress of the current task.
-     *
-     * @param step number of records to be processed before each notification
-     */
-    public static void updateForEach(int step)
-    {
-        Progress progress = current();
-        if (!Status.PENDING.equals(progress.status))
-            throw new IllegalStateException("Attempt to update non pending task");
-        progress.update(progress.status, progress.todo, progress.done + 1, progress.text);
-        if (progress.done % step == 0)
-            progress.dispatch(progress.toString());
-    }
+	/**
+	 * Initiates a new task of indeterminate size.
+	 *
+	 * @param text description of the task being initiated
+	 */
+	public static void startup(String text)
+	{
+		startup(UNKNOWN, text);
+	}
 
-    /**
-     * Increments the progress for each one percent.
-     */
-    public static void updatePercentage()
-    {
-        Progress progress = current();
-        if (!Status.PENDING.equals(progress.status))
-            throw new IllegalStateException("Attempt to update non pending task");
-        if (progress.todo == UNKNOWN)
-            throw new IllegalStateException("updatePercentage requires a known todo size");
-        progress.update(progress.status, progress.todo, progress.done + 1, progress.text);
-        if (progress.done % Math.max(Math.floorDiv(progress.todo, 100), 1) == 0)
-            progress.dispatch(progress.toString());
-    }
+	/**
+	 * Initiates a new task.
+	 *
+	 * @param todo size of the task being initiated
+	 * @param text description of the task being initiated
+	 */
+	public static void startup(long todo, String text)
+	{
+		Objects.requireNonNull(text);
+		Progress progress = current();
+		State state = progress.state;
+		if (Status.COMMITED.equals(state.status)
+				|| Status.CANCELED.equals(state.status))
+			throw new IllegalStateException("Attempt to startup finished task");
+		progress.update(Status.PENDING, todo, 0, text)
+				.dispatch(progress.toString());
+	}
 
-    /**
-     * Increments the progress of the current task.
-     */
-    public static void update()
-    {
-        Progress progress = current();
-        update(progress.done + 1, progress.text);
-    }
+	/**
+	 * Display a message without updating progress.
+	 *
+	 * @param message message to be displayed
+	 */
+	public static void message(String message)
+	{
+		Progress progress = current();
+		State state = progress.state;
+		progress.update(state.status, state.todo, state.done, message)
+				.dispatch(progress.toString());
+	}
 
-    /**
-     * Updates the progress of the current task.
-     *
-     * @param done new progress of the current task
-     */
-    public static void update(long done)
-    {
-        Progress progress = current();
-        update(done, progress.text);
-    }
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param step number of records to be processed before each notification
+	 */
+	public static void updateForEach(int step)
+	{
+		if (step <= 0)
+			throw new IllegalArgumentException("Step must be a whole positive number");
+		Progress progress = current();
+		State state = progress.state;
+		if (Status.PENDING != state.status)
+			throw new IllegalStateException("Attempt to update non pending task");
+		progress.update(state.status, state.todo, state.done + 1, state.text);
+		if (progress.state.done % step == 0)
+			progress.dispatch(progress.toString());
+	}
 
-    /**
-     * Increments the progress of the current task.
-     *
-     * @param text description of the progress made
-     */
-    public static void update(String text)
-    {
-        Progress progress = current();
-        update(progress.done + 1, text);
-    }
+	/**
+	 * Increments the progress for each one percent.
+	 */
+	public static void updatePercentage()
+	{
+		Progress progress = current();
+		State state = progress.state;
+		if (Status.PENDING != state.status)
+			throw new IllegalStateException("Attempt to update non pending task");
+		if (state.todo == UNKNOWN)
+			throw new IllegalStateException("updatePercentage requires a known todo size");
+		progress.update(state.status, state.todo, state.done + 1, state.text);
+		state = progress.state;
+		if (state.done % Math.max(Math.floorDiv(state.todo, 100), 1) == 0)
+			progress.dispatch(progress.toString());
+	}
 
-    /**
-     * Increments the progress of the current task.
-     *
-     * @param done new progress of the current task
-     * @param text description of the progress made
-     */
-    public static void update(long done, String text)
-    {
-        Progress progress = current();
-        if (!Status.PENDING.equals(progress.status))
-            throw new IllegalStateException("Attempt to update non pending task");
-        progress.update(progress.status, progress.todo, done, text)
-                .dispatch(progress.toString());
-    }
+	/**
+	 * Increments the progress of the current task.
+	 */
+	public static void update()
+	{
+		Progress progress = current();
+		State state = progress.state;
+		update(state.done + 1, state.text);
+	}
 
-    /**
-     * Conclude the task being executed
-     *
-     * @param text message indicating success
-     */
-    public static void commit(String text)
-    {
-        Objects.requireNonNull(text);
-        Progress progress = current();
-        if (!Status.PENDING.equals(progress.status))
-            throw new IllegalStateException("Attempt to commit non pending task");
-        progress.update(Status.COMMITED, progress.todo, progress.done, text)
-                .dispatch(progress.toString());
-    }
+	/**
+	 * Updates the progress of the current task.
+	 *
+	 * @param done new progress of the current task
+	 */
+	public static void update(long done)
+	{
+		Progress progress = current();
+		State state = progress.state;
+		update(done, state.text);
+	}
 
-    /**
-     * Cancel the task being executed
-     *
-     * @param text reason for the cancellation
-     */
-    public static void cancel(String text)
-    {
-        Objects.requireNonNull(text);
-        Progress progress = current();
-        if (!Status.PENDING.equals(progress.status))
-            throw new IllegalStateException("Attempt to cancel non pending task");
-        progress.update(Status.CANCELED, progress.todo, progress.done, text)
-                .dispatch(progress.toString());
-    }
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param text description of the progress made
+	 */
+	public static void update(String text)
+	{
+		Progress progress = current();
+		State state = progress.state;
+		update(state.done + 1, text);
+	}
 
-    static Progress create(Writer writer)
-    {
-        Progress progress = new Progress(writer);
-        CURRENT.set(progress);
-        return progress;
-    }
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param done new progress of the current task
+	 * @param text description of the progress made
+	 */
+	public static void update(long done, String text)
+	{
+		Progress progress = current();
+		State state = progress.state;
+		if (!Status.PENDING.equals(state.status))
+			throw new IllegalStateException("Attempt to update non pending task");
+		progress.update(state.status, state.todo, done, text)
+				.dispatch(progress.toString());
+	}
 
-    static void finish()
-    {
-        CURRENT.remove();
-    }
+	/**
+	 * Conclude the task being executed
+	 *
+	 * @param text message indicating success
+	 */
+	public static void commit(String text)
+	{
+		Objects.requireNonNull(text);
+		Progress progress = current();
+		State state = progress.state;
+		if (!Status.PENDING.equals(state.status))
+			throw new IllegalStateException("Attempt to commit non pending task");
+		progress.update(Status.COMMITED, state.todo, state.done, text)
+				.dispatch(progress.toString());
+	}
 
-    @Override
-    public synchronized boolean heartbeat()
-    {
-        if (status == Status.COMMITED
-                || status == Status.CANCELED
-                || status == Status.DISCONNECTED)
-            return false;
+	/**
+	 * Cancel the task being executed
+	 *
+	 * @param text reason for the cancellation
+	 */
+	public static void cancel(String text)
+	{
+		Objects.requireNonNull(text);
+		Progress progress = current();
+		State state = progress.state;
+		if (!Status.PENDING.equals(state.status))
+			throw new IllegalStateException("Attempt to cancel non pending task");
+		progress.update(Status.CANCELED, state.todo, state.done, text)
+				.dispatch(progress.toString());
+	}
 
-        try
-        {
-            writer.write(": heartbeat\n\n");
-            writer.flush();
-            return true;
-        } catch (IOException ex)
-        {
-            status = Status.DISCONNECTED;
-            return false;
-        }
-    }
+	static Progress create(User user, Writer writer)
+	{
+		ID id = user != null && user.getId() != null
+				? user.getId() : ID.valueOf(0);
+		Progress progress = new Progress(id, writer);
+		progress.dispatch("UUID", progress.uuid);
+		CURRENT.set(progress);
+		return progress;
+	}
+
+	static void finish()
+	{
+		Progress progress = current();
+		INSTANCES.remove(progress.uuid);
+		CURRENT.remove();
+	}
+
+	static State get(ID user, String uuid)
+	{
+		var progress = INSTANCES.get(uuid);
+		if (progress == null
+				|| !Objects.equals(progress.user, user))
+			return State.UNKNOWN;
+		return progress.state;
+	}
+
+	@Override
+	public synchronized boolean heartbeat()
+	{
+		if (state.status == Status.COMMITED
+				|| state.status == Status.CANCELED
+				|| state.status == Status.DISCONNECTED)
+			return false;
+
+		try
+		{
+			writer.write(": heartbeat\n\n");
+			writer.flush();
+			return true;
+		} catch (IOException ex)
+		{
+			update(Status.DISCONNECTED, state.todo, state.done, state.text);
+			return false;
+		}
+	}
 }
