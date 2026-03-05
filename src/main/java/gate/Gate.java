@@ -80,6 +80,9 @@ public class Gate extends HttpServlet
     @RequestScoped
     Instance<User> userInstance;
 
+    @Inject
+    HeartbeatRegistry heartbeatRegistry;
+
     static
     {
         Locale.setDefault(new Locale("pt", "BR"));
@@ -165,7 +168,7 @@ public class Gate extends HttpServlet
             }
 
             if (call.getMethod().isAnnotationPresent(Asynchronous.class))
-                executeAsync(request, response, screen, call.getMethod());
+                executeAsync(user, request, response, screen, call.getMethod());
             else
                 execute(httpServletRequest, response, screen, call.getMethod());
 
@@ -213,7 +216,7 @@ public class Gate extends HttpServlet
         }
     }
 
-    private void executeAsync(ScreenServletRequest request, HttpServletResponse response,
+    private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
                               Screen screen, Method method)
     {
 		response.setContentLengthLong(-1);
@@ -229,9 +232,11 @@ public class Gate extends HttpServlet
 
         Runnable contextualTask = threadContext.contextualRunnable(() ->
         {
+            Progress progress = null;
             try (Writer writer = response.getWriter())
             {
-                Progress progress = Progress.create(writer);
+                progress = Progress.create(user, writer);
+                heartbeatRegistry.register(progress);
                 try
                 {
                     Object result = screen.execute(method);
@@ -257,6 +262,8 @@ public class Gate extends HttpServlet
                 logger.error(ex.getMessage(), ex);
             } finally
             {
+                if (progress != null)
+                    heartbeatRegistry.unregister(progress);
                 Progress.finish();
                 TempFile.cleanup();
                 asyncContext.complete();

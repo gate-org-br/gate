@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-class SSEClient
+class SSEClient implements Heartbeat
 {
     private final User subject;
     private ServletOutputStream out;
@@ -21,7 +21,7 @@ class SSEClient
         this.asyncContext = asyncContext;
     }
 
-    synchronized void send(AppEvent event)
+    synchronized boolean send(AppEvent event)
     {
         if (event.checkAccess(subject))
         {
@@ -39,20 +39,25 @@ class SSEClient
                 out.println();
                 out.flush();
                 asyncContext.getResponse().flushBuffer();
+                return true;
             } catch (IOException | RuntimeException ex)
             {
                 asyncContext.complete();
+                return false;
             }
         }
+        return true;
     }
 
-    synchronized boolean heartbeat()
+    @Override
+    public synchronized boolean heartbeat()
     {
         try
         {
             if (out == null)
                 out = asyncContext.getResponse().getOutputStream();
-            out.print(": heartbeat\n\n");
+            out.println(": heartbeat");
+            out.println();
             out.flush();
             return true;
         } catch (Exception e)
