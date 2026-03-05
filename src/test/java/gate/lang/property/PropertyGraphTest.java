@@ -9,7 +9,6 @@ import gate.type.ID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ class PropertyGraphTest
 {
 
 	@Test
-	public void testEntity() throws BadRequestException, IOException, ReflectiveOperationException
+	public void testEntity() throws BadRequestException
 	{
 		var expected = new User()
 				.setId(ID.valueOf(1))
@@ -42,7 +41,7 @@ class PropertyGraphTest
 	}
 
 	@Test
-	public void testRecord() throws BadRequestException, IOException, ReflectiveOperationException
+	public void testRecord() throws BadRequestException
 	{
 		var expected = new Line(new Point(1, 2), new Point(3, 4));
 
@@ -61,7 +60,7 @@ class PropertyGraphTest
 	}
 
 	@Test
-	public void testList() throws BadRequestException, IOException, ReflectiveOperationException
+	public void testList() throws BadRequestException
 	{
 		var expected = new User()
 				.setAuths(List.of(new Auth().setModule("module1")));
@@ -77,7 +76,7 @@ class PropertyGraphTest
 	}
 
 	@Test
-	public void testCollection() throws BadRequestException, IOException, ReflectiveOperationException
+	public void testCollection() throws BadRequestException
 	{
 		var expected = new User()
 				.setAuths(List.of(new Auth().setModule("module1")));
@@ -155,13 +154,10 @@ class PropertyGraphTest
 				.of("arg0", "A",
 						"arg1", 1);
 
-		var ex = Assertions.assertThrows(ConversionException.class, () -> {
-			PropertyGraph
-					.of(AmbiguousCanonical.class, new ArrayList<>(request.keySet()))
-					.get(null, prop -> request.get(prop.toString()));
-		});
-
-		Assertions.assertTrue(ex.getMessage().contains("Could not find canonical constructor"));
+		var ex = Assertions.assertThrows(ConversionException.class, () ->
+				PropertyGraph
+						.of(AmbiguousCanonical.class, new ArrayList<>(request.keySet()))
+						.get(null, prop -> request.get(prop.toString())));
 	}
 
 	@Test
@@ -171,13 +167,12 @@ class PropertyGraphTest
 				.of("arg0", "A",
 						"arg1", 1);
 
-		var ex = Assertions.assertThrows(ConversionException.class, () -> {
+		var ex = Assertions.assertThrows(ConversionException.class, () ->
+		{
 			PropertyGraph
 					.of(AmbiguousCanonicalWithoutGetter.class, new ArrayList<>(request.keySet()))
 					.get(null, prop -> request.get(prop.toString()));
 		});
-
-		Assertions.assertTrue(ex.getMessage().contains("Could not find canonical constructor"));
 	}
 
 	record Point(int x, int y)

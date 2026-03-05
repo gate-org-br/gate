@@ -5,6 +5,24 @@ import java.util.concurrent.*;
 
 public class ObjectFactory
 {
+	public static boolean canCreate(Class<?> type)
+	{
+		return type == List.class
+				|| type == Set.class
+				|| type == Map.class
+				|| type == ConcurrentMap.class
+				|| type == Queue.class
+				|| type == Deque.class
+				|| type == SortedSet.class
+				|| type == NavigableSet.class
+				|| type == SortedMap.class
+				|| type == NavigableMap.class
+				|| type == BlockingQueue.class
+				|| type == BlockingDeque.class
+				|| Arrays.stream(type.getDeclaredConstructors())
+				.anyMatch(c -> c.getParameterCount() == 0);
+	}
+
 	public static Object create(Class<?> type) throws ReflectiveOperationException
 	{
 		if (type == List.class)
