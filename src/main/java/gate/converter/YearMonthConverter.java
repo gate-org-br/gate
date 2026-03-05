@@ -42,19 +42,19 @@ public class YearMonthConverter implements Converter
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return FORMATTTER.format((YearMonth) object);
+		return object != null ? FORMATTTER.format((YearMonth) object) : "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object)
 	{
-		return FORMATTTER.format((YearMonth) object);
+		return object != null ? FORMATTTER.format((YearMonth) object) : "";
 	}
 
 	@Override
 	public String toText(Class<?> type, Object object, String format)
 	{
-		return DateTimeFormatter.ofPattern(format).format((YearMonth) object);
+		return object != null ? DateTimeFormatter.ofPattern(format).format((YearMonth) object) : "";
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class YearMonthConverter implements Converter
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index,
-		Class<?> type) throws SQLException
+									Class<?> type) throws SQLException
 	{
 		LocalDate localDate = rs.getObject(index, LocalDate.class);
 		return localDate != null ? YearMonth.of(localDate.getYear(), localDate.getMonth()) : null;

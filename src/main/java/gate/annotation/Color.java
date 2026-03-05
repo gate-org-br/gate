@@ -36,9 +36,8 @@ public @interface Color
 				else if (Boolean.FALSE.equals(element))
 					return Optional.of("#660000");
 
-				if (element instanceof String)
+				if (element instanceof String string)
 				{
-					String string = (String) element;
 					if (PATTERN.matcher(string).matches())
 						return Optional.of(string);
 
@@ -52,9 +51,8 @@ public @interface Color
 				if (element instanceof Enum<?>)
 					return extract(element.getClass().getField(((Enum<?>) element).name()));
 
-				if (element instanceof AnnotatedElement)
+				if (element instanceof AnnotatedElement annotatedElement)
 				{
-					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Color.class))
 						return Optional.of(annotatedElement.getAnnotation(Color.class).value());
 					if (annotatedElement.isAnnotationPresent(CopyColor.class))
