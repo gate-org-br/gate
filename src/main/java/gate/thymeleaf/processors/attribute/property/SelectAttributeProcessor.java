@@ -48,7 +48,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
 		else
-			throw new TemplateInputException("No option defined for property " + property.toString());
+			options = List.of();
 
 		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression.create()::comparator).orElse(null);
 		if (comparator != null)

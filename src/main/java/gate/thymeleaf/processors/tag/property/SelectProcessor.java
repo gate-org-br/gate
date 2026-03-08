@@ -44,7 +44,7 @@ public class SelectProcessor extends PropertyProcessor
 		else if (Enum.class.isAssignableFrom(property.getRawType()))
 			options = property.getRawType().getEnumConstants();
 		else
-			throw new TemplateInputException("No option defined for property " + property.toString());
+			options = List.of();
 
 		String sortby = (String) attributes.remove("sortby");
 		if (sortby != null)
@@ -77,16 +77,15 @@ public class SelectProcessor extends PropertyProcessor
 		if (groups != null)
 		{
 			Toolkit.stream(options)
-				.collect(Collectors.groupingBy(groups,
-					LinkedHashMap::new,
-					Collectors.toList()))
-				.entrySet()
-				.forEach(group ->
-				{
-					string.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
-					print(0, string, group.getValue(), labels, values, children, value);
-					string.add("</optgroup>");
-				});
+					.collect(Collectors.groupingBy(groups,
+							LinkedHashMap::new,
+							Collectors.toList()))
+					.forEach((key, value1) ->
+					{
+						string.add("<optgroup label='" + Converter.toText(key) + "'>");
+						print(0, string, value1, labels, values, children, value);
+						string.add("</optgroup>");
+					});
 		} else
 			print(0, string, Toolkit.iterable(options), labels, values, children, property.getValue(screen));
 
