@@ -1,7 +1,5 @@
 package gate.producer;
 
-import gate.CookieFactory;
-import gate.Gate;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.error.AuthenticationException;
@@ -15,7 +13,6 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 public class UserProducer
 {
@@ -24,10 +21,9 @@ public class UserProducer
 	@RequestScoped
 	@Named(value = "user")
 	public User getUser(Credentials credentials,
-						HttpServletRequest httpServletRequest,
-						HttpServletResponse response) throws HierarchyException
+						HttpServletRequest httpServletRequest) throws HierarchyException
 	{
-		if (httpServletRequest == null || response == null)
+		if (httpServletRequest == null)
 			return new User();
 
 		if (httpServletRequest.getAttribute(User.class.getName())
@@ -49,8 +45,6 @@ public class UserProducer
 			{
 				User user = credentials.subject(cookie.token());
 				request.setAttribute(User.class.getName(), user);
-				response.addCookie(CookieFactory.create(Gate.SUBJECT_COOKIE,
-						credentials.subject(user)));
 				return user;
 			} else
 				return new User();

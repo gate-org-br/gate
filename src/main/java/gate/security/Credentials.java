@@ -92,4 +92,9 @@ public class Credentials
 			throw new UnauthorizedException("Attempt to authenticate with expired token");
 		}
 	}
+
+	public String refresh(String token)
+	{
+		return subject(subject(token));
+	}
 }
