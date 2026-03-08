@@ -9,7 +9,6 @@ import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.exceptions.TemplateInputException;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
@@ -31,7 +30,7 @@ public class SelectProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
-		Screen screen, Property property, Attributes attributes)
+						   Screen screen, Property property, Attributes attributes)
 	{
 
 		Object options = attributes.remove("options");
@@ -51,10 +50,10 @@ public class SelectProcessor extends PropertyProcessor
 		{
 			var comparator = expression.create().comparator(sortby);
 			options = Toolkit
-				.collection(options)
-				.stream()
-				.sorted(comparator)
-				.collect(Collectors.toList());
+					.collection(options)
+					.stream()
+					.sorted(comparator)
+					.collect(Collectors.toList());
 		}
 
 		Object value = property.getValue(screen);
@@ -93,7 +92,8 @@ public class SelectProcessor extends PropertyProcessor
 		handler.replaceWith(string.toString(), false);
 	}
 
-	private void print(int level, StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values, Function<Object, Object> children, Object value)
+	private void print(int level, StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values, Function<Object,
+			Object> children, Object value)
 	{
 		for (Object object : options)
 		{
@@ -108,12 +108,12 @@ public class SelectProcessor extends PropertyProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-				+ Converter.toText(labels.apply(object)) + "</option>");
+					+ Converter.toText(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{
 				print(level + 1, string, Toolkit.iterable(children.apply(object)),
-					labels, values, children, value);
+						labels, values, children, value);
 			}
 		}
 	}

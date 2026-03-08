@@ -610,7 +610,7 @@ public class Link implements AutoCloseable
 	 */
 	public <T> SearchOperation<T> search(Class<T> type)
 	{
-		return (String... GQN) -> new SearchOperation.Matcher<T>()
+		return (String... GQN) -> new SearchOperation.Matcher<>()
 		{
 			@Override
 			public List<T> matching(T filter)
@@ -638,7 +638,7 @@ public class Link implements AutoCloseable
 	 */
 	public <T> SelectOperation<T> select(Class<T> type)
 	{
-		return (String... GQN) -> new SelectOperation.Matcher<T>()
+		return (String... GQN) -> new SelectOperation.Matcher<>()
 		{
 			@Override
 			public Optional<T> matching(T filter)
@@ -678,7 +678,7 @@ public class Link implements AutoCloseable
 	 */
 	public <T> UpdateOperation<T> update(Class<T> type)
 	{
-		return new UpdateOperation<T>()
+		return new UpdateOperation<>()
 		{
 			@Override
 			public int execute(Collection<T> values) throws ConstraintViolationException
@@ -704,7 +704,7 @@ public class Link implements AutoCloseable
 	 */
 	public <T> DeleteOperation<T> delete(Class<T> type)
 	{
-		return new DeleteOperation<T>()
+		return new DeleteOperation<>()
 		{
 			@Override
 			public int execute(Collection<T> values) throws ConstraintViolationException
