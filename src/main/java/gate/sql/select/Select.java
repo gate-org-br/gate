@@ -14,7 +14,6 @@ import gate.util.Resources;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.stream.Stream;
 
 public class Select implements SelectClause
@@ -74,19 +73,6 @@ public class Select implements SelectClause
 	}
 
 	/**
-	 * Creates a select builder from the specified SQL file.
-	 *
-	 * @param path the path of the SQL file with the query to be executed
-	 * @return An SQLBuilder to describe the selection criteria, grouping and ordering clauses
-	 */
-	public static SelectedSelect.Constant of(Path path)
-	{
-
-		return of(Thread.currentThread().getContextClassLoader().getResource(path.toString()));
-	}
-
-
-	/**
 	 * Creates a select builder from the specified SQL string.
 	 * <p>
 	 * Each @ symbol found on the query will be replaced by its respective format argument.
@@ -134,18 +120,6 @@ public class Select implements SelectClause
 	}
 
 	/**
-	 * Creates a select builder from the specified SQL file.
-	 *
-	 * @param path the path of the SQL file with the query to be executed
-	 * @param args arguments referenced by the @ symbols in the SQL string
-	 * @return An SQLBuilder to describe the selection criteria, grouping and ordering clauses
-	 */
-	public static SelectedSelect.Constant of(Path path, String... args)
-	{
-		return of(Thread.currentThread().getContextClassLoader().getResource(path.toString()), args);
-	}
-
-	/**
 	 * Creates a select builder from the specified SQL string.
 	 * <p>
 	 * Each @ symbol found on the query will be replaced by its respective format argument.
@@ -167,20 +141,6 @@ public class Select implements SelectClause
 			@Override
 			public Stream<Object> getParameters() {return Stream.of(conditions).flatMap(Condition::getParameters);}
 		};
-	}
-
-	/**
-	 * Creates a select builder from the specified SQL string.
-	 * <p>
-	 * Each @ symbol found on the query will be replaced by its respective format argument.
-	 *
-	 * @param path       path to the SQL file with the query to be executed
-	 * @param conditions conditions referenced by the @ symbols in the SQL string
-	 * @return An SQLBuilder to describe the selection criteria, grouping and ordering clauses
-	 */
-	public static SelectedSelect.Compiled of(Path path, CompiledCondition... conditions)
-	{
-		return of(Thread.currentThread().getContextClassLoader().getResource(path.toString()), conditions);
 	}
 
 	/**

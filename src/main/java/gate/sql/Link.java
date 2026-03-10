@@ -17,7 +17,6 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -430,28 +429,12 @@ public class Link implements AutoCloseable
 	/**
 	 * Prepares a new query for execution.
 	 * <p>
-	 * The query returned will lack parameter values and must have them to be defined before it can
-	 * be executed.
-	 *
-	 * @param path path to the resource containing the SQL string to be executed after the definition of its parameter values
-	 * @return a connected query whose parameter values are yet to be defined
-	 */
-	public Query.Connected from(Path path)
-	{
-		return from(Thread.currentThread().getContextClassLoader()
-				.getResource(path.toString()));
-	}
-
-
-	/**
-	 * Prepares a new query for execution.
-	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective format argument.
+	 * Each @ symbol found on the query will be replaced by its respective format argument.
 	 * <p>
 	 * The query returned will lack parameter values and must have them to be defined before it can
 	 * be executed.
 	 *
-	 * @param query the SQL string to be executed after the definition of it's parameter values
+	 * @param query the SQL string to be executed after the definition of its parameter values
 	 * @param args  arguments referenced by the @ symbols in the SQL string
 	 * @return a connected query formatted with the specified arguments whose parameter values are
 	 * yet to be defined
