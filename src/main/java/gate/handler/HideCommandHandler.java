@@ -1,7 +1,7 @@
 package gate.handler;
 
 import gate.command.HideCommand;
-import gate.function.Try;
+import gate.function.TryConsumer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -35,7 +35,7 @@ public class HideCommandHandler implements Handler
 			signal.getMessages().stream()
 					.map(e -> e.replace("'", "\""))
 					.map(e -> "alert('" + e + "');")
-					.forEach(Try.of((String e) -> writer.write(e)));
+					.forEach(TryConsumer.wrap(writer::write));
 			writer.write("                GDialog.hide();");
 			writer.write("        </script>");
 			writer.write("    </body>");
