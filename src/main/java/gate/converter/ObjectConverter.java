@@ -8,11 +8,8 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import gate.util.Reflection;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
+
+import java.lang.reflect.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,7 +20,6 @@ import java.util.stream.Stream;
 
 public class ObjectConverter implements Converter
 {
-
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
@@ -121,17 +117,14 @@ public class ObjectConverter implements Converter
 				{
 					empty = false;
 					if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
-						throw new ConversionException(
-								scanner.getCurrent() + " is not a valid JSON object key");
+						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object key");
 
 					Field field = Reflection.findField(clazz, scanner.getCurrent().toString())
-							.orElseThrow(() -> new NoSuchFieldException(
-									scanner.getCurrent().toString()));
+							.orElseThrow(() -> new NoSuchFieldException(scanner.getCurrent().toString()));
 
 					scanner.scan();
 					if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
-						throw new ConversionException(
-								scanner.getCurrent() + " is not a valid JSON object");
+						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
 
 					scanner.scan();
 					Type genericType = field.getGenericType();
@@ -148,8 +141,7 @@ public class ObjectConverter implements Converter
 
 			scanner.scan();
 			return object;
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
-				| NoSuchFieldException ex)
+		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchFieldException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
@@ -167,7 +159,7 @@ public class ObjectConverter implements Converter
 			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-						&& !Modifier.isStatic(field.getModifiers()))
+					&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);
@@ -206,7 +198,7 @@ public class ObjectConverter implements Converter
 			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-						&& !Modifier.isStatic(field.getModifiers()))
+					&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);

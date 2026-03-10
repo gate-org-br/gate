@@ -7,9 +7,10 @@ import gate.report.Report.Orientation;
 import gate.report.doc.PDF;
 import gate.report.doc.XLS;
 import gate.type.ID;
+import org.junit.jupiter.api.Test;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -17,7 +18,7 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Test;
+import java.util.Objects;
 
 public class ReportTest
 {
@@ -27,7 +28,7 @@ public class ReportTest
 	}
 
 	@Test
-	public void testSomeMethod() throws FileNotFoundException, IOException
+	public void testSomeMethod() throws IOException
 	{
 		List<Role> roles = new ArrayList<>();
 
@@ -73,7 +74,7 @@ public class ReportTest
 	}
 
 	@Test
-	public void testNow() throws FileNotFoundException, IOException
+	public void testNow() throws IOException
 	{
 		Report report = new Report(Orientation.LANDSCAPE);
 
@@ -112,9 +113,9 @@ public class ReportTest
 		report.addLineBreak();
 
 		Grid<User> grid = report.addGrid(User.class,
-			List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
-				new User().setId(ID.valueOf(2)).setName("Bar")))
-			.setCaption("USERS: 2");
+						List.of(new User().setId(ID.valueOf(1)).setName("Foo"),
+								new User().setId(ID.valueOf(2)).setName("Bar")))
+				.setCaption("USERS: 2");
 
 		grid.add().body(User::getName).head("ID");
 		grid.add().body(User::getName).head("Name");
@@ -130,7 +131,7 @@ public class ReportTest
 	}
 
 	@Test
-	public void testList() throws FileNotFoundException, IOException
+	public void testList() throws IOException
 	{
 		Report report = new Report(Orientation.LANDSCAPE);
 
@@ -140,44 +141,44 @@ public class ReportTest
 		report.addLineBreak();
 
 		report.addList()
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.style()
-			.listStyleType(Style.ListStyleType.DECIMAL);
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.DECIMAL);
 
 		report.addList()
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.style()
-			.listStyleType(Style.ListStyleType.LOWER_ALPHA);
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.LOWER_ALPHA);
 
 		report.addList()
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.style()
-			.listStyleType(Style.ListStyleType.DISC);
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.add("Item")
+				.style()
+				.listStyleType(Style.ListStyleType.DISC);
 
 		report.addList()
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add("Item")
-			.add(report.addList()
 				.add("Item")
 				.add("Item")
 				.add("Item")
 				.add("Item")
 				.add(report.addList()
-					.add("Item")
-					.add("Item")
-					.add("Item")
-					.add("Item")));
+						.add("Item")
+						.add("Item")
+						.add("Item")
+						.add("Item")
+						.add(report.addList()
+								.add("Item")
+								.add("Item")
+								.add("Item")
+								.add("Item")));
 
 		PDF doc = new PDF(report);
 		try (ByteArrayOutputStream stream = new ByteArrayOutputStream())
@@ -188,9 +189,9 @@ public class ReportTest
 	}
 
 	@Test
-	public void testStyle() throws FileNotFoundException, IOException, URISyntaxException
+	public void testStyle() throws IOException, URISyntaxException
 	{
-		var template = JsonObject.parse(Files.readString(Path.of(getClass().getResource("style/template.json").toURI())));
+		var template = JsonObject.parse(Files.readString(Path.of(Objects.requireNonNull(getClass().getResource("style/template.json")).toURI())));
 		var report = Report.of(template);
 		PDF doc = new PDF(report);
 

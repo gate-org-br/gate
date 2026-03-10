@@ -1,28 +1,17 @@
 package gate.converter;
 
+import gate.converter.collections.EnumSetConverter;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.nio.file.Path;
-import java.time.DayOfWeek;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Month;
-import java.time.YearMonth;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.time.*;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import org.slf4j.LoggerFactory;
-
-import gate.converter.collections.EnumSetConverter;
 
 public class Converters
 {
@@ -68,12 +57,13 @@ public class Converters
 		INSTANCES.put(YearMonth.class, new YearMonthConverter());
 		INSTANCES.put(String[][].class, new StringMatrixConverter());
 		INSTANCES.put(byte[].class, new ByteArrayConverter());
-		INSTANCES.put(Month.class, new LegacyMonthConverter());
 		INSTANCES.put(DayOfWeek.class, new DayOfWeekConverter());
 		INSTANCES.put(File.class, new FileConverter());
 		INSTANCES.put(java.time.Month.class, new MonthConverter());
 		INSTANCES.put(java.time.Year.class, new YearConverter());
 		INSTANCES.put(Path.class, new PathConverter());
+		INSTANCES.put(java.lang.Record.class, new RecordConverter());
+
 	}
 
 	public Converter get(Class<?> type)
@@ -89,7 +79,7 @@ public class Converters
 						return clazz.getAnnotation(gate.annotation.Converter.class).value().getDeclaredConstructor()
 								.newInstance();
 					else if (Stream.of(clazz.getInterfaces()).filter(iter -> INSTANCES.containsKey(iter)
-							|| iter.isAnnotationPresent(gate.annotation.Converter.class)).count() == 1)
+																			 || iter.isAnnotationPresent(gate.annotation.Converter.class)).count() == 1)
 						for (Class<?> inter : clazz.getInterfaces())
 							if (INSTANCES.containsKey(inter))
 								return INSTANCES.get(inter);
@@ -97,7 +87,7 @@ public class Converters
 								return inter.getAnnotation(gate.annotation.Converter.class).value()
 										.getDeclaredConstructor().newInstance();
 			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-					| InvocationTargetException ex)
+					 | InvocationTargetException ex)
 			{
 				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
 			}
