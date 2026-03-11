@@ -84,8 +84,8 @@ public interface ConstructionStrategy
 				.construct(type, value, propertyMap, getValue);
 	}
 
-	public static Object newInstance(Class<?> type,
-									 Map<Attribute, Object> attributes) throws ReflectiveOperationException
+	static Object newInstance(Class<?> type,
+							  Map<Attribute, Object> attributes) throws ReflectiveOperationException
 	{
 		return get(type, attributes.keySet())
 				.construct(type, attributes);
@@ -196,9 +196,10 @@ public interface ConstructionStrategy
 		@Override
 		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
 		{
+			var entryset = attributes.entrySet();
 			var values = Arrays.stream(constructor.getParameters())
-					.map(c -> attributes.entrySet().stream()
-							.filter(e -> e.getKey().toString().equals(c.getName()))
+					.map(c -> entryset.stream()
+							.filter(e -> e.getKey().matches(c))
 							.findFirst()
 							.map(Map.Entry::getValue)
 							.orElse(null))
@@ -215,7 +216,7 @@ public interface ConstructionStrategy
 		{
 			var args = Arrays.stream(constructor.getParameters())
 					.map(c -> propertyMap.entrySet().stream()
-							.filter(e -> e.getKey().toString().equals(c.getName()))
+							.filter(e -> e.getKey().matches(c))
 							.findFirst()
 							.map(e -> getValue.apply(e.getKey(), null, e.getValue()))
 							.orElse(null))
