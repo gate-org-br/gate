@@ -13,8 +13,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-interface ConstructionStrategy
+public interface ConstructionStrategy
 {
+	Object construct(Class<?> type,
+					 Map<Attribute, Object> attributes)
+			throws ReflectiveOperationException;
+
 	Object construct(Class<?> type,
 					 Object value,
 					 Map<Attribute, Object> propertyMap,
@@ -23,60 +27,87 @@ interface ConstructionStrategy
 
 	Map<Set<Attribute>, ConstructionStrategy> CACHE = new ConcurrentHashMap<>();
 
+	static ConstructionStrategy get(Class<?> type,
+									Set<Attribute> attributes)
+	{
+		return CACHE.computeIfAbsent(attributes, e ->
+		{
+			try
+			{
+				if (type.isRecord())
+				{
+					var types = Arrays.stream(type.getRecordComponents())
+							.map(RecordComponent::getType)
+							.toArray(Class<?>[]::new);
+					var constructor = type.getDeclaredConstructor(types);
+					constructor.setAccessible(true);
+					return new RecordStrategy(constructor);
+				}
+
+				var builderFactory = Reflection.findMethod(type, "builder").orElse(null);
+				if (builderFactory != null)
+				{
+					var build = Reflection.findMethod(builderFactory.getReturnType(), "build").orElse(null);
+					if (build != null)
+						return new BuilderStrategy(builderFactory, build);
+				}
+
+				if (ObjectFactory.canCreate(type))
+					return new BeanStrategy();
+
+				var candidates = Arrays.stream(type.getDeclaredConstructors())
+						.filter(c ->
+						{
+							var params = c.getParameters();
+							return params.length == attributes.size()
+								   && Arrays.stream(params).allMatch(p -> e.stream().anyMatch(a -> a.matches(p)));
+						})
+						.toList();
+
+				if (candidates.size() != 1)
+					throw new ConversionException("Could not find construction strategy for " + type.getName());
+
+				return new CanonicalConstructorStrategy(candidates.get(0));
+			} catch (ReflectiveOperationException ex)
+			{
+				throw new UncheckedException(ex);
+			}
+		});
+	}
+
 	static Object newInstance(Class<?> type,
 							  Object value,
 							  Map<Attribute, Object> propertyMap,
 							  TriFunction<Attribute, Object, Object, Object> getValue) throws ReflectiveOperationException
 	{
-		return CACHE.computeIfAbsent(propertyMap.keySet(), attributes ->
-				{
-					try
-					{
-						if (type.isRecord())
-						{
-							var types = Arrays.stream(type.getRecordComponents())
-									.map(RecordComponent::getType)
-									.toArray(Class<?>[]::new);
-							var constructor = type.getDeclaredConstructor(types);
-							constructor.setAccessible(true);
-							return new RecordStrategy(constructor);
-						}
-
-						var builderFactory = Reflection.findMethod(type, "builder").orElse(null);
-						if (builderFactory != null)
-						{
-							var build = Reflection.findMethod(builderFactory.getReturnType(), "build").orElse(null);
-							if (build != null)
-								return new BuilderStrategy(builderFactory, build);
-						}
-
-						if (ObjectFactory.canCreate(type))
-							return new BeanStrategy();
-
-						var candidates = Arrays.stream(type.getDeclaredConstructors())
-								.filter(c ->
-								{
-									var params = c.getParameters();
-									return params.length == propertyMap.size()
-											&& Arrays.stream(params).allMatch(p -> attributes.stream().anyMatch(a -> a.matches(p)));
-								})
-								.toList();
-
-						if (candidates.size() != 1)
-							throw new ConversionException("Could not find construction strategy for " + type.getName());
-
-						return new CanonicalConstructorStrategy(candidates.get(0));
-					} catch (ReflectiveOperationException ex)
-					{
-						throw new UncheckedException(ex);
-					}
-				})
+		return get(type, propertyMap.keySet())
 				.construct(type, value, propertyMap, getValue);
+	}
+
+	public static Object newInstance(Class<?> type,
+									 Map<Attribute, Object> attributes) throws ReflectiveOperationException
+	{
+		return get(type, attributes.keySet())
+				.construct(type, attributes);
 	}
 
 
 	record BuilderStrategy(Method builderFactory, Method build) implements ConstructionStrategy
 	{
+		@Override
+		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
+		{
+			var builder = builderFactory.invoke(null);
+			for (var entry : attributes.entrySet())
+			{
+				var attribute = entry.getKey();
+				var method = Reflection.findMethod(builder.getClass(),
+						attribute.toString(), attribute.getRawType()).orElseThrow();
+				method.invoke(builder, entry.getValue());
+			}
+			return build.invoke(builder);
+		}
+
 		@Override
 		public Object construct(Class<?> type,
 								Object value,
@@ -100,6 +131,15 @@ interface ConstructionStrategy
 	record BeanStrategy() implements ConstructionStrategy
 	{
 		@Override
+		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
+		{
+			var value = ObjectFactory.create(type);
+			for (var attribute : attributes.entrySet())
+				attribute.getKey().setValue(value, attribute.getValue());
+			return value;
+		}
+
+		@Override
 		public Object construct(Class<?> type, Object value, Map<Attribute, Object> propertyMap,
 								TriFunction<Attribute, Object, Object, Object> getValue)
 				throws ReflectiveOperationException
@@ -121,6 +161,19 @@ interface ConstructionStrategy
 	record CanonicalConstructorStrategy(Constructor<?> constructor) implements ConstructionStrategy
 	{
 		@Override
+		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
+		{
+			var values = Arrays.stream(constructor.getParameters())
+					.map(p -> attributes.entrySet().stream()
+							.filter(a -> a.getKey().matches(p))
+							.findFirst()
+							.map(Map.Entry::getValue)
+							.orElseThrow())
+					.toArray();
+			return constructor.newInstance(values);
+		}
+
+		@Override
 		public Object construct(Class<?> type,
 								Object value,
 								Map<Attribute, Object> propertyMap,
@@ -140,6 +193,19 @@ interface ConstructionStrategy
 
 	record RecordStrategy(Constructor<?> constructor) implements ConstructionStrategy
 	{
+		@Override
+		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
+		{
+			var values = Arrays.stream(constructor.getParameters())
+					.map(c -> attributes.entrySet().stream()
+							.filter(e -> e.getKey().toString().equals(c.getName()))
+							.findFirst()
+							.map(Map.Entry::getValue)
+							.orElse(null))
+					.toArray();
+			return constructor.newInstance(values);
+		}
+
 		@Override
 		public Object construct(Class<?> type,
 								Object value,

@@ -1,12 +1,10 @@
 package gate.entity;
 
-import gate.annotation.Description;
-import gate.annotation.Entity;
-import gate.annotation.Icon;
-import gate.annotation.Name;
+import gate.annotation.*;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.type.ID;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +51,7 @@ public class Func implements Serializable
 		this.name = name;
 	}
 
+	@NullSafe
 	public List<Auth> getAuths()
 	{
 		if (auths == null)
@@ -65,6 +64,7 @@ public class Func implements Serializable
 		this.auths = auths;
 	}
 
+	@NullSafe
 	public List<User> getUsers()
 	{
 		if (users == null)
@@ -77,6 +77,7 @@ public class Func implements Serializable
 		this.users = users;
 	}
 
+	@NullSafe
 	public List<Role> getRoles()
 	{
 		if (roles == null)
@@ -93,14 +94,14 @@ public class Func implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Func
-			&& Objects.equals(id, ((Func) obj).id);
+			   && Objects.equals(id, ((Func) obj).id);
 	}
 
 	@Override
 	public int hashCode()
 	{
 		return id != null
-			? id.getValue() : 0;
+				? id.getValue() : 0;
 	}
 
 	public boolean allows(String module, String screen, String action)

@@ -1,16 +1,12 @@
 package gate.entity;
 
-import gate.annotation.Column;
-import gate.annotation.Description;
-import gate.annotation.Entity;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.annotation.Schema;
+import gate.annotation.*;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.type.Hierarchy;
 import gate.type.ID;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +121,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		return this;
 	}
 
+	@NullSafe
 	public Role getRole()
 	{
 		if (role == null)
@@ -171,6 +168,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		return this;
 	}
 
+	@NullSafe
 	public List<User> getUsers()
 	{
 		if (users == null)
@@ -184,6 +182,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		return this;
 	}
 
+	@NullSafe
 	public List<Func> getFuncs()
 	{
 		if (funcs == null)
@@ -196,6 +195,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		this.funcs = funcs;
 	}
 
+	@NullSafe
 	public List<Role> getRoles()
 	{
 		if (roles == null)
@@ -209,6 +209,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		return this;
 	}
 
+	@NullSafe
 	public List<Auth> getAuths()
 	{
 		if (auths == null)
@@ -225,7 +226,7 @@ public class Role implements Serializable, Hierarchy<Role>
 	public boolean isDisabled()
 	{
 		return parentStream()
-			.anyMatch(e -> Boolean.FALSE.equals(active));
+				.anyMatch(e -> Boolean.FALSE.equals(active));
 	}
 
 	public String getRolename()
@@ -239,6 +240,7 @@ public class Role implements Serializable, Hierarchy<Role>
 		return this;
 	}
 
+	@NullSafe
 	public User getManager()
 	{
 		if (manager == null)
@@ -292,9 +294,9 @@ public class Role implements Serializable, Hierarchy<Role>
 	public Role getMasterRole()
 	{
 		return parentStream()
-			.filter(e -> Boolean.TRUE.equals(e.master))
-			.findFirst()
-			.orElse(this);
+				.filter(e -> Boolean.TRUE.equals(e.master))
+				.findFirst()
+				.orElse(this);
 	}
 
 	public boolean isMasterOf(Role role)
@@ -310,10 +312,10 @@ public class Role implements Serializable, Hierarchy<Role>
 	public Stream<Role> slaveStream()
 	{
 		return Boolean.TRUE.equals(getMaster())
-			? Stream.concat(Stream.of(this), getChildren().stream()
+				? Stream.concat(Stream.of(this), getChildren().stream()
 				.filter(e -> !Boolean.TRUE.equals(e.getMaster()))
 				.flatMap(Hierarchy::stream))
-			: Stream.empty();
+				: Stream.empty();
 	}
 
 	public List<Role> toSlaveList()
@@ -329,7 +331,7 @@ public class Role implements Serializable, Hierarchy<Role>
 	public Stream<Role> masterStream()
 	{
 		return stream()
-			.filter(e -> Boolean.TRUE.equals(e.getMaster()));
+				.filter(e -> Boolean.TRUE.equals(e.getMaster()));
 	}
 
 	public List<Role> toMasterList()
@@ -345,27 +347,27 @@ public class Role implements Serializable, Hierarchy<Role>
 	private Stream<Auth> privateAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream()
-			.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
-			getFuncs().stream().flatMap(e -> e.getAuths().stream())
-				.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
-			: Stream.empty();
+						.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
+				getFuncs().stream().flatMap(e -> e.getAuths().stream())
+						.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
+				: Stream.empty();
 	}
 
 	private Stream<Auth> publicAuthStream()
 	{
 
 		return id != null
-			? Stream.concat(getAuths().stream()
-				.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
+				? Stream.concat(getAuths().stream()
+						.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
 				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream())
-					.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
-					getRole().publicAuthStream())) : Stream.empty();
+								.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
+						getRole().publicAuthStream())) : Stream.empty();
 	}
 
 	Stream<Auth> computedAuthStream()
 	{
 		return id != null ? Stream.concat(privateAuthStream(),
-			publicAuthStream()) : Stream.empty();
+				publicAuthStream()) : Stream.empty();
 	}
 
 	@Override
@@ -384,8 +386,8 @@ public class Role implements Serializable, Hierarchy<Role>
 	public String toString()
 	{
 		return getRole().getId() != null
-			? String.format("%s / %s", getRole().toString(), getName())
-			: getName();
+				? String.format("%s / %s", getRole().toString(), getName())
+				: getName();
 	}
 
 	public static Role valueOf(String string)

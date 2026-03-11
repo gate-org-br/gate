@@ -8,11 +8,13 @@ package gate.lang.json;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.type.ID;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -42,11 +44,11 @@ public class JsonArrayTest
 	public void testFormatFunctionFunction()
 	{
 		List<User> users = Arrays.asList(new User().setId(ID.valueOf(1)).setName("User 1"),
-			new User().setId(ID.valueOf(2)).setName("User 2"),
-			new User().setId(ID.valueOf(3)).setName("User 3"));
+				new User().setId(ID.valueOf(2)).setName("User 2"),
+				new User().setId(ID.valueOf(3)).setName("User 3"));
 
-		String expected = "[ { \"label\":\"User 1\",\"value\":\"0000000001\" },{ \"label\":\"User 2\",\"value\":\"0000000002\" },{ \"label\":\"User 3\",\"value\":\"0000000003\" } ]";
-		String result = JsonArray.format(users, e -> e.getName(), e -> e.getId()).toString();
+		String expected = "[{\"label\":\"User 1\",\"value\":\"0000000001\"},{\"label\":\"User 2\",\"value\":\"0000000002\"},{\"label\":\"User 3\",\"value\":\"0000000003\"}]";
+		String result = JsonArray.format(users, User::getName, User::getId).toString();
 		assertEquals(expected, result);
 	}
 }

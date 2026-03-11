@@ -1,18 +1,12 @@
 package gate.entity;
 
-import gate.annotation.Color;
-import gate.annotation.Column;
-import gate.annotation.Converter;
-import gate.annotation.Description;
-import gate.annotation.Entity;
-import gate.annotation.Icon;
-import gate.annotation.Name;
-import gate.annotation.Schema;
+import gate.annotation.*;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
 import gate.type.ID;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -59,6 +53,7 @@ public class Auth implements Serializable
 	@Description("O campo ACTION deve ser preenchido com, NO máximo, 64 LETRAS.")
 	private String action;
 
+	@NullSafe
 	public User getUser()
 	{
 		if (user == null)
@@ -105,6 +100,7 @@ public class Auth implements Serializable
 		return this;
 	}
 
+	@NullSafe
 	public Role getRole()
 	{
 		if (role == null)
@@ -118,6 +114,7 @@ public class Auth implements Serializable
 		return this;
 	}
 
+	@NullSafe
 	public Func getFunc()
 	{
 		if (func == null)
@@ -168,7 +165,7 @@ public class Auth implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Auth && Objects
-			.equals(id, ((Auth) obj).id);
+				.equals(id, ((Auth) obj).id);
 	}
 
 	@Override
@@ -181,18 +178,18 @@ public class Auth implements Serializable
 	public String toString()
 	{
 		return new StringJoiner(", ")
-			.add("MODULE: " + (module != null ? module : "*"))
-			.add("SCREEN: " + (screen != null ? screen : "*"))
-			.add("ACTION: " + (action != null ? action : "*"))
-			.toString();
+				.add("MODULE: " + (module != null ? module : "*"))
+				.add("SCREEN: " + (screen != null ? screen : "*"))
+				.add("ACTION: " + (action != null ? action : "*"))
+				.toString();
 	}
 
 	public boolean isSuperAuth()
 	{
 		return Access.GRANT == access
-			&& module == null
-			&& screen == null
-			&& action == null;
+			   && module == null
+			   && screen == null
+			   && action == null;
 	}
 
 	@Converter(EnumStringConverter.class)
@@ -223,25 +220,25 @@ public class Auth implements Serializable
 	public boolean blocked(String module, String screen, String action)
 	{
 		return this.access == Access.BLOCK
-			&& (this.module == null || this.module.equals(module))
-			&& (this.screen == null || this.screen.equals(screen))
-			&& (this.action == null || this.action.equals(action));
+			   && (this.module == null || this.module.equals(module))
+			   && (this.screen == null || this.screen.equals(screen))
+			   && (this.action == null || this.action.equals(action));
 	}
 
 	public boolean granted(String module, String screen, String action)
 	{
 		return this.access == Access.GRANT
-			&& (module == null || this.module == null || this.module.equals(module))
-			&& (screen == null || this.screen == null || this.screen.equals(screen))
-			&& (action == null || this.action == null || this.action.equals(action));
+			   && (module == null || this.module == null || this.module.equals(module))
+			   && (screen == null || this.screen == null || this.screen.equals(screen))
+			   && (action == null || this.action == null || this.action.equals(action));
 	}
 
 	public boolean equals(String module, String screen, String action)
 	{
 		return this.access == Access.GRANT
-			&& Objects.equals(module, this.module)
-			&& Objects.equals(screen, this.screen)
-			&& Objects.equals(action, this.action);
+			   && Objects.equals(module, this.module)
+			   && Objects.equals(screen, this.screen)
+			   && Objects.equals(action, this.action);
 	}
 
 }

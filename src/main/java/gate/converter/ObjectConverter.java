@@ -1,22 +1,21 @@
 package gate.converter;
 
-import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.io.Encoder;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
-import gate.util.Reflection;
+import gate.lang.property.Attribute;
+import gate.lang.property.ConstructionStrategy;
+import gate.lang.property.FieldAttribute;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Stream;
+import java.util.*;
 
 public class ObjectConverter implements Converter
 {
@@ -91,6 +90,7 @@ public class ObjectConverter implements Converter
 		return fields;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object ofJson(JsonScanner scanner, Type type, Type elementType)
 			throws ConversionException
@@ -101,15 +101,10 @@ public class ObjectConverter implements Converter
 				throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
 
 			boolean empty = true;
-			@SuppressWarnings("unchecked")
-			var clazz = (Class<Object>) type;
-			Constructor<?> constructor = Stream.of(clazz.getDeclaredConstructors())
-					.filter(e -> e.getParameterCount() == 0).findAny()
-					.orElseThrow(() -> new ConversionException(
-							"No default constructor found on " + clazz.getName()));
-			constructor.setAccessible(true);
-			Object object = constructor.newInstance();
 
+			Class<Object> clazz = (Class<Object>) type;
+			Map<Attribute, Object> values = new HashMap<>();
+			var attributes = FieldAttribute.getAttributes(clazz);
 			do
 			{
 				scanner.scan();
@@ -119,19 +114,18 @@ public class ObjectConverter implements Converter
 					if (scanner.getCurrent().getType() != JsonToken.Type.STRING)
 						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object key");
 
-					Field field = Reflection.findField(clazz, scanner.getCurrent().toString())
-							.orElseThrow(() -> new NoSuchFieldException(scanner.getCurrent().toString()));
+					var attribute = attributes.get(scanner.getCurrent().toString());
+					if (attribute == null)
+						throw new ConversionException("%s.%s is not a valid property".formatted(clazz.getName(), scanner.getCurrent()));
 
 					scanner.scan();
 					if (scanner.getCurrent().getType() != JsonToken.Type.DOUBLE_DOT)
 						throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
 
 					scanner.scan();
-					Type genericType = field.getGenericType();
-					Converter converter = Converter.getConverter(field.getType());
-					Object value = converter.ofJson(scanner, genericType,
-							Reflection.getElementType(genericType));
-					field.set(object, value);
+					Object value = attribute.getConverter()
+							.ofJson(scanner, attribute.getGenericType(), attribute.getRawType());
+					values.put(attribute, value);
 				} else if (!empty)
 					throw new ConversionException("the specified JsonElement is not a JsonObject");
 			} while (scanner.getCurrent().getType() == JsonToken.Type.COMMA);
@@ -140,8 +134,8 @@ public class ObjectConverter implements Converter
 				throw new ConversionException(scanner.getCurrent() + " is not a valid JSON object");
 
 			scanner.scan();
-			return object;
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchFieldException ex)
+			return ConstructionStrategy.newInstance(clazz, values);
+		} catch (ReflectiveOperationException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
@@ -151,38 +145,25 @@ public class ObjectConverter implements Converter
 	@SuppressWarnings("unchecked")
 	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
-		try
-		{
-			writer.write(JsonToken.Type.OPEN_OBJECT, null);
+		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
-			boolean first = true;
-			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
+		int i = 0;
+		var attributes = FieldAttribute.getAttributes(type);
+		for (Attribute attribute : attributes.values())
+		{
+			Object value = attribute.getValue(object);
+			if (value != null)
 			{
-				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
-				{
-					field.setAccessible(true);
-					Object value = field.get(object);
-					if (value != null)
-					{
-						if (first)
-							first = false;
-						else
-							writer.write(JsonToken.Type.COMMA, null);
+				if (i++ > 0)
+					writer.write(JsonToken.Type.COMMA, null);
 
-						writer.write(JsonToken.Type.STRING, field.getName());
-						writer.write(JsonToken.Type.DOUBLE_DOT, null);
-						Converter converter = Converter.getConverter(field.getType());
-						converter.toJson(writer, (Class<Object>) field.getType(), value);
-					}
-				}
+				writer.write(JsonToken.Type.STRING, attribute.toString());
+				writer.write(JsonToken.Type.DOUBLE_DOT, null);
+				attribute.getConverter().toJson(writer, (Class<Object>) attribute.getRawType(), value);
 			}
-
-			writer.write(JsonToken.Type.CLOSE_OBJECT, null);
-		} catch (IllegalAccessException ex)
-		{
-			throw new ConversionException(ex.getMessage());
 		}
+
+		writer.write(JsonToken.Type.CLOSE_OBJECT, null);
 	}
 
 	@Override
@@ -190,41 +171,26 @@ public class ObjectConverter implements Converter
 	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
 			throws ConversionException
 	{
-		try
-		{
-			writer.write(JsonToken.Type.OPEN_OBJECT, null);
+		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
-			boolean first = true;
-			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
+		int i = 0;
+		var attributes = FieldAttribute.getAttributes(type);
+		for (Attribute attribute : attributes.values())
+		{
+			Object value = attribute.getValue(object);
+			if (value != null)
 			{
-				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
-				{
-					field.setAccessible(true);
-					Object value = field.get(object);
-					if (value != null)
-					{
-						if (first)
-							first = false;
-						else
-							writer.write(JsonToken.Type.COMMA, null);
+				if (i++ > 0)
+					writer.write(JsonToken.Type.COMMA, null);
 
-						String name = field.isAnnotationPresent(Name.class)
-								? field.getAnnotation(Name.class).value()
-								: field.getName();
+				String name = Objects.requireNonNullElse(attribute.getDisplayName(), attribute.toString());
 
-						writer.write(JsonToken.Type.STRING, name);
-						writer.write(JsonToken.Type.DOUBLE_DOT, null);
-						Converter converter = Converter.getConverter(field.getType());
-						converter.toJsonText(writer, (Class<Object>) field.getType(), value);
-					}
-				}
+				writer.write(JsonToken.Type.STRING, name);
+				writer.write(JsonToken.Type.DOUBLE_DOT, null);
+				attribute.getConverter().toJsonText(writer, (Class<Object>) attribute.getRawType(), value);
 			}
-
-			writer.write(JsonToken.Type.CLOSE_OBJECT, null);
-		} catch (IllegalAccessException ex)
-		{
-			throw new ConversionException(ex.getMessage());
 		}
+
+		writer.write(JsonToken.Type.CLOSE_OBJECT, null);
 	}
 }
