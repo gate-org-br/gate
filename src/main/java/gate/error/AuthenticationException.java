@@ -4,6 +4,8 @@ import gate.annotation.Catcher;
 import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serial;
+
 /**
  * Exception thrown when an authentication attempt fails.
  *
@@ -22,9 +24,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class AuthenticationException extends HttpException
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_MESSAGE = "Authentication could not be completed";
-	
+
 	/**
 	 * Creates an AuthenticationException with a default message
 	 */
@@ -32,13 +35,13 @@ public class AuthenticationException extends HttpException
 	{
 		super(DEFAULT_MESSAGE);
 	}
-	
+
 	/**
 	 * Creates an AuthenticationException with a default message and the
 	 * underlying cause.
 	 *
 	 * @param cause the original exception that caused the authentication
-	 * failure
+	 *              failure
 	 */
 	public AuthenticationException(Throwable cause)
 	{
@@ -60,7 +63,7 @@ public class AuthenticationException extends HttpException
 	 * underlying cause.
 	 *
 	 * @param message the message describing the authentication error
-	 * @param cause the original exception that caused the failure
+	 * @param cause   the original exception that caused the failure
 	 */
 	public AuthenticationException(String message, Throwable cause)
 	{

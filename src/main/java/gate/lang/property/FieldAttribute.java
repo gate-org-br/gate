@@ -100,6 +100,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 		return value;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Function<Object, Object> createGetterLambda()
 	{
 		try
@@ -112,7 +113,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
 			MethodHandle impl = lookup.unreflect(method);
 
-			//noinspection unchecked
+
 			return (Function<Object, Object>) LambdaMetafactory.metafactory(
 					lookup,
 					"apply",

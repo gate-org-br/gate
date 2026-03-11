@@ -1,8 +1,12 @@
 package gate.error;
 
+import java.io.Serial;
+
+@SuppressWarnings("unused")
 public class DefaultPasswordException extends AuthenticationException
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public DefaultPasswordException()

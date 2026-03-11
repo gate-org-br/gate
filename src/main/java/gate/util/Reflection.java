@@ -51,11 +51,11 @@ public class Reflection
 	}
 
 	/**
-	 * Finds the specified field on the specified type and it's super types.
+	 * Finds the specified field on the specified type, and it's super types.
 	 *
 	 * @param type type where to find the specified field
 	 * @param name name of the field to be found
-	 * @return an Optional describing the requested field of an empty Optional if the field does not exists
+	 * @return an Optional describing the requested field of an empty Optional if the field does not exist
 	 */
 	public static Optional<Field> findField(Class<?> type, String name)
 	{
@@ -72,12 +72,12 @@ public class Reflection
 	}
 
 	/**
-	 * Finds the specified method on the specified type and it's super types.
+	 * Finds the specified method on the specified type, and it's super types.
 	 *
 	 * @param type           type where to find the specified method
 	 * @param name           name of the method to be found
 	 * @param parameterTypes types of the parameters of the method to be found
-	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
+	 * @return an Optional describing the requested method of an empty Optional if the method does not exist
 	 */
 	public static Optional<Method> findMethod(Class<?> type, String name,
 											  Class<?>... parameterTypes)
@@ -102,20 +102,21 @@ public class Reflection
 	 * @param property name of the property to be found
 	 * @return an Optional describing the requested method of an empty Optional if the method does not exist
 	 */
+	@SuppressWarnings("unused")
 	public static Optional<Method> findGetterByName(Class<?> type, String property)
 	{
 		var getter = type.isRecord() ? property :
 				"get" + Character.toUpperCase(property.charAt(0))
-						+ property.substring(1);
+				+ property.substring(1);
 		return findMethodByName(type, getter);
 	}
 
 	/**
-	 * Finds the specified method on the specified type and it's super types.
+	 * Finds the specified method on the specified type, and it's super types.
 	 *
 	 * @param type type where to find the specified method
 	 * @param name name of the method to be found
-	 * @return an Optional describing the requested method of an empty Optional if the method does not exists
+	 * @return an Optional describing the requested method of an empty Optional if the method does not exist
 	 */
 	public static Optional<Method> findMethodByName(Class<?> type, String name)
 	{
@@ -153,9 +154,11 @@ public class Reflection
 		Optional<Method> method = findMethod(field.getDeclaringClass(),
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		if (method.isEmpty()
-				&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
+			&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
 			method = findMethod(field.getDeclaringClass(),
 					"is" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
+		if (method.isEmpty())
+			method = findMethod(field.getDeclaringClass(), name);
 		return method;
 	}
 
@@ -174,6 +177,7 @@ public class Reflection
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public static Optional<MethodHandle> findGetterHandler(Field field)
 	{
 		return findGetter(field)
@@ -225,6 +229,7 @@ public class Reflection
 	}
 
 
+	@SuppressWarnings("unused")
 	public static Optional<MethodHandle> findSetterHandler(Field field)
 	{
 		return findSetter(field)
@@ -258,10 +263,13 @@ public class Reflection
 	{
 		if (field.getDeclaringClass().isRecord())
 			return Optional.empty();
-		StringBuilder name = new StringBuilder(field.getName());
-		name.setCharAt(0, Character.toUpperCase(name.charAt(0)));
-		name.insert(0, "set");
-		return findMethod(field.getDeclaringClass(), name.toString(), field.getType());
+
+		var name = field.getName();
+		var type = field.getType();
+		var method = findMethod(field.getDeclaringClass(), "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1), type);
+		if (method.isEmpty())
+			method = findMethod(field.getDeclaringClass(), name, type);
+		return method;
 	}
 
 	public static Optional<? extends AnnotatedElement> find(String string)

@@ -5,8 +5,12 @@ import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
 import gate.icon.Icon;
+import gate.util.Reflection;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -32,16 +36,7 @@ public interface Attribute
 
 	default Class<?> getElementRawType()
 	{
-		Type type = getElementType();
-		if (type instanceof Class<?>)
-			return (Class<?>) type;
-		if (type instanceof ParameterizedType)
-			return (Class<?>) ((ParameterizedType) type).getRawType();
-		else if (type instanceof GenericArrayType)
-			return Array.newInstance((Class<?>) ((ParameterizedType) ((GenericArrayType) type)
-					.getGenericComponentType()).getRawType(), 0).getClass();
-		else
-			return null;
+		return Reflection.getRawType(getElementType());
 	}
 
 	default Object createInstance(Class<?> type)
@@ -230,6 +225,6 @@ public interface Attribute
 	default boolean matches(Parameter parameter)
 	{
 		return toString().equals(parameter.getName())
-				&& parameter.getType().isAssignableFrom(getRawType());
+			   && parameter.getType().isAssignableFrom(getRawType());
 	}
 }

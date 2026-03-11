@@ -4,6 +4,8 @@ import gate.annotation.Catcher;
 import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serial;
+
 /**
  * Signals that a requested resource could not be found.
  */
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class NotFoundException extends HttpException
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	/**
