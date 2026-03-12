@@ -1,13 +1,15 @@
 package gate.converter.custom;
 
-import gate.converter.*;
+import gate.converter.ObjectConverter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonWriter;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
+import java.util.ArrayDeque;
 
 public class JsonConverter extends ObjectConverter
 {
@@ -31,9 +33,10 @@ public class JsonConverter extends ObjectConverter
 		if (object == null)
 			return "";
 
-		try (StringWriter string = new StringWriter(); JsonWriter writer = new JsonWriter(string))
+		try (StringWriter string = new StringWriter();
+			 JsonWriter writer = new JsonWriter(string))
 		{
-			toJson(writer, (Class<Object>) type, object);
+			toJson(new ArrayDeque<>(), writer, (Class<Object>) type, object);
 			return string.toString();
 		} catch (IOException ex)
 		{

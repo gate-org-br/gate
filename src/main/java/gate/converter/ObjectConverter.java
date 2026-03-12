@@ -143,7 +143,7 @@ public class ObjectConverter implements Converter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
@@ -152,14 +152,16 @@ public class ObjectConverter implements Converter
 		for (Attribute attribute : attributes.values())
 		{
 			Object value = attribute.getValue(object);
-			if (value != null)
+			if (value != null && stack.stream().noneMatch(e -> e == value))
 			{
 				if (i++ > 0)
 					writer.write(JsonToken.Type.COMMA, null);
 
 				writer.write(JsonToken.Type.STRING, attribute.toString());
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
-				attribute.getConverter().toJson(writer, (Class<Object>) attribute.getRawType(), value);
+				stack.push(value);
+				attribute.getConverter().toJson(stack, writer, (Class<Object>) attribute.getRawType(), value);
+				stack.pop();
 			}
 		}
 
@@ -168,8 +170,7 @@ public class ObjectConverter implements Converter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
-			throws ConversionException
+	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
@@ -178,7 +179,7 @@ public class ObjectConverter implements Converter
 		for (Attribute attribute : attributes.values())
 		{
 			Object value = attribute.getValue(object);
-			if (value != null)
+			if (value != null && stack.stream().noneMatch(e -> e == value))
 			{
 				if (i++ > 0)
 					writer.write(JsonToken.Type.COMMA, null);
@@ -187,7 +188,10 @@ public class ObjectConverter implements Converter
 
 				writer.write(JsonToken.Type.STRING, name);
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
-				attribute.getConverter().toJsonText(writer, (Class<Object>) attribute.getRawType(), value);
+
+				stack.push(value);
+				attribute.getConverter().toJsonText(stack, writer, (Class<Object>) attribute.getRawType(), value);
+				stack.pop();
 			}
 		}
 

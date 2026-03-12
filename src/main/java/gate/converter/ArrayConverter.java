@@ -9,6 +9,7 @@ import gate.util.Reflection;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 
 public class ArrayConverter extends ObjectConverter
 {
@@ -32,7 +33,7 @@ public class ArrayConverter extends ObjectConverter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(JsonToken.Type.OPEN_ARRAY, null);
 
@@ -47,7 +48,7 @@ public class ArrayConverter extends ObjectConverter
 			if (element != null)
 			{
 				Converter converter = Converter.getConverter(element.getClass());
-				converter.toJson(writer, (Class<Object>) element.getClass(), element);
+				converter.toJson(stack, writer, (Class<Object>) element.getClass(), element);
 			} else
 				writer.write(JsonToken.Type.NULL, null);
 		}
@@ -57,7 +58,7 @@ public class ArrayConverter extends ObjectConverter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
+	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object)
 			throws ConversionException
 	{
 		writer.write(JsonToken.Type.OPEN_ARRAY, null);
@@ -73,7 +74,7 @@ public class ArrayConverter extends ObjectConverter
 			if (element != null)
 			{
 				Converter converter = Converter.getConverter(element.getClass());
-				converter.toJsonText(writer, (Class<Object>) element.getClass(), element);
+				converter.toJsonText(stack, writer, (Class<Object>) element.getClass(), element);
 			} else
 				writer.write(JsonToken.Type.NULL, null);
 		}

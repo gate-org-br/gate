@@ -3,22 +3,15 @@ package gate.converter.custom;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonBoolean;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNull;
-import gate.lang.json.JsonNumber;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonString;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
+import gate.lang.json.*;
+
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 public class JsonElementConverter implements Converter
@@ -110,7 +103,7 @@ public class JsonElementConverter implements Converter
 	}
 
 	@Override
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(object != null ? object.toString() : "null");
 	}
@@ -219,9 +212,8 @@ public class JsonElementConverter implements Converter
 				scanner.scan();
 				return object;
 			}
-			default ->
-				throw new ConversionException(
-						"Unexpected token on json input: " + scanner.getCurrent());
+			default -> throw new ConversionException(
+					"Unexpected token on json input: " + scanner.getCurrent());
 		}
 
 	}

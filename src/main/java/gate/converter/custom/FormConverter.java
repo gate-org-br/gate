@@ -8,12 +8,14 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import gate.type.Form;
+
 import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +49,7 @@ public class FormConverter extends CollectionConverter
 			if (form.getFields().isEmpty())
 				return "";
 			return form.getFields().stream().map(e -> Converter.toText(e))
-				.collect(Collectors.joining("", "<fieldset>", "</fieldset>"));
+					.collect(Collectors.joining("", "<fieldset>", "</fieldset>"));
 		}
 		return "";
 	}
@@ -70,7 +72,7 @@ public class FormConverter extends CollectionConverter
 		try
 		{
 			return string != null && string.trim().length() > 0
-				? Form.valueOf(string) : null;
+					? Form.valueOf(string) : null;
 		} catch (IllegalArgumentException e)
 		{
 			throw new ConversionException(string.concat(" não é um Formulário válido."));
@@ -102,7 +104,7 @@ public class FormConverter extends CollectionConverter
 	}
 
 	@Override
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(object.toString());
 	}
@@ -134,7 +136,7 @@ public class FormConverter extends CollectionConverter
 	}
 
 	@Override
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		writer.write(object.toString());
 	}

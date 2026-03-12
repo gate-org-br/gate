@@ -7,12 +7,8 @@ import gate.error.ConversionException;
 import gate.handler.MimeDataFileHandler;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
+
+import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -26,13 +22,14 @@ import java.util.Objects;
 public class MimeDataFile extends MimeData implements MimeFile
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String name;
 
 	private MimeDataFile(ContentType contentType,
-			byte[] data,
-			String name)
+						 byte[] data,
+						 String name)
 	{
 		super(contentType, data);
 
@@ -42,8 +39,8 @@ public class MimeDataFile extends MimeData implements MimeFile
 	}
 
 	public static MimeDataFile of(ContentType contentType,
-			byte[] data,
-			String name)
+								  byte[] data,
+								  String name)
 	{
 		return new MimeDataFile(contentType, data, name);
 	}
@@ -71,7 +68,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 	public static MimeDataFile of(File file, String name)
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(new FileInputStream(file)))
+					 = new BufferedInputStream(new FileInputStream(file)))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -94,7 +91,7 @@ public class MimeDataFile extends MimeData implements MimeFile
 	public static MimeDataFile of(URL url, String name)
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(url.openStream()))
+					 = new BufferedInputStream(url.openStream()))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{

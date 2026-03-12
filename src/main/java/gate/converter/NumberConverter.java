@@ -5,6 +5,7 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
+
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -15,6 +16,7 @@ import java.sql.Types;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 
 public class NumberConverter implements Converter
@@ -142,7 +144,7 @@ public class NumberConverter implements Converter
 	 * @throws gate.error.ConversionException if the specified object is not a number
 	 */
 	@Override
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		if (object == null)
 			writer.write(JsonToken.Type.NULL, null);

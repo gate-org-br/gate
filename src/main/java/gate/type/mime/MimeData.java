@@ -9,8 +9,10 @@ import gate.io.Processor;
 import gate.io.Reader;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.Serial;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Base64;
@@ -22,6 +24,7 @@ import java.util.Objects;
 public class MimeData implements Mime
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final ContentType contentType;

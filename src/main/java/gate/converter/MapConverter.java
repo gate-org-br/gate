@@ -5,7 +5,9 @@ import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
 import gate.util.Reflection;
+
 import java.lang.reflect.Type;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +60,7 @@ public class MapConverter extends ObjectConverter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		var map = (Map<?, ?>) object;
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
@@ -76,7 +78,7 @@ public class MapConverter extends ObjectConverter
 				writer.write(JsonToken.Type.STRING, Converter.toString(entry.getKey()));
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
 				Converter converter = Converter.getConverter(entry.getValue().getClass());
-				converter.toJson(writer, (Class<Object>) entry.getValue().getClass(),
+				converter.toJson(stack, writer, (Class<Object>) entry.getValue().getClass(),
 						entry.getValue());
 			}
 		}
@@ -86,7 +88,7 @@ public class MapConverter extends ObjectConverter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object)
+	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object)
 			throws ConversionException
 	{
 		var map = (Map<?, ?>) object;
@@ -105,7 +107,7 @@ public class MapConverter extends ObjectConverter
 				writer.write(JsonToken.Type.STRING, Converter.toString(entry.getKey()));
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
 				Converter converter = Converter.getConverter(entry.getValue().getClass());
-				converter.toJsonText(writer, (Class<Object>) entry.getValue().getClass(),
+				converter.toJsonText(stack, writer, (Class<Object>) entry.getValue().getClass(),
 						entry.getValue());
 			}
 		}

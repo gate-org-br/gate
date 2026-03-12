@@ -167,6 +167,15 @@ public class PropertyTest
 	}
 
 	@Test
+	public void shouldSetDeepNestedPropertyValue()
+	{
+		User user = new User();
+		Property property = Property.getProperty(User.class, "role.manager.role.manager.role.manager.id");
+		property.setValue(user, ID.valueOf(1));
+		assertEquals(ID.valueOf(1), property.getValue(user));
+	}
+
+	@Test
 	public void shouldSetAndGetBooleanAccessorByType()
 	{
 		Mock mock = new Mock();

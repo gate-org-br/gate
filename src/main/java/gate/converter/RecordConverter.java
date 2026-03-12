@@ -162,7 +162,7 @@ public class RecordConverter implements Converter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJson(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		try
 		{
@@ -183,7 +183,7 @@ public class RecordConverter implements Converter
 						writer.write(JsonToken.Type.STRING, recordComponent.getName());
 						writer.write(JsonToken.Type.DOUBLE_DOT, null);
 						Converter converter = Converter.getConverter(recordComponent.getType());
-						converter.toJson(writer, (Class<Object>) recordComponent.getType(), value);
+						converter.toJson(stack, writer, (Class<Object>) recordComponent.getType(), value);
 					}
 				}
 
@@ -198,7 +198,7 @@ public class RecordConverter implements Converter
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> void toJsonText(JsonWriter writer, Class<T> type, T object) throws ConversionException
+	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
 		try
 		{
@@ -219,7 +219,7 @@ public class RecordConverter implements Converter
 						writer.write(JsonToken.Type.STRING, recordComponent.getName());
 						writer.write(JsonToken.Type.DOUBLE_DOT, null);
 						Converter converter = Converter.getConverter(recordComponent.getType());
-						converter.toJsonText(writer, (Class<Object>) recordComponent.getType(), value);
+						converter.toJsonText(stack, writer, (Class<Object>) recordComponent.getType(), value);
 					}
 				}
 
