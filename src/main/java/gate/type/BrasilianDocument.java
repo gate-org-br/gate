@@ -9,18 +9,21 @@ public interface BrasilianDocument
 
 	static BrasilianDocument of(String string) throws IllegalArgumentException
 	{
-		if (string != null)
-		{
-			if (CPF.RAW.matcher(string).matches())
-				return CPF.of(string);
-			if (CPF.FORMATTED.matcher(string).matches())
-				return CPF.of(string);
-			if (CNPJ.RAW.matcher(string).matches())
-				return CNPJ.of(string);
-			if (CNPJ.FORMATTED.matcher(string).matches())
-				return CNPJ.of(string);
-		}
+		if (string == null)
+			throw new IllegalArgumentException("null is not a valid Brazilian document");
 
-		throw new IllegalArgumentException(string + " is not a valid brasilian document");
+		return switch (string.length())
+		{
+			case 11 -> CPF.of(string);
+			case 18 -> CNPJ.of(string);
+			case 14 ->
+			{
+				long value = CPF.toLong(string);
+				if (value >= 0)
+					yield CPF.of(value);
+				yield CNPJ.of(string);
+			}
+			default -> throw new IllegalArgumentException(string + " is not a valid Brazilian document");
+		};
 	}
 }

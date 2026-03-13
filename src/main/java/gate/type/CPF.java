@@ -3,266 +3,632 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.custom.CPFConverter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
- * Brazilian CPF.
+ * Brazilian CPF value object backed by its 11 digits packed into a {@code long}.
  */
 @Converter(CPFConverter.class)
-public class CPF implements Serializable, Cloneable, Comparable<CPF>, BrasilianDocument
+public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Serializable
 {
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	public static final Pattern RAW = Pattern.compile("^[0-9]{11}$");
 	public static final Pattern FORMATTED = Pattern.compile("^[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}$");
 
-	private static final long serialVersionUID = 1L;
-
-	private final String value;
-
-	private CPF(String value)
-	{
-		this.value = value;
-	}
-
 	/**
-	 * Creates a new CPF with the String specified.
+	 * Creates a CPF from its numeric value.
 	 *
-	 * @param value CPF as a String
-	 * @return the new CPF created
-	 *
-	 * @throws IllegalArgumentException if the specified String is not a valid Brazilian CPF
+	 * @param value the 11-digit CPF value
+	 * @throws IllegalArgumentException if the value is not a valid CPF
 	 */
-	public static CPF of(String value)
+	public CPF
 	{
-		if (value == null)
-			throw new IllegalArgumentException("null is not a valid CPF value");
-
-		String cpf = CPF.format(value);
-		if (cpf == null)
+		if (!validate(value))
 			throw new IllegalArgumentException(value + " is not a valid CPF value");
-
-		return new CPF(cpf);
 	}
 
 	/**
-	 * Checks if the specified value is a valid Brazilian CPF
-	 *
-	 * @param value the value to be checked
-	 * @return true, only if the specified value is a valid Brazilian CPF
-	 */
-	public static boolean validate(String value)
-	{
-		if (value != null)
-			switch (value.length())
-			{
-				case 14:
-					return value.charAt(3) == '.'
-							&& value.charAt(7) == '.'
-							&& value.charAt(11) == '-' && validate(value.charAt(0),
-							value.charAt(1),
-							value.charAt(2),
-							value.charAt(4),
-							value.charAt(5),
-							value.charAt(6),
-							value.charAt(8),
-							value.charAt(9),
-							value.charAt(10),
-							value.charAt(12),
-							value.charAt(13));
-				case 11:
-					return validate(value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6),
-						value.charAt(7),
-						value.charAt(8),
-						value.charAt(9),
-						value.charAt(10));
-
-				case 10:
-					return validate('0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6),
-						value.charAt(7),
-						value.charAt(8),
-						value.charAt(9));
-
-				case 9:
-					return validate('0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6),
-						value.charAt(7),
-						value.charAt(8));
-				case 8:
-					return validate('0', '0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6),
-						value.charAt(7));
-				case 7:
-					return validate('0', '0', '0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5),
-						value.charAt(6));
-				case 6:
-					return validate('0', '0', '0', '0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4),
-						value.charAt(5));
-				case 5:
-					return validate('0', '0', '0', '0', '0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3),
-						value.charAt(4));
-				case 4:
-					return validate('0', '0', '0', '0', '0', '0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2),
-						value.charAt(3));
-				case 3:
-					return validate('0', '0', '0', '0', '0', '0', '0', '0',
-						value.charAt(0),
-						value.charAt(1),
-						value.charAt(2));
-				case 2:
-					return validate('0', '0', '0', '0', '0', '0', '0', '0', '0',
-						value.charAt(0),
-						value.charAt(1));
-			}
-
-		return false;
-	}
-
-	/**
-	 * Checks if the specified value is a valid Brazilian CPF and formats it
-	 *
-	 * @param value the value to be formatted
-	 * @return the specified value as a formatted CPF or null if the specified value is not a valid CPF
-	 */
-	public static String format(String value)
-	{
-		if (CPF.validate(value))
-			switch (value.length())
-			{
-				case 14:
-					return value;
-				case 11:
-					return value.substring(0, 3) + "." + value.substring(3, 6)
-						+ "." + value.substring(6, 9) + "-" + value.substring(9);
-				case 10:
-					return "0" + value.substring(0, 2) + "." + value.substring(2, 5)
-						+ "." + value.substring(5, 8) + "-" + value.substring(8);
-				case 9:
-					return "00" + value.charAt(0) + "." + value.substring(1, 4)
-						+ "." + value.substring(4, 7) + "-" + value.substring(7);
-				case 8:
-					return "000." + value.substring(0, 3)
-						+ "." + value.substring(3, 6) + "-" + value.substring(6);
-				case 7:
-					return "000.0" + value.substring(0, 2)
-						+ "." + value.substring(2, 5) + "-" + value.substring(5);
-				case 6:
-					return "000.00" + value.charAt(0)
-						+ "." + value.substring(1, 4) + "-" + value.substring(4);
-				case 5:
-					return "000.000." + value.substring(0, 3) + "-" + value.substring(3);
-				case 4:
-					return "000.000.0" + value.substring(0, 2) + "-" + value.substring(2);
-				case 3:
-					return "000.000.00" + value.charAt(0) + "-" + value.substring(1);
-				case 2:
-					return "000.000.000-" + value;
-			}
-		return null;
-	}
-
-	private static boolean validate(int c0, int c1, int c2, int c3, int c4,
-		int c5, int c6, int c7, int c8, int c9, int c10)
-	{
-		int digito1 = 0;
-		digito1 += Character.digit(c0, 10) * 10;
-		digito1 += Character.digit(c1, 10) * 9;
-		digito1 += Character.digit(c2, 10) * 8;
-		digito1 += Character.digit(c3, 10) * 7;
-		digito1 += Character.digit(c4, 10) * 6;
-		digito1 += Character.digit(c5, 10) * 5;
-		digito1 += Character.digit(c6, 10) * 4;
-		digito1 += Character.digit(c7, 10) * 3;
-		digito1 += Character.digit(c8, 10) * 2;
-		digito1 = (11 - (digito1 % 11)) % 11 % 10;
-
-		if (Character.digit(c9, 10) != digito1)
-			return false;
-
-		int digito2 = digito1 * 2;
-		digito2 += Character.digit(c0, 10) * 11;
-		digito2 += Character.digit(c1, 10) * 10;
-		digito2 += Character.digit(c2, 10) * 9;
-		digito2 += Character.digit(c3, 10) * 8;
-		digito2 += Character.digit(c4, 10) * 7;
-		digito2 += Character.digit(c5, 10) * 6;
-		digito2 += Character.digit(c6, 10) * 5;
-		digito2 += Character.digit(c7, 10) * 4;
-		digito2 += Character.digit(c8, 10) * 3;
-		digito2 = (11 - (digito2 % 11)) % 11 % 10;
-
-		return Character.digit(c10, 10) == digito2;
-	}
-
-	/**
-	 * Returns the CPF as a ###.###.###-## formatted String.
-	 *
-	 * @return the CPF as a ###.###.###-## formatted String.
+	 * Returns this CPF in {@code ###.###.###-##} format.
 	 */
 	@Override
 	public String toString()
 	{
-		return value;
+		return format(value);
 	}
 
+	/**
+	 * Compares two CPF values by their numeric representation.
+	 *
+	 * @param other the CPF to compare to
+	 * @return a negative number, zero, or a positive number as this CPF is less
+	 * than, equal to, or greater than {@code other}
+	 */
 	@Override
-	public boolean equals(Object obj)
+	public int compareTo(CPF other)
 	{
-		return (obj instanceof CPF && ((CPF) obj).value.equals(value));
+		return Long.compare(value, other.value);
 	}
 
-	@Override
-	public int hashCode()
+	/**
+	 * Parses a raw or formatted CPF into its numeric representation.
+	 *
+	 * @param raw the CPF in {@code 99999999999} or {@code 999.999.999-99} format
+	 * @return the parsed CPF value, or {@code -1} if the input is invalid
+	 */
+	public static long toLong(String raw)
 	{
-		return Integer.parseInt(value);
+		if (raw == null)
+			return -1;
+
+		int d0, d1, d2, d3, d4, d5, d6, d7, d8, d9, d10;
+		char c;
+		switch (raw.length())
+		{
+			case 14:
+				if (raw.charAt(3) != '.' || raw.charAt(7) != '.' || raw.charAt(11) != '-')
+					return -1;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d0 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d1 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d2 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d3 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d4 = c - '0';
+				c = raw.charAt(6);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(8);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(9);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(10);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(12);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(13);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 11:
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d0 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d1 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d2 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d3 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d4 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(6);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(7);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(8);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(9);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(10);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 10:
+				d0 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d1 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d2 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d3 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d4 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(6);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(7);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(8);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(9);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 9:
+				d0 = 0;
+				d1 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d2 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d3 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d4 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(6);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(7);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(8);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 8:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d3 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d4 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(6);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(7);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 7:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				d3 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d4 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(6);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 6:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				d3 = 0;
+				d4 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d5 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(5);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 5:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				d3 = 0;
+				d4 = 0;
+				d5 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d6 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(4);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 4:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				d3 = 0;
+				d4 = 0;
+				d5 = 0;
+				d6 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d7 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(3);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 3:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				d3 = 0;
+				d4 = 0;
+				d5 = 0;
+				d6 = 0;
+				d7 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d8 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(2);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			case 2:
+				d0 = 0;
+				d1 = 0;
+				d2 = 0;
+				d3 = 0;
+				d4 = 0;
+				d5 = 0;
+				d6 = 0;
+				d7 = 0;
+				d8 = 0;
+				c = raw.charAt(0);
+				if (c < '0' || c > '9')
+					return -1;
+				d9 = c - '0';
+				c = raw.charAt(1);
+				if (c < '0' || c > '9')
+					return -1;
+				d10 = c - '0';
+				break;
+			default:
+				return -1;
+		}
+
+		int r1 = (d0 * 10 + d1 * 9 + d2 * 8 + d3 * 7 + d4 * 6 + d5 * 5 + d6 * 4 + d7 * 3 + d8 * 2) % 11;
+		if ((r1 < 2 ? 0 : 11 - r1) != d9)
+			return -1;
+
+		int r2 = (d0 * 11 + d1 * 10 + d2 * 9 + d3 * 8 + d4 * 7 + d5 * 6 + d6 * 5 + d7 * 4 + d8 * 3 + d9 * 2) % 11;
+		if ((r2 < 2 ? 0 : 11 - r2) != d10)
+			return -1;
+
+		return (long) d0 * 10_000_000_000L
+			   + (long) d1 * 1_000_000_000L
+			   + d2 * 100_000_000
+			   + d3 * 10_000_000
+			   + d4 * 1_000_000
+			   + d5 * 100_000
+			   + d6 * 10_000
+			   + d7 * 1_000
+			   + d8 * 100
+			   + d9 * 10
+			   + d10;
 	}
 
-	@Override
-	public int compareTo(CPF o)
+	/**
+	 * Creates a CPF from its numeric representation.
+	 *
+	 * @param value the 11-digit CPF value
+	 * @return the created CPF
+	 * @throws IllegalArgumentException if the value is not a valid CPF
+	 */
+	public static CPF of(long value)
 	{
-		return value.compareTo(o.value);
+		return new CPF(value);
+	}
+
+	/**
+	 * Creates a CPF from a raw or formatted string.
+	 *
+	 * @param value the CPF in {@code 99999999999} or {@code 999.999.999-99} format
+	 * @return the created CPF
+	 * @throws IllegalArgumentException if the input is invalid
+	 */
+	public static CPF of(String value)
+	{
+		long parsed = toLong(value);
+		if (parsed < 0)
+			throw new IllegalArgumentException(value + " is not a valid CPF value");
+		return new CPF(parsed);
+	}
+
+	/**
+	 * Checks whether a raw or formatted string is a valid CPF.
+	 *
+	 * @param value the CPF to validate
+	 * @return {@code true} if the input is a valid CPF; {@code false} otherwise
+	 */
+	public static boolean validate(String value)
+	{
+		return toLong(value) >= 0;
+	}
+
+	/**
+	 * Checks whether a numeric value is a valid CPF.
+	 *
+	 * @param value the CPF numeric value
+	 * @return {@code true} if the value is a valid CPF; {@code false} otherwise
+	 */
+	public static boolean validate(long value)
+	{
+		if (value < 0 || value > 99_999_999_999L)
+			return false;
+
+		int d10 = (int) (value % 10);
+		value /= 10;
+		int d9 = (int) (value % 10);
+		value /= 10;
+		int d8 = (int) (value % 10);
+		value /= 10;
+		int d7 = (int) (value % 10);
+		value /= 10;
+		int d6 = (int) (value % 10);
+		value /= 10;
+		int d5 = (int) (value % 10);
+		value /= 10;
+		int d4 = (int) (value % 10);
+		value /= 10;
+		int d3 = (int) (value % 10);
+		value /= 10;
+		int d2 = (int) (value % 10);
+		value /= 10;
+		int d1 = (int) (value % 10);
+		int d0 = (int) (value / 10);
+
+		int r1 = (d0 * 10 + d1 * 9 + d2 * 8 + d3 * 7 + d4 * 6 + d5 * 5 + d6 * 4 + d7 * 3 + d8 * 2) % 11;
+		if ((r1 < 2 ? 0 : 11 - r1) != d9)
+			return false;
+
+		int r2 = (d0 * 11 + d1 * 10 + d2 * 9 + d3 * 8 + d4 * 7 + d5 * 6 + d6 * 5 + d7 * 4 + d8 * 3 + d9 * 2) % 11;
+		return (r2 < 2 ? 0 : 11 - r2) == d10;
+	}
+
+	/**
+	 * Normalizes a raw or formatted CPF string to {@code ###.###.###-##}.
+	 *
+	 * @param value the CPF to format
+	 * @return the formatted CPF, or {@code null} if the input is invalid
+	 */
+	public static String format(String value)
+	{
+		long parsed = toLong(value);
+		return parsed < 0 ? null : format(parsed);
+	}
+
+	/**
+	 * Formats a numeric CPF as {@code ###.###.###-##}.
+	 *
+	 * @param value the CPF numeric value
+	 * @return the formatted CPF, or {@code null} if the value is invalid
+	 */
+	public static String format(long value)
+	{
+		if (!validate(value))
+			return null;
+
+		char[] chars = new char[14];
+		chars[3] = '.';
+		chars[7] = '.';
+		chars[11] = '-';
+
+		chars[13] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[12] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[10] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[9] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[8] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[6] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[5] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[4] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[2] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[1] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[0] = (char) ('0' + value);
+		return new String(chars);
+	}
+
+	/**
+	 * Formats a numeric CPF as an 11-digit string with left zero padding.
+	 *
+	 * @param value the CPF numeric value
+	 * @return the 11-digit CPF string, or {@code null} if the value is invalid
+	 */
+	public static String digits(long value)
+	{
+		if (!validate(value))
+			return null;
+
+		char[] chars = new char[11];
+		chars[10] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[9] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[8] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[7] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[6] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[5] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[4] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[3] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[2] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[1] = (char) ('0' + (value % 10));
+		value /= 10;
+		chars[0] = (char) ('0' + value);
+		return new String(chars);
 	}
 }
