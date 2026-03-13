@@ -5,7 +5,8 @@ import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.type.CNPJ;
+import gate.type.br.CNPJ;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

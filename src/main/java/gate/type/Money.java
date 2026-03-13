@@ -3,6 +3,8 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.MoneyConverter;
+
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -16,9 +18,10 @@ import java.util.stream.Stream;
 @Converter(MoneyConverter.class)
 public final class Money extends Number implements Comparable<Money>
 {
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private final BigDecimal value;
-	private static final long serialVersionUID = 1L;
 
 	public static final Money ZERO = new Money(BigDecimal.ZERO);
 
@@ -61,7 +64,7 @@ public final class Money extends Number implements Comparable<Money>
 	{
 		return new Percentage(money.value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO
 				: getValue().divide(money.getValue(), 4, RoundingMode.HALF_EVEN)
-						.multiply(new BigDecimal(100), new MathContext(2, RoundingMode.HALF_EVEN)));
+				.multiply(new BigDecimal(100), new MathContext(2, RoundingMode.HALF_EVEN)));
 	}
 
 	public Money add(Tax tax)

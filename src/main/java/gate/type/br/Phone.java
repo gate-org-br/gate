@@ -1,8 +1,10 @@
-package gate.type;
+package gate.type.br;
 
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.PhoneConverter;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -12,6 +14,7 @@ import java.util.regex.Pattern;
 public class Phone implements Serializable, Comparable<Phone>
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String value;
@@ -21,7 +24,7 @@ public class Phone implements Serializable, Comparable<Phone>
 	{
 		if (value == null)
 			throw new IllegalArgumentException("value can't be null");
-		this.value = value.replaceAll("\\[|\\]|\\(|\\)|\\-|\\ |\\.", "");
+		this.value = value.replaceAll("[\\[\\]()\\- .]", "");
 	}
 
 	public String getValue()

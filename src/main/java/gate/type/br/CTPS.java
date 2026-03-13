@@ -1,13 +1,16 @@
-package gate.type;
+package gate.type.br;
 
 import gate.annotation.Converter;
 import gate.converter.custom.CTPSConverter;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 @Converter(CTPSConverter.class)
 public class CTPS implements Serializable, Comparable<CTPS>
 {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String value;
@@ -51,10 +54,10 @@ public class CTPS implements Serializable, Comparable<CTPS>
 	public String toString()
 	{
 		return String.format("%c%c%c%c%c %c%c%c%c%c-%c%c", value.charAt(0),
-			value.charAt(1), value.charAt(2), value.charAt(3),
-			value.charAt(4), value.charAt(5), value.charAt(6),
-			value.charAt(7), value.charAt(8), value.charAt(9),
-			value.charAt(10), value.charAt(11));
+				value.charAt(1), value.charAt(2), value.charAt(3),
+				value.charAt(4), value.charAt(5), value.charAt(6),
+				value.charAt(7), value.charAt(8), value.charAt(9),
+				value.charAt(10), value.charAt(11));
 	}
 
 	@Override

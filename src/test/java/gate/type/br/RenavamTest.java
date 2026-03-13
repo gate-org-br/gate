@@ -1,8 +1,10 @@
-package gate.type;
+package gate.type.br;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -18,7 +20,7 @@ public class RenavamTest
 	@Test
 	public void testValidate0063988496_2()
 	{
-		assertTrue(Renavam.validate("0063988496-2"));
+		Assertions.assertTrue(Renavam.validate("0063988496-2"));
 	}
 
 	@Test

@@ -1,9 +1,9 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.converter.Converter;
-import gate.type.Phone;
+import gate.error.ConversionException;
+import gate.type.br.Phone;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

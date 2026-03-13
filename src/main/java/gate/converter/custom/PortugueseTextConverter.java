@@ -4,7 +4,8 @@ import gate.constraint.Constraint;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.type.PortugueseText;
+import gate.type.br.PortugueseText;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

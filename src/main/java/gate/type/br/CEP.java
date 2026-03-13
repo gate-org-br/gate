@@ -1,7 +1,8 @@
-package gate.type;
+package gate.type.br;
 
 import gate.annotation.Converter;
 import gate.converter.custom.CEPConverter;
+
 import java.io.Serializable;
 
 @Converter(CEPConverter.class)
@@ -41,6 +42,6 @@ public class CEP implements Serializable
 	public String toString()
 	{
 		return String.format("%c%c.%c%c%c-%c%c%c", value.charAt(0), value.charAt(1), value.charAt(2), value.charAt(3), value.charAt(4), value.charAt(5), value
-			.charAt(6), value.charAt(7));
+				.charAt(6), value.charAt(7));
 	}
 }

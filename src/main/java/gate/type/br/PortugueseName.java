@@ -1,4 +1,4 @@
-package gate.type;
+package gate.type.br;
 
 import gate.annotation.Converter;
 import gate.converter.custom.PortugueseNameConverter;
