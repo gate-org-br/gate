@@ -9,6 +9,7 @@ import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.type.ID;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -29,7 +30,7 @@ public class Credentials
 
 	@Inject
 	public Credentials(GateControl control,
-		CryptoKeys cryptoKeys)
+					   CryptoKeys cryptoKeys)
 	{
 		this.control = control;
 		this.cryptoKeys = cryptoKeys;
@@ -38,10 +39,10 @@ public class Credentials
 	public String create(JsonObject claims)
 	{
 		return Jwts.builder()
-			.claims(claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())))
-			.expiration(Date.from(Instant.now().plusSeconds(3600)))
-			.signWith(this.cryptoKeys.signKey())
-			.compact();
+				.claims(claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())))
+				.expiration(Date.from(Instant.now().plusSeconds(3600)))
+				.signWith(this.cryptoKeys.signKey())
+				.compact();
 	}
 
 	public JsonObject parse(String token) throws UnauthorizedException
@@ -49,29 +50,32 @@ public class Credentials
 		try
 		{
 			return Jwts.parser()
-				.verifyWith(this.cryptoKeys.signKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload()
-				.entrySet()
-				.stream()
-				.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
+					.verifyWith(this.cryptoKeys.signKey())
+					.build()
+					.parseSignedClaims(token)
+					.getPayload()
+					.entrySet()
+					.stream()
+					.collect(JsonObject::new, (c, e) -> c.put(e.getKey(), JsonElement.of(e.getValue())), JsonObject::putAll);
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
 		} catch (ExpiredJwtException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with expired token");
+		} catch (JwtException | IllegalArgumentException ex)
+		{
+			throw new UnauthorizedException("Attempt to authenticate with invalid token");
 		}
 	}
 
 	public String subject(User user)
 	{
 		return Jwts.builder()
-			.subject(user.getId().toString())
-			.expiration(Date.from(Instant.now().plusSeconds(3600)))
-			.signWith(this.cryptoKeys.signKey())
-			.compact();
+				.subject(user.getId().toString())
+				.expiration(Date.from(Instant.now().plusSeconds(3600)))
+				.signWith(this.cryptoKeys.signKey())
+				.compact();
 	}
 
 	public User subject(String token) throws InvalidUsernameException, HierarchyException, UnauthorizedException
@@ -79,17 +83,20 @@ public class Credentials
 		try
 		{
 			return control.select(ID.valueOf(Jwts.parser()
-				.verifyWith(this.cryptoKeys.signKey())
-				.build()
-				.parseSignedClaims(token)
-				.getPayload()
-				.get("sub", String.class)));
+					.verifyWith(this.cryptoKeys.signKey())
+					.build()
+					.parseSignedClaims(token)
+					.getPayload()
+					.get("sub", String.class)));
 		} catch (SignatureException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
 		} catch (ExpiredJwtException ex)
 		{
 			throw new UnauthorizedException("Attempt to authenticate with expired token");
+		} catch (JwtException | IllegalArgumentException ex)
+		{
+			throw new UnauthorizedException("Attempt to authenticate with invalid token");
 		}
 	}
 
