@@ -2,7 +2,9 @@ package gate.http;
 
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.error.*;
+import gate.error.AppError;
+import gate.error.AuthenticationException;
+import gate.error.ConversionException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
@@ -24,7 +26,7 @@ import java.util.stream.Stream;
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {
 
-	private static final Pattern AUTHORIZATION = Pattern.compile("(.*) (.*)");
+	private static final Pattern AUTHORIZATION = Pattern.compile("^(Basic|Bearer) ([^ ]+)$", Pattern.CASE_INSENSITIVE);
 
 	public ScreenServletRequest(HttpServletRequest request)
 	{
@@ -37,8 +39,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		try
 		{
 			return contentType != null
-				&& contentType.toLowerCase().startsWith("multipart/") ? getParts()
-				: Collections.emptyList();
+				   && contentType.toLowerCase().startsWith("multipart/") ? getParts()
+					: Collections.emptyList();
 		} catch (IOException | ServletException e)
 		{
 			throw new RuntimeException(e);
@@ -53,7 +55,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public List<String> getParameterList()
 	{
 		Set<String> parameters = new HashSet<>();
-		for (Enumeration<String> enumeration = getParameterNames(); enumeration.hasMoreElements();)
+		for (Enumeration<String> enumeration = getParameterNames(); enumeration.hasMoreElements(); )
 			parameters.add(enumeration.nextElement());
 		parts().stream().map(Part::getName).collect(Collectors.toCollection(() -> parameters));
 		return new ArrayList<>(parameters);
@@ -69,9 +71,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 				return Policonverter.getPoliconverter(type)
-					.getObject(elementType, parts().stream()
-						.filter(e -> e.getName().equals(name))
-						.toArray(Part[]::new));
+						.getObject(elementType, parts().stream()
+								.filter(e -> e.getName().equals(name))
+								.toArray(Part[]::new));
 			return null;
 		} catch (ConversionException e)
 		{
@@ -111,7 +113,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	{
 		String string = getParameter(name);
 		return string != null ? string
-			: parts().stream()
+				: parts().stream()
 				.filter(e -> e.getName().equals(name))
 				.filter(e -> e.getSize() > 0)
 				.findAny()
@@ -128,7 +130,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 				return (T) Converter.getConverter(type).ofString(type, URLDecoder.decode(getParameter(name), charset));
 			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 				return (T) Converter.getConverter(type)
-					.ofPart(type, parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
+						.ofPart(type, parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
 			return null;
 		} catch (UnsupportedEncodingException e)
 		{
@@ -138,7 +140,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public String getBody()
 	{
-		try (BufferedReader reader = this.getReader(); StringWriter string = new StringWriter())
+		try (BufferedReader reader = this.getReader();
+			 StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -159,12 +162,12 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public Optional<String> getCookieValue(String name)
 	{
 		return Optional.ofNullable(getCookies())
-			.stream()
-			.flatMap(Stream::of)
-			.filter(c -> name.equals(c.getName()))
-			.findFirst()
-			.map(Cookie::getValue)
-			.filter(e -> !e.isBlank());
+				.stream()
+				.flatMap(Stream::of)
+				.filter(c -> name.equals(c.getName()))
+				.findFirst()
+				.map(Cookie::getValue)
+				.filter(e -> !e.isBlank());
 	}
 
 	public Authorization getAuthorization() throws AuthenticationException
@@ -175,24 +178,16 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			String username = getParameter("$username");
 			String password = getParameter("$password");
 			if (username != null || password != null)
-			{
-				if (username == null || username.isBlank())
-					throw new InvalidUsernameException();
-
-				if (password == null || password.isBlank())
-					throw new InvalidPasswordException();
-
 				return BasicAuthorization.from(username, password);
-			}
 
 			return getCookieValue("subject")
-				.filter(Objects::nonNull)
-				.filter(e -> !e.isBlank())
-				.filter(e -> e.chars().filter(c -> c == '.').count() == 2)
-				.map(CookieAuthorization::valueOf)
-				.orElse(null);
+					.filter(e -> !e.isBlank())
+					.filter(e -> e.chars().filter(c -> c == '.').count() == 2)
+					.map(CookieAuthorization::valueOf)
+					.orElse(null);
 		}
 
+		header = header.trim();
 		Matcher authorization = AUTHORIZATION.matcher(header);
 		if (!authorization.matches())
 			throw new AuthenticationException("Invalid authorization header");
@@ -200,12 +195,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String type = authorization.group(1);
 		return switch (type.toUpperCase())
 		{
-			case "BEARER" ->
-				BearerAuthorization.valueOf(header);
-			case "BASIC" ->
-				BasicAuthorization.valueOf(header);
-			default ->
-				throw new AuthenticationException("Authorization type not supported: " + type);
+			case "BEARER" -> BearerAuthorization.valueOf(header);
+			case "BASIC" -> BasicAuthorization.valueOf(header);
+			default -> throw new AuthenticationException("Authorization type not supported: " + type);
 		};
 
 	}

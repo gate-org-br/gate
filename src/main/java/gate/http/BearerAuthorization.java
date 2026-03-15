@@ -1,12 +1,14 @@
 package gate.http;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BearerAuthorization implements Authorization
 {
 
 	private final String token;
-	private static final String PREFIX = "Bearer ";
+	private static final Pattern AUTHORIZATION = Pattern.compile("^Bearer ([^ ]+)$", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Creates a new BearerAuthorization instance.
@@ -37,7 +39,7 @@ public class BearerAuthorization implements Authorization
 	@Override
 	public String toString()
 	{
-		return PREFIX + token;
+		return "Bearer " + token;
 	}
 
 	/**
@@ -49,9 +51,13 @@ public class BearerAuthorization implements Authorization
 	 */
 	public static BearerAuthorization valueOf(String authString)
 	{
-		if (authString == null || !authString.startsWith(PREFIX))
+		if (authString == null)
+			throw new IllegalArgumentException("Authorization header can't be null");
+
+		Matcher matcher = AUTHORIZATION.matcher(authString);
+		if (!matcher.matches())
 			throw new IllegalArgumentException("Invalid Authorization header format");
-		return new BearerAuthorization(authString.substring(PREFIX.length()));
+		return new BearerAuthorization(matcher.group(1));
 	}
 
 	public static BearerAuthorization from(String token)
@@ -63,7 +69,7 @@ public class BearerAuthorization implements Authorization
 	public boolean equals(Object o)
 	{
 		return o instanceof BearerAuthorization bearerAuthorization
-				&& Objects.equals(token, bearerAuthorization.token);
+			   && Objects.equals(token, bearerAuthorization.token);
 	}
 
 	@Override

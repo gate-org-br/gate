@@ -1,15 +1,20 @@
 package gate.http;
 
+import gate.error.InvalidPasswordException;
+import gate.error.InvalidUsernameException;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BasicAuthorization implements Authorization
 {
 
 	private final String username;
 	private final String password;
-	private static final String PREFIX = "Basic ";
+	private static final Pattern AUTHORIZATION = Pattern.compile("^Basic ([^ ]+)$", Pattern.CASE_INSENSITIVE);
 
 	private BasicAuthorization(String username, String password)
 	{
@@ -44,7 +49,7 @@ public class BasicAuthorization implements Authorization
 		byte[] encodedBytes = Base64.getEncoder()
 				.encodeToString(credentials.getBytes(StandardCharsets.UTF_8))
 				.getBytes(StandardCharsets.UTF_8);
-		return PREFIX + new String(encodedBytes, StandardCharsets.UTF_8);
+		return "Basic " + new String(encodedBytes, StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -56,11 +61,16 @@ public class BasicAuthorization implements Authorization
 	 */
 	public static BasicAuthorization valueOf(String string)
 	{
-		if (string == null || !string.startsWith(PREFIX))
+		if (string == null)
+			throw new IllegalArgumentException("Authorization header can't be null");
+		Matcher matcher = AUTHORIZATION.matcher(string);
+		if (!matcher.matches())
 			throw new IllegalArgumentException("Invalid Authorization header format");
 
-		String encodedCredentials = string.substring(PREFIX.length());
-		String decodedCredentials = new String(Base64.getDecoder().decode(encodedCredentials),
+		String encodedCredentials = matcher.group(1);
+
+		String decodedCredentials = new String(Base64.getDecoder()
+				.decode(encodedCredentials),
 				StandardCharsets.UTF_8);
 
 		String[] values = decodedCredentials.split(":", 2);
@@ -72,6 +82,10 @@ public class BasicAuthorization implements Authorization
 
 	public static BasicAuthorization from(String username, String password)
 	{
+		if (username == null || username.isBlank())
+			throw new InvalidUsernameException();
+		if (password == null || password.isBlank())
+			throw new InvalidPasswordException();
 		return new BasicAuthorization(username, password);
 	}
 
@@ -79,8 +93,8 @@ public class BasicAuthorization implements Authorization
 	public boolean equals(Object o)
 	{
 		return o instanceof BasicAuthorization basicAuthorization
-				&& Objects.equals(username, basicAuthorization.username)
-				&& Objects.equals(password, basicAuthorization.password);
+			   && Objects.equals(username, basicAuthorization.username)
+			   && Objects.equals(password, basicAuthorization.password);
 	}
 
 	@Override
