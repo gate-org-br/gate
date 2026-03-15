@@ -71,7 +71,7 @@ public class Select implements SelectClause
 	/**
 	 * Creates a select builder from the specified SQL string.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective format argument.
+	 * Each @ symbol found on the query will be replaced by its respective format argument.
 	 *
 	 * @param sql  the query to be executed
 	 * @param args arguments referenced by the @ symbols in the SQL string
@@ -98,7 +98,7 @@ public class Select implements SelectClause
 	/**
 	 * Creates a select builder from the specified SQL string.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective format argument.
+	 * Each @ symbol found on the query will be replaced by its respective format argument.
 	 *
 	 * @param resource the SQL file with the query to be executed
 	 * @param args     arguments referenced by the @ symbols in the SQL string
@@ -112,7 +112,7 @@ public class Select implements SelectClause
 	/**
 	 * Creates a select builder from the specified SQL string.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective format argument.
+	 * Each @ symbol found on the query will be replaced by its respective format argument.
 	 *
 	 * @param sql        the query to be executed
 	 * @param conditions arguments referenced by the @ symbols in the SQL string
@@ -141,7 +141,7 @@ public class Select implements SelectClause
 	/**
 	 * Creates a select builder from the specified SQL string.
 	 * <p>
-	 * Each @ symbol found on the query will be replaced by it's respective format argument.
+	 * Each @ symbol found on the query will be replaced by its respective format argument.
 	 *
 	 * @param resource   the SQL file with the query to be executed
 	 * @param conditions arguments referenced by the @ symbols in the SQL string

@@ -16,12 +16,9 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SelectTest
 {
@@ -42,7 +39,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select id, name from Uzer", query.toString());
-		assertEquals(query.getParameters(), Collections.emptyList());
+		assertEquals(query.getParameters(), List.of());
 	}
 
 	@Test
@@ -56,10 +53,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").isEq("1"))).as("Uzers")
+								.of("Role$id").isEq("1"))).as("Users")
 				.build();
 
-		assertEquals("select id, name from (select id, name from Uzer where Role$id = 1) as Uzers", query.toString());
+		assertEquals("select id, name from (select id, name from Uzer where Role$id = 1) as Users", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -74,11 +71,11 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq(1))).as("Uzers")
+								.of("Role$id").eq(1))).as("Users")
 				.build();
 
-		assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Uzers", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
+		assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Users", query.toString());
+		assertEquals(query.getParameters(), List.of((Object) 1));
 	}
 
 	@Test
@@ -93,10 +90,10 @@ public class SelectTest
 						.from("Uzer")
 						.where(Condition
 								.of("Role$id")
-								.eq())).as("Uzers")
+								.eq())).as("Users")
 				.build();
 
-		assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Uzers", query.toString());
+		assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Users", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -112,10 +109,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").isEq("1"))).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").isEq("1"))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = 1) as Uzers on Uzers.Role$id = Role.id", query.toString());
+		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = 1) as Users on Users.Role$id = Role.id", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -131,10 +128,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").isEq("1"))).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").isEq("1"))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = 1) as Uzers on Uzers.Role$id = Role.id", query.toString());
+		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = 1) as Users on Users.Role$id = Role.id", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -150,10 +147,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").isEq("1"))).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").isEq("1"))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = 1) as Uzers on Uzers.Role$id = Role.id", query.toString());
+		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = 1) as Users on Users.Role$id = Role.id", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -169,10 +166,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq())).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").eq())).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
+		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -188,10 +185,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq())).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").eq())).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
+		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -207,10 +204,10 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq())).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").eq())).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
+		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
 		assertTrue(query.getParameters().isEmpty());
 	}
 
@@ -226,11 +223,11 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq(1))).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").eq(1))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
+		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
+		assertEquals(query.getParameters(), List.of((Object) 1));
 	}
 
 	@Test
@@ -245,11 +242,11 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq(1))).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").eq(1))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
+		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
+		assertEquals(query.getParameters(), List.of((Object) 1));
 	}
 
 	@Test
@@ -264,11 +261,11 @@ public class SelectTest
 						.expression("name")
 						.from("Uzer")
 						.where(Condition
-								.of("Role$id").eq(1))).as("Uzers").on(Condition.of("Uzers.Role$id").isEq("Role.id"))
+								.of("Role$id").eq(1))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
-		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Uzers on Uzers.Role$id = Role.id", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
+		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
+		assertEquals(query.getParameters(), List.of((Object) 1));
 	}
 
 	@Test
@@ -284,7 +281,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = Role.id", query.toString());
-		assertEquals(query.getParameters(), Collections.emptyList());
+		assertEquals(query.getParameters(), List.of());
 	}
 
 	@Test
@@ -300,7 +297,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = ?", query.toString());
-		assertEquals(query.getParameters(), Collections.emptyList());
+		assertEquals(query.getParameters(), List.of());
 	}
 
 	@Test
@@ -316,7 +313,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = ?", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
+		assertEquals(query.getParameters(), List.of((Object) 1));
 	}
 
 	@Test
@@ -334,7 +331,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select Role.id as \"id\", Role.name as \"name\", (select count(*) from Uzer where Role$id = Role.id) as \"users\" from Role", query.toString());
-		assertEquals(query.getParameters(), Collections.emptyList());
+		assertEquals(query.getParameters(), List.of());
 	}
 
 	@Test
@@ -373,11 +370,11 @@ public class SelectTest
 				.build();
 
 		assertEquals("select Role.id as \"id\", Role.name as \"name\", (select count(*) from Uzer where Role$id = Role.id and active = ?) as \"users\" from Role where Role.id = ?", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) Boolean.TRUE, (Object) 1));
+		assertEquals(query.getParameters(), List.of(Boolean.TRUE, (Object) 1));
 	}
 
 	@Test
-	public void testFetchEntityFromString() throws NotFoundException, SQLException
+	public void testFetchEntityFromString() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -395,7 +392,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromResource() throws NotFoundException, SQLException
+	public void testFetchEntityFromResource() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -412,7 +409,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityListFiltering() throws NotFoundException, SQLException
+	public void testFetchEntityListFiltering() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -428,7 +425,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromCompiledTableBuilder() throws NotFoundException, SQLException
+	public void testFetchEntityFromCompiledTableBuilder() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -452,7 +449,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromGenericTableBuilder() throws NotFoundException, SQLException
+	public void testFetchEntityFromGenericTableBuilder() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -476,7 +473,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromTypedBuilder() throws NotFoundException, SQLException
+	public void testFetchEntityFromTypedBuilder() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -495,7 +492,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromTypedDefaultBuilder() throws NotFoundException, SQLException
+	public void testFetchEntityFromTypedDefaultBuilder() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -513,7 +510,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromGQNWithParameter() throws NotFoundException, SQLException
+	public void testFetchEntityFromGQNWithParameter() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -531,7 +528,7 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException, SQLException
+	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException
 	{
 
 		try (Link link = TestDataSource.getLink())
@@ -566,7 +563,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select id, name from Uzer union select id, name from Role", query.toString());
-		assertEquals(query.getParameters(), Collections.emptyList());
+		assertEquals(query.getParameters(), List.of());
 	}
 
 	@Test
@@ -587,7 +584,7 @@ public class SelectTest
 				.build();
 
 		assertEquals("select id, name from Uzer where name like ? union select id, name from Role where name like ?", query.toString());
-		assertEquals(query.getParameters(), Arrays.asList((Object) "%name%", (Object) "%name%"));
+		assertEquals(query.getParameters(), List.of("%name%", (Object) "%name%"));
 	}
 
 	@Test
@@ -618,7 +615,23 @@ public class SelectTest
 				.build();
 
 		assertEquals("select id, name from Uzer for update", query.toString());
-		assertEquals(query.getParameters(), Collections.emptyList());
+		assertEquals(query.getParameters(), List.of());
+	}
+
+	@Test
+	public void testForUpdateOf()
+	{
+		var query = Select
+				.expression("id")
+				.expression("name")
+				.from("Uzer")
+				.where(Condition.of("id").eq(1))
+				.forUpdate()
+				.of("Uzer")
+				.build();
+
+		assertEquals("select id, name from Uzer where id = ? for update of Uzer", query.toString());
+		assertEquals(query.getParameters(), List.of(1));
 	}
 
 	@Test
@@ -632,7 +645,7 @@ public class SelectTest
 							.from("Person")))
 					.fetchBoolean());
 
-			assertTrue(!link.from(Select.exists(Select
+			assertFalse(link.from(Select.exists(Select
 							.expression("id")
 							.expression("name")
 							.from("Person")

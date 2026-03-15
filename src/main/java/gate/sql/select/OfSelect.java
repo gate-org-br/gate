@@ -5,16 +5,15 @@ import gate.sql.statement.Query;
 
 import java.util.stream.Collectors;
 
-public abstract class LockedSelect implements SelectClause, OfAble
+public abstract class OfSelect implements SelectClause
 {
 
 	private final Clause clause;
 
-	public LockedSelect(Clause clause)
+	public OfSelect(Clause clause)
 	{
 		this.clause = clause;
 	}
-
 
 	@Override
 	public Clause getClause()
@@ -22,7 +21,7 @@ public abstract class LockedSelect implements SelectClause, OfAble
 		return clause;
 	}
 
-	public abstract static class Constant extends LockedSelect implements OfAble.Constant, Query.Constant.Builder
+	public abstract static class Constant extends OfSelect implements Query.Constant.Builder
 	{
 
 		public Constant(Clause clause)
@@ -37,7 +36,7 @@ public abstract class LockedSelect implements SelectClause, OfAble
 		}
 	}
 
-	public static abstract class Generic extends LockedSelect implements OfAble.Generic, Query.Builder
+	public static abstract class Generic extends OfSelect implements Query.Builder
 	{
 
 		public Generic(Clause clause)
@@ -52,7 +51,7 @@ public abstract class LockedSelect implements SelectClause, OfAble
 		}
 	}
 
-	public static abstract class Compiled extends LockedSelect implements OfAble.Compiled, Query.Compiled.Builder
+	public static abstract class Compiled extends OfSelect implements Query.Compiled.Builder
 	{
 
 		public Compiled(Clause clause)
