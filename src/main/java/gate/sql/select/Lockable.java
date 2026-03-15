@@ -6,12 +6,20 @@ public interface Lockable extends Clause
 {
 
 	/**
-	 * Locks the selected rows so no other transaction can modify them until the current
+	 * Locks the selected rows so no other transaction can read or modify them until the current
 	 * transaction commits or rolls back.
 	 *
 	 * @return the current builder, for chained invocations
 	 */
 	LockedSelect forUpdate();
+
+	/**
+	 * Locks the selected rows so no other transaction can modify them until the current
+	 * transaction commits or rolls back.
+	 *
+	 * @return the current builder, for chained invocations
+	 */
+	LockedSelect forShare();
 
 	interface Constant extends Lockable
 	{
@@ -24,6 +32,18 @@ public interface Lockable extends Clause
 				public String toString()
 				{
 					return getClause() + " for update";
+				}
+			};
+		}
+
+		default LockedSelect.Constant forShare()
+		{
+			return new LockedSelect.Constant(this)
+			{
+				@Override
+				public String toString()
+				{
+					return getClause() + " for share";
 				}
 			};
 		}
@@ -42,6 +62,18 @@ public interface Lockable extends Clause
 				}
 			};
 		}
+
+		default LockedSelect.Generic forShare()
+		{
+			return new LockedSelect.Generic(this)
+			{
+				@Override
+				public String toString()
+				{
+					return getClause() + " for share";
+				}
+			};
+		}
 	}
 
 	interface Compiled extends Lockable
@@ -54,6 +86,18 @@ public interface Lockable extends Clause
 				public String toString()
 				{
 					return getClause() + " for update";
+				}
+			};
+		}
+
+		default LockedSelect.Compiled forShare()
+		{
+			return new LockedSelect.Compiled(this)
+			{
+				@Override
+				public String toString()
+				{
+					return getClause() + " for share";
 				}
 			};
 		}

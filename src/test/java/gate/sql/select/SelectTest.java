@@ -635,6 +635,36 @@ public class SelectTest
 	}
 
 	@Test
+	public void testForShare()
+	{
+		Query.Constant query = Select
+				.expression("id")
+				.expression("name")
+				.from("Uzer")
+				.forShare()
+				.build();
+
+		assertEquals("select id, name from Uzer for share", query.toString());
+		assertEquals(query.getParameters(), List.of());
+	}
+
+	@Test
+	public void testForShareOf()
+	{
+		var query = Select
+				.expression("id")
+				.expression("name")
+				.from("Uzer")
+				.where(Condition.of("id").eq(1))
+				.forShare()
+				.of("Uzer")
+				.build();
+
+		assertEquals("select id, name from Uzer where id = ? for share of Uzer", query.toString());
+		assertEquals(query.getParameters(), List.of(1));
+	}
+
+	@Test
 	public void testExists()
 	{
 		try (Link link = TestDataSource.getLink())
