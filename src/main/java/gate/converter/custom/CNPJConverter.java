@@ -22,7 +22,7 @@ public class CNPJConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(18));
-		constraints.add(new Pattern.Implementation("^[0-9]{2}[.][0-9]{3}[.][0-9]{3}[/][0-9]{4}[-][0-9]{2}$"));
+		constraints.add(new Pattern.Implementation(CNPJ.FORMATTED.toString()));
 		return constraints;
 	}
 

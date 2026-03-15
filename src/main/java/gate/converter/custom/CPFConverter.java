@@ -34,7 +34,7 @@ public class CPFConverter implements Converter
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
 		constraints.add(new Maxlength.Implementation(14));
-		constraints.add(new Pattern.Implementation("^[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}$"));
+		constraints.add(new Pattern.Implementation(CPF.FORMATTED.toString()));
 		return constraints;
 	}
 

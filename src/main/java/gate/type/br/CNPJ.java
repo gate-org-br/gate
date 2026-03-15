@@ -16,7 +16,6 @@ public record CNPJ(long value) implements Comparable<CNPJ>, BrasilianDocument, S
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	public static final Pattern RAW = Pattern.compile("^[0-9]{14}$");
 	public static final Pattern FORMATTED = Pattern.compile("^[0-9]{2}[.][0-9]{3}[.][0-9]{3}/[0-9]{4}-[0-9]{2}$");
 
 	/**
@@ -770,6 +769,18 @@ public record CNPJ(long value) implements Comparable<CNPJ>, BrasilianDocument, S
 	{
 		long parsed = toLong(value);
 		return parsed < 0 ? null : format(parsed);
+	}
+
+	/**
+	 * Formats a raw or formatted CNPJ as a 14-digit string with left zero padding.
+	 *
+	 * @param value the CNPJ numeric value
+	 * @return the 14-digit CNPJ string, or {@code null} if the value is invalid
+	 */
+	public static String digits(String value)
+	{
+		long parsed = toLong(value);
+		return parsed < 0 ? null : digits(parsed);
 	}
 
 	/**

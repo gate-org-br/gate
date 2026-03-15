@@ -16,7 +16,6 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	public static final Pattern RAW = Pattern.compile("^[0-9]{11}$");
 	public static final Pattern FORMATTED = Pattern.compile("^[0-9]{3}[.][0-9]{3}[.][0-9]{3}[-][0-9]{2}$");
 
 	/**
@@ -557,6 +556,18 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 	}
 
 	/**
+	 * Formats a raw or formatted CPF as a 14-digit string with left zero padding.
+	 *
+	 * @param value the CPF numeric value
+	 * @return the 11-digit CPF string, or {@code null} if the value is invalid
+	 */
+	public static String digits(String value)
+	{
+		long parsed = toLong(value);
+		return parsed < 0 ? null : digits(parsed);
+	}
+
+	/**
 	 * Formats a numeric CPF as {@code ###.###.###-##}.
 	 *
 	 * @param value the CPF numeric value
@@ -631,4 +642,5 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 		chars[0] = (char) ('0' + value);
 		return new String(chars);
 	}
+
 }
