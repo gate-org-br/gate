@@ -20,7 +20,7 @@ public class Auth implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	@Required()
-	@Description("O campo ID é requerido.")
+	@Description
 	private ID id;
 
 	private Role role;
@@ -31,26 +31,26 @@ public class Auth implements Serializable
 	private Func func;
 
 	@Required
-	@Description("Defina o tipo do acesso. Acessos públicos são herdados e acessos privados não.")
+	@Description
 	private Scope scope;
 
 	@Required
-	@Description("Defina o modo do acesso.")
+	@Description
 	private Access access;
 
 	@Maxlength(64)
 	@Pattern("^[$a-zA-Z0-9_.]*$")
-	@Description("O campo MÓDULO deve ser preenchido com, NO máximo, 64 LETRAS.")
+	@Description
 	private String module;
 
 	@Maxlength(64)
 	@Pattern("^[$a-zA-Z0-9_]*$")
-	@Description("O campo SCREEN deve ser preenchido com, NO máximo, 64 LETRAS.")
+	@Description
 	private String screen;
 
 	@Maxlength(64)
 	@Pattern("^[$a-zA-Z0-9_]*$")
-	@Description("O campo ACTION deve ser preenchido com, NO máximo, 64 LETRAS.")
+	@Description
 	private String action;
 
 	@NullSafe
@@ -198,11 +198,11 @@ public class Auth implements Serializable
 
 		@Icon("2037")
 		@Color("#006600")
-		@Name("Permitir")
+		@Name
 		GRANT,
 		@Icon("2038")
 		@Color("#660000")
-		@Name("Bloquear")
+		@Name
 		BLOCK
 	}
 
@@ -210,10 +210,10 @@ public class Auth implements Serializable
 	public enum Scope
 	{
 		@Icon("2006")
-		@Name("Público")
+		@Name
 		PUBLIC,
 		@Icon("2000")
-		@Name("Privado")
+		@Name
 		PRIVATE
 	}
 

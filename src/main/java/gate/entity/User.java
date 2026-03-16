@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 @Icon("2004")
 @Table("Uzer")
 @Schema("gate")
-@Name("Usuário")
+@Name
 public class User implements Serializable
 {
 
@@ -33,49 +33,49 @@ public class User implements Serializable
 	private static final long serialVersionUID = 1L;
 
 	@Required
-	@Description("O campo USUÁRIO é requerido.")
+	@Description
 	private ID id;
 
 	@Required
-	@Name("Ativo")
-	@Description("O campo ATIVO é requerido.")
+	@Name
+	@Description
 	private Boolean active;
 
 	@Required
 	@Maxlength(64)
-	@Name("Login do Usuário")
-	@Description("O campo LOGIN deve possuir no máximo 64 caracteres.")
+	@Name
+	@Description
 	private String username;
 
 	@Required
 	@Maxlength(64)
-	@Name("Senha do Usuário")
-	@Description("O campo SENHA deve ser preenchido com no máximo 64 caracteres.")
+	@Name
+	@Description
 	private String password;
 
 	@Required
 	@Maxlength(128)
-	@Name("Nome do Usuário")
-	@Description("O campo NOME deve ser preenchido com, no máximo, 64 CARACTERES.")
+	@Name
+	@Description
 	private String name;
 
 	@Maxlength(64)
 	@Pattern(EMail.REGEX)
-	@Name("E-Mail do Usuário")
-	@Description("O campo EMail deve ser preenchido com um email válido com no máximo 64 caracteres.")
+	@Name
+	@Description
 	private String email;
 
-	@Description("Define o perfil do usuário.")
+	@Description
 	private Role role;
 
 	@Required
-	@Name("Data de Cadastro")
-	@Description("Data de cadastro do usuário.")
+	@Name
+	@Description
 	private LocalDateTime creation;
 
 	@Required
-	@Name("Data de Cadastro")
-	@Description("Data de cadastro do usuário.")
+	@Name
+	@Description
 	private LocalDateTime activity;
 
 	private List<Auth> auths;

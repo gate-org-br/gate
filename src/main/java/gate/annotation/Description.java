@@ -1,6 +1,8 @@
 package gate.annotation;
 
+import gate.i18n.I18N;
 import gate.util.Reflection;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,14 +13,13 @@ import java.util.Optional;
 @Info
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-	{
-		ElementType.TYPE, ElementType.FIELD,
-		ElementType.METHOD
-	})
+		{
+				ElementType.TYPE, ElementType.FIELD,
+				ElementType.METHOD
+		})
 public @interface Description
 {
-
-	String value();
+	String value() default "";
 
 	class Extractor
 	{
@@ -33,11 +34,15 @@ public @interface Description
 					return optional.isPresent() ? extract(optional.get()) : Optional.of((String) element);
 				}
 
-				if (element instanceof AnnotatedElement)
+				if (element instanceof AnnotatedElement annotatedElement)
 				{
-					AnnotatedElement annotatedElement = (AnnotatedElement) element;
 					if (annotatedElement.isAnnotationPresent(Description.class))
-						return Optional.of(annotatedElement.getAnnotation(Description.class).value());
+					{
+						var annotation = annotatedElement.getAnnotation(Description.class);
+						var value = annotation.value();
+						return Optional.of(value.isBlank() ?
+								I18N.getValue(annotatedElement, annotation) : value);
+					}
 					if (annotatedElement.isAnnotationPresent(CopyDescription.class))
 						return extract(CopyDescription.Extractor.extract(annotatedElement));
 					if (annotatedElement.isAnnotationPresent(CopyInfo.class))

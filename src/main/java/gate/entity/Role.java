@@ -29,52 +29,52 @@ public class Role implements Serializable, Hierarchy<Role>
 	private static final long serialVersionUID = 1L;
 
 	@Required
-	@Name("Perfil")
-	@Description("O campo Perfil é requerido.")
+	@Name
+	@Description
 	private ID id;
 
 	@Required
-	@Name("Active")
-	@Description("Determina se o perfil está ativo. Usuários de perfis inativos não podem fazer logon")
+	@Name
+	@Description
 	private Boolean active;
 
-	@Name("Supergrupo")
+	@Name
 	private Role role;
 
-	@Name("Gerente")
+	@Name
 	@Column("Manager")
-	@Description("Entre com o gerente do grupo.")
+	@Description
 	private User manager;
 
 	@Required
-	@Name("Nome")
+	@Name
 	@Maxlength(64)
-	@Description("O campo NOME é requerido e deve ser preenchido com, no máximo, 64 CARACTERES.")
+	@Description
 	private String name;
 
 	@Maxlength(256)
-	@Name("Descrição")
-	@Description("O campo DESCRIÇÃO deve ser preenchido com, no máximo, 256 CARACTERES.")
+	@Name
+	@Description
 	private String description;
 
 	@Required
-	@Name("Master")
-	@Description("Define se o perfil é Master.")
+	@Name
+	@Description
 	private Boolean master;
 
-	@Name("Sigla")
+	@Name
 	@Maxlength(16)
-	@Description("Entre com a sigla do grupo.")
+	@Description
 	private String rolename;
 
 	@Maxlength(64)
-	@Name("E-Mail")
+	@Name
 	@Pattern("^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$")
-	@Description("O campo EMail deve ser preenchido com um email válido com no máximo 64 caracteres.")
+	@Description
 	private String email;
 
-	@Name("Busca Hierárquica")
-	@Description("Deseja que a pesquisa seja feita de forma hierárquica?")
+	@Name
+	@Description
 	private Boolean recursive;
 
 	private List<Auth> auths;

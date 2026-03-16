@@ -232,8 +232,8 @@ public class Report
 	@Converter(EnumStringConverter.class)
 	public enum Orientation
 	{
-		@Name("Retrato")
-		PORTRAIT, @Name("Paisagem")
+		@Name
+		PORTRAIT, @Name
 		LANDSCAPE
 	}
 

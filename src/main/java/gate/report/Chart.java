@@ -102,11 +102,11 @@ public class Chart<T> extends ReportElement
 
 	public enum Format
 	{
-		@Name("Pizza")
-		PIE, @Name("Linhas")
-		LINE, @Name("Áreas")
-		AREA, @Name("Barras")
-		BAR, @Name("Colunas")
+		@Name
+		PIE, @Name
+		LINE, @Name
+		AREA, @Name
+		BAR, @Name
 		COLUMN
 	}
 

@@ -11,20 +11,20 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Name("Func")
+@Name
 @Icon("2099")
 public class Func implements Serializable
 {
 
 	@Required
-	@Name("ID")
-	@Description("ID da função")
+	@Name
+	@Description
 	private ID id;
 
 	@Required
-	@Name("Nome")
+	@Name
 	@Maxlength(64)
-	@Description("Nome da função")
+	@Description
 	private String name;
 
 	private List<Auth> auths;

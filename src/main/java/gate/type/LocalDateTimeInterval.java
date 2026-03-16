@@ -121,10 +121,10 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	public static class Mutable
 	{
 
-		@Name("Data e hora min")
+		@Name
 		private LocalDateTime min;
 
-		@Name("Data e hora max")
+		@Name
 		private LocalDateTime max;
 
 		public Mutable()

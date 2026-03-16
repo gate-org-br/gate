@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 @Icon("2006")
 @Entity("orgID")
-@Name("Organização")
+@Name
 public class Org implements Serializable
 {
 
@@ -20,41 +20,41 @@ public class Org implements Serializable
 
 	@Required
 	@Maxlength(16)
-	@Description("Entre com o nome da organização")
+	@Description
 	private String orgID;
 
 	@Required
 	@Maxlength(64)
-	@Description("Entre com a razão social da organização")
+	@Description
 	private String name;
 
 	@Maxlength(256)
-	@Description("Entre com a descrição da organização")
+	@Description
 	private String description;
 
 	@Required
-	@Description("Entre com o logo da organização")
+	@Description
 	private MimeData icon;
 
-	@Description("Expediente da organização nos domingos")
+	@Description
 	private LocalTimeInterval sun;
 
-	@Description("Expediente da organização nas segundas")
+	@Description
 	private LocalTimeInterval mon;
 
-	@Description("Expediente da organização nas terças")
+	@Description
 	private LocalTimeInterval tue;
 
-	@Description("Expediente da organização nas quartas")
+	@Description
 	private LocalTimeInterval wed;
 
-	@Description("Expediente da organização nas quintas")
+	@Description
 	private LocalTimeInterval thu;
 
-	@Description("Expediente da organização nas sextas")
+	@Description
 	private LocalTimeInterval fri;
 
-	@Description("Expediente da organização nas sábados")
+	@Description
 	private LocalTimeInterval sat;
 
 	public String getDescription()

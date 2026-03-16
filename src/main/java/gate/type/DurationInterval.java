@@ -64,10 +64,10 @@ public final class DurationInterval implements Serializable, Interval<Duration>
 	public static class Mutable
 	{
 
-		@Name("Duração mínima")
+		@Name
 		private Duration min;
 
-		@Name("Duração máxima")
+		@Name
 		private Duration max;
 
 		public Mutable()

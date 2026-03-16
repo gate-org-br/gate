@@ -12,6 +12,7 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
+import gate.i18n.CurrentLocale;
 import gate.security.Credentials;
 import gate.type.RequestCommand;
 import gate.type.TempFile;
@@ -105,7 +106,7 @@ public class Gate extends HttpServlet
 			request.setAttribute("METHOD", request.getMethod());
 
 			if (command.equals(RequestCommand.DEFAULT)
-					&& (actionRegistry.getMainAction() == null
+				&& (actionRegistry.getMainAction() == null
 					|| !authenticator.hasCredentials(request)))
 			{
 				String provider = authenticator.provider(request, response);
@@ -127,7 +128,7 @@ public class Gate extends HttpServlet
 					response.createSubjectCookie(credentials.fromToken(token));
 
 					if (actionRegistry.getMainAction() != null
-							&& command.equals(RequestCommand.DEFAULT))
+						&& command.equals(RequestCommand.DEFAULT))
 					{
 						response.sendRedirect(actionRegistry.getMainAction()
 								.command().toString());
@@ -219,6 +220,7 @@ public class Gate extends HttpServlet
 		Runnable contextualTask = threadContext.contextualRunnable(() ->
 		{
 			Progress progress = null;
+			CurrentLocale.set(request.getLocale());
 			try (Writer writer = response.getWriter())
 			{
 				progress = Progress.create(user, writer);
@@ -252,6 +254,7 @@ public class Gate extends HttpServlet
 					heartbeatRegistry.unregister(progress);
 				Progress.finish();
 				TempFile.cleanup();
+				CurrentLocale.clear();
 				asyncContext.complete();
 			}
 		});

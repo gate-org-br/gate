@@ -127,10 +127,10 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	public static class Mutable
 	{
 
-		@Name("Hora mínima")
+		@Name
 		private LocalTime min;
 
-		@Name("Hora máxima")
+		@Name
 		private LocalTime max;
 
 		public Mutable()

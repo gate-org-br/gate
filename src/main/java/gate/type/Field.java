@@ -29,54 +29,54 @@ public class Field implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	@Name("ID")
-	@Description("Identificador do campo.")
+	@Name
+	@Description
 	private String id;
 
-	@Name("Nome")
-	@Description("Nome do campo.")
+	@Name
+	@Description
 	private String name;
 
-	@Name("Tamanho")
-	@Description("Número de colunas a serem ocupadas pelo campo no formulário.")
+	@Name
+	@Description
 	private Size size;
 
 	@Required
-	@Name("Multiplo")
-	@Description("Define se o campo admite múltiplas linhas, ou múltiplas opções.")
+	@Name
+	@Description
 	private boolean multiple;
 
-	@Name("Opções")
-	@Description("Opções possíveis de respostas para o campo.")
+	@Name
+	@Description
 	private StringList options;
 
-	@Name("Valor Padrão")
-	@Description("Valor padrão do campo.")
+	@Name
+	@Description
 	private StringList value;
 
 	@Required
-	@Name("Requerido")
-	@Description("Define se o campo é requerido.")
+	@Name
+	@Description
 	private boolean required;
 
-	@Name("Máscara")
-	@Description("Máscara de preenchimendo para o campo.")
+	@Name
+	@Description
 	private String mask;
 
-	@Name("Descrição")
-	@Description("Informações adicionais sobre o campo.")
+	@Name
+	@Description
 	private String description;
 
-	@Name("Padrão")
-	@Description("Expressão regular a ser utilizada para validação.")
+	@Name
+	@Description
 	private Pattern pattern;
 
-	@Name("Tamanho Máximo")
-	@Description("Número de caracteres máximo permitido.")
+	@Name
+	@Description
 	private Integer maxlength;
 
-	@Name("Somente Leitura")
-	@Description("Define se o campo é somente leitura.")
+	@Name
+	@Description
 	private boolean readonly;
 
 	public String getId()
@@ -306,10 +306,10 @@ public class Field implements Serializable
 	public enum Size
 	{
 
-		@Name("1")
-		ONE, @Name("2")
-		TWO, @Name("4")
-		FOUR, @Name("8")
+		@Name
+		ONE, @Name
+		TWO, @Name
+		FOUR, @Name
 		EIGHT;
 
 		@Override

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UncheckedIOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Collections;
 import java.util.Map;
@@ -19,8 +19,8 @@ public class ContentType implements Serializable
 	private final Map<String, String> parameters;
 
 	private ContentType(String type,
-			String subtype,
-			Map<String, String> parameters)
+						String subtype,
+						Map<String, String> parameters)
 	{
 		Objects.requireNonNull(parameters);
 		this.type = type;
@@ -44,7 +44,7 @@ public class ContentType implements Serializable
 	}
 
 	public static ContentType of(String type, String subtype,
-			Map<String, String> parameters)
+								 Map<String, String> parameters)
 	{
 		return new ContentType(type, subtype, parameters);
 	}
@@ -64,17 +64,9 @@ public class ContentType implements Serializable
 		if (subtype != null)
 			string.append('/').append(subtype);
 
-		parameters
-				.entrySet().forEach(e ->
-				{
-					try
-					{
-						string.append(';').append(e.getKey()).append('=').append(URLEncoder.encode(e.getValue(), "UTF-8"));
-					} catch (UnsupportedEncodingException ex)
-					{
-						throw new UncheckedIOException(ex);
-					}
-				});
+		parameters.forEach((key, value) -> string.append(';')
+				.append(key).append('=')
+				.append(URLEncoder.encode(value, StandardCharsets.UTF_8)));
 
 		return string.toString();
 	}
@@ -94,5 +86,19 @@ public class ContentType implements Serializable
 				throw new UncheckedIOException(ex);
 			}
 		}
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof ContentType contentType
+			   && Objects.equals(type, contentType.type)
+			   && Objects.equals(subtype, contentType.subtype);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(type, subtype);
 	}
 }
