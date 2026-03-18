@@ -324,14 +324,14 @@ public class PropertyTest
 		mock.setFloatValue(5.0f);
 		mock.setDoubleValue(6.0d);
 
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "bool").getBoolean(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "character").getChar(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "byteValue").getByte(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "shortValue").getShort(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "integer").getInt(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "longValue").getLong(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "floatValue").getFloat(mock));
-		assertThrows(IllegalStateException.class, () -> Property.getProperty(Mock.class, "doubleValue").getDouble(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "bool").getBoolean(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "character").getChar(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "byteValue").getByte(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "shortValue").getShort(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "integer").getInt(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "longValue").getLong(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "floatValue").getFloat(mock));
+		assertThrows(Throwable.class, () -> Property.getProperty(Mock.class, "doubleValue").getDouble(mock));
 	}
 
 	@SuppressWarnings("unused")

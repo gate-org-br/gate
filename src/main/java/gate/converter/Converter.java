@@ -243,8 +243,9 @@ public interface Converter
 				jsonScanner.scan();
 				return null;
 			case STRING:
+			case NUMBER:
 				Object value =
-						Converter.fromString((Class<?>) type, jsonScanner.getCurrent().toString());
+						this.ofString((Class<?>) type, jsonScanner.getCurrent().toString());
 				jsonScanner.scan();
 				return value;
 			default:

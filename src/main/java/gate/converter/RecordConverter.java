@@ -91,7 +91,7 @@ public class RecordConverter implements Converter
 			throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, toString(value.getClass(), value));
+			ps.setString(fields++, Converter.toJson(value));
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;
