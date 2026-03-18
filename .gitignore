@@ -11,4 +11,3 @@
 /.project
 *.iml
 /src/main/resources/META-INF/resources/gate/
-package-lock.json
