@@ -1,11 +1,9 @@
 package gate.sql.replace;
 
 import gate.converter.Converter;
-import gate.sql.Proxy;
 import gate.sql.statement.Sentence;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -25,11 +23,9 @@ public class TableReplace implements Replace
 	}
 
 	/**
-	 * Binds the replace statement to a list of entities.
-	 *
+	 * Binds the replacement statement to a list of entities.
 	 *
 	 * @param type the type of the entity where parameter values are to be extracted
-	 *
 	 * @return the same builder with the associated entities
 	 */
 	public <T> Prepared<T> from(Class<T> type)
@@ -41,7 +37,6 @@ public class TableReplace implements Replace
 	 * Adds a new column to be persisted.
 	 *
 	 * @param column the column to be added
-	 *
 	 * @return the same builder with the added column
 	 */
 	public Generic set(String column)
@@ -52,10 +47,8 @@ public class TableReplace implements Replace
 	/**
 	 * Adds a new column to be persisted.
 	 *
-	 *
-	 * @param type type of the column to be persisted
+	 * @param type   type of the column to be persisted
 	 * @param column the column to be persisted
-	 *
 	 * @return the same builder with the added column
 	 */
 	public <T> Generic set(Class<T> type, String column)
@@ -67,8 +60,7 @@ public class TableReplace implements Replace
 	 * Adds a new column to be persisted with the specified value.
 	 *
 	 * @param column the column to be persisted
-	 * @param value the value associated
-	 *
+	 * @param value  the value associated
 	 * @return the same builder with the added column
 	 */
 	public Compiled set(String column, Object value)
@@ -79,11 +71,9 @@ public class TableReplace implements Replace
 	/**
 	 * Adds a new column to be persisted with the specified value.
 	 *
-	 *
-	 * @param type type of the column to be added
+	 * @param type   type of the column to be added
 	 * @param column the column to be added
-	 * @param value the value associated
-	 *
+	 * @param value  the value associated
 	 * @return the same builder with the added column
 	 */
 	public <T> Compiled set(Class<T> type, String column, T value)
@@ -92,49 +82,9 @@ public class TableReplace implements Replace
 	}
 
 	/**
-	 * Creates a proxy instance of the specified type and passes it to the provided {@code setter} consumer. The proxy
-	 * intercepts calls to setter methods, capturing the columns names and values, and maps them to the replace builder.
-	 *
-	 * @param <T> the type of the entity being updated
-	 * @param type the class of the entity to be proxied
-	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
-	 * @return a {@code Compiled} object containing the mapping of column names and values
-	 * @throws InstantiationError if an error occurs while creating the proxy
-	 */
-	public <T> Compiled setFields(Class<T> type, Consumer<T> setter)
-	{
-		var compiled = new Compiled();
-		var proxy = Proxy.create(type,
-				(col, val) -> compiled.set(col, val));
-		setter.accept(proxy);
-		return compiled;
-	}
-
-	/**
-	 * Creates a proxy instance of for the provided object and passes it to the provided {@code setter} consumer. The
-	 * proxy intercepts calls to setter methods, updates the provided, capture the columns names and values, and maps
-	 * them to the replace builder.
-	 *
-	 * @param <T> the type of the entity being updated
-	 * @param object the existing instance of the entity to be proxied
-	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
-	 * @return a {@code Compiled} object containing the mapping of column names and values
-	 * @throws InstantiationError if an error occurs while creating the proxy
-	 */
-	public <T> Compiled setFields(T object, Consumer<T> setter)
-	{
-		var compiled = new Compiled();
-		var proxy = Proxy.create(object,
-				(col, val) -> compiled.set(col, val));
-		setter.accept(proxy);
-		return compiled;
-	}
-
-	/**
 	 * Adds the next column to the builder if previous specified condition is true.
 	 *
 	 * @param assertion the condition to be checked
-	 *
 	 * @return the same builder with the applied condition
 	 */
 	public When when(boolean assertion)
@@ -159,7 +109,6 @@ public class TableReplace implements Replace
 		 * Adds a new column to the builder.
 		 *
 		 * @param column the column to be added
-		 *
 		 * @return the same builder with the added column
 		 */
 		public Generic set(String column)
@@ -172,10 +121,8 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 *
 		 * @param column the column to be added
-		 * @param type type of the column to be added
-		 *
+		 * @param type   type of the column to be added
 		 * @return the same builder with the added column
 		 */
 		public <T> Generic set(Class<T> type, String column)
@@ -194,7 +141,7 @@ public class TableReplace implements Replace
 		public String toString()
 		{
 			return String.join(" ", replace) + " into " + table + " " + columns + " values "
-					+ parameters;
+				   + parameters;
 		}
 	}
 
@@ -213,11 +160,10 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
 		 * @param column the column to be added
-		 * @param value the value associated
-		 *
+		 * @param value  the value associated
 		 * @return the same builder with the added column and value
 		 */
 		public Compiled set(String column, Object value)
@@ -229,13 +175,11 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
-		 *
-		 * @param type type of the column to be added
+		 * @param type   type of the column to be added
 		 * @param column the column to be added
-		 * @param value the value associated
-		 *
+		 * @param value  the value associated
 		 * @return the same builder with the added column and value
 		 */
 		public <T> Compiled set(Class<T> type, String column, T value)
@@ -256,7 +200,6 @@ public class TableReplace implements Replace
 		 * Adds the next column to the builder if previous specified condition is true.
 		 *
 		 * @param assertion the condition to be checked
-		 *
 		 * @return the same builder with the applied condition
 		 */
 		public When when(boolean assertion)
@@ -268,18 +211,17 @@ public class TableReplace implements Replace
 		public String toString()
 		{
 			return String.join(" ", replace) + " into " + table + " " + columns + " values "
-					+ parameters;
+				   + parameters;
 		}
 
 		public class When
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
-			 * @param value the value associated
-			 *
+			 * @param value  the value associated
 			 * @return the same builder with the added column
 			 */
 			public Compiled set(String column, Object value)
@@ -288,11 +230,10 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * @param column the column to be added
+			 * @param column   the column to be added
 			 * @param supplier the supplier of the value associated
-			 *
 			 * @return the same builder with the added column and value
 			 */
 			public Compiled setIfTrue(String column, Supplier<Object> supplier)
@@ -301,13 +242,11 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
-			 *
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
-			 * @param type type of the column to be added
-			 * @param value the value associated
-			 *
+			 * @param type   type of the column to be added
+			 * @param value  the value associated
 			 * @return the same builder with the added column
 			 */
 			public <T> Compiled set(Class<T> type, String column, T value)
@@ -316,13 +255,11 @@ public class TableReplace implements Replace
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 *
-			 * @param type type of the column to be added
-			 * @param column the column to be added
+			 * @param type     type of the column to be added
+			 * @param column   the column to be added
 			 * @param supplier the supplier of the value associated
-			 *
 			 * @return the same builder with the added column and value
 			 */
 			public <T> Compiled setIfTrue(Class<T> type, String column, Supplier<T> supplier)
@@ -334,7 +271,6 @@ public class TableReplace implements Replace
 			 * Adds the next column to the builder if previous specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
-			 *
 			 * @return the same builder with the applied condition
 			 */
 			public When when(boolean assertion)
@@ -403,11 +339,10 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
-		 * @param column the column to be added
+		 * @param column    the column to be added
 		 * @param extractor the extractor function associated with the column
-		 *
 		 * @return the same builder with the added column and value
 		 */
 		public Prepared<E> set(String column, Function<E, ?> extractor)
@@ -419,13 +354,12 @@ public class TableReplace implements Replace
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
-		 * @param <K> type of the value added
-		 * @param column the column to be added
-		 * @param type type of the column to be added
+		 * @param <K>       type of the value added
+		 * @param column    the column to be added
+		 * @param type      type of the column to be added
 		 * @param extractor the extractor function associated with the column
-		 *
 		 * @return the same builder with the added column and value
 		 */
 		public <K> Prepared<E> set(Class<K> type, String column, Function<E, K> extractor)
@@ -446,7 +380,7 @@ public class TableReplace implements Replace
 		public String toString()
 		{
 			return String.join(" ", replace) + " into " + table + " " + columns + " values "
-					+ parameters;
+				   + parameters;
 		}
 	}
 
@@ -457,7 +391,6 @@ public class TableReplace implements Replace
 		 * Adds a new column to be persisted if the previous specified condition was true.
 		 *
 		 * @param column the column to be added
-		 *
 		 * @return the same builder with the added column
 		 */
 		public Generic set(String column)
@@ -468,10 +401,8 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted if the previous specified condition was true.
 		 *
-		 *
-		 * @param type type of the column to be persisted
+		 * @param type   type of the column to be persisted
 		 * @param column the column to be persisted
-		 *
 		 * @return the same builder with the added column
 		 */
 		public <T> Generic set(Class<T> type, String column)
@@ -483,8 +414,7 @@ public class TableReplace implements Replace
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
 		 * @param column the column to be persisted
-		 * @param value the value associated
-		 *
+		 * @param value  the value associated
 		 * @return the same builder with the added column
 		 */
 		public Compiled set(String column, Object value)
@@ -495,9 +425,8 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 * @param column the column to be persisted
+		 * @param column   the column to be persisted
 		 * @param supplier the supplier of the value associated
-		 *
 		 * @return the same builder with the added column
 		 */
 		public Compiled setIfTrue(String column, Supplier<Object> supplier)
@@ -508,11 +437,9 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 *
-		 * @param type type of the column to be added
+		 * @param type   type of the column to be added
 		 * @param column the column to be added
-		 * @param value the value associated
-		 *
+		 * @param value  the value associated
 		 * @return the same builder with the added column
 		 */
 		public <T> Compiled set(Class<T> type, String column, T value)
@@ -523,11 +450,9 @@ public class TableReplace implements Replace
 		/**
 		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
 		 *
-		 *
-		 * @param type type of the column to be added
-		 * @param column the column to be added
+		 * @param type     type of the column to be added
+		 * @param column   the column to be added
 		 * @param supplier the supplier of the value associated
-		 *
 		 * @return the same builder with the added column
 		 */
 		public <T> Compiled setIfTrue(Class<T> type, String column, Supplier<T> supplier)
@@ -539,7 +464,6 @@ public class TableReplace implements Replace
 		 * Adds the next column to the builder if previous specified condition is true.
 		 *
 		 * @param assertion the condition to be checked
-		 *
 		 * @return the same builder with the applied condition
 		 */
 		public When when(boolean assertion)
