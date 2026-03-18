@@ -1,9 +1,7 @@
 package gate.lang.property;
 
-import gate.function.ObjIntFunction;
 import gate.util.Reflection;
 
-import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -12,14 +10,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.function.ObjIntConsumer;
-import java.util.function.ToIntFunction;
 
 class IntFieldAttribute extends AbstractFieldAttribute
 {
-	private final ToIntFunction<Object> getter;
-	private final ObjIntConsumer<Object> setter;
-	private final ObjIntFunction<Object, Object> fluentSetter;
+	private final MethodHandle getter;
+	private final MethodHandle setter;
 	private final VarHandle fieldGetter;
 	private final VarHandle fieldSetter;
 
@@ -31,10 +26,9 @@ class IntFieldAttribute extends AbstractFieldAttribute
 					"IntFieldAttribute only supports int fields: %s.%s"
 							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
-		getter = createGetterLambda();
+		getter = createGetter();
 		fieldGetter = createFieldGetter();
-		setter = createSetterLambda();
-		fluentSetter = createFluentSetterLambda();
+		setter = createSetter();
 		fieldSetter = createFieldSetter();
 	}
 
@@ -48,8 +42,7 @@ class IntFieldAttribute extends AbstractFieldAttribute
 	public void setValue(Object object, Object value)
 	{
 		if (!(value instanceof Number number))
-			throw new IllegalArgumentException(
-					"Attempt to write a non numeric value to an int attribute: " + value);
+			throw new IllegalArgumentException("Attempt to write a non numeric value to an int attribute: " + value);
 
 		setInt(object, number.intValue());
 	}
@@ -90,24 +83,24 @@ class IntFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (getter != null)
-				return getter.applyAsInt(object);
+				return (int) getter.invokeExact(object);
 			if (fieldGetter != null)
 				return (int) fieldGetter.get(object);
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support reading"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access getter method", ex);
 		}
 	}
 
 	@Override
 	public void setInt(Object object, int value)
 	{
-		if (setter == null && fluentSetter == null && fieldSetter == null)
+		if (setter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -115,16 +108,15 @@ class IntFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (setter != null)
-				setter.accept(object, value);
-			else if (fluentSetter != null)
-				fluentSetter.apply(object, value);
+				setter.invoke(object, value);
 			else
 				fieldSetter.set(object, value);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Error trying to call %s setter method"
+					.formatted(field.getName()), ex);
 		}
 	}
 
@@ -164,8 +156,7 @@ class IntFieldAttribute extends AbstractFieldAttribute
 		setInt(object, (int) value);
 	}
 
-	@SuppressWarnings("unchecked")
-	private ToIntFunction<Object> createGetterLambda()
+	private MethodHandle createGetter()
 	{
 		try
 		{
@@ -174,75 +165,34 @@ class IntFieldAttribute extends AbstractFieldAttribute
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ToIntFunction<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"applyAsInt",
-					MethodType.methodType(ToIntFunction.class),
-					MethodType.methodType(int.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
+			return lookup.unreflect(method)
+					.asType(MethodType.methodType(int.class, Object.class));
 		} catch (Throwable ex)
 		{
-			throw new IllegalStateException("Failed to create getter lambda", ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access %s.%s getter method".formatted(field.getType().getName(), field.getName()), ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ObjIntConsumer<Object> createSetterLambda()
+	private MethodHandle createSetter()
 	{
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() != void.class)
+			if (method == null)
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjIntConsumer<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(ObjIntConsumer.class),
-					MethodType.methodType(void.class, Object.class, int.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
+			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
-			throw new IllegalStateException("Failed to create setter lambda", ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access %s.%s setter method".formatted(field.getType().getName(), field.getName()), ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ObjIntFunction<Object, Object> createFluentSetterLambda()
-	{
-		try
-		{
-			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() == void.class)
-				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjIntFunction<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(ObjIntFunction.class),
-					MethodType.methodType(Object.class, Object.class, int.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create fluent setter lambda", ex);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
 	private VarHandle createFieldGetter()
 	{
 		try
@@ -253,7 +203,7 @@ class IntFieldAttribute extends AbstractFieldAttribute
 			return Reflection.findVarHandle(field);
 		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field getter handle", ex);
+			throw new IllegalStateException("Failed to access %s.%s getter var handle".formatted(field.getType().getName(), field.getName()), ex);
 		}
 	}
 
@@ -261,13 +211,13 @@ class IntFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null || Modifier.isFinal(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);
 		} catch (RuntimeException ex)
 		{
-			throw new IllegalStateException("Failed to create field setter handle", ex);
+			throw new IllegalStateException("Failed to access %s.%s setter var handle".formatted(field.getType().getName(), field.getName()), ex);
 		}
 	}
 
@@ -275,6 +225,6 @@ class IntFieldAttribute extends AbstractFieldAttribute
 	public boolean equals(Object obj)
 	{
 		return obj instanceof IntFieldAttribute attribute
-				&& Objects.equals(field, attribute.field);
+			   && Objects.equals(field, attribute.field);
 	}
 }

@@ -1,9 +1,7 @@
 package gate.lang.property;
 
-import gate.function.ObjLongFunction;
 import gate.util.Reflection;
 
-import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -12,15 +10,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-import java.util.function.ObjLongConsumer;
-import java.util.function.ToLongFunction;
 
 class LongFieldAttribute extends AbstractFieldAttribute
 {
 
-	private final ToLongFunction<Object> getter;
-	private final ObjLongConsumer<Object> setter;
-	private final ObjLongFunction<Object, Object> fluentSetter;
+	private final MethodHandle getter;
+	private final MethodHandle setter;
 	private final VarHandle fieldGetter;
 	private final VarHandle fieldSetter;
 
@@ -32,10 +27,9 @@ class LongFieldAttribute extends AbstractFieldAttribute
 					"LongFieldAttribute only supports long fields: %s.%s"
 							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
-		getter = createGetterLambda();
+		getter = createGetter();
 		fieldGetter = createFieldGetter();
-		setter = createSetterLambda();
-		fluentSetter = createFluentSetterLambda();
+		setter = createSetter();
 		fieldSetter = createFieldSetter();
 	}
 
@@ -66,24 +60,24 @@ class LongFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (getter != null)
-				return getter.applyAsLong(object);
+				return (long) getter.invokeExact(object);
 			if (fieldGetter != null)
 				return (long) fieldGetter.get(object);
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support reading"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access getter method", ex);
 		}
 	}
 
 	@Override
 	public void setLong(Object object, long value)
 	{
-		if (setter == null && fluentSetter == null && fieldSetter == null)
+		if (setter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -91,21 +85,19 @@ class LongFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (setter != null)
-				setter.accept(object, value);
-			else if (fluentSetter != null)
-				fluentSetter.apply(object, value);
+				setter.invoke(object, value);
 			else
 				fieldSetter.set(object, value);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Error trying to call %s setter method"
+					.formatted(field.getName()), ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ToLongFunction<Object> createGetterLambda()
+	private MethodHandle createGetter()
 	{
 		try
 		{
@@ -114,72 +106,32 @@ class LongFieldAttribute extends AbstractFieldAttribute
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ToLongFunction<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"applyAsLong",
-					MethodType.methodType(ToLongFunction.class),
-					MethodType.methodType(long.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create getter lambda", ex);
-		}
+			return lookup.unreflect(method)
+					.asType(MethodType.methodType(long.class, Object.class));
+			} catch (Throwable ex)
+			{
+				if (ex instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new IllegalStateException("Failed to access %s.%s getter method".formatted(field.getType().getName(), field.getName()), ex);
+			}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ObjLongConsumer<Object> createSetterLambda()
+	private MethodHandle createSetter()
 	{
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() != void.class)
+			if (method == null)
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjLongConsumer<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(ObjLongConsumer.class),
-					MethodType.methodType(void.class, Object.class, long.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create setter lambda", ex);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private ObjLongFunction<Object, Object> createFluentSetterLambda()
-	{
-		try
-		{
-			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() == void.class)
-				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjLongFunction<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(ObjLongFunction.class),
-					MethodType.methodType(Object.class, Object.class, long.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create fluent setter lambda", ex);
-		}
+			return lookup.unreflect(method);
+			} catch (Throwable ex)
+			{
+				if (ex instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new IllegalStateException("Failed to access %s.%s setter method".formatted(field.getType().getName(), field.getName()), ex);
+			}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -201,7 +153,7 @@ class LongFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null || Modifier.isFinal(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);

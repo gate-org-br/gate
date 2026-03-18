@@ -1,11 +1,7 @@
 package gate.lang.property;
 
-import gate.function.ObjShortConsumer;
-import gate.function.ObjShortFunction;
-import gate.function.ToShortFunction;
 import gate.util.Reflection;
 
-import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -18,9 +14,8 @@ import java.util.Objects;
 class ShortFieldAttribute extends AbstractFieldAttribute
 {
 
-	private final ToShortFunction<Object> getter;
-	private final ObjShortConsumer<Object> setter;
-	private final ObjShortFunction<Object, Object> fluentSetter;
+	private final MethodHandle getter;
+	private final MethodHandle setter;
 	private final VarHandle fieldGetter;
 	private final VarHandle fieldSetter;
 
@@ -32,10 +27,9 @@ class ShortFieldAttribute extends AbstractFieldAttribute
 					"ShortFieldAttribute only supports short fields: %s.%s"
 							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
-		getter = createGetterLambda();
+		getter = createGetter();
 		fieldGetter = createFieldGetter();
-		setter = createSetterLambda();
-		fluentSetter = createFluentSetterLambda();
+		setter = createSetter();
 		fieldSetter = createFieldSetter();
 	}
 
@@ -66,24 +60,24 @@ class ShortFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (getter != null)
-				return getter.applyAsShort(object);
+				return (short) getter.invokeExact(object);
 			if (fieldGetter != null)
 				return (short) fieldGetter.get(object);
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support reading"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access getter method", ex);
 		}
 	}
 
 	@Override
 	public void setShort(Object object, short value)
 	{
-		if (setter == null && fluentSetter == null && fieldSetter == null)
+		if (setter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -91,21 +85,19 @@ class ShortFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (setter != null)
-				setter.accept(object, value);
-			else if (fluentSetter != null)
-				fluentSetter.apply(object, value);
+				setter.invoke(object, value);
 			else
 				fieldSetter.set(object, value);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Error trying to call %s setter method"
+					.formatted(field.getName()), ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ToShortFunction<Object> createGetterLambda()
+	private MethodHandle createGetter()
 	{
 		try
 		{
@@ -114,72 +106,32 @@ class ShortFieldAttribute extends AbstractFieldAttribute
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ToShortFunction<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"applyAsShort",
-					MethodType.methodType(ToShortFunction.class),
-					MethodType.methodType(short.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create getter lambda", ex);
-		}
+			return lookup.unreflect(method)
+					.asType(MethodType.methodType(short.class, Object.class));
+			} catch (Throwable ex)
+			{
+				if (ex instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new IllegalStateException("Failed to access %s.%s getter method".formatted(field.getType().getName(), field.getName()), ex);
+			}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ObjShortConsumer<Object> createSetterLambda()
+	private MethodHandle createSetter()
 	{
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() != void.class)
+			if (method == null)
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjShortConsumer<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(ObjShortConsumer.class),
-					MethodType.methodType(void.class, Object.class, short.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create setter lambda", ex);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private ObjShortFunction<Object, Object> createFluentSetterLambda()
-	{
-		try
-		{
-			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() == void.class)
-				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjShortFunction<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(ObjShortFunction.class),
-					MethodType.methodType(Object.class, Object.class, short.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create fluent setter lambda", ex);
-		}
+			return lookup.unreflect(method);
+			} catch (Throwable ex)
+			{
+				if (ex instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new IllegalStateException("Failed to access %s.%s setter method".formatted(field.getType().getName(), field.getName()), ex);
+			}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -201,7 +153,7 @@ class ShortFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null || Modifier.isFinal(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);

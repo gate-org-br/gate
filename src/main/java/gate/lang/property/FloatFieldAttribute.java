@@ -1,11 +1,7 @@
 package gate.lang.property;
 
-import gate.function.ObjFloatConsumer;
-import gate.function.ObjFloatFunction;
-import gate.function.ToFloatFunction;
 import gate.util.Reflection;
 
-import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -18,9 +14,8 @@ import java.util.Objects;
 class FloatFieldAttribute extends AbstractFieldAttribute
 {
 
-	private final ToFloatFunction<Object> getter;
-	private final ObjFloatConsumer<Object> setter;
-	private final ObjFloatFunction<Object, Object> fluentSetter;
+	private final MethodHandle getter;
+	private final MethodHandle setter;
 	private final VarHandle fieldGetter;
 	private final VarHandle fieldSetter;
 
@@ -32,10 +27,9 @@ class FloatFieldAttribute extends AbstractFieldAttribute
 					"FloatFieldAttribute only supports float fields: %s.%s"
 							.formatted(field.getDeclaringClass().getName(), field.getName()));
 
-		getter = createGetterLambda();
+		getter = createGetter();
 		fieldGetter = createFieldGetter();
-		setter = createSetterLambda();
-		fluentSetter = createFluentSetterLambda();
+		setter = createSetter();
 		fieldSetter = createFieldSetter();
 	}
 
@@ -66,24 +60,24 @@ class FloatFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (getter != null)
-				return getter.applyAsFloat(object);
+				return (float) getter.invokeExact(object);
 			if (fieldGetter != null)
 				return (float) fieldGetter.get(object);
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support reading"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access getter method", ex);
 		}
 	}
 
 	@Override
 	public void setFloat(Object object, float value)
 	{
-		if (setter == null && fluentSetter == null && fieldSetter == null)
+		if (setter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -91,21 +85,19 @@ class FloatFieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (setter != null)
-				setter.accept(object, value);
-			else if (fluentSetter != null)
-				fluentSetter.apply(object, value);
+				setter.invoke(object, value);
 			else
 				fieldSetter.set(object, value);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException(ex.getMessage(), ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Error trying to call %s setter method"
+					.formatted(field.getName()), ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ToFloatFunction<Object> createGetterLambda()
+	private MethodHandle createGetter()
 	{
 		try
 		{
@@ -114,72 +106,32 @@ class FloatFieldAttribute extends AbstractFieldAttribute
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ToFloatFunction<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"applyAsFloat",
-					MethodType.methodType(ToFloatFunction.class),
-					MethodType.methodType(float.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create getter lambda", ex);
-		}
+			return lookup.unreflect(method)
+					.asType(MethodType.methodType(float.class, Object.class));
+			} catch (Throwable ex)
+			{
+				if (ex instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new IllegalStateException("Failed to access %s.%s getter method".formatted(field.getType().getName(), field.getName()), ex);
+			}
 	}
 
-	@SuppressWarnings("unchecked")
-	private ObjFloatConsumer<Object> createSetterLambda()
+	private MethodHandle createSetter()
 	{
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() != void.class)
+			if (method == null)
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjFloatConsumer<Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(ObjFloatConsumer.class),
-					MethodType.methodType(void.class, Object.class, float.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create setter lambda", ex);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private ObjFloatFunction<Object, Object> createFluentSetterLambda()
-	{
-		try
-		{
-			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getReturnType() == void.class)
-				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (ObjFloatFunction<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(ObjFloatFunction.class),
-					MethodType.methodType(Object.class, Object.class, float.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create fluent setter lambda", ex);
-		}
+			return lookup.unreflect(method);
+			} catch (Throwable ex)
+			{
+				if (ex instanceof RuntimeException runtimeException)
+					throw runtimeException;
+				throw new IllegalStateException("Failed to access %s.%s setter method".formatted(field.getType().getName(), field.getName()), ex);
+			}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -201,7 +153,7 @@ class FloatFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null || Modifier.isFinal(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);

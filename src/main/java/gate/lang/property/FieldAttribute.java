@@ -3,16 +3,15 @@ package gate.lang.property;
 import gate.annotation.NullSafe;
 import gate.util.Reflection;
 
-import java.lang.invoke.*;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FieldAttribute extends AbstractFieldAttribute
@@ -20,11 +19,10 @@ public class FieldAttribute extends AbstractFieldAttribute
 	private static final ConcurrentHashMap<Field, FieldAttribute> CACHE = new ConcurrentHashMap<>();
 	private static final Map<Class<?>, Map<String, FieldAttribute>> ATTRIBUTES = new ConcurrentHashMap<>();
 
+	private final MethodHandle getter;
+	private final MethodHandle setter;
 	private final VarHandle fieldGetter;
 	private final VarHandle fieldSetter;
-	private final Function<Object, Object> getter;
-	private final BiConsumer<Object, Object> setter;
-	private final BiFunction<Object, Object, Object> fluentSetter;
 
 	public static FieldAttribute of(Field field)
 	{
@@ -35,10 +33,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 	{
 		super(field);
 
-		getter = createGetterLambda();
+		getter = createGetter();
 		fieldGetter = createFieldGetter();
-		setter = createSetterLambda();
-		fluentSetter = createFluentSetterLambda();
+		setter = createSetter();
 		fieldSetter = createFieldSetter();
 	}
 
@@ -48,7 +45,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (getter != null)
-				return getter.apply(object);
+				return getter.invoke(object);
 
 			if (fieldGetter != null)
 				return fieldGetter.get(object);
@@ -56,18 +53,18 @@ public class FieldAttribute extends AbstractFieldAttribute
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support reading"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException("Failed to access field attribute", ex);
+			if (ex instanceof RuntimeException)
+				throw (RuntimeException) ex;
+			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
 	}
 
 	@Override
 	public void setValue(Object object, Object value)
 	{
-		if (setter == null && fluentSetter == null && fieldSetter == null)
+		if (setter == null && fieldSetter == null)
 			throw new UnsupportedOperationException(
 					"The property %s of class %s does not support writing"
 							.formatted(field.getName(), field.getDeclaringClass().getName()));
@@ -75,16 +72,14 @@ public class FieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			if (setter != null)
-				setter.accept(object, value);
-			else if (fluentSetter != null)
-				fluentSetter.apply(object, value);
+				setter.invoke(object, value);
 			else
 				fieldSetter.set(object, value);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw ex instanceof IllegalStateException
-					? ex
-					: new IllegalStateException("Failed to access field attribute", ex);
+			if (ex instanceof RuntimeException)
+				throw (RuntimeException) ex;
+			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
 	}
 
@@ -100,36 +95,27 @@ public class FieldAttribute extends AbstractFieldAttribute
 		return value;
 	}
 
-	@SuppressWarnings("unchecked")
-	private Function<Object, Object> createGetterLambda()
+	private MethodHandle createGetter()
 	{
 		try
 		{
 			Method method = Reflection.findGetter(field).orElse(null);
-			if (method == null || method.getReturnType().isPrimitive()
+			if (method == null
+				|| method.getReturnType().isPrimitive()
 				|| method.isAnnotationPresent(NullSafe.class))
 				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-
-			return (Function<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(Function.class),
-					MethodType.methodType(Object.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
+			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn
+					(method.getDeclaringClass(), MethodHandles.lookup());
+			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
-			throw new IllegalStateException("Failed to create getter lambda", ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access getter method", ex);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private BiConsumer<Object, Object> createSetterLambda()
+	private MethodHandle createSetter()
 	{
 		try
 		{
@@ -138,45 +124,12 @@ public class FieldAttribute extends AbstractFieldAttribute
 				return null;
 
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (BiConsumer<Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"accept",
-					MethodType.methodType(BiConsumer.class),
-					MethodType.methodType(void.class, Object.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
+			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
-			throw new IllegalStateException("Failed to create setter lambda", ex);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private BiFunction<Object, Object, Object> createFluentSetterLambda()
-	{
-		try
-		{
-			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getParameters()[0].getType().isPrimitive() || method.getReturnType() == void.class)
-				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
-			MethodHandle impl = lookup.unreflect(method);
-
-			return (BiFunction<Object, Object, Object>) LambdaMetafactory.metafactory(
-					lookup,
-					"apply",
-					MethodType.methodType(BiFunction.class),
-					MethodType.methodType(Object.class, Object.class, Object.class),
-					impl,
-					impl.type()
-			).getTarget().invokeExact();
-		} catch (Throwable ex)
-		{
-			throw new IllegalStateException("Failed to create fluent setter lambda", ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException("Failed to access setter method", ex);
 		}
 	}
 
@@ -197,7 +150,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || fluentSetter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null || Modifier.isFinal(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);
