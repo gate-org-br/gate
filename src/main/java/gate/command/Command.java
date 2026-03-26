@@ -1,5 +1,7 @@
 package gate.command;
 
+import gate.type.RequestCommand;
+
 import java.util.List;
 
 public interface Command
@@ -35,11 +37,6 @@ public interface Command
 		return ReloadCommand.of(messages);
 	}
 
-	static JSPCommand jsp(String name)
-	{
-		return JSPCommand.of(name);
-	}
-
 	static HTMLCommand html(String name)
 	{
 		return HTMLCommand.of(name);
@@ -48,5 +45,10 @@ public interface Command
 	static RedirectCommand redirect()
 	{
 		return RedirectCommand.of();
+	}
+
+	static RedirectCommand redirect(RequestCommand command)
+	{
+		return RedirectCommand.of(command);
 	}
 }

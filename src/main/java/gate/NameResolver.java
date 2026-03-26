@@ -5,17 +5,20 @@ import java.lang.reflect.Method;
 public class NameResolver
 {
 
-	public static String screen(Class<? extends Object> type)
+	public static String screen(Class<?> type)
 	{
 		String name = type.getSimpleName();
+		if (!name.endsWith("Screen"))
+			throw new IllegalStateException("Screen class name must end with 'Screen': " + type.getName());
 
-		if (type.getEnclosingClass() != null)
-			return type.getEnclosingClass().getSimpleName()
-				+ "$"
-				+ name.substring(0, name.length() - 6);
+		name = name.substring(0, name.length() - 6);
+		Class<?> enclosingClass = type.getEnclosingClass();
+		if (enclosingClass == null)
+			return name;
 
-		return name.substring(0, name.length() - 6);
+		return screen(enclosingClass) + "." + name;
 	}
+
 
 	public static String action(Method method)
 	{

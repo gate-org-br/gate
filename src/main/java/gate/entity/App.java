@@ -185,7 +185,7 @@ public class App implements Serializable
 					.setString("icon", icon)
 					.setString("description", description)
 					.set("screens", screens.stream().map(Screen::toJsonObject)
-							.collect(Collectors.toCollection(() -> new JsonArray())));
+							.collect(Collectors.toCollection(JsonArray::new)));
 
 		}
 

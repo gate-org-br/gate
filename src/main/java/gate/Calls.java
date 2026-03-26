@@ -1,14 +1,6 @@
 package gate;
 
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
+import gate.annotation.AllowMethod;
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
 import gate.annotation.MainAction;
@@ -16,13 +8,11 @@ import gate.base.Screen;
 import gate.entity.User;
 import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.HEAD;
-import jakarta.ws.rs.OPTIONS;
-import jakarta.ws.rs.PATCH;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
+
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class Calls
@@ -44,8 +34,8 @@ public class Calls
 	public boolean canAccess(User user, RequestCommand command)
 	{
 		return instances.values().stream()
-			.filter(a -> a.command().matches(command))
-			.anyMatch(a -> a.accessRule().allows(user));
+				.filter(a -> a.command().matches(command))
+				.anyMatch(a -> a.accessRule().allows(user));
 	}
 
 	public void register(List<Class<Screen>> screens)
@@ -61,37 +51,21 @@ public class Calls
 				{
 					String action = method.getName().substring(4);
 					RequestCommand command = new RequestCommand(module, screen, action);
-					Set<String> methods = new HashSet<>();
-					if (method.isAnnotationPresent(GET.class))
-						methods.add("GET");
-					if (method.isAnnotationPresent(POST.class))
-						methods.add("POST");
-					if (method.isAnnotationPresent(PUT.class))
-						methods.add("PUT");
-					if (method.isAnnotationPresent(DELETE.class))
-						methods.add("DELETE");
-					if (method.isAnnotationPresent(PATCH.class))
-						methods.add("PATCH");
-					if (method.isAnnotationPresent(HEAD.class))
-						methods.add("HEAD");
-					if (method.isAnnotationPresent(OPTIONS.class))
-						methods.add("OPTIONS");
-					methods = Collections.unmodifiableSet(methods);
+					Set<String> methods = Stream.of(method.getAnnotationsByType(AllowMethod.class))
+							.map(e -> e.value().name()).collect(Collectors.toUnmodifiableSet());
 
 					var cors = method.isAnnotationPresent(Cors.class);
 					var asynchronous = method.isAnnotationPresent(Asynchronous.class);
 					var accessRule = AccessRule.of(type, method, command);
 					var metadata = ActionMetadata.of(type, method);
 					var runtimeAction = new Call(command, type, method,
-						methods,
-						accessRule,
-						cors,
-						asynchronous,
-						metadata);
+							methods,
+							accessRule,
+							cors,
+							asynchronous,
+							metadata);
 
-					if (instances.containsKey(command))
-						throw new IllegalStateException("Duplicated action: " + command);
-					instances.put(command, runtimeAction);
+					register(new RequestCommand(module, screen, action), runtimeAction);
 
 					if (method.isAnnotationPresent(MainAction.class))
 					{
@@ -103,5 +77,12 @@ public class Calls
 				}
 			}
 		}
+	}
+
+	private void register(RequestCommand command, Call runtimeAction)
+	{
+		if (instances.containsKey(command))
+			throw new IllegalStateException("Duplicated action: " + command);
+		instances.put(command, runtimeAction);
 	}
 }

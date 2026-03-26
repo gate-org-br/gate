@@ -1,22 +1,15 @@
 package gate.error;
 
-import gate.annotation.Catcher;
-import gate.catcher.HttpExceptionCatcher;
-
 /**
  * Signals that a data conversion could not be made.
  */
-@Catcher(HttpExceptionCatcher.class)
 public class ConversionException extends BadRequestException
 {
-
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Constructs a ConversionException with the specified detail message.
 	 *
 	 * @param message The detail message, which is saved for later retrieval
-	 * by the getMessage() method
+	 *                by the getMessage() method
 	 */
 	public ConversionException(String message)
 	{
@@ -27,8 +20,8 @@ public class ConversionException extends BadRequestException
 	 * Constructs an ConversionException with the specified detail message
 	 * formatted with the specified parameters.
 	 *
-	 * @param message The detail message, which is saved for later retrieval
-	 * by the getMessage() method
+	 * @param message    The detail message, which is saved for later retrieval
+	 *                   by the getMessage() method
 	 * @param parameters parameters to formatted into the detail message
 	 * @see java.util.Formatter
 	 */
@@ -41,11 +34,11 @@ public class ConversionException extends BadRequestException
 	 * Constructs an ConversionException with the specified cause and detail
 	 * message.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the
-	 * getCause() method. A null value is permitted, and indicates that the
-	 * cause is nonexistent or unknown.
+	 * @param cause   The cause, which is saved for later retrieval by the
+	 *                getCause() method. A null value is permitted, and indicates that the
+	 *                cause is nonexistent or unknown.
 	 * @param message The detail message, which are saved for later
-	 * retrieval by the getMessages() or getMessage() method
+	 *                retrieval by the getMessages() or getMessage() method
 	 */
 	public ConversionException(Throwable cause, String message)
 	{
@@ -56,11 +49,11 @@ public class ConversionException extends BadRequestException
 	 * Constructs an ConversionException with the specified detail message
 	 * formatted with the specified parameters.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the
-	 * getCause() method. A null value is permitted, and indicates that the
-	 * cause is nonexistent or unknown.
-	 * @param message The detail message, which is saved for later retrieval
-	 * by the getMessage() method
+	 * @param cause      The cause, which is saved for later retrieval by the
+	 *                   getCause() method. A null value is permitted, and indicates that the
+	 *                   cause is nonexistent or unknown.
+	 * @param message    The detail message, which is saved for later retrieval
+	 *                   by the getMessage() method
 	 * @param parameters parameters to formatted into the detail message
 	 * @see java.util.Formatter
 	 */

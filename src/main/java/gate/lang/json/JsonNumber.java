@@ -1,9 +1,5 @@
 package gate.lang.json;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Objects;
-
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
@@ -11,6 +7,11 @@ import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.type.Money;
 import gate.type.Percentage;
+
+import java.io.Serial;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.Objects;
 
 /**
  * Represents a JSON number as a BigDecimal.
@@ -24,7 +25,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 
 	private final BigDecimal value;
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private JsonNumber(BigDecimal value)
 	{
@@ -102,7 +103,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return value;
 	}
 
-	@Override
+	@SuppressWarnings("unchecked") @Override
 	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
@@ -112,11 +113,9 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Parses a JSON formatted string into a JsonNumber object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonNumber object
-	 *
 	 * @return a JsonNumber object representing the JSON formatted string specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse the
-	 * specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the
+	 *                              specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonNumber parse(String json) throws ConversionException
@@ -133,7 +132,6 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified int value.
 	 *
 	 * @param value an int value.
-	 *
 	 * @return a JsonNumber instance representing value.
 	 */
 	public static JsonNumber of(long value)
@@ -145,7 +143,6 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified double value.
 	 *
 	 * @param value a double value.
-	 *
 	 * @return a JsonNumber instance representing value.
 	 */
 	public static JsonNumber of(double value)
@@ -157,9 +154,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified string value.
 	 *
 	 * @param value a string value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(String value)
@@ -171,9 +166,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Byte value.
 	 *
 	 * @param value a Byte value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Byte value)
@@ -185,9 +178,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Short value.
 	 *
 	 * @param value a Short value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Short value)
@@ -199,9 +190,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Integer value.
 	 *
 	 * @param value a Integer value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Integer value)
@@ -213,9 +202,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Long value.
 	 *
 	 * @param value a Long value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Long value)
@@ -227,9 +214,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Float value.
 	 *
 	 * @param value a Float value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Float value)
@@ -241,9 +226,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Double value.
 	 *
 	 * @param value a Double value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Double value)
@@ -255,9 +238,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified BigDecimal value.
 	 *
 	 * @param value a BigDecimal value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(BigDecimal value)
@@ -269,9 +250,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Percentage value.
 	 *
 	 * @param value a Percentage value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Percentage value)
@@ -283,9 +262,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Money value.
 	 *
 	 * @param value a Money value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Money value)
@@ -297,9 +274,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * Returns an JsonNumber instance representing the specified Number value.
 	 *
 	 * @param value a Number value.
-	 *
 	 * @return a JsonNumber instance representing value.
-	 *
 	 * @throws NullPointerException if the specified value is null
 	 */
 	public static JsonNumber of(Number value)

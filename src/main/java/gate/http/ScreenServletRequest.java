@@ -10,7 +10,6 @@ import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
 import gate.policonverter.Policonverter;
 import gate.type.RequestCommand;
-import gate.util.Toolkit;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +26,11 @@ import java.util.stream.Stream;
 
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {
+	private final RequestCommand command =
+			new RequestCommand(getParameter("MODULE"),
+					getParameter("SCREEN"),
+					getParameter("ACTION"))
+					.or(RequestCommand.ofPath(getPathInfo()));
 
 	private static final Pattern AUTHORIZATION = Pattern.compile("(.*) (.*)");
 
@@ -227,20 +231,5 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return (User) getAttribute(User.class.getName());
 	}
 
-	public RequestCommand getCommand()
-	{
-		String MODULE = getParameter("MODULE");
-		String SCREEN = getParameter("SCREEN");
-		String ACTION = getParameter("ACTION");
-		if (Toolkit.isEmpty(MODULE, SCREEN, ACTION)
-			&& getPathInfo() != null)
-		{
-			List<String> path = Toolkit.parsePath(getPathInfo());
-			MODULE = !path.isEmpty() ? path.get(0) : null;
-			SCREEN = path.size() >= 2 ? path.get(1) : null;
-			ACTION = path.size() >= 3 ? path.get(2) : null;
-		}
-
-		return new RequestCommand(MODULE, SCREEN, ACTION);
-	}
+	public RequestCommand getCommand() {return command;}
 }

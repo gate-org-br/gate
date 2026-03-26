@@ -1,5 +1,9 @@
 package gate.error;
 
+import gate.annotation.Catcher;
+import gate.catcher.HttpExceptionCatcher;
+
+@Catcher(HttpExceptionCatcher.class)
 public abstract class HttpException extends RuntimeException
 {
 

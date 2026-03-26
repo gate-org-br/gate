@@ -9,10 +9,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class StringHandler implements Handler
 {
-
-	@Inject
-	private JSPCommandHandler jspHandler;
-
 	@Inject
 	private HTMLCommandHandler htmlHandler;
 
@@ -26,12 +22,10 @@ public class StringHandler implements Handler
 	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		String string = value.toString();
-		if (string.endsWith(".jsp"))
-			jspHandler.handle(request, response, string);
-		else if (string.endsWith(".html"))
+		if (string.endsWith(".html"))
 			htmlHandler.handle(request, response, string);
 		else if (string.endsWith(".js")
-			|| string.endsWith(".mjs"))
+				 || string.endsWith(".mjs"))
 			jsHandler.handle(request, response, string);
 		else
 			textHandler.handle(request, response, string);
@@ -40,13 +34,14 @@ public class StringHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response,
-		Progress progress, Object value)
+					   Progress progress, Object value)
 	{
 		String string = value.toString();
-		if (string.endsWith(".jsp"))
-			jspHandler.handle(request, response, progress, string);
-		else if (string.endsWith(".html"))
+		if (string.endsWith(".html"))
 			htmlHandler.handle(request, response, progress, string);
+		else if (string.endsWith(".js")
+				 || string.endsWith(".mjs"))
+			jsHandler.handle(request, response, string);
 		else
 			textHandler.handle(request, response, progress, string);
 	}

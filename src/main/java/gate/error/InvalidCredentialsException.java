@@ -5,9 +5,6 @@ package gate.error;
  */
 public class InvalidCredentialsException extends AuthenticationException
 {
-
-	private static final long serialVersionUID = 1L;
-
 	/**
 	 * Constructs an InvalidCredentialsException.
 	 */

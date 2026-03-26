@@ -1,7 +1,5 @@
 package gate.error;
 
-import gate.annotation.Catcher;
-import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Serial;
@@ -9,7 +7,6 @@ import java.io.Serial;
 /**
  * Signals that a requested resource could not be found.
  */
-@Catcher(HttpExceptionCatcher.class)
 public class NotFoundException extends HttpException
 {
 

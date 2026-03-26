@@ -4,7 +4,6 @@ import gate.annotation.Entity;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
-import gate.icon.Icon;
 import gate.util.Reflection;
 
 import java.lang.reflect.Constructor;
@@ -65,6 +64,8 @@ public interface Attribute
 		}
 
 	}
+
+	default Metadata getMetadata() {return Metadata.EMPTY;}
 
 	default boolean getBoolean(Object object)
 	{
@@ -160,46 +161,6 @@ public interface Attribute
 	{
 		throw new UnsupportedOperationException(
 				"Attempt to write a double value to a non double attribute");
-	}
-
-	default String getDisplayName()
-	{
-		return null;
-	}
-
-	default String getDescription()
-	{
-		return null;
-	}
-
-	default String getPlaceholder()
-	{
-		return null;
-	}
-
-	default Icon getIcon()
-	{
-		return null;
-	}
-
-	default String getCode()
-	{
-		return null;
-	}
-
-	default String getTooltip()
-	{
-		return null;
-	}
-
-	default String getColor()
-	{
-		return null;
-	}
-
-	default String getMask()
-	{
-		return null;
 	}
 
 	default Collection<Constraint.Implementation<?>> getConstraints()

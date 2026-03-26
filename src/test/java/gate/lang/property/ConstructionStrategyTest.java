@@ -290,6 +290,7 @@ class ConstructionStrategyTest
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public void setValue(Object object, Object value)
 		{
 			setter.accept((T) object, value);
@@ -302,6 +303,7 @@ class ConstructionStrategyTest
 		}
 
 		@Override
+		@SuppressWarnings("NullableProblems")
 		public String toString()
 		{
 			return name;

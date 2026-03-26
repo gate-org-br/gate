@@ -7,11 +7,12 @@ import gate.type.Attributes;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.function.Function;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.function.Function;
 
 @ApplicationScoped
 public class InputAttributeProcessor extends FormControlAttributeProcessor
@@ -27,7 +28,7 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Object screen, Property property, Object value)
+						IElementTagStructureHandler handler, Object screen, Property property, Object value)
 	{
 		var type = "text";
 		if (element.hasAttribute("type"))
@@ -36,16 +37,16 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 			handler.setAttribute("type", type);
 
 		handler.setAttribute("value",
-			"date".equalsIgnoreCase(type)
-			|| "datetime-local".equalsIgnoreCase(type)
-			? Converter.toISOString(value)
-			: Converter.toString(value));
+				"date".equalsIgnoreCase(type)
+				|| "datetime-local".equalsIgnoreCase(type)
+						? Converter.toISOString(value)
+						: Converter.toString(value));
 
 		if ("text".equalsIgnoreCase(type))
 		{
 			if (!element.hasAttribute("data-mask"))
 			{
-				String mask = property.getMask();
+				String mask = property.getMetadata().mask();
 				if (mask != null && !mask.isEmpty())
 					handler.setAttribute("data-mask", mask);
 			}

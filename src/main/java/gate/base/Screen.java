@@ -1,12 +1,5 @@
 package gate.base;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-
 import gate.annotation.BodyParamExtractor;
 import gate.annotation.CookieParamExtractor;
 import gate.annotation.HeaderParamExtractor;
@@ -14,6 +7,7 @@ import gate.annotation.QueryParamExtractor;
 import gate.error.AppException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
+import gate.type.RequestCommand;
 import gate.util.Page;
 import gate.util.Paginator;
 import gate.util.PropertyComparator;
@@ -23,6 +17,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.HeaderParam;
 import jakarta.ws.rs.QueryParam;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class Screen extends Base
 {
@@ -90,20 +91,13 @@ public abstract class Screen extends Base
 		return 10;
 	}
 
-	public String getModule()
-	{
-		return getRequest().getParameter("MODULE");
-	}
+	public RequestCommand getCommand() {return getRequest().getCommand();}
 
-	public String getScreen()
-	{
-		return getRequest().getParameter("SCREEN");
-	}
+	public String getModule() {return getCommand().module();}
 
-	public String getAction()
-	{
-		return getRequest().getParameter("ACTION");
-	}
+	public String getScreen() {return getCommand().screen();}
+
+	public String getAction() {return getCommand().action();}
 
 	public ScreenServletRequest getRequest()
 	{
@@ -224,12 +218,12 @@ public abstract class Screen extends Base
 		try
 		{
 			return Optional.of(Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass(screen != null
-					? module + "." + screen
-					+ "Screen"
-					: module + ".Screen"))
-				.map(e -> (Class<Screen>) e);
+							.getContextClassLoader()
+							.loadClass(screen != null
+									? module + "." + screen
+									  + "Screen"
+									: module + ".Screen"))
+					.map(e -> (Class<Screen>) e);
 		} catch (ClassNotFoundException ex)
 		{
 			return Optional.empty();

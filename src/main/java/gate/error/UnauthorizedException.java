@@ -1,7 +1,5 @@
 package gate.error;
 
-import gate.annotation.Catcher;
-import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Serial;
@@ -10,7 +8,6 @@ import java.io.Serial;
  * Signals that the client must authenticate itself to access the requested
  * resource.
  */
-@Catcher(HttpExceptionCatcher.class)
 public class UnauthorizedException extends HttpException
 {
 

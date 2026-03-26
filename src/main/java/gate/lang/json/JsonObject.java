@@ -7,15 +7,12 @@ import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.lang.property.Property;
 import gate.util.Reflection;
+
+import java.io.Serial;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -43,9 +40,9 @@ import java.util.function.Function;
 @Converter(JsonElementConverter.class)
 public class JsonObject implements Map<String, JsonElement>, JsonCollection
 {
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final Map<String, JsonElement> values = new LinkedHashMap<>();
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Creates an empty JsonObject.
@@ -92,7 +89,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a JsonElement value for the specified key. If the value is null,
 	 * the key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the JsonElement value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -109,7 +106,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a String value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the String value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -125,7 +122,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets a boolean value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the boolean value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -138,7 +135,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a Boolean value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Boolean value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -154,7 +151,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets a byte value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the byte value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -167,7 +164,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a Byte value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Byte value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -183,7 +180,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets a short value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the short value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -196,7 +193,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a Short value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Short value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -212,7 +209,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets an int value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the int value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -225,7 +222,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets an Integer value for the specified key. If the value is null,
 	 * the key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Integer value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -241,7 +238,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets a long value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the long value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -254,7 +251,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a Long value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Long value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -270,7 +267,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets a float value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the float value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -283,7 +280,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a Float value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Float value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -299,7 +296,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Sets a double value for the specified key.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the double value to set
 	 * @return this JsonObject for method chaining
 	 */
@@ -312,7 +309,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a Double value for the specified key. If the value is null, the
 	 * key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Double value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -334,7 +331,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<String> getString(String key)
 	{
-		return getJsonString(key).map(e -> e.getValue());
+		return getJsonString(key).map(JsonString::getValue);
 	}
 
 	/**
@@ -346,7 +343,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<String> getString(int index)
 	{
-		return getJsonString(index).map(e -> e.getValue());
+		return getJsonString(index).map(JsonString::getValue);
 	}
 
 	/**
@@ -358,7 +355,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Integer> getInt(String key)
 	{
-		return getJsonNumber(key).map(e -> e.intValue());
+		return getJsonNumber(key).map(JsonNumber::intValue);
 	}
 
 	/**
@@ -370,7 +367,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Integer> getInt(int index)
 	{
-		return getJsonNumber(index).map(e -> e.intValue());
+		return getJsonNumber(index).map(JsonNumber::intValue);
 	}
 
 	/**
@@ -382,7 +379,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Long> getLong(String key)
 	{
-		return getJsonNumber(key).map(e -> e.longValue());
+		return getJsonNumber(key).map(JsonNumber::longValue);
 	}
 
 	/**
@@ -394,7 +391,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Long> getLong(int index)
 	{
-		return getJsonNumber(index).map(e -> e.longValue());
+		return getJsonNumber(index).map(JsonNumber::longValue);
 	}
 
 	/**
@@ -406,7 +403,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Short> getShort(String key)
 	{
-		return getJsonNumber(key).map(e -> e.shortValue());
+		return getJsonNumber(key).map(JsonNumber::shortValue);
 	}
 
 	/**
@@ -418,7 +415,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Short> getShort(int index)
 	{
-		return getJsonNumber(index).map(e -> e.shortValue());
+		return getJsonNumber(index).map(JsonNumber::shortValue);
 	}
 
 	/**
@@ -430,7 +427,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Byte> getByte(String key)
 	{
-		return getJsonNumber(key).map(e -> e.byteValue());
+		return getJsonNumber(key).map(JsonNumber::byteValue);
 	}
 
 	/**
@@ -442,7 +439,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Byte> getByte(int index)
 	{
-		return getJsonNumber(index).map(e -> e.byteValue());
+		return getJsonNumber(index).map(JsonNumber::byteValue);
 	}
 
 	/**
@@ -454,7 +451,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Float> getFloat(String key)
 	{
-		return getJsonNumber(key).map(e -> e.floatValue());
+		return getJsonNumber(key).map(JsonNumber::floatValue);
 	}
 
 	/**
@@ -466,14 +463,14 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Float> getFloat(int index)
 	{
-		return getJsonNumber(index).map(e -> e.floatValue());
+		return getJsonNumber(index).map(JsonNumber::floatValue);
 	}
 
 	/**
 	 * Sets an Object value for the specified key by converting it to a
 	 * String. If the value is null, the key is removed.
 	 *
-	 * @param key the key
+	 * @param key   the key
 	 * @param value the Object value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -490,9 +487,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Sets a typed Object value for the specified key by converting it to a
 	 * String. If the value is null, the key is removed.
 	 *
-	 * @param <T> the type of the object
-	 * @param key the key
-	 * @param type the class of the object
+	 * @param <T>   the type of the object
+	 * @param key   the key
+	 * @param type  the class of the object
 	 * @param value the Object value to set, or null to remove the key
 	 * @return this JsonObject for method chaining
 	 */
@@ -508,8 +505,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Gets an Object value for the specified key by converting from String.
 	 *
-	 * @param <T> the type to convert to
-	 * @param key the key
+	 * @param <T>  the type to convert to
+	 * @param key  the key
 	 * @param type the class to convert to
 	 * @return an Optional containing the converted Object, or empty if not
 	 * present
@@ -518,16 +515,16 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public <T> Optional<T> getObject(String key, Class<T> type) throws ConversionException
 	{
 		return getString(key)
-			.map(e -> gate.converter.Converter.fromString(type, e));
+				.map(e -> gate.converter.Converter.fromString(type, e));
 	}
 
 	/**
 	 * Gets an Object value at the specified index by converting from
 	 * String.
 	 *
-	 * @param <T> the type to convert to
+	 * @param <T>   the type to convert to
 	 * @param index the index
-	 * @param type the class to convert to
+	 * @param type  the class to convert to
 	 * @return an Optional containing the converted Object, or empty if not
 	 * present
 	 * @throws ConversionException if conversion fails
@@ -535,7 +532,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public <T> Optional<T> getObject(int index, Class<T> type) throws ConversionException
 	{
 		return getString(index)
-			.map(e -> gate.converter.Converter.fromString(type, e));
+				.map(e -> gate.converter.Converter.fromString(type, e));
 	}
 
 	/**
@@ -559,7 +556,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Double> getDouble(int index)
 	{
-		return getJsonNumber(index).map(e -> e.doubleValue());
+		return getJsonNumber(index).map(JsonNumber::doubleValue);
 	}
 
 	/**
@@ -571,7 +568,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Boolean> getBoolean(String key)
 	{
-		return getJsonBoolean(key).map(e -> e.getValue());
+		return getJsonBoolean(key).map(JsonBoolean::getValue);
 	}
 
 	/**
@@ -583,7 +580,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<Boolean> getBoolean(int index)
 	{
-		return getJsonBoolean(index).map(e -> e.getValue());
+		return getJsonBoolean(index).map(JsonBoolean::getValue);
 	}
 
 	/**
@@ -608,7 +605,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonElement> getJsonElement(int index)
 	{
 		return values().stream().skip(index)
-			.findFirst();
+				.findFirst();
 	}
 
 	/**
@@ -621,7 +618,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonObject> getJsonObject(String key)
 	{
 		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonObject)
-			.map(e -> (JsonObject) e);
+				.map(e -> (JsonObject) e);
 	}
 
 	/**
@@ -634,7 +631,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonObject> getJsonObject(int index)
 	{
 		return getJsonElement(index).filter(e -> e instanceof JsonObject)
-			.map(e -> (JsonObject) e);
+				.map(e -> (JsonObject) e);
 	}
 
 	/**
@@ -647,7 +644,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonArray> getJsonArray(String key)
 	{
 		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonArray)
-			.map(e -> (JsonArray) e);
+				.map(e -> (JsonArray) e);
 	}
 
 	/**
@@ -660,7 +657,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonArray> getJsonArray(int index)
 	{
 		return getJsonElement(index).filter(e -> e instanceof JsonArray)
-			.map(e -> (JsonArray) e);
+				.map(e -> (JsonArray) e);
 	}
 
 	/**
@@ -673,7 +670,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonNumber> getJsonNumber(String key)
 	{
 		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e);
+				.map(e -> (JsonNumber) e);
 
 	}
 
@@ -687,7 +684,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonNumber> getJsonNumber(int index)
 	{
 		return getJsonElement(index).filter(e -> e instanceof JsonNumber)
-			.map(e -> (JsonNumber) e);
+				.map(e -> (JsonNumber) e);
 	}
 
 	/**
@@ -700,7 +697,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonBoolean> getJsonBoolean(String key)
 	{
 		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonBoolean)
-			.map(e -> (JsonBoolean) e);
+				.map(e -> (JsonBoolean) e);
 	}
 
 	/**
@@ -713,7 +710,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonBoolean> getJsonBoolean(int index)
 	{
 		return getJsonElement(index).filter(e -> e instanceof JsonBoolean)
-			.map(e -> (JsonBoolean) e);
+				.map(e -> (JsonBoolean) e);
 	}
 
 	/**
@@ -726,7 +723,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonString> getJsonString(String key)
 	{
 		return Optional.ofNullable(get(key)).filter(e -> e instanceof JsonString)
-			.map(e -> (JsonString) e);
+				.map(e -> (JsonString) e);
 	}
 
 	/**
@@ -739,21 +736,19 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public Optional<JsonString> getJsonString(int index)
 	{
 		return getJsonElement(index).filter(e -> e instanceof JsonString)
-			.map(e -> (JsonString) e);
+				.map(e -> (JsonString) e);
 	}
 
 	/**
 	 * Parses a JSON formatted string into a JsonObject object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonObject
-	 * object
-	 *
+	 *             object
 	 * @return a JsonObject object representing the JSON formatted string
 	 * specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse
-	 * the specified JSON formatted string
-	 * @throws NullPointerException if the json parameter is null
+	 * @throws ConversionException  if an error occurs while trying to parse
+	 *                              the specified JSON formatted string
+	 * @throws NullPointerException if the JSON parameter is null
 	 */
 	public static JsonObject parse(String json) throws ConversionException
 	{
@@ -773,10 +768,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * </p>
 	 *
 	 * @param jsonObject the JsonObject object to be formatted on JSON
-	 * notation
-	 *
+	 *                   notation
 	 * @return a JSON formatted string representing the specified JsonObject
-	 *
 	 * @throws NullPointerException if the jsonObject parameter is null
 	 */
 	public static String format(JsonObject jsonObject)
@@ -792,12 +785,12 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * the JSON object's properties.
 	 * </p>
 	 *
-	 * @param <T> the type to convert to
+	 * @param <T>  the type to convert to
 	 * @param type the class of the type to convert to
 	 * @return an instance of the specified type populated with this
 	 * JsonObject's data
 	 * @throws ConversionException if conversion fails due to reflection
-	 * errors
+	 *                             errors
 	 */
 	@Override
 	public <T> T toObject(Class<T> type)
@@ -813,16 +806,16 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 				if (entry.getValue() != null)
 				{
 					Field field = Reflection.findField(type, entry.getKey())
-						.orElseThrow(() -> new NoSuchFieldException("No such field %s found on type %s".formatted(entry.getKey(), type.getName())));
+							.orElseThrow(() -> new NoSuchFieldException("No such field %s found on type %s".formatted(entry.getKey(), type.getName())));
 					field.setAccessible(true);
 					field.set(object, entry.getValue().toObject(field.getType(),
-						Reflection.getElementType(field.getGenericType())));
+							Reflection.getElementType(field.getGenericType())));
 				}
 			}
 
 			return object;
 		} catch (NoSuchMethodException | NoSuchFieldException | InstantiationException
-			| IllegalAccessException | InvocationTargetException | SecurityException ex)
+				 | IllegalAccessException | InvocationTargetException | SecurityException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
@@ -911,8 +904,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Creates a JsonObject with label and value properties from the given
 	 * object.
 	 *
-	 * @param <T> the type of the object
-	 * @param obj the object to format
+	 * @param <T>   the type of the object
+	 * @param obj   the object to format
 	 * @param label function to extract the label
 	 * @param value function to extract the value
 	 * @return a JsonObject with label and value properties
@@ -920,15 +913,15 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public static <T> JsonObject format(T obj, Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
-			JsonElement.of(value.apply(obj)));
+				JsonElement.of(value.apply(obj)));
 	}
 
 	/**
 	 * Creates a JsonObject with label and value properties from the given
 	 * object.
 	 *
-	 * @param <T> the type of the object
-	 * @param obj the object to format
+	 * @param <T>   the type of the object
+	 * @param obj   the object to format
 	 * @param label function to extract the label
 	 * @param value function to extract the value
 	 * @return a JsonObject with label and value properties
@@ -936,27 +929,27 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
-			JsonElement.of(value.apply(obj)));
+				JsonElement.of(value.apply(obj)));
 	}
 
 	/**
 	 * Creates a JsonObject with label, value, and properties from the given
 	 * object.
 	 *
-	 * @param <T> the type of the object
-	 * @param obj the object to format
-	 * @param label function to extract the label
-	 * @param value function to extract the value
+	 * @param <T>        the type of the object
+	 * @param obj        the object to format
+	 * @param label      function to extract the label
+	 * @param value      function to extract the value
 	 * @param properties function to extract additional properties as a
-	 * JsonObject
+	 *                   JsonObject
 	 * @return a JsonObject with label, value, and properties
 	 */
 	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value,
-		Function<T, JsonObject> properties)
+									Function<T, JsonObject> properties)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj)))
-			.set("value", JsonElement.of(value.apply(obj)))
-			.set("properties", properties.apply(obj));
+				.set("value", JsonElement.of(value.apply(obj)))
+				.set("properties", properties.apply(obj));
 	}
 
 	/**
@@ -976,7 +969,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		JsonObject result = new JsonObject();
 		Property.getProperties(obj.getClass()).forEach((property) ->
 		{
-			String name = property.getDisplayName();
+			String name = property.getMetadata().name();
 			if (name != null)
 			{
 				Object value = property.getValue(obj);

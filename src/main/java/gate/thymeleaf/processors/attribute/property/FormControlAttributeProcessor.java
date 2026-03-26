@@ -15,20 +15,20 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Object screen, Property property)
+						IElementTagStructureHandler handler, Object screen, Property property)
 	{
 		handler.setAttribute("name", property.toString());
 
 		property.getConstraints().stream()
-			.filter(e -> !element.hasAttribute(e.getName()))
-			.forEachOrdered(e -> handler.setAttribute(e.getName(), e.getValue().toString()));
+				.filter(e -> !element.hasAttribute(e.getName()))
+				.forEachOrdered(e -> handler.setAttribute(e.getName(), e.getValue().toString()));
 
 		if (!element.hasAttribute("title"))
 		{
-			String description = property.getDescription();
+			String description = property.getMetadata().description();
 			if (description == null || description.isEmpty())
 			{
-				String displayName = property.getDisplayName();
+				String displayName = property.getMetadata().name();
 				if (displayName != null && !displayName.isEmpty())
 					handler.setAttribute("title", displayName);
 			} else
@@ -37,21 +37,21 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 
 		if (!element.hasAttribute("data-tooltip"))
 		{
-			String tooltip = property.getTooltip();
+			String tooltip = property.getMetadata().tooltip();
 			if (tooltip != null && !tooltip.isEmpty())
 				handler.setAttribute("data-tooltip", tooltip);
 		}
 
 		if (!element.hasAttribute("data-confirm"))
 		{
-			String tooltip = property.getTooltip();
+			String tooltip = property.getMetadata().tooltip();
 			if (tooltip != null && !tooltip.isEmpty())
 				handler.setAttribute("data-tooltip", tooltip);
 		}
 
 		if (!element.hasAttribute("placeholder"))
 		{
-			String placeholder = property.getPlaceholder();
+			String placeholder = property.getMetadata().placeholder();
 			if (placeholder != null && !placeholder.isEmpty())
 				handler.setAttribute("placeholder", placeholder);
 		}
@@ -68,5 +68,5 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 	}
 
 	public abstract void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Object screen, Property property, Object value);
+								 IElementTagStructureHandler handler, Object screen, Property property, Object value);
 }

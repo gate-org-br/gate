@@ -1,10 +1,7 @@
 package gate.error;
 
-import gate.annotation.Catcher;
 import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.Serial;
 
 /**
  * Exception thrown when an authentication attempt fails.
@@ -20,12 +17,10 @@ import java.io.Serial;
  * resulting in an HTTP 401 (Unauthorized) response.
  * </p>
  */
-@Catcher(HttpExceptionCatcher.class)
+
 public class AuthenticationException extends HttpException
 {
 
-	@Serial
-	private static final long serialVersionUID = 1L;
 	private static final String DEFAULT_MESSAGE = "Authentication could not be completed";
 
 	/**

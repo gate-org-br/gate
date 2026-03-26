@@ -20,16 +20,16 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 
 	@Override
 	public void process(ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler, Object screen, Property property)
+						IProcessableElementTag element,
+						IElementTagStructureHandler handler, Object screen, Property property)
 	{
 
 		if (!element.hasAttribute("title"))
 		{
-			String description = property.getDescription();
+			String description = property.getMetadata().description();
 			if (description == null || description.isEmpty())
 			{
-				String displayName = property.getDisplayName();
+				String displayName = property.getMetadata().name();
 				if (displayName != null && !displayName.isEmpty())
 					handler.setAttribute("title", displayName);
 			} else
@@ -38,7 +38,7 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 
 		if (!element.hasAttribute("data-tooltip"))
 		{
-			String tooltip = property.getTooltip();
+			String tooltip = property.getMetadata().tooltip();
 			if (tooltip != null && !tooltip.isEmpty())
 				handler.setAttribute("data-tooltip", tooltip);
 		}

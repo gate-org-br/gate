@@ -1,12 +1,12 @@
 package gate.lang.json;
 
-import java.util.Objects;
-
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
+
+import java.util.Objects;
 
 /**
  * Represents a JSON boolean.
@@ -58,12 +58,6 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		return obj instanceof JsonBoolean && obj == this;
-	}
-
-	@Override
 	public int hashCode()
 	{
 		return value ? 1 : 0;
@@ -82,10 +76,8 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	}
 
 	@Override
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
-	{
-		return (T) (Boolean) value;
-	}
+	@SuppressWarnings("unchecked")
+	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return (T) (Boolean) value;}
 
 	public static JsonBoolean parse(boolean value)
 	{
@@ -101,11 +93,9 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	 * Parses a JSON formatted string into a JsonBoolean object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonBoolean object
-	 *
 	 * @return a JsonBoolean object representing the JSON formatted string specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse the
-	 * specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the
+	 *                              specified JSON formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonBoolean parse(String json) throws ConversionException

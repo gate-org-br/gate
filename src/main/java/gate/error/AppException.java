@@ -1,31 +1,27 @@
 package gate.error;
 
+import gate.converter.Converter;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import gate.annotation.Catcher;
-import gate.catcher.HttpExceptionCatcher;
-import gate.converter.Converter;
-
 /**
- * Signals that an application level exception of some sort has occurred.
+ * Signals that an application level exception to some sort has occurred.
  * <p>
  * This class is the general class of application level exceptions produced by
  * user actions.
  */
-@Catcher(HttpExceptionCatcher.class)
 public class AppException extends BadRequestException
 {
 
 	private final List<String> messages;
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs an AppException with the specified detail message.
 	 *
 	 * @param message The detail message, which are saved for later
-	 * retrieval by the getMessages() or getMessage() method
+	 *                retrieval by the getMessages() or getMessage() method
 	 */
 	public AppException(String message)
 	{
@@ -37,7 +33,7 @@ public class AppException extends BadRequestException
 	 * Constructs an AppException with the specified detail messages.
 	 *
 	 * @param messages The detail messages, which are saved for later
-	 * retrieval by the getMessages() method
+	 *                 retrieval by the getMessages() method
 	 */
 	public AppException(List<String> messages)
 	{
@@ -49,11 +45,11 @@ public class AppException extends BadRequestException
 	 * Constructs an AppException with the specified cause and detail
 	 * message.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the
-	 * getCause() method. A null value is permitted, and indicates that the
-	 * cause is nonexistent or unknown.
+	 * @param cause   The cause, which is saved for later retrieval by the
+	 *                getCause() method. A null value is permitted, and indicates that the
+	 *                cause is nonexistent or unknown.
 	 * @param message The detail message, which are saved for later
-	 * retrieval by the getMessages() or getMessage() method
+	 *                retrieval by the getMessages() or getMessage() method
 	 */
 	public AppException(String message, Throwable cause)
 	{
@@ -66,11 +62,11 @@ public class AppException extends BadRequestException
 	 * Constructs an AppException with the specified cause and detail
 	 * messages.
 	 *
-	 * @param cause The cause, which is saved for later retrieval by the
-	 * getCause() method. A null value is permitted, and indicates that the
-	 * cause is nonexistent or unknown.
+	 * @param cause    The cause, which is saved for later retrieval by the
+	 *                 getCause() method. A null value is permitted, and indicates that the
+	 *                 cause is nonexistent or unknown.
 	 * @param messages The detail messages, which are saved for later
-	 * retrieval by the getMessages() method
+	 *                 retrieval by the getMessages() method
 	 */
 	public AppException(List<String> messages, Throwable cause)
 	{

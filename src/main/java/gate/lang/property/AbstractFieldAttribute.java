@@ -3,7 +3,6 @@ package gate.lang.property;
 import gate.annotation.*;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
-import gate.icon.Icon;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,21 +14,14 @@ import java.util.stream.Stream;
 public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 {
 	private final Type genericType;
-	private final Icon icon;
-	private final String color;
 	protected final Field field;
-	private final String mask;
-	private final String name;
 	private final Class<?> rawType;
 	private final Type elementType;
 	private final String columnName;
-	private final String description;
-	private final String tooltip;
-	private final String code;
-	private final String placeholder;
 	private final boolean isEntityId;
 	private final Converter converter;
 	private final List<Constraint.Implementation<?>> constraints;
+	private final Metadata metadata;
 
 	AbstractFieldAttribute(Field field)
 	{
@@ -50,13 +42,13 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 			else if (rawType.isArray())
 				elementType = rawType.getComponentType();
 			else if (List.class.isAssignableFrom(rawType)
-					&& genericType instanceof ParameterizedType)
+					 && genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Set.class.isAssignableFrom(rawType)
-					&& genericType instanceof ParameterizedType)
+					 && genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Map.class.isAssignableFrom(rawType)
-					&& genericType instanceof ParameterizedType)
+					 && genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[1];
 			else
 				elementType = Object.class;
@@ -75,14 +67,15 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 					.forEach(cons::add);
 			constraints = Collections.unmodifiableList(cons);
 
-			name = Name.Extractor.extract(field).orElse(null);
-			icon = gate.annotation.Icon.Extractor.extract(field).orElse(null);
-			code = Code.Extractor.extract(field).orElse(null);
-			color = Color.Extractor.extract(field).orElse(null);
-			tooltip = Tooltip.Extractor.extract(field).orElse(null);
-			description = Description.Extractor.extract(field).orElseGet(converter::getDescription);
-			mask = Mask.Extractor.extract(field).orElseGet(converter::getMask);
-			placeholder = Placeholder.Extractor.extract(field).orElseGet(converter::getPlaceholder);
+			var name = Name.Extractor.extract(field).orElse(null);
+			var icon = gate.annotation.Icon.Extractor.extract(field).orElse(null);
+			var code = Code.Extractor.extract(field).orElse(null);
+			var color = Color.Extractor.extract(field).orElse(null);
+			var tooltip = Tooltip.Extractor.extract(field).orElse(null);
+			var description = Description.Extractor.extract(field).orElseGet(converter::getDescription);
+			var mask = Mask.Extractor.extract(field).orElseGet(converter::getMask);
+			var placeholder = Placeholder.Extractor.extract(field).orElseGet(converter::getPlaceholder);
+			this.metadata = new Metadata(name, description, tooltip, placeholder, mask, color, code, icon);
 
 			if (field.isAnnotationPresent(Column.class))
 				columnName = field.getAnnotation(Column.class).value();
@@ -118,6 +111,8 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 		return constraints;
 	}
 
+	@Override public Metadata getMetadata() {return metadata;}
+	
 	@Override
 	public Converter getConverter()
 	{
@@ -128,54 +123,6 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	public Type getElementType()
 	{
 		return elementType;
-	}
-
-	@Override
-	public String getColor()
-	{
-		return color;
-	}
-
-	@Override
-	public Icon getIcon()
-	{
-		return icon;
-	}
-
-	@Override
-	public String getDisplayName()
-	{
-		return name;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return mask;
-	}
-
-	@Override
-	public String getCode()
-	{
-		return code;
-	}
-
-	@Override
-	public String getTooltip()
-	{
-		return tooltip;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return description;
-	}
-
-	@Override
-	public String getPlaceholder()
-	{
-		return placeholder;
 	}
 
 	@Override
@@ -191,20 +138,14 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		return obj instanceof AbstractFieldAttribute attribute
-				&& Objects.equals(field, attribute.field);
-	}
+	public boolean equals(Object o) {return o instanceof AbstractFieldAttribute a && Objects.equals(field, a.field);}
 
-	@Override
-	public int hashCode()
+	@Override public int hashCode()
 	{
 		return field.hashCode();
 	}
 
-	@Override
-	public String toString()
+	@Override public String toString()
 	{
 		return field.getName();
 	}

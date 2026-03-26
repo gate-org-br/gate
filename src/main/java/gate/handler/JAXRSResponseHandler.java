@@ -29,8 +29,8 @@ public class JAXRSResponseHandler implements Handler
 		Response res = (Response) value;
 
 		response.setStatus(res.getStatus());
-		res.getHeaders().entrySet().forEach(h -> h.getValue().stream().filter(v -> v instanceof String)
-				.map(v -> (String) v).forEach(v -> response.addHeader(h.getKey(), v)));
+		res.getHeaders().forEach((key, value1) -> value1.stream().filter(v -> v instanceof String)
+				.map(v -> (String) v).forEach(v -> response.addHeader(key, v)));
 
 		Object entity = res.getEntity();
 
@@ -43,17 +43,18 @@ public class JAXRSResponseHandler implements Handler
 					mediaType = "application/json";
 				MediaType responseMediaType = MediaType.valueOf(mediaType);
 
+				@SuppressWarnings("unchecked")
 				var type = (Class<Object>) entity.getClass();
 
 				MessageBodyWriter<Object> writer = providers.getMessageBodyWriter(type, null, new Annotation[]
-				{}, responseMediaType);
+						{}, responseMediaType);
 
 				if (writer == null)
 					throw new IOException("No message body writer found for the media type: " + mediaType);
 
 				OutputStream outputStream = response.getOutputStream();
 				writer.writeTo(entity, entity.getClass(), null, new Annotation[]
-				{}, responseMediaType, new MultivaluedHashMap<>(), outputStream);
+						{}, responseMediaType, new MultivaluedHashMap<>(), outputStream);
 				outputStream.flush();
 			} catch (IOException e)
 			{

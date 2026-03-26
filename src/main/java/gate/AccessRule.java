@@ -1,74 +1,66 @@
 package gate;
 
-import java.lang.reflect.Method;
-
-import gate.annotation.Annotations;
-import gate.annotation.Authorization;
-import gate.annotation.Disabled;
-import gate.annotation.Public;
-import gate.annotation.Security;
-import gate.annotation.Superuser;
+import gate.annotation.*;
 import gate.entity.User;
 import gate.type.RequestCommand;
 
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 public record AccessRule(
-	Security.Type accessType,
-	boolean disabled,
-	boolean isPublic,
-	boolean superuser,
-	Authorization.Value authorization)
-	{
+		Security.Type accessType,
+		Authorization.Value authorization)
+{
 
 	public static AccessRule of(Class<? extends Object> type,
-		Method method, RequestCommand command)
+								Method method, RequestCommand command)
 	{
-		var disabled = Annotations.exists(Disabled.class, type, method);
-		var isPublic = Annotations.exists(Public.class, type, method);
-		var superuser = Annotations.exists(Superuser.class, type, method);
-		var accessType = Security.Extractor.extract(method).orElse(Security.Type.AUTHORIZATION);
+		Security.Type accessType
+				= getAccessType(method)
+				.or(() -> getAccessType(type))
+				.or(() -> getAccessType(type.getPackage()))
+				.orElse(Security.Type.AUTHORIZATION);
+		Authorization.Value authorization =
+				Authorization.Extractor.extract(method,
+						command.module(), command.screen(), command.action());
+		return new AccessRule(accessType, authorization);
+	}
 
-		Authorization.Value authorization = Authorization.Extractor.extract(method,
-			command.module(), command.screen(), command.action());
-		return new AccessRule(accessType, disabled, isPublic, superuser, authorization);
+	private static Optional<Security.Type> getAccessType(AnnotatedElement element)
+	{
+		if (Stream.of(element.isAnnotationPresent(Disabled.class),
+				element.isAnnotationPresent(Public.class),
+				element.isAnnotationPresent(Superuser.class),
+				element.isAnnotationPresent(Security.class)).filter(e -> e).count() > 1)
+			throw new IllegalStateException("Ambiguous access type defined on " + element);
+
+		if (element.isAnnotationPresent(Disabled.class))
+			return Optional.of(Security.Type.BLOCK);
+		if (element.isAnnotationPresent(Superuser.class))
+			return Optional.of(Security.Type.SUPERUSER);
+		if (element.isAnnotationPresent(Public.class))
+			return Optional.of(Security.Type.NONE);
+
+		if (element.isAnnotationPresent(Security.class))
+			return Optional.of(element.getAnnotation(Security.class).value());
+
+		return Optional.empty();
 	}
 
 	public boolean allows(User user)
 	{
-		if (disabled)
-			return false;
-
-		if (isPublic)
-			return true;
-
-		if (superuser)
-			return user != null && user.isSuperUser();
-
 		return switch (accessType)
 		{
-			case NONE ->
-				true;
-
-			case AUTHENTICATION ->
-				user != null && user.getId() != null;
-
-			case AUTHORIZATION ->
-				user != null
-				&& user.getId() != null
-				&& user.checkAccess(
-				authorization.module(),
-				authorization.screen(),
-				authorization.action());
-
-			case SPECIFIC_AUTHORIZATION ->
-				user != null
-				&& user.getId() != null
-				&& user.checkSpecificAccess(
-				authorization.module(),
-				authorization.screen(),
-				authorization.action());
-
-			case SUPERUSER ->
-				user != null && user.isSuperUser();
+			case BLOCK -> false;
+			case NONE -> true;
+			case SUPERUSER -> user != null && user.isSuperUser();
+			case AUTHENTICATION -> user != null && user.getId() != null;
+			case AUTHORIZATION -> user != null && user.getId() != null
+								  && user.checkAccess(authorization.module(), authorization.screen(), authorization.action());
+			case SPECIFIC_AUTHORIZATION -> user != null && user.getId() != null
+										   && user.checkSpecificAccess(authorization.module(), authorization.screen(), authorization.action());
 		};
 	}
 }
