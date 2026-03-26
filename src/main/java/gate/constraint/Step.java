@@ -3,6 +3,7 @@ package gate.constraint;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -39,7 +40,7 @@ public @interface Step
 
 				if (value.remainder(getValue()).compareTo(BigDecimal.ZERO) != 0)
 				{
-					String name = property.getDisplayName();
+					String name = property.getMetadata().name();
 					if (name == null)
 						name = property.toString();
 					throw new AppException(String.format("O campo %s deve ser divisível por %s.", name, Converter.toText(getValue())));

@@ -302,12 +302,12 @@ public class PropertyTest
 		assertEquals(Object.class, property.getElementRawType());
 		assertEquals(Object.class, property.getElementType());
 		assertEquals(String.class, property.getType());
-		assertNull(property.getColor());
-		assertNull(property.getIcon());
-		assertNull(property.getDescription());
-		assertNull(property.getTooltip());
-		assertNull(property.getPlaceholder());
-		assertNull(property.getMask());
+		assertNull(property.getMetadata().color());
+		assertNull(property.getMetadata().icon());
+		assertNull(property.getMetadata().description());
+		assertNull(property.getMetadata().tooltip());
+		assertNull(property.getMetadata().placeholder());
+		assertNull(property.getMetadata().mask());
 		assertEquals(property.getAttributes().get(property.getAttributes().size() - 1), property.getLastAttribute());
 	}
 

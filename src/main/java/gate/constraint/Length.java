@@ -3,6 +3,8 @@ package gate.constraint;
 import gate.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
+
+import java.io.Serial;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -20,7 +22,7 @@ public @interface Length
 	class Implementation extends Constraint.Implementation<Object>
 	{
 
-		private static final long serialVersionUID = 1L;
+		@Serial private static final long serialVersionUID = 1L;
 
 		public Implementation(Object value)
 		{
@@ -33,11 +35,11 @@ public @interface Length
 			Integer constraint = (Integer) getValue();
 			Class<?> type = property.getRawType();
 			String value = Converter
-				.getConverter(type)
-				.toString(type, property.getValue(entity));
+					.getConverter(type)
+					.toString(type, property.getValue(entity));
 			if (value.length() != constraint)
 			{
-				String name = property.getDisplayName();
+				String name = property.getMetadata().name();
 				if (name == null)
 					name = property.toString();
 				throw new AppException(String.format("O campo %s deve possuir %d caracteres.", name, getValue()));

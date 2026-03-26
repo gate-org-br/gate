@@ -5,15 +5,17 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IAttribute;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
-import org.thymeleaf.exceptions.TemplateProcessingException;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 public abstract class PropertyProcessor extends TagProcessor
 {
@@ -38,21 +40,21 @@ public abstract class PropertyProcessor extends TagProcessor
 		var exchange = ((IWebContext) context).getExchange();
 
 		Object screen = Optional.ofNullable(element.getAttributeValue("context"))
-			.map(expression::evaluate)
-			.orElseGet(() -> exchange.getAttributeValue("screen"));
+				.map(expression::evaluate)
+				.orElseGet(() -> exchange.getAttributeValue("screen"));
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> Objects.requireNonNullElse(e.getValue(), ""), (a, b) -> a, Attributes::new));
+				.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,
+						e -> Objects.requireNonNullElse(e.getValue(), ""), (a, b) -> a, Attributes::new));
 
 		var not = Stream.concat(attributes.keySet().stream()
-			.filter(e -> e.startsWith("not:"))
-			.map(e -> e.substring(4)),
-			attributes.entrySet().stream()
-				.filter(e -> e.getKey().startsWith("set:"))
-				.filter(e -> !Boolean.TRUE.equals(expression.evaluate((String) e.getValue())))
-				.map(e -> e.getKey().substring(4)))
-			.toList();
+								.filter(e -> e.startsWith("not:"))
+								.map(e -> e.substring(4)),
+						attributes.entrySet().stream()
+								.filter(e -> e.getKey().startsWith("set:"))
+								.filter(e -> !Boolean.TRUE.equals(expression.evaluate((String) e.getValue())))
+								.map(e -> e.getKey().substring(4)))
+				.toList();
 
 		attributes.keySet().removeIf(e -> e.startsWith("not:"));
 		attributes.keySet().removeIf(e -> e.startsWith("set:"));
@@ -67,15 +69,15 @@ public abstract class PropertyProcessor extends TagProcessor
 		attributes.put("name", property.toString());
 
 		property.getConstraints().stream()
-			.filter(e -> !attributes.containsKey(e.getName()))
-			.forEachOrdered(e -> attributes.put(e.getName(), e.getValue().toString()));
+				.filter(e -> !attributes.containsKey(e.getName()))
+				.forEachOrdered(e -> attributes.put(e.getName(), e.getValue().toString()));
 
 		if (!attributes.containsKey("title"))
 		{
-			String description = property.getDescription();
+			String description = property.getMetadata().description();
 			if (description == null || description.isEmpty())
 			{
-				String displayName = property.getDisplayName();
+				String displayName = property.getMetadata().name();
 				if (displayName != null && !displayName.isEmpty())
 					attributes.put("title", displayName);
 			} else
@@ -84,14 +86,14 @@ public abstract class PropertyProcessor extends TagProcessor
 
 		if (!attributes.containsKey("data-tooltip"))
 		{
-			String tooltip = property.getTooltip();
+			String tooltip = property.getMetadata().tooltip();
 			if (tooltip != null && !tooltip.isEmpty())
 				attributes.put("data-tooltip", tooltip);
 		}
 
 		if (!attributes.containsKey("placeholder"))
 		{
-			String placeholder = property.getPlaceholder();
+			String placeholder = property.getMetadata().placeholder();
 			if (placeholder != null && !placeholder.isEmpty())
 				attributes.put("placeholder", placeholder);
 		}
@@ -102,6 +104,6 @@ public abstract class PropertyProcessor extends TagProcessor
 	}
 
 	protected abstract void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler, Object screen, Property property, Attributes attributes);
+									IElementTagStructureHandler handler, Object screen, Property property, Attributes attributes);
 
 }

@@ -5,14 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates that a resource is public and there is no need of authentication to access it.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-	{
-		ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
-	})
-/**
- * Indicates that a resource is public and there is not need of authentication to access it.
- */
+		{
+				ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
+		})
 public @interface Public
 {
 

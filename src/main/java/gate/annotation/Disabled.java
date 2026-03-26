@@ -5,14 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates the resource is disabled and no user has access to it.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-	{
-		ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
-	})
-/**
- * Indicates the resource is disabled an no user has access to it.
- */
+		{
+				ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
+		})
 public @interface Disabled
 {
 

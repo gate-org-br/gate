@@ -2,6 +2,7 @@ package gate.constraint;
 
 import gate.error.AppException;
 import gate.lang.property.Property;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,7 +11,7 @@ import java.lang.annotation.Target;
 @Constraint
 @Target(
 		{
-			ElementType.FIELD, ElementType.PARAMETER
+				ElementType.FIELD, ElementType.PARAMETER
 		})
 @Retention(RetentionPolicy.RUNTIME)
 @Implementation(Required.Implementation.class)
@@ -36,9 +37,9 @@ public @interface Required
 			{
 				var value = property.getValue(entity);
 				if (value == null
-						|| (value instanceof String string && string.isBlank()))
+					|| (value instanceof String string && string.isBlank()))
 				{
-					String name = property.getDisplayName();
+					String name = property.getMetadata().name();
 					if (name == null)
 						name = property.toString();
 					throw new AppException(String.format("O campo %s é requerido.", name));

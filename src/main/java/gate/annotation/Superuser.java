@@ -5,14 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Indicates that only a superuser can access the resource.
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-	{
-		ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
-	})
-/**
- * Indicates that only a super user can access the resource.
- */
+		{
+				ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
+		})
 public @interface Superuser
 {
 

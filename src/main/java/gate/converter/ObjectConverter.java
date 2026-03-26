@@ -184,7 +184,7 @@ public class ObjectConverter implements Converter
 				if (i++ > 0)
 					writer.write(JsonToken.Type.COMMA, null);
 
-				String name = Objects.requireNonNullElse(attribute.getDisplayName(), attribute.toString());
+				String name = Objects.requireNonNullElse(attribute.getMetadata().name(), attribute.toString());
 
 				writer.write(JsonToken.Type.STRING, name);
 				writer.write(JsonToken.Type.DOUBLE_DOT, null);
