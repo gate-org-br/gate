@@ -77,16 +77,17 @@ public class JsonBoolean implements JsonElement, JsonScalar
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return (T) (Boolean) value;}
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return (T) (Boolean) value;}
 
-	public static JsonBoolean parse(boolean value)
-	{
-		return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;
-	}
+	public static JsonBoolean of(boolean value) {return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;}
 
-	public static JsonBoolean parse(Boolean value)
+	public static JsonBoolean of(Boolean value) {return Boolean.TRUE.equals(value) ? JsonBoolean.TRUE : JsonBoolean.FALSE;}
+
+	public static JsonBoolean format(boolean value) {return of(value);}
+
+	public static JsonBoolean format(Boolean value)
 	{
-		return Boolean.TRUE.equals(value) ? JsonBoolean.TRUE : JsonBoolean.FALSE;
+		return of(value);
 	}
 
 	/**

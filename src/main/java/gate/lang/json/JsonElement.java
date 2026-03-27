@@ -7,6 +7,7 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
@@ -26,7 +27,7 @@ import java.util.Objects;
 public interface JsonElement extends Serializable
 {
 
-	public static final JsonString UNDEFINED = JsonString.of("");
+	JsonString UNDEFINED = JsonString.of("");
 
 	/**
 	 * Gets the type parse this JSON element.
@@ -84,7 +85,7 @@ public interface JsonElement extends Serializable
 	{
 		try (JsonParser parser = new JsonParser(new StringReader(string)))
 		{
-			return parser.parse().get();
+			return parser.parse().orElseThrow();
 		}
 	}
 
@@ -95,17 +96,15 @@ public interface JsonElement extends Serializable
 	 * respective elements on JSON notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
-	 *
 	 * @return the specified JsonElement formatted using JSON notation
-	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
-	static String format(JsonElement element)
+	static String stringify(JsonElement element)
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
-				JsonWriter jsonWriter = new JsonWriter(stringWriter);
-				JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
+			 JsonWriter jsonWriter = new JsonWriter(stringWriter);
+			 JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
 		{
 			jsonFormatter.format(element);
 			return stringWriter.toString();
@@ -115,29 +114,39 @@ public interface JsonElement extends Serializable
 		}
 	}
 
-	public <T> T toObject(Class<T> type);
+	<T> T toObject(Class<T> type);
 
-	public <T, E> T toObject(java.lang.reflect.Type type,
-			java.lang.reflect.Type elementType);
+	<T> T toObject(java.lang.reflect.Type type,
+				   java.lang.reflect.Type elementType);
 
 	/**
-	 * Creates a JsonElement for the specified object.
+	 * Creates a {@link JsonElement} representation for the specified object.
 	 * <p>
-	 * Boolean, Number, String, Collections, Array and null objects will be converted respectively to JsonBoolean,
-	 * JsonNumber, JsonString, JsonArray, JsonArray and JsonNull objects.
+	 * Resolution follows this order:
+	 * null values become {@link JsonNull};
+	 * {@link Jsonable} values provide their own representation;
+	 * booleans, numbers and strings become their respective JSON scalar types;
+	 * collections and object arrays become {@link JsonArray}.
 	 * <p>
-	 * Other object types will be converted as JsonObjects
+	 * If none of the cases above apply and the object class declares a no-argument constructor,
+	 * this method falls back to reflective field-based conversion, producing a {@link JsonObject}
+	 * from the non-static, non-null fields of the object.
+	 * <p>
+	 * This reflective conversion is a convenience fallback. It should not be treated as a stable
+	 * domain mapping contract for arbitrary object types.
 	 *
-	 * @param obj the object to be formatted
-	 *
+	 * @param obj the object to be converted
 	 * @return a JsonElement representing the specified object
 	 */
 	static JsonElement of(Object obj) throws ConversionException
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
+		if (obj instanceof Jsonable jsonSerializable)
+			return jsonSerializable.toJson();
+
 		if (obj instanceof Boolean aBoolean)
-			return JsonBoolean.parse(aBoolean);
+			return JsonBoolean.of(aBoolean);
 		if (obj instanceof Number number)
 			return JsonNumber.of(number);
 		if (obj instanceof String string)
@@ -178,25 +187,33 @@ public interface JsonElement extends Serializable
 	}
 
 	/**
-	 * Creates a JsonElement for the specified object.
+	 * Creates a human-oriented {@link JsonElement} representation for the specified object.
 	 * <p>
-	 * Number, Array and Collection objects will be converted respectively to JsonNumber, JsonArray and JsonArray
-	 * objects.
+	 * Resolution follows this order:
+	 * null values become {@link #UNDEFINED};
+	 * {@link Jsonable} values provide their own text-oriented representation;
+	 * numbers become {@link JsonNumber};
+	 * collections and object arrays become formatted {@link JsonArray} values.
 	 * <p>
-	 * null references will be converted to a JsonString representing an undefined value.
+	 * For other object types, this method falls back to a {@link JsonString}
+	 * built from {@link gate.converter.Converter#toText(Object)}.
 	 * <p>
-	 * Other object types will be formatted as JsonString objects using the associated Converter.toText method
+	 * This method still returns a {@link JsonElement}, but it may favor
+	 * readability over faithful reconstruction of the original object.
 	 *
 	 * @param obj the object to be formatted
-	 *
-	 * @return a JsonElement representing the specified object
+	 * @return a human-oriented JsonElement representing the specified object
 	 */
-	static JsonElement toText(Object obj)
+	static JsonElement format(Object obj)
 	{
 		if (obj == null)
 			return UNDEFINED;
+
+		if (obj instanceof Jsonable jsonSerializable)
+			return jsonSerializable.toJsonText();
+
 		if (obj instanceof Number number)
-			return JsonNumber.of(number);
+			return JsonNumber.format(number);
 		if (obj instanceof Collection<?> collection)
 			return JsonArray.format(collection);
 		if (obj instanceof Object[] objects)
@@ -211,7 +228,7 @@ public interface JsonElement extends Serializable
 	 * @param string The JSON string to be parsed
 	 * @return The parsed JsonElement
 	 */
-	public static JsonElement valueOf(String string)
+	static JsonElement valueOf(String string)
 	{
 		return parse(string);
 	}

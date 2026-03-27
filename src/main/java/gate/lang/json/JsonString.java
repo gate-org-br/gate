@@ -73,7 +73,7 @@ public class JsonString implements JsonElement, JsonScalar
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -100,5 +100,10 @@ public class JsonString implements JsonElement, JsonScalar
 	public static JsonString of(String string)
 	{
 		return new JsonString(string);
+	}
+
+	public static JsonString format(String string)
+	{
+		return of(string);
 	}
 }

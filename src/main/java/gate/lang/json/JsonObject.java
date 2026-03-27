@@ -128,7 +128,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setBoolean(String key, boolean value)
 	{
-		return set(key, JsonBoolean.parse(value));
+		return set(key, JsonBoolean.of(value));
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonBoolean.parse(value));
+			set(key, JsonBoolean.of(value));
 		return this;
 	}
 
@@ -775,7 +775,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public static String format(JsonObject jsonObject)
 	{
 		Objects.requireNonNull(jsonObject);
-		return JsonElement.format(jsonObject);
+		return JsonElement.stringify(jsonObject);
 	}
 
 	/**
@@ -823,7 +823,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}

@@ -116,7 +116,6 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * </p>
 	 *
 	 * @param <T>         the collection type to convert to
-	 * @param <E>         the element type for the collection
 	 * @param type        the collection type to convert to
 	 * @param elementType the element type for the collection
 	 * @return a collection of the specified type populated with this
@@ -124,7 +123,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 
 		Class<T> clazz = (Class<T>) type;
@@ -176,7 +175,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	public static String format(JsonArray jsonArray)
 	{
 		Objects.requireNonNull(jsonArray);
-		return JsonElement.format(jsonArray);
+		return JsonElement.stringify(jsonArray);
 	}
 
 	@Override
@@ -512,7 +511,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	public JsonArray addBoolean(boolean value)
 	{
-		add(JsonBoolean.parse(value));
+		add(JsonBoolean.of(value));
 		return this;
 	}
 
@@ -525,7 +524,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	public JsonArray addBoolean(Boolean value)
 	{
-		add(value != null ? JsonBoolean.parse(value) : JsonNull.INSTANCE);
+		add(value != null ? JsonBoolean.of(value) : JsonNull.INSTANCE);
 		return this;
 	}
 
@@ -665,7 +664,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	public static JsonArray format(Stream<?> stream)
 	{
-		return stream.map(JsonElement::toText).collect(Collectors.toCollection(JsonArray::new));
+		return stream.map(JsonElement::format).collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	/**

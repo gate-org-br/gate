@@ -32,4 +32,10 @@ public class JsonStringTest
 			fail(ex.getMessage());
 		}
 	}
+
+	@Test
+	public void testFormatSymmetry()
+	{
+		assertEquals(JsonString.of("String"), JsonString.format("String"));
+	}
 }

@@ -4,6 +4,7 @@ import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonString;
 import gate.sql.Cursor;
+
 import java.util.stream.Collectors;
 
 /**
@@ -31,11 +32,11 @@ public class JsonDatasetFetcher implements Fetcher<JsonArray>
 
 		if (includeHeader)
 			results.add(cursor.getColumnNames().stream().map(JsonString::of)
-				.collect(Collectors.toCollection(JsonArray::new)));
+					.collect(Collectors.toCollection(JsonArray::new)));
 
 		while (cursor.next())
 			results.add(cursor.getColumnValues().stream().map(JsonElement::of)
-				.collect(Collectors.toCollection(JsonArray::new)));
+					.collect(Collectors.toCollection(JsonArray::new)));
 
 		return results;
 	}

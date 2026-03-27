@@ -3,6 +3,9 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.DataGridConverter;
 import gate.lang.json.JsonArray;
+import gate.lang.json.Jsonable;
+
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,10 +13,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Converter(DataGridConverter.class)
-public class DataGrid extends ArrayList<Object[]>
+public class DataGrid extends ArrayList<Object[]> implements Jsonable
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	public String[] head;
 	public Object[] foot;
@@ -53,7 +56,6 @@ public class DataGrid extends ArrayList<Object[]>
 	 * Insert a new row into the DataGrid.
 	 *
 	 * @param objects the values to be inserted
-	 *
 	 * @return the same object, for chained invocations
 	 */
 	public DataGrid insert(Object... objects)
@@ -66,24 +68,23 @@ public class DataGrid extends ArrayList<Object[]>
 	 * Creates a new DataGrid with the specified columns.
 	 *
 	 * @param indexes the indexes of the columns to be selected
-	 *
 	 * @return a new DataGrid with the specified columns
 	 */
 	public DataGrid select(int... indexes)
 	{
 		DataGrid dataGrid
-			= foot != null ? new DataGrid(IntStream.of(indexes)
-					.mapToObj(e -> head[e])
-					.toArray(String[]::new),
-					IntStream.of(indexes)
+				= foot != null ? new DataGrid(IntStream.of(indexes)
+				.mapToObj(e -> head[e])
+				.toArray(String[]::new),
+				IntStream.of(indexes)
 						.mapToObj(e -> foot[e])
 						.toArray())
 				: new DataGrid(IntStream.of(indexes)
-					.mapToObj(e -> head[e])
-					.toArray(String[]::new));
+				.mapToObj(e -> head[e])
+				.toArray(String[]::new));
 
 		stream().map(values -> IntStream.of(indexes).mapToObj(e -> values[e])
-			.toArray()).collect(Collectors.toCollection(() -> dataGrid));
+				.toArray()).collect(Collectors.toCollection(() -> dataGrid));
 
 		return dataGrid;
 	}
@@ -98,7 +99,7 @@ public class DataGrid extends ArrayList<Object[]>
 		return select(indexes.stream().mapToInt(Number::intValue).toArray()).toString();
 	}
 
-	public JsonArray toJsonArray()
+	public JsonArray toJson()
 	{
 		return JsonArray.format(Stream.concat(Stream.of((Object) head), stream()));
 	}
@@ -106,7 +107,7 @@ public class DataGrid extends ArrayList<Object[]>
 	@Override
 	public String toString()
 	{
-		return toJsonArray().toString();
+		return toJson().toString();
 	}
 
 	public DataGrid rollup()

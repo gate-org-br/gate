@@ -5,12 +5,9 @@ import gate.annotation.Handler;
 import gate.converter.ResultConverter;
 import gate.error.ConversionException;
 import gate.handler.ResultHandler;
-import gate.lang.json.JsonBoolean;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNull;
-import gate.lang.json.JsonNumber;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
+import gate.lang.json.*;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -19,7 +16,7 @@ import java.util.Objects;
 public class Result implements Serializable
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final Type type;
 	private JsonElement data;
@@ -110,17 +107,17 @@ public class Result implements Serializable
 
 	public static Result success(String message, boolean data)
 	{
-		return new Result(Type.SUCCESS, message, JsonBoolean.parse(data));
+		return new Result(Type.SUCCESS, message, JsonBoolean.of(data));
 	}
 
 	public static Result warning(String message, boolean data)
 	{
-		return new Result(Type.WARNING, message, JsonBoolean.parse(data));
+		return new Result(Type.WARNING, message, JsonBoolean.of(data));
 	}
 
 	public static Result error(String message, boolean data)
 	{
-		return new Result(Type.ERROR, message, JsonBoolean.parse(data));
+		return new Result(Type.ERROR, message, JsonBoolean.of(data));
 	}
 
 	public static Result success(String message, Object data)
@@ -142,10 +139,10 @@ public class Result implements Serializable
 	public String toString()
 	{
 		return new JsonObject()
-			.setString("type", type.name())
-			.setString("message", message)
-			.set("data", data)
-			.toString();
+				.setString("type", type.name())
+				.setString("message", message)
+				.set("data", data)
+				.toString();
 	}
 
 	public JsonElement getData()
@@ -177,7 +174,7 @@ public class Result implements Serializable
 	{
 		JsonObject jsonObject = JsonObject.parse(string);
 		return new Result(Type.valueOf(jsonObject.getString("type").orElseThrow(() -> new ConversionException("Missing result type"))),
-			jsonObject.getString("message").orElseThrow(() -> new ConversionException("Missing result message")),
-			jsonObject.getJsonElement("data").orElseThrow(() -> new ConversionException("Missing result data")));
+				jsonObject.getString("message").orElseThrow(() -> new ConversionException("Missing result message")),
+				jsonObject.getJsonElement("data").orElseThrow(() -> new ConversionException("Missing result data")));
 	}
 }

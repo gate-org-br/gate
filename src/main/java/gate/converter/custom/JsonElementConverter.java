@@ -67,7 +67,7 @@ public class JsonElementConverter implements Converter
 	public String toString(Class<?> type, Object object)
 	{
 		if (object != null)
-			return JsonElement.format((JsonElement) object);
+			return JsonElement.stringify((JsonElement) object);
 		return null;
 	}
 
@@ -96,7 +96,7 @@ public class JsonElementConverter implements Converter
 			throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, JsonElement.format((JsonElement) value));
+			ps.setString(fields++, JsonElement.stringify((JsonElement) value));
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;

@@ -4,6 +4,7 @@ import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.sql.Cursor;
+
 import java.util.Map;
 
 /**
@@ -22,7 +23,7 @@ public class JsonArrayFetcher implements Fetcher<JsonArray>
 		{
 			JsonObject result = new JsonObject();
 			metaData.entrySet().forEach(column -> result.put(column.getKey(),
-				JsonElement.of(cursor.getValue(column.getValue(), column.getKey()))));
+					JsonElement.of(cursor.getValue(column.getValue(), column.getKey()))));
 			results.add(result);
 		}
 		return results;

@@ -20,4 +20,10 @@ public class JsonNullTest
 		}
 	}
 
+	@Test
+	public void testFormatSymmetry()
+	{
+		assertEquals(JsonNull.INSTANCE, JsonNull.format());
+	}
+
 }

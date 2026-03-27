@@ -86,7 +86,7 @@ public class Credentials
 
 	public SubjectToken toToken(String token)
 			throws InvalidUsernamePasswordException,
-			HierarchyException, UnauthorizedException
+				   HierarchyException, UnauthorizedException
 	{
 		var payload = getPayload(token);
 

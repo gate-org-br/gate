@@ -1,5 +1,8 @@
 package gate.io;
 
+import gate.lang.json.JsonElement;
+import gate.lang.json.JsonObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -8,15 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
-
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonObject;
 
 public class PersistentSet<T> implements Set<T>
 {
@@ -264,14 +260,14 @@ public class PersistentSet<T> implements Set<T>
 						var value = entry.get("v").toObject(type);
 						switch (entry.getString("a").orElseThrow())
 						{
-						case "+":
-							values.add(value);
-							break;
-						case "-":
-							values.remove(value);
-							break;
-						default:
-							throw new IOException("File is corrupted");
+							case "+":
+								values.add(value);
+								break;
+							case "-":
+								values.remove(value);
+								break;
+							default:
+								throw new IOException("File is corrupted");
 						}
 					}
 				}
