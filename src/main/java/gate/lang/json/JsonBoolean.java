@@ -58,13 +58,6 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
-		return obj instanceof JsonBoolean
-				&& obj == this;
-	}
-
-	@Override
 	public int hashCode()
 	{
 		return value ? 1 : 0;
@@ -77,14 +70,16 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <T> T toObject(Class<T> type)
 	{
 		return (T) (Boolean) value;
 	}
 
 	@Override
-	public <T, E> T toObject(java.lang.reflect.Type type,
-			java.lang.reflect.Type elementType)
+	@SuppressWarnings("unchecked")
+	public <T> T toObject(java.lang.reflect.Type type,
+						  java.lang.reflect.Type elementType)
 	{
 		return (T) (Boolean) value;
 	}
@@ -105,10 +100,8 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	 * Parses a JSON formatted string into a JsonBoolean object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonBoolean object
-	 *
 	 * @return a JsonBoolean object representing the JSON formatted string specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonBoolean parse(String json) throws ConversionException

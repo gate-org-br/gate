@@ -81,17 +81,16 @@ public class XLS extends Doc
 
 			for (ReportElement e : getReport().getElements())
 				if (e instanceof Form form
-						&& !form.isEmpty())
+					&& !form.isEmpty())
 					printForm(workbook, form);
 				else if (e instanceof Dictionary dictionary
-						&& !dictionary.getElements().isEmpty())
+						 && !dictionary.getElements().isEmpty())
 					printDictionary(workbook, dictionary);
 				else if (e instanceof ReportList list
-						&& !list.getElements().isEmpty())
+						 && !list.getElements().isEmpty())
 					printList(workbook, list);
 
 			workbook.write(os);
-			workbook.dispose();
 		} catch (IOException e)
 		{
 			throw new UncheckedIOException(e);
@@ -280,7 +279,7 @@ public class XLS extends Doc
 	}
 
 	private void printGridData(SXSSFWorkbook workbook, SXSSFSheet sheet,
-			Grid<Object> grid, Iterable<?> data, int level)
+							   Grid<Object> grid, Iterable<?> data, int level)
 	{
 
 		for (Object object : data)
@@ -450,8 +449,8 @@ public class XLS extends Doc
 		return COLORS.computeIfAbsent(color, e
 				-> new XSSFColor(new byte[]
 				{
-					(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
-		}, new DefaultIndexedColorMap()));
+						(byte) e.getR(), (byte) e.getG(), (byte) e.getB()
+				}, new DefaultIndexedColorMap()));
 	}
 
 	private HorizontalAlignment getXLSAligment(Style style)

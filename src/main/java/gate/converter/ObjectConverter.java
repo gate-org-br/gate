@@ -4,9 +4,7 @@ import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.io.Encoder;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
+import gate.lang.json.*;
 import gate.util.Reflection;
 
 import java.lang.reflect.*;
@@ -146,7 +144,7 @@ public class ObjectConverter implements Converter
 			scanner.scan();
 			return object;
 		} catch (InstantiationException | IllegalAccessException | InvocationTargetException
-				| NoSuchFieldException ex)
+				 | NoSuchFieldException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
@@ -158,13 +156,19 @@ public class ObjectConverter implements Converter
 	{
 		try
 		{
+			if (object instanceof JsonSerializable jsonSerializable)
+			{
+				writer.write(JsonElement.format(jsonSerializable.toJson()));
+				return;
+			}
+
 			writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 			boolean first = true;
 			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-						&& !Modifier.isStatic(field.getModifiers()))
+					&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);
@@ -197,13 +201,19 @@ public class ObjectConverter implements Converter
 	{
 		try
 		{
+			if (object instanceof JsonSerializable jsonSerializable)
+			{
+				writer.write(JsonElement.format(jsonSerializable.toJsonText()));
+				return;
+			}
+
 			writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 			boolean first = true;
 			for (Field field : Reflection.getFields(Reflection.getRawType(type)))
 			{
 				if (!Modifier.isTransient(field.getModifiers())
-						&& !Modifier.isStatic(field.getModifiers()))
+					&& !Modifier.isStatic(field.getModifiers()))
 				{
 					field.setAccessible(true);
 					Object value = field.get(object);

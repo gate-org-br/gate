@@ -7,6 +7,7 @@ import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -22,10 +23,8 @@ import java.util.stream.Stream;
 @Converter(JsonElementConverter.class)
 public class JsonArray implements List<JsonElement>, JsonCollection
 {
-
+	@Serial private static final long serialVersionUID = 1L;
 	private final List<JsonElement> values = new ArrayList<>();
-
-	private static final long serialVersionUID = 1L;
 
 	public JsonArray()
 	{
@@ -46,7 +45,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	public boolean equals(Object o)
 	{
 		return o instanceof JsonArray
-				&& values.equals(((JsonArray) o).values);
+			   && values.equals(((JsonArray) o).values);
 	}
 
 	@Override
@@ -68,11 +67,12 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	@Override
-	public <T, E> T toObject(java.lang.reflect.Type type,
-			java.lang.reflect.Type elementType)
+	@SuppressWarnings("unchecked")
+	public <T> T toObject(java.lang.reflect.Type type,
+						  java.lang.reflect.Type elementType)
 	{
 
-		Class<T> clazz = (Class) type;
+		Class<?> clazz = (Class<?>) type;
 
 		if (clazz.isAssignableFrom(Set.class))
 			return (T) stream().map(e -> e.toObject(Reflection.getRawType(elementType),
@@ -87,10 +87,8 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * Parses a JSON formatted string into a JsonArray object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonArray object
-	 *
 	 * @return a JsonArray object representing the JSON formatted string specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonArray parse(String json) throws ConversionException
@@ -110,9 +108,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * notation.
 	 *
 	 * @param jsonArray the JsonArray object to be formatted on JSON notation
-	 *
 	 * @return a JSON formatted string representing the specified JsonArray
-	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static String format(JsonArray jsonArray)
@@ -364,7 +360,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	public Optional<String> getString(int index)
 	{
 		return values.size() > index
-				&& values.get(index) instanceof JsonString string
+			   && values.get(index) instanceof JsonString string
 				? Optional.of(string.getValue()) : Optional.empty();
 	}
 
@@ -401,14 +397,14 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	public static <T> JsonArray of(List<T> objects,
-			Function<T, String> label, Function<T, Object> value)
+								   Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public static <T> JsonArray of(List<T> objects,
-			Function<T, String> label, Function<T, Object> value, Function<T, JsonObject> properties)
+								   Function<T, String> label, Function<T, Object> value, Function<T, JsonObject> properties)
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value, properties))
 				.collect(Collectors.toCollection(JsonArray::new));
@@ -418,7 +414,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	{
 		return Stream.of(values)
 				.map(e -> e != null ? e : JsonNull.INSTANCE)
-				.collect(Collectors.toCollection(() -> new JsonArray()));
+				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	public static JsonArray format(Stream<?> stream)
@@ -438,7 +434,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	public static <T> JsonArray format(List<T> objects,
-			Function<T, String> label, Function<T, Object> value)
+									   Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.format(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));

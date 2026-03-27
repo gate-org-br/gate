@@ -5,6 +5,7 @@ import gate.converter.Converter;
 import gate.lang.contentType.ContentType;
 import gate.report.*;
 import gate.report.Style.TextAlign;
+import org.apache.poi.common.usermodel.PictureType;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
@@ -31,7 +32,7 @@ public class DOC extends Doc
 	private static final String CAPTION_BACKGROUND_COLOR = "666666";
 
 	/**
-	 * Constructs a new DOC Doc for the specified report.
+	 * Constructs a new DOC for the specified report.
 	 *
 	 * @param report the report to be used to generate the document
 	 */
@@ -310,48 +311,43 @@ public class DOC extends Doc
 
 	public ParagraphAlignment getParagraphAlignment(TextAlign align)
 	{
-		switch (align)
+		return switch (align)
 		{
-			case LEFT:
-				return ParagraphAlignment.LEFT;
-			case CENTER:
-				return ParagraphAlignment.CENTER;
-			case RIGHT:
-				return ParagraphAlignment.RIGHT;
-			case JUSTIFY:
-				return ParagraphAlignment.DISTRIBUTE;
-		}
-		return ParagraphAlignment.LEFT;
+			case LEFT -> ParagraphAlignment.LEFT;
+			case CENTER -> ParagraphAlignment.CENTER;
+			case RIGHT -> ParagraphAlignment.RIGHT;
+			case JUSTIFY -> ParagraphAlignment.DISTRIBUTE;
+		};
 	}
 
-	private static int getImageFormat(String fileName)
+	private static PictureType getImageFormat(String fileName)
 	{
 		fileName = fileName.toLowerCase();
 		if (fileName.endsWith(".emf"))
-			return XWPFDocument.PICTURE_TYPE_EMF;
+			return PictureType.EMF;
 		else if (fileName.endsWith(".wmf"))
-			return XWPFDocument.PICTURE_TYPE_WMF;
+			return PictureType.WMF;
 		else if (fileName.endsWith(".pict"))
-			return XWPFDocument.PICTURE_TYPE_PICT;
+			return PictureType.PICT;
 		else if (fileName.endsWith(".jpeg"))
-			return XWPFDocument.PICTURE_TYPE_JPEG;
+			return PictureType.JPEG;
 		else if (fileName.endsWith(".jpg"))
-			return XWPFDocument.PICTURE_TYPE_JPEG;
+			return PictureType.JPEG;
 		else if (fileName.endsWith(".png"))
-			return XWPFDocument.PICTURE_TYPE_PNG;
+			return PictureType.PNG;
 		else if (fileName.endsWith(".dib"))
-			return XWPFDocument.PICTURE_TYPE_DIB;
+			return PictureType.DIB;
 		else if (fileName.endsWith(".gif"))
-			return XWPFDocument.PICTURE_TYPE_GIF;
+			return PictureType.GIF;
 		else if (fileName.endsWith(".tiff"))
-			return XWPFDocument.PICTURE_TYPE_TIFF;
+			return PictureType.TIFF;
 		else if (fileName.endsWith(".eps"))
-			return XWPFDocument.PICTURE_TYPE_EPS;
+			return PictureType.EPS;
 		else if (fileName.endsWith(".bmp"))
-			return XWPFDocument.PICTURE_TYPE_BMP;
+			return PictureType.BMP;
 		else if (fileName.endsWith(".wpg"))
-			return XWPFDocument.PICTURE_TYPE_WPG;
+			return PictureType.WPG;
 		else
-			return 0;
+			return PictureType.UNKNOWN;
 	}
 }

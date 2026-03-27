@@ -27,7 +27,7 @@ import java.util.Objects;
 public interface JsonElement extends Serializable
 {
 
-	public static final JsonString UNDEFINED = JsonString.of("");
+	JsonString UNDEFINED = JsonString.of("");
 
 	/**
 	 * Gets the type parse this JSON element.
@@ -85,7 +85,7 @@ public interface JsonElement extends Serializable
 	{
 		try (JsonParser parser = new JsonParser(new StringReader(string)))
 		{
-			return parser.parse().get();
+			return parser.parse().orElseThrow();
 		}
 	}
 
@@ -96,17 +96,15 @@ public interface JsonElement extends Serializable
 	 * respective elements on JSON notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
-	 *
 	 * @return the specified JsonElement formatted using JSON notation
-	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	static String format(JsonElement element)
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
-				JsonWriter jsonWriter = new JsonWriter(stringWriter);
-				JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
+			 JsonWriter jsonWriter = new JsonWriter(stringWriter);
+			 JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
 		{
 			jsonFormatter.format(element);
 			return stringWriter.toString();
@@ -116,10 +114,10 @@ public interface JsonElement extends Serializable
 		}
 	}
 
-	public <T> T toObject(Class<T> type);
+	<T> T toObject(Class<T> type);
 
-	public <T, E> T toObject(java.lang.reflect.Type type,
-			java.lang.reflect.Type elementType);
+	<T> T toObject(java.lang.reflect.Type type,
+				   java.lang.reflect.Type elementType);
 
 	/**
 	 * Creates a JsonElement for the specified object.
@@ -130,13 +128,16 @@ public interface JsonElement extends Serializable
 	 * Other object types will be converted as JsonObjects
 	 *
 	 * @param obj the object to be formatted
-	 *
 	 * @return a JsonElement representing the specified object
 	 */
 	static JsonElement of(Object obj) throws ConversionException
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
+
+		if (obj instanceof JsonSerializable jsonSerializable)
+			return jsonSerializable.toJson();
+
 		if (obj instanceof Boolean aBoolean)
 			return JsonBoolean.parse(aBoolean);
 		if (obj instanceof Number number)
@@ -189,13 +190,16 @@ public interface JsonElement extends Serializable
 	 * Other object types will be formatted as JsonString objects using the associated Converter.toText method
 	 *
 	 * @param obj the object to be formatted
-	 *
 	 * @return a JsonElement representing the specified object
 	 */
 	static JsonElement toText(Object obj)
 	{
 		if (obj == null)
 			return UNDEFINED;
+
+		if (obj instanceof JsonSerializable jsonSerializable)
+			return jsonSerializable.toJsonText();
+		
 		if (obj instanceof Number number)
 			return JsonNumber.of(number);
 		if (obj instanceof Collection<?> collection)
@@ -212,7 +216,7 @@ public interface JsonElement extends Serializable
 	 * @param string The JSON string to be parsed
 	 * @return The parsed JsonElement
 	 */
-	public static JsonElement valueOf(String string)
+	static JsonElement valueOf(String string)
 	{
 		return parse(string);
 	}

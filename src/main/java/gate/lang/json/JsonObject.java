@@ -8,6 +8,7 @@ import gate.handler.JsonElementHandler;
 import gate.lang.property.Property;
 import gate.util.Reflection;
 
+import java.io.Serial;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -23,9 +24,8 @@ import java.util.function.Function;
 @Converter(JsonElementConverter.class)
 public class JsonObject implements Map<String, JsonElement>, JsonCollection
 {
-
+	@Serial private static final long serialVersionUID = 1L;
 	private final Map<String, JsonElement> values = new LinkedHashMap<>();
-	private static final long serialVersionUID = 1L;
 
 	public JsonObject()
 	{
@@ -178,62 +178,62 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 	public Optional<String> getString(String key)
 	{
-		return getJsonString(key).map(e -> e.getValue());
+		return getJsonString(key).map(JsonString::getValue);
 	}
 
 	public Optional<String> getString(int index)
 	{
-		return getJsonString(index).map(e -> e.getValue());
+		return getJsonString(index).map(JsonString::getValue);
 	}
 
 	public Optional<Integer> getInt(String key)
 	{
-		return getJsonNumber(key).map(e -> e.intValue());
+		return getJsonNumber(key).map(JsonNumber::intValue);
 	}
 
 	public Optional<Integer> getInt(int index)
 	{
-		return getJsonNumber(index).map(e -> e.intValue());
+		return getJsonNumber(index).map(JsonNumber::intValue);
 	}
 
 	public Optional<Long> getLong(String key)
 	{
-		return getJsonNumber(key).map(e -> e.longValue());
+		return getJsonNumber(key).map(JsonNumber::longValue);
 	}
 
 	public Optional<Long> getLong(int index)
 	{
-		return getJsonNumber(index).map(e -> e.longValue());
+		return getJsonNumber(index).map(JsonNumber::longValue);
 	}
 
 	public Optional<Short> getShort(String key)
 	{
-		return getJsonNumber(key).map(e -> e.shortValue());
+		return getJsonNumber(key).map(JsonNumber::shortValue);
 	}
 
 	public Optional<Short> getShort(int index)
 	{
-		return getJsonNumber(index).map(e -> e.shortValue());
+		return getJsonNumber(index).map(JsonNumber::shortValue);
 	}
 
 	public Optional<Byte> getByte(String key)
 	{
-		return getJsonNumber(key).map(e -> e.byteValue());
+		return getJsonNumber(key).map(JsonNumber::byteValue);
 	}
 
 	public Optional<Byte> getByte(int index)
 	{
-		return getJsonNumber(index).map(e -> e.byteValue());
+		return getJsonNumber(index).map(JsonNumber::byteValue);
 	}
 
 	public Optional<Float> getFloat(String key)
 	{
-		return getJsonNumber(key).map(e -> e.floatValue());
+		return getJsonNumber(key).map(JsonNumber::floatValue);
 	}
 
 	public Optional<Float> getFloat(int index)
 	{
-		return getJsonNumber(index).map(e -> e.floatValue());
+		return getJsonNumber(index).map(JsonNumber::floatValue);
 	}
 
 	public JsonObject setObject(String key, Object value)
@@ -273,17 +273,17 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 	public Optional<Double> getDouble(int index)
 	{
-		return getJsonNumber(index).map(e -> e.doubleValue());
+		return getJsonNumber(index).map(JsonNumber::doubleValue);
 	}
 
 	public Optional<Boolean> getBoolean(String key)
 	{
-		return getJsonBoolean(key).map(e -> e.getValue());
+		return getJsonBoolean(key).map(JsonBoolean::getValue);
 	}
 
 	public Optional<Boolean> getBoolean(int index)
 	{
-		return getJsonBoolean(index).map(e -> e.getValue());
+		return getJsonBoolean(index).map(JsonBoolean::getValue);
 	}
 
 	public Optional<JsonElement> getJsonElement(String key)
@@ -362,10 +362,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * Parses a JSON formatted string into a JsonObject object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonObject object
-	 *
 	 * @return a JsonObject object representing the JSON formatted string specified
-	 *
-	 * @throws ConversionException if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the specified JSON formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonObject parse(String json) throws ConversionException
@@ -385,9 +383,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * notation.
 	 *
 	 * @param jsonObject the jsonObject object to be formatted on JSON notation
-	 *
 	 * @return a JSON formatted string representing the specified JsonObject
-	 *
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static String format(JsonObject jsonObject)
@@ -419,7 +415,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 			return object;
 		} catch (NoSuchMethodException | NoSuchFieldException | InstantiationException
-				| IllegalAccessException | InvocationTargetException | SecurityException ex)
+				 | IllegalAccessException | InvocationTargetException | SecurityException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
@@ -427,7 +423,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T, E> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -517,7 +513,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	}
 
 	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value,
-			Function<T, JsonObject> properties)
+									Function<T, JsonObject> properties)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj)))
 				.set("value", JsonElement.of(value.apply(obj)))
@@ -525,10 +521,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	}
 
 	/**
-	 * Creates a JsonObject from the named non null properties parse a java object.
+	 * Creates a JsonObject from the named non-null properties parse a java object.
 	 *
 	 * @param obj the object to be formatted
-	 * @return a JsonObject with all named non null properties parse the specified object
+	 * @return a JsonObject with all named non-null properties parse the specified object
 	 */
 	public static JsonObject format(Object obj)
 	{
