@@ -1,21 +1,19 @@
 package gate.sql.update;
 
 import gate.converter.Converter;
-import gate.sql.Proxy;
 import gate.sql.condition.*;
 import gate.sql.statement.Sentence;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Represents a an update statement bound to a table name.
+ * Represents an update statement bound to a table name.
  */
 public class TableUpdate implements Update
 {
@@ -29,12 +27,11 @@ public class TableUpdate implements Update
 
 	/**
 	 * Binds the update statement to a list of entities.
-	 *
-	 *
+	 * <p>
+	 * <p>
 	 * statement
 	 *
 	 * @param type of the entities from where the values are to be extracted
-	 *
 	 * @return the same builder with the associated entities
 	 */
 	public <T> Prepared<T> from(Class<T> type)
@@ -46,7 +43,6 @@ public class TableUpdate implements Update
 	 * Adds a new column to be updated.
 	 *
 	 * @param column the column to be updated
-	 *
 	 * @return the same update sentence builder with the added column
 	 */
 	public Generic set(String column)
@@ -55,51 +51,10 @@ public class TableUpdate implements Update
 	}
 
 	/**
-	 * Creates a proxy instance of the specified type and passes it to the provided {@code setter} consumer. The proxy
-	 * intercepts calls to setter methods, capturing the columns names and values, and maps them to the update builder.
-	 *
-	 * @param <T> the type of the entity being updated
-	 * @param type the class of the entity to be proxied
-	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
-	 * @return a {@code Compiled} object containing the mapping of column names and values
-	 * @throws InstantiationError if an error occurs while creating the proxy
-	 */
-	public <T> Compiled setFields(Class<T> type, Consumer<T> setter)
-	{
-		var compiled = new Compiled();
-		var proxy = Proxy.create(type,
-				(col, val) -> compiled.set(col, val));
-		setter.accept(proxy);
-		return compiled;
-	}
-
-	/**
-	 * Creates a proxy instance of for the provided object and passes it to the provided {@code setter} consumer. The
-	 * proxy intercepts calls to setter methods, updates the provided, capture the columns names and values, and maps
-	 * them to the update builder.
-	 *
-	 * @param <T> the type of the entity being updated
-	 * @param object the existing instance of the entity to be proxied
-	 * @param setter a consumer that modifies the proxy instance to specify the fields and values to be updated
-	 * @return a {@code Compiled} object containing the mapping of column names and values
-	 * @throws InstantiationError if an error occurs while creating the proxy
-	 */
-	public <T> Compiled setFields(T object, Consumer<T> setter)
-	{
-		var compiled = new Compiled();
-		var proxy = Proxy.create(object,
-				(col, val) -> compiled.set(col, val));
-		setter.accept(proxy);
-		return compiled;
-	}
-
-	/**
 	 * Adds a new column to be updated.
 	 *
-	 *
-	 * @param type type of the column to be updated
+	 * @param type   type of the column to be updated
 	 * @param column the column to be updated
-	 *
 	 * @return the same update sentence builder with the added column
 	 */
 	public <T> Generic set(Class<T> type, String column)
@@ -112,8 +67,7 @@ public class TableUpdate implements Update
 	 * Adds a new column to be updated with the specified value.
 	 *
 	 * @param column the column to be updated
-	 * @param value the new value of the column
-	 *
+	 * @param value  the new value of the column
 	 * @return the same update sentence builder with the added column
 	 */
 	public Compiled set(String column, Object value)
@@ -124,11 +78,9 @@ public class TableUpdate implements Update
 	/**
 	 * Adds a new column to be updated with the specified value.
 	 *
-	 *
 	 * @param column the column to be updated
-	 * @param type type of the column to be updated
-	 * @param value the new value of the column
-	 *
+	 * @param type   type of the column to be updated
+	 * @param value  the new value of the column
 	 * @return the same update sentence builder with the added column
 	 */
 	public <T> Compiled set(Class<T> type, String column, T value)
@@ -140,7 +92,6 @@ public class TableUpdate implements Update
 	 * Adds the next column to the builder if previous specified condition is true.
 	 *
 	 * @param assertion the condition to be checked
-	 *
 	 * @return the same builder with the applied condition
 	 */
 	public When when(boolean assertion)
@@ -165,7 +116,7 @@ public class TableUpdate implements Update
 	}
 
 	/**
-	 * Represents a an update statement bound to a table name and column names.
+	 * Represents an update statement bound to a table name and column names.
 	 */
 	public class Generic implements Sentence.Builder
 	{
@@ -180,7 +131,6 @@ public class TableUpdate implements Update
 		 * Adds a new column to the builder.
 		 *
 		 * @param column the column to be added
-		 *
 		 * @return the same builder with the added column
 		 */
 		public Generic set(String column)
@@ -192,10 +142,8 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column to the builder.
 		 *
-		 *
-		 * @param type type of the column to be added
+		 * @param type   type of the column to be added
 		 * @param column the column to be added
-		 *
 		 * @return the same builder with the added column
 		 */
 		public <T> Generic set(Class<T> type, String column)
@@ -208,7 +156,6 @@ public class TableUpdate implements Update
 		 * Adds a condition to the builder
 		 *
 		 * @param condition to be added to the builder
-		 *
 		 * @return the same builder with the added condition
 		 */
 		public GenericWhere where(ConstantCondition condition)
@@ -220,7 +167,6 @@ public class TableUpdate implements Update
 		 * Adds a condition to the builder
 		 *
 		 * @param condition to be added to the builder
-		 *
 		 * @return the same builder with the added condition
 		 */
 		public GenericWhere where(GenericCondition condition)
@@ -308,7 +254,6 @@ public class TableUpdate implements Update
 			 * Adds a new column to be updated.
 			 *
 			 * @param column the column to be updated
-			 *
 			 * @return the same update sentence builder with the added column
 			 */
 			public Generic set(String column)
@@ -319,10 +264,8 @@ public class TableUpdate implements Update
 			/**
 			 * Adds a new column to be updated.
 			 *
-			 *
-			 * @param type type of the column to be updated
+			 * @param type   type of the column to be updated
 			 * @param column the column to be updated
-			 *
 			 * @return the same update sentence builder with the added column
 			 */
 			public <T> Generic set(Class<T> type, String column)
@@ -334,7 +277,6 @@ public class TableUpdate implements Update
 			 * Adds the next column to the builder if previous specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
-			 *
 			 * @return the same builder with the applied condition
 			 */
 			public When when(boolean assertion)
@@ -389,11 +331,10 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
 		 * @param column the column to be added
-		 * @param value the value associated
-		 *
+		 * @param value  the value associated
 		 * @return the same builder with the added column
 		 */
 		@SuppressWarnings("unchecked")
@@ -408,13 +349,11 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
-		 *
+		 * Adds a new column, and it's associated value to the builder.
 		 *
 		 * @param column the column to be added
-		 * @param type type of the column to be added
-		 * @param value the value associated
-		 *
+		 * @param type   type of the column to be added
+		 * @param value  the value associated
 		 * @return the same builder with the added column
 		 */
 		public <T> Compiled set(Class<T> type, String column, T value)
@@ -429,7 +368,6 @@ public class TableUpdate implements Update
 		 * Binds a condition to the update statement
 		 *
 		 * @param condition to be bound to the update statement
-		 *
 		 * @return A SQLBuilder with the conditions specified
 		 */
 		public CompiledWhere where(ConstantCondition condition)
@@ -441,7 +379,6 @@ public class TableUpdate implements Update
 		 * Adds a condition to the builder
 		 *
 		 * @param condition to be added to the builder
-		 *
 		 * @return the same builder with the added condition
 		 */
 		public CompiledWhere where(CompiledCondition condition)
@@ -464,7 +401,6 @@ public class TableUpdate implements Update
 		 * Adds the next column to the builder if previous specified condition is true.
 		 *
 		 * @param assertion the condition to be checked
-		 *
 		 * @return the same builder with the applied condition
 		 */
 		public When when(boolean assertion)
@@ -542,11 +478,10 @@ public class TableUpdate implements Update
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
-			 * @param value the value associated
-			 *
+			 * @param value  the value associated
 			 * @return the same builder with the added column
 			 */
 			public Compiled set(String column, Object value)
@@ -555,11 +490,10 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * @param column the column to be added
+			 * @param column   the column to be added
 			 * @param supplier the supplier of the value associated
-			 *
 			 * @return the same builder with the added column
 			 */
 			public Compiled setIfTrue(String column, Supplier<Object> supplier)
@@ -568,13 +502,11 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
-			 *
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
 			 * @param column the column to be added
-			 * @param type type of the column to be added
-			 * @param value the value associated
-			 *
+			 * @param type   type of the column to be added
+			 * @param value  the value associated
 			 * @return the same builder with the added column
 			 */
 			public <T> Compiled set(Class<T> type, String column, T value)
@@ -583,13 +515,11 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 *
-			 * @param column the column to be added
-			 * @param type type of the column to be added
+			 * @param column   the column to be added
+			 * @param type     type of the column to be added
 			 * @param supplier the supplier of the value associated
-			 *
 			 * @return the same builder with the added column
 			 */
 			public <T> Compiled setIfTrue(Class<T> type, String column, Supplier<T> supplier)
@@ -601,7 +531,6 @@ public class TableUpdate implements Update
 			 * Adds the next column to the builder if previous specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
-			 *
 			 * @return the same builder with the applied condition
 			 */
 			public When when(boolean assertion)
@@ -669,11 +598,10 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
-		 * @param column the column to be added
+		 * @param column    the column to be added
 		 * @param extractor the extractor associated
-		 *
 		 * @return the same builder with the added column
 		 */
 		public Prepared<E> set(String column, Function<E, Object> extractor)
@@ -684,13 +612,11 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder.
+		 * Adds a new column, and it's associated value to the builder.
 		 *
-		 *
-		 * @param column the column to be added
-		 * @param type type of the column to be added
+		 * @param column    the column to be added
+		 * @param type      type of the column to be added
 		 * @param extractor the extractor associated
-		 *
 		 * @return the same builder with the added column
 		 */
 		public <T> Prepared<E> set(Class<T> type, String column, Function<E, T> extractor)
@@ -705,7 +631,6 @@ public class TableUpdate implements Update
 		 * Binds a condition to the update statement
 		 *
 		 * @param condition to be bound to the update statement
-		 *
 		 * @return A SQLBuilder with the conditions specified
 		 */
 		public Sentence.Extractor.Compiled.Builder<E> where(ConstantCondition condition)
@@ -718,7 +643,6 @@ public class TableUpdate implements Update
 		 * Adds a condition to the builder
 		 *
 		 * @param condition to be added to the builder
-		 *
 		 * @return the same builder with the added condition
 		 */
 		public Sentence.Extractor.Compiled.Builder<E> where(ExtractorCondition<E> condition)
@@ -747,11 +671,10 @@ public class TableUpdate implements Update
 		{
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 * @param column the column to be added
+			 * @param column    the column to be added
 			 * @param extractor the extractor associated
-			 *
 			 * @return the same builder with the added column
 			 */
 			public Prepared<E> set(String column, Function<E, Object> extractor)
@@ -760,13 +683,11 @@ public class TableUpdate implements Update
 			}
 
 			/**
-			 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 			 *
-			 *
-			 * @param column the column to be added
-			 * @param type type of the column to be added
+			 * @param column    the column to be added
+			 * @param type      type of the column to be added
 			 * @param extractor the extractor associated
-			 *
 			 * @return the same builder with the added column
 			 */
 			public <T> Prepared<E> set(Class<T> type, String column, Function<E, T> extractor)
@@ -778,7 +699,6 @@ public class TableUpdate implements Update
 			 * Adds the next column to the builder if previous specified condition is true.
 			 *
 			 * @param assertion the condition to be checked
-			 *
 			 * @return the same builder with the applied condition
 			 */
 			public When when(boolean assertion)
@@ -823,7 +743,6 @@ public class TableUpdate implements Update
 		 * Adds a new column to be updated.
 		 *
 		 * @param column the column to be updated
-		 *
 		 * @return the same update sentence builder with the added column
 		 */
 		public Generic set(String column)
@@ -834,10 +753,8 @@ public class TableUpdate implements Update
 		/**
 		 * Adds a new column to be updated.
 		 *
-		 *
-		 * @param type type of the column to be updated
+		 * @param type   type of the column to be updated
 		 * @param column the column to be updated
-		 *
 		 * @return the same update sentence builder with the added column
 		 */
 		public <T> Generic set(Class<T> type, String column)
@@ -846,11 +763,10 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 		 *
 		 * @param column the column to be added
-		 * @param value the value associated
-		 *
+		 * @param value  the value associated
 		 * @return the same builder with the added column
 		 */
 		public Compiled set(String column, Object value)
@@ -859,11 +775,10 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 		 *
-		 * @param column the column to be added
+		 * @param column   the column to be added
 		 * @param supplier the supplier of the value associated
-		 *
 		 * @return the same builder with the added column
 		 */
 		public Compiled setIfTrue(String column, Supplier<Object> supplier)
@@ -872,13 +787,11 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
-		 *
+		 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 		 *
 		 * @param column the column to be added
-		 * @param type type of the column to be added
-		 * @param value the value associated
-		 *
+		 * @param type   type of the column to be added
+		 * @param value  the value associated
 		 * @return the same builder with the added column
 		 */
 		public <T> Compiled set(Class<T> type, String column, T value)
@@ -887,13 +800,11 @@ public class TableUpdate implements Update
 		}
 
 		/**
-		 * Adds a new column and it's associated value to the builder if the previous specified condition was true.
+		 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
 		 *
-		 *
-		 * @param column the column to be added
-		 * @param type type of the column to be added
+		 * @param column   the column to be added
+		 * @param type     type of the column to be added
 		 * @param supplier the supplier of the value associated
-		 *
 		 * @return the same builder with the added column
 		 */
 		public <T> Compiled setIfTrue(Class<T> type, String column, Supplier<T> supplier)
@@ -905,7 +816,6 @@ public class TableUpdate implements Update
 		 * Adds the next column to the builder if previous specified condition is true.
 		 *
 		 * @param assertion the condition to be checked
-		 *
 		 * @return the same builder with the applied condition
 		 */
 		public When when(boolean assertion)

@@ -73,11 +73,6 @@
             <version>5.0.0</version>
         </dependency>
         <dependency>
-            <groupId>jakarta.mail</groupId>
-            <artifactId>jakarta.mail-api</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.angus</groupId>
             <artifactId>jakarta.mail</artifactId>
             <version>2.0.4</version>
@@ -161,12 +156,6 @@
             <groupId>io.smallrye</groupId>
             <artifactId>smallrye-context-propagation</artifactId>
             <version>2.3.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.bytebuddy</groupId>
-            <artifactId>byte-buddy</artifactId>
-            <version>1.14.11</version>
         </dependency>
     </dependencies>
 

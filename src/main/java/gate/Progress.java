@@ -9,11 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Progress implements Heartbeat
@@ -75,7 +71,7 @@ public class Progress implements Heartbeat
 				writer.write("event: %s\n".formatted(type));
 				writer.write("data: " + Base64.getEncoder()
 						.encodeToString(message.getBytes(StandardCharsets.UTF_8))
-						+ "\n\n");
+							 + "\n\n");
 				writer.flush();
 			} catch (IOException ex)
 			{
@@ -121,7 +117,7 @@ public class Progress implements Heartbeat
 	{
 		State state = this.state;
 		if (state.status() == Progress.Status.PENDING
-				|| state.status() == Progress.Status.CREATED)
+			|| state.status() == Progress.Status.CREATED)
 			update(Status.CANCELED, state.todo, state.done, message);
 		else
 			update(state.status, state.todo, state.done, message);
@@ -167,7 +163,7 @@ public class Progress implements Heartbeat
 		{
 			State state = progress.state;
 			if (Status.COMMITED.equals(state.status)
-					|| Status.CANCELED.equals(state.status))
+				|| Status.CANCELED.equals(state.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text)
 					.dispatch(progress.toString());
@@ -332,6 +328,20 @@ public class Progress implements Heartbeat
 		return progress;
 	}
 
+	public static State get(ID user, String uuid)
+	{
+		return Optional.ofNullable(INSTANCES.get(uuid))
+				.filter(e -> Objects.equals(e.user, user))
+				.map(e -> e.state)
+				.orElse(State.UNKNOWN);
+	}
+
+	public static String UUID()
+	{
+		return current().map(Progress::uuid)
+				.orElse(null);
+	}
+
 	static Progress create(Writer writer)
 	{
 		return create(null, writer);
@@ -343,22 +353,13 @@ public class Progress implements Heartbeat
 		CURRENT.remove();
 	}
 
-	static State get(ID user, String uuid)
-	{
-		Progress progress = INSTANCES.get(uuid);
-		if (progress == null
-				|| !Objects.equals(progress.user, user))
-			return State.UNKNOWN;
-		return progress.state;
-	}
-
 	@Override
 	public synchronized boolean heartbeat()
 	{
 		State state = this.state;
 		if (state.status == Status.COMMITED
-				|| state.status == Status.CANCELED
-				|| state.status == Status.DISCONNECTED)
+			|| state.status == Status.CANCELED
+			|| state.status == Status.DISCONNECTED)
 			return false;
 
 		try
