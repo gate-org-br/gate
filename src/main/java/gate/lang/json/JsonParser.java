@@ -1,8 +1,5 @@
 package gate.lang.json;
 
-import gate.error.AppError;
-import gate.error.ConversionException;
-
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Optional;
@@ -10,6 +7,9 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import gate.error.AppError;
+import gate.error.ConversionException;
 
 /**
  * Reads the JSON elements from a specified source.
@@ -34,7 +34,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 *
 	 * @param reader Reader to be read
 	 *
-	 * @throws gate.error.ConversionException if an error occurs while trying to parse the input
+	 * @throws gate.error.ConversionException if an error occurs while
+	 * trying to parse the input
 	 */
 	public JsonParser(Reader reader) throws ConversionException
 	{
@@ -46,7 +47,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 *
 	 * @param string string to be read
 	 *
-	 * @throws gate.error.ConversionException if an error occurs while trying to parse the input
+	 * @throws gate.error.ConversionException if an error occurs while
+	 * trying to parse the input
 	 */
 	public JsonParser(String string) throws ConversionException
 	{
@@ -54,9 +56,11 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	}
 
 	/**
-	 * Reads the next JSON element from the specified source as a java object.
+	 * Reads the next JSON element from the specified source as a java
+	 * object.
 	 * <p>
-	 * Each type of JSON object is returned as a java object of the corresponding type:
+	 * Each type of JSON object is returned as a java object of the
+	 * corresponding type:
 	 * <ul>
 	 * <li>JSON boolean: {@link gate.lang.json.JsonBoolean}
 	 * <li>JSON string: {@link gate.lang.json.JsonString}
@@ -66,8 +70,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 * <li>JSON null: {@link gate.lang.json.JsonNull}
 	 * </ul>
 	 *
-	 * @return an Optional describing the JSON object read or an empty optional if there are no more JSON objects on
-	 * the* input stream.
+	 * @return an Optional describing the JSON object read or an empty
+	 * optional if there are no more JSON objects on the* input stream.
 	 *
 	 * @throws gate.error.ConversionException if any error occurs
 	 */
@@ -99,14 +103,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	@Override
 	public void forEach(Consumer<? super JsonElement> action)
 	{
-		while (scanner.getCurrent().getType() == JsonToken.Type.EOF)
-			try
-		{
+		while (scanner.getCurrent().getType() != JsonToken.Type.EOF)
 			action.accept(parse().get());
-		} catch (ConversionException ex)
-		{
-			throw new AppError(ex);
-		}
 	}
 
 	@Override
@@ -127,25 +125,24 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 
 	private JsonElement element() throws ConversionException
 	{
-		switch (scanner.getCurrent().getType())
+		return switch (scanner.getCurrent().getType())
 		{
-			case NUMBER:
-				return number();
-			case TRUE:
-			case FALSE:
-				return bool();
-			case STRING:
-				return string();
-			case OPEN_OBJECT:
-				return object();
-			case NULL:
-				return jsonNull();
-			case OPEN_ARRAY:
-				return array();
-			default:
+			case NUMBER ->
+				number();
+			case TRUE, FALSE ->
+				bool();
+			case STRING ->
+				string();
+			case OPEN_OBJECT ->
+				object();
+			case NULL ->
+				jsonNull();
+			case OPEN_ARRAY ->
+				array();
+			default ->
 				throw new ConversionException("Expected boolean, number, string, array or object and found " + scanner
-						.getCurrent());
-		}
+					.getCurrent());
+		};
 	}
 
 	private JsonObject object() throws ConversionException
@@ -258,7 +255,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-					!= JsonToken.Type.EOF)
+				!= JsonToken.Type.EOF)
 				try
 			{
 				parse().ifPresent(action);
@@ -294,14 +291,14 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public boolean hasNext()
 		{
 			return scanner.getCurrent().getType()
-					!= JsonToken.Type.EOF;
+				!= JsonToken.Type.EOF;
 		}
 
 		@Override
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-					!= JsonToken.Type.EOF)
+				!= JsonToken.Type.EOF)
 				try
 			{
 				parse().ifPresent(action);

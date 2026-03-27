@@ -56,7 +56,6 @@ public class JsonNull implements JsonElement, JsonScalar
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T toObject(java.lang.reflect.Type type,
 						  java.lang.reflect.Type elementType)
 	{
@@ -85,5 +84,10 @@ public class JsonNull implements JsonElement, JsonScalar
 		if (element.getType() != JsonElement.Type.NULL)
 			throw new ConversionException("the specified JsonElement is not a JsonNull");
 		return (JsonNull) element;
+	}
+
+	public static JsonNull format()
+	{
+		return INSTANCE;
 	}
 }

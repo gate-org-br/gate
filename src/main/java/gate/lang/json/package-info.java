@@ -50,7 +50,7 @@
  *			JsonString jsonString = (JsonString)jsonElement;
  *			break;
  *	}
- *	String json = JsonElement.format(jsonElement);
+ *	String json = JsonElement.stringify(jsonElement);
  * }</pre>
  * <hr>
  * A {@link gate.lang.json.JsonArray} is a List of JsonElement:

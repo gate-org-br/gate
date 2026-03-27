@@ -1,7 +1,6 @@
 package gate.lang.json;
 
 import gate.error.ConversionException;
-
 import java.util.Map;
 
 public class JsonFormatter implements AutoCloseable

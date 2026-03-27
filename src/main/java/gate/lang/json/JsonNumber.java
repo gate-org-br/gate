@@ -80,23 +80,21 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T toObject(Class<T> type)
 	{
-
 		if (type == Short.class)
-			return (T) (Short) value.shortValue();
+			return type.cast(value.shortValue());
 		if (type == Integer.class)
-			return (T) (Integer) value.intValue();
+			return type.cast(value.intValue());
 		if (type == Long.class)
-			return (T) (Long) value.longValue();
+			return type.cast(value.longValue());
 		if (type == Float.class)
-			return (T) (Float) value.floatValue();
+			return type.cast(value.floatValue());
 		if (type == Double.class)
-			return (T) (Double) value.doubleValue();
+			return type.cast(value.doubleValue());
 		if (type.isAssignableFrom(BigInteger.class))
-			return (T) value.toBigInteger();
-		return (T) value;
+			return type.cast(value.toBigInteger());
+		return type.cast(value);
 	}
 
 	@Override
@@ -107,8 +105,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T toObject(java.lang.reflect.Type type,
-						  java.lang.reflect.Type elementType)
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
@@ -118,7 +115,8 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonNumber object
 	 * @return a JsonNumber object representing the JSON formatted string specified
-	 * @throws ConversionException  if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the
+	 *                              specified JSON formatted string
 	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public static JsonNumber parse(String json) throws ConversionException
@@ -142,6 +140,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
+	public static JsonNumber format(long value)
+	{
+		return of(value);
+	}
+
 	/**
 	 * Returns an JsonNumber instance representing the specified double value.
 	 *
@@ -151,6 +154,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	public static JsonNumber of(double value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	public static JsonNumber format(double value)
+	{
+		return of(value);
 	}
 
 	/**
@@ -165,6 +173,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(new BigDecimal(value));
 	}
 
+	public static JsonNumber format(String value)
+	{
+		return of(value);
+	}
+
 	/**
 	 * Returns an JsonNumber instance representing the specified Byte value.
 	 *
@@ -175,6 +188,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	public static JsonNumber of(Byte value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	public static JsonNumber format(Byte value)
+	{
+		return of(value);
 	}
 
 	/**
@@ -189,6 +207,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
+	public static JsonNumber format(Short value)
+	{
+		return of(value);
+	}
+
 	/**
 	 * Returns an JsonNumber instance representing the specified Integer value.
 	 *
@@ -199,6 +222,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	public static JsonNumber of(Integer value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	public static JsonNumber format(Integer value)
+	{
+		return of(value);
 	}
 
 	/**
@@ -213,6 +241,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
+	public static JsonNumber format(Long value)
+	{
+		return of(value);
+	}
+
 	/**
 	 * Returns an JsonNumber instance representing the specified Float value.
 	 *
@@ -223,6 +256,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	public static JsonNumber of(Float value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
+	}
+
+	public static JsonNumber format(Float value)
+	{
+		return of(value);
 	}
 
 	/**
@@ -237,6 +275,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
+	public static JsonNumber format(Double value)
+	{
+		return of(value);
+	}
+
 	/**
 	 * Returns an JsonNumber instance representing the specified BigDecimal value.
 	 *
@@ -247,6 +290,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	public static JsonNumber of(BigDecimal value)
 	{
 		return new JsonNumber(value);
+	}
+
+	public static JsonNumber format(BigDecimal value)
+	{
+		return of(value);
 	}
 
 	/**
@@ -261,6 +309,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(value.getValue());
 	}
 
+	public static JsonNumber format(Percentage value)
+	{
+		return of(value);
+	}
+
 	/**
 	 * Returns an JsonNumber instance representing the specified Money value.
 	 *
@@ -271,6 +324,11 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	public static JsonNumber of(Money value)
 	{
 		return new JsonNumber(value.getValue());
+	}
+
+	public static JsonNumber format(Money value)
+	{
+		return of(value);
 	}
 
 	/**
@@ -285,11 +343,12 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return JsonNumber.of(value.toString());
 	}
 
+	public static JsonNumber format(Number value) {return of(value);}
+
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof JsonNumber
-			   && value.compareTo(((JsonNumber) obj).value) == 0;
+		return obj instanceof JsonNumber && value.compareTo(((JsonNumber) obj).value) == 0;
 	}
 
 	@Override

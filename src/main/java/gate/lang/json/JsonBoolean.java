@@ -70,30 +70,24 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T> T toObject(Class<T> type)
 	{
-		return (T) (Boolean) value;
+		return type.cast(value);
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T toObject(java.lang.reflect.Type type,
-						  java.lang.reflect.Type elementType)
-	{
-		return (T) (Boolean) value;
-	}
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return (T) (Boolean) value;}
 
-	public static JsonBoolean parse(boolean value)
-	{
-		return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;
-	}
+	public static JsonBoolean of(boolean value) {return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;}
 
-	public static JsonBoolean parse(Boolean value)
+	public static JsonBoolean of(Boolean value) {return Boolean.TRUE.equals(value) ? JsonBoolean.TRUE : JsonBoolean.FALSE;}
+
+	public static JsonBoolean format(boolean value) {return of(value);}
+
+	public static JsonBoolean format(Boolean value)
 	{
-		return Boolean.TRUE.equals(value)
-				? JsonBoolean.TRUE
-				: JsonBoolean.FALSE;
+		return of(value);
 	}
 
 	/**
@@ -101,7 +95,8 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonBoolean object
 	 * @return a JsonBoolean object representing the JSON formatted string specified
-	 * @throws ConversionException  if an error occurs while trying to parse the specified JSON formatted string
+	 * @throws ConversionException  if an error occurs while trying to parse the
+	 *                              specified JSON formatted string
 	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	public static JsonBoolean parse(String json) throws ConversionException

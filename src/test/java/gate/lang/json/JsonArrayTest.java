@@ -44,11 +44,29 @@ public class JsonArrayTest
 	public void testFormatFunctionFunction()
 	{
 		List<User> users = Arrays.asList(new User().setId(ID.valueOf(1)).setName("User 1"),
-			new User().setId(ID.valueOf(2)).setName("User 2"),
-			new User().setId(ID.valueOf(3)).setName("User 3"));
+				new User().setId(ID.valueOf(2)).setName("User 2"),
+				new User().setId(ID.valueOf(3)).setName("User 3"));
 
-		String expected = "[ { \"label\":\"User 1\",\"value\":\"0000000001\" },{ \"label\":\"User 2\",\"value\":\"0000000002\" },{ \"label\":\"User 3\",\"value\":\"0000000003\" } ]";
-		String result = JsonArray.format(users, e -> e.getName(), e -> e.getId()).toString();
+		String expected = "[{\"label\":\"User 1\",\"value\":\"0000000001\"},{\"label\":\"User 2\",\"value\":\"0000000002\"},{\"label\":\"User 3\",\"value\":\"0000000003\"}]";
+		String result = JsonArray.format(users, User::getName, User::getId).toString();
 		assertEquals(expected, result);
+	}
+
+	@Test
+	public void testOfPreservesJsonElements()
+	{
+		JsonArray array = JsonArray.of(List.of(JsonBoolean.TRUE, JsonString.of("value")));
+
+		assertEquals(JsonBoolean.TRUE, array.get(0));
+		assertEquals(JsonString.of("value"), array.get(1));
+	}
+
+	@Test
+	public void testFormatPreservesFormattedBooleans()
+	{
+		JsonArray array = JsonArray.format(List.of(true, false));
+
+		assertEquals(JsonBoolean.TRUE, array.get(0));
+		assertEquals(JsonBoolean.FALSE, array.get(1));
 	}
 }

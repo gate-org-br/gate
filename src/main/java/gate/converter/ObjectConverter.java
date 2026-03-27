@@ -4,10 +4,16 @@ import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.io.Encoder;
-import gate.lang.json.*;
+import gate.lang.json.JsonScanner;
+import gate.lang.json.JsonToken;
+import gate.lang.json.JsonWriter;
 import gate.util.Reflection;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -156,12 +162,6 @@ public class ObjectConverter implements Converter
 	{
 		try
 		{
-			if (object instanceof JsonSerializable jsonSerializable)
-			{
-				writer.write(JsonElement.format(jsonSerializable.toJson()));
-				return;
-			}
-
 			writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 			boolean first = true;
@@ -201,12 +201,6 @@ public class ObjectConverter implements Converter
 	{
 		try
 		{
-			if (object instanceof JsonSerializable jsonSerializable)
-			{
-				writer.write(JsonElement.format(jsonSerializable.toJsonText()));
-				return;
-			}
-
 			writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 			boolean first = true;

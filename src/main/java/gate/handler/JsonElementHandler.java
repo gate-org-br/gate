@@ -18,7 +18,7 @@ public class JsonElementHandler implements Handler
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
-		String string = JsonElement.format((JsonElement) value);
+		String string = JsonElement.stringify((JsonElement) value);
 		response.setContentType("application/json");
 
 		try (Writer writer = response.getWriter())
@@ -35,7 +35,7 @@ public class JsonElementHandler implements Handler
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			Progress progress, Object value)
 	{
-		String string = JsonElement.format((JsonElement) value);
+		String string = JsonElement.stringify((JsonElement) value);
 		progress.result("application/json", null, string);
 	}
 }

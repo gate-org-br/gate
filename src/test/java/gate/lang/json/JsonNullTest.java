@@ -1,10 +1,9 @@
 package gate.lang.json;
 
 import gate.error.ConversionException;
-import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Test;
 
 public class JsonNullTest
 {
@@ -19,6 +18,12 @@ public class JsonNullTest
 		{
 			fail(ex.getMessage());
 		}
+	}
+
+	@Test
+	public void testFormatSymmetry()
+	{
+		assertEquals(JsonNull.INSTANCE, JsonNull.format());
 	}
 
 }

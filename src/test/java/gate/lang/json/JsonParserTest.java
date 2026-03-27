@@ -33,19 +33,19 @@ public class JsonParserTest
 			{
 				Optional<JsonElement> object = parser.parse();
 				assertEquals(JsonElement.Type.OBJECT,
-					object.get().getType());
+						object.get().getType());
 
 				Optional<JsonElement> array = parser.parse();
 				assertEquals(JsonElement.Type.ARRAY,
-					array.get().getType());
+						array.get().getType());
 
 				Optional<JsonElement> bool = parser.parse();
 				assertEquals(JsonElement.Type.BOOLEAN,
-					bool.get().getType());
+						bool.get().getType());
 
 				Optional<JsonElement> string = parser.parse();
 				assertEquals(JsonElement.Type.STRING,
-					string.get().getType());
+						string.get().getType());
 
 				Optional<JsonElement> empty = parser.parse();
 				assertFalse(empty.isPresent());
@@ -62,19 +62,19 @@ public class JsonParserTest
 			try (JsonParser parser = new JsonParser(reader))
 			{
 				List<JsonElement> elements
-					= new ArrayList<>();
+						= new ArrayList<>();
 				for (JsonElement element : parser)
 					elements.add(element);
 
 				assertEquals(4, elements.size());
 				assertEquals(JsonElement.Type.OBJECT,
-					elements.get(0).getType());
+						elements.get(0).getType());
 				assertEquals(JsonElement.Type.ARRAY,
-					elements.get(1).getType());
+						elements.get(1).getType());
 				assertEquals(JsonElement.Type.BOOLEAN,
-					elements.get(2).getType());
+						elements.get(2).getType());
 				assertEquals(JsonElement.Type.STRING,
-					elements.get(3).getType());
+						elements.get(3).getType());
 			}
 		}
 	}
@@ -88,19 +88,19 @@ public class JsonParserTest
 			try (JsonParser parser = new JsonParser(reader))
 			{
 				List<JsonElement.Type> elements
-					= parser.stream()
+						= parser.stream()
 						.map(e -> e.getType())
 						.collect(Collectors.toList());
 
 				assertEquals(4, elements.size());
 				assertEquals(JsonElement.Type.OBJECT,
-					elements.get(0));
+						elements.get(0));
 				assertEquals(JsonElement.Type.ARRAY,
-					elements.get(1));
+						elements.get(1));
 				assertEquals(JsonElement.Type.BOOLEAN,
-					elements.get(2));
+						elements.get(2));
 				assertEquals(JsonElement.Type.STRING,
-					elements.get(3));
+						elements.get(3));
 			}
 		}
 	}
@@ -109,7 +109,7 @@ public class JsonParserTest
 	public void testLineBreak() throws Exception
 	{
 		var string = JsonString.of("Line 1\nLine 2");
-		String json = JsonElement.format(string);
+		String json = JsonElement.stringify(string);
 		assertEquals("Line 1\nLine 2", JsonElement.parse(json).toString());
 	}
 
