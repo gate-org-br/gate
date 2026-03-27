@@ -51,4 +51,22 @@ public class JsonArrayTest
 		String result = JsonArray.format(users, User::getName, User::getId).toString();
 		assertEquals(expected, result);
 	}
+
+	@Test
+	public void testOfPreservesJsonElements()
+	{
+		JsonArray array = JsonArray.of(List.of(JsonBoolean.TRUE, JsonString.of("value")));
+
+		assertEquals(JsonBoolean.TRUE, array.get(0));
+		assertEquals(JsonString.of("value"), array.get(1));
+	}
+
+	@Test
+	public void testFormatPreservesFormattedBooleans()
+	{
+		JsonArray array = JsonArray.format(List.of(true, false));
+
+		assertEquals(JsonBoolean.TRUE, array.get(0));
+		assertEquals(JsonBoolean.FALSE, array.get(1));
+	}
 }

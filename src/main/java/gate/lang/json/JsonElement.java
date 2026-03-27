@@ -144,6 +144,8 @@ public interface JsonElement extends Serializable
 			return JsonNull.INSTANCE;
 		if (obj instanceof Jsonable jsonSerializable)
 			return jsonSerializable.toJson();
+		if (obj instanceof JsonElement jsonElement)
+			return jsonElement;
 
 		if (obj instanceof Boolean aBoolean)
 			return JsonBoolean.of(aBoolean);
@@ -209,11 +211,16 @@ public interface JsonElement extends Serializable
 		if (obj == null)
 			return UNDEFINED;
 
+		if (obj instanceof JsonElement jsonElement)
+			return jsonElement;
+
 		if (obj instanceof Jsonable jsonSerializable)
 			return jsonSerializable.toJsonText();
 
 		if (obj instanceof Number number)
 			return JsonNumber.format(number);
+		if (obj instanceof Boolean bool)
+			return JsonBoolean.format(bool);
 		if (obj instanceof Collection<?> collection)
 			return JsonArray.format(collection);
 		if (obj instanceof Object[] objects)

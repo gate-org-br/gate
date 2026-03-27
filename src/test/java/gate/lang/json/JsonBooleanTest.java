@@ -28,4 +28,11 @@ public class JsonBooleanTest
 		assertEquals(JsonBoolean.of(Boolean.FALSE), JsonBoolean.format(Boolean.FALSE));
 	}
 
+	@Test
+	public void testJsonElementFormatProducesBooleanElement()
+	{
+		assertEquals(JsonBoolean.TRUE, JsonElement.format(Boolean.TRUE));
+		assertEquals(JsonBoolean.FALSE, JsonElement.format(Boolean.FALSE));
+	}
+
 }
