@@ -61,6 +61,13 @@ class BasicOperation<T> implements Operation<T>
 	}
 
 	@Override
+	public Operation<T> print()
+	{
+		System.out.println(this);
+		return this;
+	}
+
+	@Override
 	public Operation<T> print(Logger logger)
 	{
 		logger.debug("{}", this);
@@ -80,7 +87,7 @@ class BasicOperation<T> implements Operation<T>
 		}
 
 		@Override
-		public Connected connect(Link connection)
+		public Operation.Compiled.Connected<T> connect(Link connection)
 		{
 			return new Connected(connection);
 		}
@@ -92,9 +99,16 @@ class BasicOperation<T> implements Operation<T>
 		}
 
 		@Override
-		public Compiled print(Logger logger)
+		public Operation.Compiled<T> print()
 		{
-			logger.debug("{}", this);
+			BasicOperation.this.print();
+			return this;
+		}
+
+		@Override
+		public Operation.Compiled<T> print(Logger logger)
+		{
+			BasicOperation.this.print(logger);
 			return this;
 		}
 
@@ -106,7 +120,6 @@ class BasicOperation<T> implements Operation<T>
 			public Connected(Link connection)
 			{
 				Objects.requireNonNull(connection);
-
 				this.link = connection;
 			}
 
@@ -157,9 +170,16 @@ class BasicOperation<T> implements Operation<T>
 			}
 
 			@Override
-			public Connected print(Logger logger)
+			public Operation.Compiled.Connected<T> print(Logger logger)
 			{
-				logger.debug("{}", this);
+				BasicOperation.Compiled.this.print(logger);
+				return this;
+			}
+
+			@Override
+			public Operation.Compiled.Connected<T> print()
+			{
+				BasicOperation.Compiled.this.print();
 				return this;
 			}
 
@@ -224,9 +244,16 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
+				public Operation.Compiled.Connected<T> print()
+				{
+					BasicOperation.Compiled.this.print();
+					return this;
+				}
+
+				@Override
 				public Operation.Compiled.Connected<T> print(Logger logger)
 				{
-					logger.debug("{}", this);
+					BasicOperation.Compiled.this.print(logger);
 					return this;
 				}
 			}
@@ -264,9 +291,16 @@ class BasicOperation<T> implements Operation<T>
 		}
 
 		@Override
+		public Operation.Connected<T> print()
+		{
+			BasicOperation.this.print();
+			return this;
+		}
+
+		@Override
 		public Operation.Connected<T> print(Logger logger)
 		{
-			logger.debug("{}", this);
+			BasicOperation.this.print(logger);
 			return this;
 		}
 
@@ -332,6 +366,14 @@ class BasicOperation<T> implements Operation<T>
 			public String toString()
 			{
 				return sql;
+			}
+
+			@Override
+			public Operation.Connected.Compiled<T> print()
+			{
+				System.out.println(this);
+				System.out.println(values);
+				return this;
 			}
 
 			@Override
@@ -403,13 +445,19 @@ class BasicOperation<T> implements Operation<T>
 				}
 
 				@Override
+				public Operation.Connected.Compiled<T> print()
+				{
+					BasicOperation.Connected.Compiled.this.print();
+					return this;
+				}
+
+				@Override
 				public Operation.Connected.Compiled<T> print(Logger logger)
 				{
-					logger.debug("{}", this);
+					BasicOperation.Connected.Compiled.this.print(logger);
 					return this;
 				}
 			}
-
 		}
 	}
 }

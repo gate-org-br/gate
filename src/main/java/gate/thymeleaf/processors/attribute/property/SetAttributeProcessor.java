@@ -1,9 +1,9 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Stream;
-
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.Precedence;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.model.IAttribute;
@@ -15,11 +15,9 @@ import org.thymeleaf.processor.element.MatchingAttributeName;
 import org.thymeleaf.processor.element.MatchingElementName;
 import org.thymeleaf.templatemode.TemplateMode;
 
-import gate.thymeleaf.ELExpressionFactory;
-import gate.thymeleaf.Precedence;
-import jakarta.enterprise.context.Dependent;
-import jakarta.enterprise.inject.Vetoed;
-import jakarta.inject.Inject;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
 
 @Dependent
 public class SetAttributeProcessor extends AbstractProcessorDialect
@@ -41,7 +39,6 @@ public class SetAttributeProcessor extends AbstractProcessorDialect
 		return processors;
 	}
 
-	@Vetoed
 	private class SetAttributeProcessorHandler implements IElementTagProcessor
 	{
 

@@ -21,336 +21,320 @@ import java.util.function.Function;
 public interface Sentence extends SQL
 {
 
-    /**
-     * Creates a new sentence for the specified SQL string.
-     *
-     * @param sql the SQL string of the sentence to be created
-     * @return a new sentence for the SQL string specified
-     */
-    static Sentence of(String sql)
-    {
-        return new BasicSentence(sql);
-    }
+	/**
+	 * Creates a new sentence for the specified SQL string.
+	 *
+	 * @param sql the SQL string of the sentence to be created
+	 * @return a new sentence for the SQL string specified
+	 */
+	static Sentence of(String sql)
+	{
+		return new BasicSentence(sql);
+	}
 
-    /**
-     * Binds the sentence to a database link.
-     *
-     * @param link database link to be bound to the sentence
-     * @return the same sentence bound to the specified database link
-     */
-    Connected connect(Link link);
+	/**
+	 * Binds the sentence to a database link.
+	 *
+	 * @param link database link to be bound to the sentence
+	 * @return the same sentence bound to the specified database link
+	 */
+	Connected connect(Link link);
 
-    /**
-     * Compiles the sentence with a list of parameters.
-     *
-     * @param parameters the list of parameters to be compiled with the sentence
-     * @return the same sentence compiled with the specified parameters
-     */
-    Compiled parameters(List<Object> parameters);
+	/**
+	 * Compiles the sentence with a list of parameters.
+	 *
+	 * @param parameters the list of parameters to be compiled with the sentence
+	 * @return the same sentence compiled with the specified parameters
+	 */
+	Compiled parameters(List<Object> parameters);
 
-    /**
-     * Compiles the sentence with a list of parameters.
-     *
-     * @param parameters the list of parameters to be compiled with the sentence
-     * @return the same sentence compiled with the specified parameters
-     */
-    default Compiled parameters(Object... parameters)
-    {
-        return parameters(Arrays.asList(parameters));
-    }
+	/**
+	 * Compiles the sentence with a list of parameters.
+	 *
+	 * @param parameters the list of parameters to be compiled with the sentence
+	 * @return the same sentence compiled with the specified parameters
+	 */
+	default Compiled parameters(Object... parameters)
+	{
+		return parameters(List.of(parameters));
+	}
 
-    /**
-     * Prepares the sentence to be compiled with a list of entities and functions.
-     *
-     * @param type type of the entities to be compiled with the sentence
-     * @return the same sentence prepared to be compiled with the specified entities and a list of
-     * functions
-     */
-    <T> Extractor<T> from(Class<T> type);
+	/**
+	 * Prepares the sentence to be compiled with a list of entities and functions.
+	 *
+	 * @param type type of the entities to be compiled with the sentence
+	 * @return the same sentence prepared to be compiled with the specified entities and a list of
+	 * functions
+	 */
+	<T> Extractor<T> from(Class<T> type);
 
-    /**
-     * Compiles the sentence with a batch of parameters.
-     *
-     * @param batch the batch of parameters to be compiled with the sentence
-     * @return the same sentence compiled with the specified batch of parameters
-     */
-    Compiled batch(List<List<Object>> batch);
+	@Override
+	Sentence print(Logger logger);
 
-    @Override
-    Sentence print(Logger logger);
+	/**
+	 * A SQL sentence compiled with a set of parameters and not linked to a database.
+	 * <p>
+	 * A compiled sentence must be linked to a database before execution.
+	 */
+	interface Compiled extends SQL
+	{
 
-    /**
-     * A SQL sentence compiled with a set of parameters and not linked to a database.
-     * <p>
-     * A compiled sentence must be linked to a database before execution.
-     */
-    interface Compiled extends SQL
-    {
+		/**
+		 * Binds the sentence to a database link.
+		 *
+		 * @param link database link to be bound to the sentence
+		 * @return the same sentence bound to the specified database link
+		 */
+		Connected connect(Link link);
 
-        /**
-         * Binds the sentence to a database link.
-         *
-         * @param link database link to be bound to the sentence
-         * @return the same sentence bound to the specified database link
-         */
-        Connected connect(Link link);
+		/**
+		 * A SQL sentence linked to a database and compiled with a set of parameters.
+		 * <p>
+		 * A compiled and connected sentence is ready for execution
+		 */
+		interface Connected extends SQL, Executable
+		{
 
-        /**
-         * A SQL sentence linked to a database and compiled with a set of parameters.
-         * <p>
-         * A compiled and connected sentence is ready for execution
-         */
-        interface Connected extends SQL, Executable
-        {
+			/**
+			 * Defines a Consumer to be called each time a set or parameters is processed by the
+			 * statement.
+			 * <p>
+			 * Very useful for tracking the progress of long batch operations
+			 *
+			 * @param consumer the consumer to be called each time the statement is executed. Only a
+			 *                 single consumer can be defined at any time. If null, removes any previously
+			 *                 defined consumer.
+			 * @return the current sentence, for chained invocations
+			 */
+			Connected observe(Consumer<List<Object>> consumer);
 
-            /**
-             * Defines a Consumer to be called each time a set or parameters is processed by the
-             * statement.
-             * <p>
-             * Very useful for tracking the progress of long batch operations
-             *
-             * @param consumer the consumer to be called each time the statement is executed. Only a
-             *                 single consumer can be defined at any time. If null, removes any previously
-             *                 defined consumer.
-             * @return the current sentence, for chained invocations
-             */
-            Connected observe(Consumer<List<Object>> consumer);
+			@Override
+			Connected print(Logger logger);
 
-            @Override
-            Connected print(Logger logger);
+		}
 
-        }
+		@Override
+		Compiled print(Logger logger);
 
-        @Override
-        Compiled print(Logger logger);
+		/**
+		 * Compiled sentence builder.
+		 */
+		interface Builder extends SQLBuilder<Sentence.Compiled>
+		{
 
-        /**
-         * Compiled sentence builder.
-         */
-        interface Builder extends SQLBuilder<Sentence.Compiled>
-        {
+		}
+	}
 
-        }
-    }
+	interface Extractor<T> extends SQL
+	{
 
-    interface Extractor<T> extends SQL
-    {
+		/**
+		 * Specify the functions to be used to extract the attributes to be updated on the database.
+		 *
+		 * @param extractors list of functions to be used to extract the attributes to be updated on
+		 *                   the database
+		 * @return the same sentence compiled with the specified functions
+		 */
+		Compiled<T> parameters(List<Function<T, ?>> extractors);
 
-        /**
-         * Specify the functions to be used to extract the attributes to be updated on the database.
-         *
-         * @param extractors list of functions to be used to extract the attributes to be updated on
-         *                   the database
-         * @return the same sentence compiled with the specified functions
-         */
-        Compiled<T> parameters(List<Function<T, ?>> extractors);
+		/**
+		 * Specify the functions to be used to extract the attributes to be updated on the database.
+		 *
+		 * @param extractors list of functions to be used to extract the attributes to be updated on
+		 *                   the database
+		 * @return the same sentence compiled with the specified functions
+		 */
+		@SuppressWarnings({"unchecked", "varargs"})
+		default Compiled<T> parameters(Function<T, ?>... extractors)
+		{
+			return Extractor.this.parameters(Arrays.asList(extractors));
+		}
 
-        /**
-         * Specify the functions to be used to extract the attributes to be updated on the database.
-         *
-         * @param extractors list of functions to be used to extract the attributes to be updated on
-         *                   the database
-         * @return the same sentence compiled with the specified functions
-         */
-        @SuppressWarnings({"unchecked", "varargs"})
-        default Compiled<T> parameters(Function<T, ?>... extractors)
-        {
-            return Extractor.this.parameters(Arrays.asList(extractors));
-        }
+		@Override
+		Extractor<T> print(Logger logger);
 
-        @Override
-        Extractor<T> print(Logger logger);
+		/**
+		 * A SQL sentence linked to a database and compiled with a set or parameters.
+		 * <p>
+		 * A connected and compiled sentence is ready for execution
+		 *
+		 */
+		interface Compiled<T> extends SQL
+		{
 
-        /**
-         * A SQL sentence linked to a database and compiled with a set or parameters.
-         * <p>
-         * A connected and compiled sentence is ready for execution
-         *
-         */
-        interface Compiled<T> extends SQL
-        {
+			/**
+			 * Binds the sentence to a database link.
+			 *
+			 * @param link database link to be bound to the sentence
+			 * @return the same sentence bound to the specified database link
+			 */
+			Connected<T> connect(Link link);
 
-            /**
-             * Binds the sentence to a database link.
-             *
-             * @param link database link to be bound to the sentence
-             * @return the same sentence bound to the specified database link
-             */
-            Connected<T> connect(Link link);
+			/**
+			 * A SQL sentence linked to a database and compiled with a set of parameters.
+			 * <p>
+			 * A compiled and connected sentence is ready for execution
+			 */
+			interface Connected<T> extends SQL, Batch<T>
+			{
 
-            /**
-             * A SQL sentence linked to a database and compiled with a set of parameters.
-             * <p>
-             * A compiled and connected sentence is ready for execution
-             */
-            interface Connected<T> extends SQL, Batch<T>
-            {
+				/**
+				 * Defines a Consumer to be called each time a set or parameters is processed by the
+				 * statement.
+				 * <p>
+				 * Very useful for tracking the progress of long batch operations
+				 *
+				 * @param consumer the consumer to be called each time the statement is executed.
+				 *                 Only a single consumer can be defined at any time. If null, removes any
+				 *                 previously defined consumer.
+				 * @return the current sentence, for chained invocations
+				 */
+				Connected<T> observe(Consumer<T> consumer);
 
-                /**
-                 * Defines a Consumer to be called each time a set or parameters is processed by the
-                 * statement.
-                 * <p>
-                 * Very useful for tracking the progress of long batch operations
-                 *
-                 * @param consumer the consumer to be called each time the statement is executed.
-                 *                 Only a single consumer can be defined at any time. If null, removes any
-                 *                 previously defined consumer.
-                 * @return the current sentence, for chained invocations
-                 */
-                Connected<T> observe(Consumer<T> consumer);
+				@Override
+				Connected<T> print(Logger logger);
 
-                @Override
-                Connected<T> print(Logger logger);
+			}
 
-            }
+			/**
+			 * Compiled sentence builder.
+			 *
+			 *
+			 */
+			interface Builder<T> extends SQLBuilder<Sentence.Extractor.Compiled<T>>
+			{
 
-            /**
-             * Compiled sentence builder.
-             *
-             *
-             */
-            interface Builder<T> extends SQLBuilder<Sentence.Extractor.Compiled<T>>
-            {
+			}
+		}
+	}
 
-            }
-        }
-    }
+	/**
+	 * A SQL sentence linked to a database whose parameters are not defined.
+	 * <p>
+	 * A connected sentence must be compiled with a set of parameters before execution
+	 */
+	interface Connected extends SQL, Executable
+	{
 
-    /**
-     * A SQL sentence linked to a database whose parameters are not defined.
-     * <p>
-     * A connected sentence must be compiled with a set of parameters before execution
-     */
-    interface Connected extends SQL, Executable
-    {
+		/**
+		 * Specify the type with the attributes to be updated on the database
+		 *
+		 * @param type type with the attributes to be updated on the database
+		 * @return the same sentence compiled with the specified type
+		 */
+		<T> Extractor<T> from(Class<T> type);
 
-        /**
-         * Specify the type with the attributes to be updated on the database
-         *
-         * @param type type with the attributes to be updated on the database
-         * @return the same sentence compiled with the specified type
-         */
-        <T> Extractor<T> from(Class<T> type);
+		/**
+		 * Compiles the sentence with a list of parameters.
+		 *
+		 * @param parameters the list of parameters to be compiled with the sentence
+		 * @return the same sentence compiled with the specified parameters
+		 */
+		Compiled parameters(List<Object> parameters);
 
-        /**
-         * Compiles the sentence with a list of parameters.
-         *
-         * @param parameters the list of parameters to be compiled with the sentence
-         * @return the same sentence compiled with the specified parameters
-         */
-        Compiled parameters(List<Object> parameters);
+		/**
+		 * Compiles the sentence with a list of parameters.
+		 *
+		 * @param parameters the list of parameters to be compiled with the sentence
+		 * @return the same sentence compiled with the specified parameters
+		 */
+		default Compiled parameters(Object... parameters)
+		{
+			return parameters(Arrays.asList(parameters));
+		}
 
-        /**
-         * Compiles the sentence with a list of parameters.
-         *
-         * @param parameters the list of parameters to be compiled with the sentence
-         * @return the same sentence compiled with the specified parameters
-         */
-        default Compiled parameters(Object... parameters)
-        {
-            return parameters(Arrays.asList(parameters));
-        }
+		@Override
+		Connected print(Logger logger);
 
-        /**
-         * Compiles the sentence with a batch of parameters.
-         *
-         * @param batch the batch of parameters to be compiled with the sentence
-         * @return the same sentence compiled with the specified batch of parameters
-         */
-        Compiled batch(List<List<?>> batch);
+		/**
+		 * A SQL sentence linked to a database and compiled with a set or parameters.
+		 * <p>
+		 * A connected and compiled sentence is ready for execution
+		 */
+		interface Compiled extends SQL, Executable
+		{
 
-        @Override
-        Connected print(Logger logger);
+			/**
+			 * Defines a Consumer to be called each time a set or parameters is processed by the
+			 * statement.
+			 * <p>
+			 * Very useful for tracking the progress of long batch operations
+			 *
+			 * @param consumer the consumer to be called each time the statement is executed. Only a
+			 *                 single consumer can be defined at any time. If null, removes any previously
+			 *                 defined consumer.
+			 * @return the current sentence, for chained invocations
+			 */
+			Compiled observe(Consumer<List<?>> consumer);
 
-        /**
-         * A SQL sentence linked to a database and compiled with a set or parameters.
-         * <p>
-         * A connected and compiled sentence is ready for execution
-         */
-        interface Compiled extends SQL, Executable
-        {
+			@Override
+			Compiled print(Logger logger);
+		}
 
-            /**
-             * Defines a Consumer to be called each time a set or parameters is processed by the
-             * statement.
-             * <p>
-             * Very useful for tracking the progress of long batch operations
-             *
-             * @param consumer the consumer to be called each time the statement is executed. Only a
-             *                 single consumer can be defined at any time. If null, removes any previously
-             *                 defined consumer.
-             * @return the current sentence, for chained invocations
-             */
-            Compiled observe(Consumer<List<?>> consumer);
+		interface Extractor<T> extends SQL
+		{
 
-            @Override
-            Compiled print(Logger logger);
-        }
+			/**
+			 * Specify the functions to be used to extract the attributes to be updated on the
+			 * database.
+			 *
+			 * @param extractors list of functions to be used to extract the attributes to be
+			 *                   updated on the database
+			 * @return the same sentence compiled with the specified functions
+			 */
+			Compiled<T> parameters(List<Function<T, ?>> extractors);
 
-        interface Extractor<T> extends SQL
-        {
+			/**
+			 * Specify the functions to be used to extract the attributes to be updated on the
+			 * database.
+			 *
+			 * @param extractors list of functions to be used to extract the attributes to be
+			 *                   updated on the database
+			 * @return the same sentence compiled with the specified functions
+			 */
+			@SuppressWarnings({"unchecked", "varargs"})
+			default Compiled<T> parameters(Function<T, ?>... extractors)
+			{
+				return parameters(Arrays.asList(extractors));
+			}
 
-            /**
-             * Specify the functions to be used to extract the attributes to be updated on the
-             * database.
-             *
-             * @param extractors list of functions to be used to extract the attributes to be
-             *                   updated on the database
-             * @return the same sentence compiled with the specified functions
-             */
-            Compiled<T> parameters(List<Function<T, ?>> extractors);
+			@Override
+			Extractor<T> print(Logger logger);
 
-            /**
-             * Specify the functions to be used to extract the attributes to be updated on the
-             * database.
-             *
-             * @param extractors list of functions to be used to extract the attributes to be
-             *                   updated on the database
-             * @return the same sentence compiled with the specified functions
-             */
-            @SuppressWarnings({"unchecked", "varargs"})
-            default Compiled<T> parameters(Function<T, ?>... extractors)
-            {
-                return parameters(Arrays.asList(extractors));
-            }
+			/**
+			 * A SQL sentence linked to a database and compiled with a set or parameters.
+			 * <p>
+			 * A connected and compiled sentence is ready for execution
+			 *
+			 *
+			 */
+			interface Compiled<T> extends SQL, gate.sql.Batch<T>
+			{
 
-            @Override
-            Extractor<T> print(Logger logger);
+				/**
+				 * Defines a Consumer to be called each time a set or parameters is processed by the
+				 * statement.
+				 * <p>
+				 * Very useful for tracking the progress of long batch operations
+				 *
+				 * @param consumer the consumer to be called each time the statement is executed.
+				 *                 Only a single consumer can be defined at any time. If null, removes any
+				 *                 previously defined consumer.
+				 * @return the current sentence, for chained invocations
+				 */
+				Compiled<T> observe(Consumer<T> consumer);
 
-            /**
-             * A SQL sentence linked to a database and compiled with a set or parameters.
-             * <p>
-             * A connected and compiled sentence is ready for execution
-             *
-             *
-             */
-            interface Compiled<T> extends SQL, Batch<T>
-            {
+				@Override
+				Compiled<T> print(Logger logger);
+			}
+		}
+	}
 
-                /**
-                 * Defines a Consumer to be called each time a set or parameters is processed by the
-                 * statement.
-                 * <p>
-                 * Very useful for tracking the progress of long batch operations
-                 *
-                 * @param consumer the consumer to be called each time the statement is executed.
-                 *                 Only a single consumer can be defined at any time. If null, removes any
-                 *                 previously defined consumer.
-                 * @return the current sentence, for chained invocations
-                 */
-                Compiled<T> observe(Consumer<T> consumer);
+	/**
+	 * Sentence builder.
+	 */
+	interface Builder extends SQLBuilder<Sentence>
+	{
 
-                @Override
-                Compiled<T> print(Logger logger);
-            }
-        }
-    }
-
-    /**
-     * Sentence builder.
-     */
-    interface Builder extends SQLBuilder<Sentence>
-    {
-
-    }
+	}
 }

@@ -7,6 +7,7 @@ import gate.constraint.Required;
 import gate.type.Hierarchy;
 import gate.type.ID;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ import java.util.stream.Stream;
 public class Role implements Serializable, Hierarchy<Role>
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	@Required
 	@Name
@@ -313,8 +314,8 @@ public class Role implements Serializable, Hierarchy<Role>
 	{
 		return Boolean.TRUE.equals(getMaster())
 				? Stream.concat(Stream.of(this), getChildren().stream()
-				.filter(e -> !Boolean.TRUE.equals(e.getMaster()))
-				.flatMap(Hierarchy::stream))
+												 .filter(e -> !Boolean.TRUE.equals(e.getMaster()))
+												 .flatMap(Hierarchy::stream))
 				: Stream.empty();
 	}
 
@@ -347,9 +348,9 @@ public class Role implements Serializable, Hierarchy<Role>
 	private Stream<Auth> privateAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream()
-						.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
+										  .filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
 				getFuncs().stream().flatMap(e -> e.getAuths().stream())
-						.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
+				.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
 				: Stream.empty();
 	}
 
@@ -358,9 +359,9 @@ public class Role implements Serializable, Hierarchy<Role>
 
 		return id != null
 				? Stream.concat(getAuths().stream()
-						.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
-				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream())
 								.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
+				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream())
+							  .filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
 						getRole().publicAuthStream())) : Stream.empty();
 	}
 

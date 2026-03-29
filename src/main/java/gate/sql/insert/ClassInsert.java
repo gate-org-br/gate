@@ -97,7 +97,7 @@ public class ClassInsert<T> implements Insert
 	 * @return the same builder with the added columns and values
 	 */
 	@SafeVarargs
-	public final Compiled set(T object, PropertyReference<T, ?>... properties)
+	public final <R> Compiled set(T object, PropertyReference<T, R>... properties)
 	{
 		return new Compiled().set(object, properties);
 	}
@@ -137,7 +137,8 @@ public class ClassInsert<T> implements Insert
 		 */
 		public Generic set(PropertyReference<T, ?> property)
 		{
-			columns.add(ColumnReference.of(property));
+			var column = ColumnReference.of(property);
+			columns.add(column.name());
 			parameters.add("?");
 			return this;
 		}
@@ -266,9 +267,10 @@ public class ClassInsert<T> implements Insert
 		 */
 		public <R> Compiled set(PropertyReference<T, R> property, R value)
 		{
-			columns.add(ColumnReference.of(property));
+			var column = ColumnReference.of(property);
+			columns.add(column.name());
 			parameters.add("?");
-			values.add(property.identity(value));
+			values.add(column.extractor().apply(value));
 			return this;
 		}
 
@@ -280,15 +282,15 @@ public class ClassInsert<T> implements Insert
 		 * @return the same builder with the added columns and values
 		 */
 		@SafeVarargs
-		public final Compiled set(T object, PropertyReference<T, ?>... properties)
+		public final <R> Compiled set(T object, PropertyReference<T, R>... properties)
 		{
 			T source = Objects.requireNonNull(object);
-			for (PropertyReference<T, ?> property : Objects.requireNonNull(properties))
+			for (PropertyReference<T, R> property : Objects.requireNonNull(properties))
 			{
-				PropertyReference<T, ?> reference = Objects.requireNonNull(property);
-				columns.add(ColumnReference.of(reference));
+				var column = ColumnReference.of(property);
+				columns.add(column.name());
 				parameters.add("?");
-				values.add(reference.apply(source));
+				values.add(column.extractor().apply(property.apply(source)));
 			}
 			return this;
 		}
@@ -328,7 +330,7 @@ public class ClassInsert<T> implements Insert
 			 * @return the same builder with the added columns and values
 			 */
 			@SuppressWarnings({"varargs", "unchecked"})
-			public Compiled set(T object, PropertyReference<T, ?>... properties)
+			public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 			{
 				return Compiled.this.set(object, properties);
 			}
@@ -370,7 +372,7 @@ public class ClassInsert<T> implements Insert
 			 */
 			@Override
 			@SuppressWarnings({"varargs", "unchecked"})
-			public Compiled set(T object, PropertyReference<T, ?>... properties)
+			public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 			{
 				return Compiled.this;
 			}
@@ -438,7 +440,7 @@ public class ClassInsert<T> implements Insert
 		 * @return the same builder with the added columns and values
 		 */
 		@SuppressWarnings({"varargs", "unchecked"})
-		public Compiled set(T object, PropertyReference<T, ?>... properties)
+		public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 		{
 			return new Compiled().set(object, properties);
 		}
@@ -508,7 +510,7 @@ public class ClassInsert<T> implements Insert
 		 */
 		@Override
 		@SuppressWarnings({"varargs", "unchecked"})
-		public Compiled set(T object, PropertyReference<T, ?>... properties)
+		public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 		{
 			return new Compiled();
 		}

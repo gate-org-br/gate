@@ -97,7 +97,7 @@ public class ClassUpdate<T> implements Update
 	 * @return the same update sentence builder with the added columns and values
 	 */
 	@SafeVarargs
-	public final Compiled set(T object, PropertyReference<T, ?>... properties)
+	public final <R> Compiled set(T object, PropertyReference<T, R>... properties)
 	{
 		return new Compiled().set(object, properties);
 	}
@@ -143,16 +143,17 @@ public class ClassUpdate<T> implements Update
 
 		/**
 		 * Adds a new column to be updated, resolving the target column from a
-		 * getter method reference or record accessor.
+		 * getter method property or record accessor.
 		 *
-		 * @param reference property reference used to resolve the target column
+		 * @param property property reference used to resolve the target column
 		 * @return the same update sentence builder with the added column
 		 * @throws NullPointerException  if {@code property} is {@code null}
-		 * @throws IllegalStateException if the reference is not a supported method reference
+		 * @throws IllegalStateException if the property is not a supported method property
 		 */
-		public Generic set(PropertyReference<T, ?> reference)
+		public Generic set(PropertyReference<T, ?> property)
 		{
-			columns.add(ColumnReference.of(reference) + " = ?");
+			var column = ColumnReference.of(Objects.requireNonNull(property));
+			columns.add(column.name() + " = ?");
 			return this;
 		}
 
@@ -378,8 +379,9 @@ public class ClassUpdate<T> implements Update
 		 */
 		public <R> Compiled set(PropertyReference<T, R> property, R value)
 		{
-			columns.add(ColumnReference.of(property) + " = ?");
-			values.add(property.identity(value));
+			var column = ColumnReference.of(property);
+			columns.add(column.name() + " = ?");
+			values.add(column.extractor().apply(value));
 			return this;
 		}
 
@@ -392,14 +394,14 @@ public class ClassUpdate<T> implements Update
 		 * @return the same builder with the added columns and values
 		 */
 		@SafeVarargs
-		public final Compiled set(T object, PropertyReference<T, ?>... properties)
+		public final <R> Compiled set(T object, PropertyReference<T, R>... properties)
 		{
 			Objects.requireNonNull(object);
-			for (PropertyReference<T, ?> property : Objects.requireNonNull(properties))
+			for (PropertyReference<T, R> property : Objects.requireNonNull(properties))
 			{
-				Objects.requireNonNull(property);
-				columns.add(ColumnReference.of(property) + " = ?");
-				values.add(property.apply(object));
+				var column = ColumnReference.of(Objects.requireNonNull(property));
+				columns.add(column.name() + " = ?");
+				values.add(column.extractor().apply(property.apply(object)));
 			}
 			return this;
 		}
@@ -536,7 +538,7 @@ public class ClassUpdate<T> implements Update
 			 * @return the same builder with the added columns and values
 			 */
 			@SuppressWarnings({"varargs", "unchecked"})
-			public Compiled set(T object, PropertyReference<T, ?>... properties)
+			public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 			{
 				return Compiled.this.set(object, properties);
 			}
@@ -585,7 +587,7 @@ public class ClassUpdate<T> implements Update
 			 */
 			@Override
 			@SuppressWarnings({"varargs", "unchecked"})
-			public Compiled set(T object, PropertyReference<T, ?>... properties)
+			public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 			{
 				return Compiled.this;
 			}
@@ -656,7 +658,7 @@ public class ClassUpdate<T> implements Update
 		 * @return the same builder with the added columns and values
 		 */
 		@SuppressWarnings({"varargs", "unchecked"})
-		public Compiled set(T object, PropertyReference<T, ?>... properties)
+		public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 		{
 			return new Compiled().set(object, properties);
 		}
@@ -731,7 +733,7 @@ public class ClassUpdate<T> implements Update
 		 */
 		@Override
 		@SuppressWarnings({"varargs", "unchecked"})
-		public Compiled set(T object, PropertyReference<T, ?>... properties)
+		public <R> Compiled set(T object, PropertyReference<T, R>... properties)
 		{
 			return new Compiled();
 		}

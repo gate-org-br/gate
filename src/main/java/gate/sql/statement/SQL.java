@@ -1,7 +1,7 @@
 package gate.sql.statement;
+
 import org.slf4j.Logger;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,12 +26,16 @@ public interface SQL
 	SQL print(Logger logger);
 
 	/**
+	 * Prints the statement.
+	 *
+	 * @return the same statement allowing for chained invocations
+	 */
+	SQL print();
+
+	/**
 	 * Returns the list of parameters associated with this SQL.
 	 *
 	 * @return the list of parameters associated with this SQL
 	 */
-	default List<Object> getParameters()
-	{
-		return Collections.emptyList();
-	}
+	default List<?> getParameters() {return List.of();}
 }

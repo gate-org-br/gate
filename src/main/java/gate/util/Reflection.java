@@ -2,6 +2,7 @@ package gate.util;
 
 import gate.annotation.ElementType;
 
+import java.beans.Introspector;
 import java.lang.invoke.*;
 import java.lang.reflect.*;
 import java.util.*;
@@ -80,11 +81,16 @@ public class Reflection
 	 * @return an Optional describing the requested method of an empty Optional if the method does not exist
 	 */
 	public static Optional<Method> findMethod(Class<?> type, String name,
-											  Class<?>... parameterTypes)
+	                                          Class<?>... parameterTypes)
 	{
+		Objects.requireNonNull(type);
+		Objects.requireNonNull(name);
+		Objects.requireNonNull(parameterTypes);
+
 		Optional<Method> method = Stream.of(type.getDeclaredMethods())
 				.filter(e -> e.getName().equals(name))
-				.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes)).findAny();
+				.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes))
+				.findFirst();
 
 		Class<?> supertype = type.getSuperclass();
 		if (method.isEmpty() && supertype != null)
@@ -139,6 +145,29 @@ public class Reflection
 	}
 
 	/**
+	 * Finds the field associated with the specified method.
+	 *
+	 * @param method method whose associated field is to be found
+	 * @return an {@code Optional} describing the associated field, or an empty {@code Optional}
+	 * if no matching field exists
+	 */
+	public static Optional<Field> findField(Method method)
+	{
+		var name = method.getName();
+		if (name.startsWith("get") && name.length() > 3)
+			return findField(method.getDeclaringClass(), Introspector.decapitalize(name.substring(3)));
+
+		if (name.startsWith("set") && name.length() > 3)
+			return findField(method.getDeclaringClass(), Introspector.decapitalize(name.substring(3)));
+
+		if (name.startsWith("is") && name.length() > 2)
+			return findField(method.getDeclaringClass(), Introspector.decapitalize(name.substring(2)));
+
+		return findField(method.getDeclaringClass(), name);
+	}
+
+
+	/**
 	 * Finds the getter method of the specified field.
 	 *
 	 * @param field the field associated with the requested getter
@@ -154,7 +183,7 @@ public class Reflection
 		Optional<Method> method = findMethod(field.getDeclaringClass(),
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		if (method.isEmpty()
-			&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
+		    && (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
 			method = findMethod(field.getDeclaringClass(),
 					"is" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		if (method.isEmpty())
