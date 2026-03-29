@@ -4,6 +4,8 @@ import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.converter.custom.LocalTimeIntervalConverter;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalTime;
@@ -21,7 +23,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	private final LocalTime min;
 	private final LocalTime max;
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 	private static final Formatter<LocalTimeInterval> FORMATTER = LocalTimeInterval.formatter("HH:mm");
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}:[0-9]{2}) - ([0-9]{2}:[0-9]{2})");
 
@@ -52,9 +54,9 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof LocalTimeInterval
-			&& ((LocalTimeInterval) obj).min.equals(min)
-			&& ((LocalTimeInterval) obj).min.equals(min));
+		return obj instanceof LocalTimeInterval localTimeInterval
+		       && localTimeInterval.min.equals(min)
+		       && localTimeInterval.max.equals(max);
 	}
 
 	@Override
@@ -77,7 +79,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	public java.time.Duration getDuration()
 	{
 		return java.time.Duration
-			.ofSeconds(min.until(max, ChronoUnit.SECONDS));
+				.ofSeconds(min.until(max, ChronoUnit.SECONDS));
 	}
 
 	@Override
@@ -99,7 +101,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 	public static Formatter<LocalTimeInterval> formatter(String format)
 	{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-		return new Formatter<LocalTimeInterval>()
+		return new Formatter<>()
 		{
 			@Override
 			public LocalTimeInterval parse(String source) throws ParseException
@@ -167,15 +169,15 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 		public boolean equals(Object obj)
 		{
 			return obj instanceof Mutable
-				&& Objects.equals(min, ((Mutable) obj).min)
-				&& Objects.equals(max, ((Mutable) obj).max);
+			       && Objects.equals(min, ((Mutable) obj).min)
+			       && Objects.equals(max, ((Mutable) obj).max);
 		}
 
 		@Override
 		public int hashCode()
 		{
 			return (min != null ? min.hashCode() : 0)
-				+ (max != null ? max.hashCode() : 0);
+			       + (max != null ? max.hashCode() : 0);
 		}
 	}
 

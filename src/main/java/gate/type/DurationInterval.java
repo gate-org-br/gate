@@ -2,6 +2,7 @@ package gate.type;
 
 import gate.annotation.Icon;
 import gate.annotation.Name;
+
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Objects;
@@ -40,7 +41,9 @@ public final class DurationInterval implements Serializable, Interval<Duration>
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof DurationInterval && ((DurationInterval) obj).min.equals(min) && ((DurationInterval) obj).min.equals(min));
+		return obj instanceof DurationInterval durationInterval
+		       && durationInterval.min.equals(min)
+		       && durationInterval.max.equals(max);
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public final class DurationInterval implements Serializable, Interval<Duration>
 	public String toString()
 	{
 		return gate.converter.Converter.toString(min.toString())
-			+ " - " + gate.converter.Converter.toString(min.toString());
+		       + " - " + gate.converter.Converter.toString(min.toString());
 	}
 
 	public static DurationInterval of(Duration min, Duration max)
@@ -105,15 +108,15 @@ public final class DurationInterval implements Serializable, Interval<Duration>
 		public boolean equals(Object obj)
 		{
 			return obj instanceof Mutable
-				&& Objects.equals(min, ((Mutable) obj).min)
-				&& Objects.equals(max, ((Mutable) obj).max);
+			       && Objects.equals(min, ((Mutable) obj).min)
+			       && Objects.equals(max, ((Mutable) obj).max);
 		}
 
 		@Override
 		public int hashCode()
 		{
 			return (min != null ? min.hashCode() : 0)
-				+ (max != null ? max.hashCode() : 0);
+			       + (max != null ? max.hashCode() : 0);
 		}
 	}
 }

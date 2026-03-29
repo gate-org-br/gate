@@ -4,6 +4,8 @@ import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.converter.custom.LocalDateIntervalConverter;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -27,7 +29,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	private final LocalDate min;
 	private final LocalDate max;
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 	private static final String FORMAT = "dd/MM/yyyy";
 	private static final Formatter<LocalDateInterval> FORMATTER = LocalDateInterval.formatter(FORMAT);
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{2}/[0-9]{4})");
@@ -59,7 +61,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	@Override
 	public Stream<LocalDate> stream()
 	{
-		return StreamSupport.stream(new Spliterator<LocalDate>()
+		return StreamSupport.stream(new Spliterator<>()
 		{
 			private LocalDate curr;
 
@@ -90,11 +92,11 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 			public int characteristics()
 			{
 				return Spliterator.ORDERED
-					| Spliterator.NONNULL
-					| Spliterator.IMMUTABLE
-					| Spliterator.DISTINCT
-					| Spliterator.SIZED
-					| Spliterator.SUBSIZED;
+				       | Spliterator.NONNULL
+				       | Spliterator.IMMUTABLE
+				       | Spliterator.DISTINCT
+				       | Spliterator.SIZED
+				       | Spliterator.SUBSIZED;
 			}
 		}, false);
 	}
@@ -108,9 +110,9 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof LocalDateInterval
-			&& ((LocalDateInterval) obj).min.equals(min)
-			&& ((LocalDateInterval) obj).min.equals(min));
+		return obj instanceof LocalDateInterval localDateInterval
+		       && localDateInterval.min.equals(min)
+		       && localDateInterval.max.equals(max);
 	}
 
 	@Override
@@ -154,7 +156,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 	public static Formatter<LocalDateInterval> formatter(String format)
 	{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-		return new Formatter<LocalDateInterval>()
+		return new Formatter<>()
 		{
 			@Override
 			public LocalDateInterval parse(String source) throws ParseException
@@ -248,15 +250,15 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 		public boolean equals(Object obj)
 		{
 			return obj instanceof Mutable
-				&& Objects.equals(min, ((Mutable) obj).min)
-				&& Objects.equals(max, ((Mutable) obj).max);
+			       && Objects.equals(min, ((Mutable) obj).min)
+			       && Objects.equals(max, ((Mutable) obj).max);
 		}
 
 		@Override
 		public int hashCode()
 		{
 			return (min != null ? min.hashCode() : 0)
-				+ (max != null ? max.hashCode() : 0);
+			       + (max != null ? max.hashCode() : 0);
 		}
 	}
 }

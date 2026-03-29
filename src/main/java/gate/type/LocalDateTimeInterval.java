@@ -4,6 +4,8 @@ import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 import gate.converter.custom.LocalDateTimeIntervalConverter;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDateTime;
@@ -21,7 +23,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	private final LocalDateTime min;
 	private final LocalDateTime max;
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 	private static final Formatter<LocalDateTimeInterval> FORMATTER = LocalDateTimeInterval.formatter("dd/MM/yyyy HH:mm");
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}) - ([0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2})");
 
@@ -52,7 +54,9 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof LocalDateTimeInterval && ((LocalDateTimeInterval) obj).min.equals(min) && ((LocalDateTimeInterval) obj).min.equals(min));
+		return obj instanceof LocalDateTimeInterval localDateTimeInterval
+		       && localDateTimeInterval.min.equals(min)
+		       && localDateTimeInterval.max.equals(max);
 	}
 
 	@Override
@@ -70,7 +74,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	public java.time.Duration getDuration()
 	{
 		return java.time.Duration
-			.ofSeconds(min.until(max, ChronoUnit.SECONDS));
+				.ofSeconds(min.until(max, ChronoUnit.SECONDS));
 	}
 
 	@Override
@@ -92,7 +96,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 	public static Formatter<LocalDateTimeInterval> formatter(String format)
 	{
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
-		return new Formatter<LocalDateTimeInterval>()
+		return new Formatter<>()
 		{
 			@Override
 			public LocalDateTimeInterval parse(String source) throws ParseException
@@ -103,7 +107,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 					if (!matcher.matches())
 						throw new ParseException(String.format("%s não é um intervalo de datas válido", source), 0);
 					return new LocalDateTimeInterval(LocalDateTime.parse(matcher.group(1), formatter),
-						LocalDateTime.parse(matcher.group(2), formatter));
+							LocalDateTime.parse(matcher.group(2), formatter));
 				} catch (IllegalArgumentException ex)
 				{
 					throw new ParseException(ex.getMessage(), 0);
@@ -161,15 +165,15 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 		public boolean equals(Object obj)
 		{
 			return obj instanceof Mutable
-				&& Objects.equals(min, ((Mutable) obj).min)
-				&& Objects.equals(max, ((Mutable) obj).max);
+			       && Objects.equals(min, ((Mutable) obj).min)
+			       && Objects.equals(max, ((Mutable) obj).max);
 		}
 
 		@Override
 		public int hashCode()
 		{
 			return (min != null ? min.hashCode() : 0)
-				+ (max != null ? max.hashCode() : 0);
+			       + (max != null ? max.hashCode() : 0);
 		}
 	}
 }

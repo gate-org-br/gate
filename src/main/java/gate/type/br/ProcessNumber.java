@@ -3,21 +3,22 @@ package gate.type.br;
 import gate.annotation.Converter;
 import gate.converter.custom.ProcessNumberConverter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Converter(ProcessNumberConverter.class)
-public class ProcessNumber implements Serializable, Cloneable
+public class ProcessNumber implements Serializable
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final String value;
 
 	public ProcessNumber(String value)
 	{
 		if (value.matches(
-				"^[0-9]{4}[.][0-9]{2}[.][0-9]{2}[.][0-9]{6}[-][0-9]|[0-9]{2}[.][0-9]{2}.[0-9]{5}[-][0-9]|[0-9]{7}-[0-9]{2}[.][0-9]{4}.[0-9].[0-9]{2}.[0-9]{4}$"))
+				"^[0-9]{4}[.][0-9]{2}[.][0-9]{2}[.][0-9]{6}-[0-9]|[0-9]{2}[.][0-9]{2}.[0-9]{5}-[0-9]|[0-9]{7}-[0-9]{2}[.][0-9]{4}.[0-9].[0-9]{2}.[0-9]{4}$"))
 			value = value.replaceAll("[^0123456789]", "");
 		if (!value.matches("[0-9]{10}|[0-9]{15}|[0-9]{20}"))
 			throw new IllegalArgumentException("value");
@@ -52,11 +53,6 @@ public class ProcessNumber implements Serializable, Cloneable
 		this.value = value;
 	}
 
-	@Override
-	protected ProcessNumber clone()
-	{
-		return new ProcessNumber(value);
-	}
 
 	@Override
 	public boolean equals(Object obj)

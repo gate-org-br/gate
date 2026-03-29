@@ -3,6 +3,7 @@ package gate.type.br;
 import gate.annotation.Converter;
 import gate.converter.custom.RenavamConverter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,10 +11,10 @@ import java.util.Objects;
  * Brazilian Renavam.
  */
 @Converter(RenavamConverter.class)
-public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
+public class Renavam implements Serializable, Comparable<Renavam>
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final String value;
 
@@ -45,7 +46,7 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 	{
 		if (value != null)
 			if (value.length() >= 2
-				&& value.charAt(value.length() - 2) == '-')
+			    && value.charAt(value.length() - 2) == '-')
 				switch (value.length())
 				{
 					case 12:
@@ -385,7 +386,7 @@ public class Renavam implements Serializable, Cloneable, Comparable<Renavam>
 	}
 
 	private static boolean validate(int c1, int c2, int c3, int c4, int c5, int c6,
-									int c7, int c8, int c9, int c10, int digito)
+	                                int c7, int c8, int c9, int c10, int digito)
 	{
 		int soma = 0;
 		soma += Character.digit(c10, 10) * 2;

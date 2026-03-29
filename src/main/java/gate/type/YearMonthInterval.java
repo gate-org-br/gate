@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.YearMonthIntervalConverter;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.YearMonth;
@@ -130,11 +131,11 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 			public int characteristics()
 			{
 				return Spliterator.ORDERED
-					| Spliterator.NONNULL
-					| Spliterator.IMMUTABLE
-					| Spliterator.DISTINCT
-					| Spliterator.SIZED
-					| Spliterator.SUBSIZED;
+				       | Spliterator.NONNULL
+				       | Spliterator.IMMUTABLE
+				       | Spliterator.DISTINCT
+				       | Spliterator.SIZED
+				       | Spliterator.SUBSIZED;
 			}
 		}, false);
 	}
@@ -148,7 +149,9 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 	@Override
 	public boolean equals(Object obj)
 	{
-		return (obj instanceof YearMonthInterval && ((YearMonthInterval) obj).min.equals(min) && ((YearMonthInterval) obj).min.equals(min));
+		return obj instanceof YearMonthInterval yearMonthInterval
+		       && yearMonthInterval.min.equals(min)
+		       && yearMonthInterval.max.equals(max);
 	}
 
 	@Override
