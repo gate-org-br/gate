@@ -1,6 +1,7 @@
 package gate.type;
 
 import gate.converter.Converter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,8 +30,8 @@ public class Attributes extends HashMap<String, Object>
 	public String toString()
 	{
 		return entrySet().stream().map(
-			e -> e.getValue() == null || "".equals(e.getValue())
-			? e.getKey()
-			: e.getKey() + "='" + Converter.toString(e.getValue()).replaceAll("'", "\"") + "'").collect(Collectors.joining(" "));
+				e -> e.getValue() == null || "".equals(e.getValue())
+						? e.getKey()
+						: e.getKey() + "='" + Converter.toString(e.getValue()).replace("'", "\"") + "'").collect(Collectors.joining(" "));
 	}
 }

@@ -1,13 +1,8 @@
 package gate.util;
 
+import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 public class Page<E> implements Collection<E>, Serializable
 {
@@ -15,7 +10,7 @@ public class Page<E> implements Collection<E>, Serializable
 	private final int indx;
 	private List<E> data;
 	private final Paginator<E> paginator;
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	Page(Paginator<E> paginator, int indx)
 	{
@@ -84,7 +79,7 @@ public class Page<E> implements Collection<E>, Serializable
 		if (data != null)
 			return data.size();
 		return Math.min(paginator.getPageSize(),
-			paginator.getData().size() - ((indx) * paginator.getPageSize()));
+				paginator.getData().size() - ((indx) * paginator.getPageSize()));
 	}
 
 	public E getLine(int indx)
@@ -92,8 +87,8 @@ public class Page<E> implements Collection<E>, Serializable
 		if (data != null)
 			return data.get(indx);
 		return indx >= 0 && indx <= getSize() - 1
-			? paginator.getData().get((paginator.getPageSize() * (this.indx)) + indx)
-			: null;
+				? paginator.getData().get((paginator.getPageSize() * (this.indx)) + indx)
+				: null;
 	}
 
 	public int getFrstLineIndx()
@@ -155,18 +150,14 @@ public class Page<E> implements Collection<E>, Serializable
 	@Override
 	public Object[] toArray()
 	{
-		List<E> array = new ArrayList<>();
-		for (E element : this)
-			array.add(element);
+		List<E> array = new ArrayList<>(this);
 		return array.toArray();
 	}
 
 	@Override
 	public <T> T[] toArray(T[] a)
 	{
-		List<E> array = new ArrayList<>();
-		for (E element : this)
-			array.add(element);
+		List<E> array = new ArrayList<>(this);
 		return array.toArray(a);
 	}
 
@@ -239,7 +230,7 @@ public class Page<E> implements Collection<E>, Serializable
 
 	public static <T> Page<T> of(List<T> data, int pageSize, int pageIndex)
 	{
-		return new Paginator<T>(data, pageSize).getPage(pageIndex);
+		return new Paginator<>(data, pageSize).getPage(pageIndex);
 	}
 
 	public static <T> Page<T> of(List<T> data, int dataSize, int pageSize, int pageIndex)

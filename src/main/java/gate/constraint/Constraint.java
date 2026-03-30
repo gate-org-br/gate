@@ -3,12 +3,10 @@ package gate.constraint;
 import gate.error.AppError;
 import gate.error.AppException;
 import gate.lang.property.Property;
+
+import java.io.Serial;
 import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
@@ -18,7 +16,7 @@ public @interface Constraint
 	abstract class Implementation<T> implements Serializable
 	{
 
-		private static final long serialVersionUID = 1L;
+		@Serial private static final long serialVersionUID = 1L;
 
 		private final T value;
 

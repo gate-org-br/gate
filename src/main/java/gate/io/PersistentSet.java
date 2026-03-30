@@ -84,12 +84,15 @@ public class PersistentSet<T> implements Set<T>
 	public boolean removeAll(Collection<?> collection)
 	{
 		var elements = collection.stream().filter(e -> type.isAssignableFrom(e.getClass()))
-				.filter(e -> values.contains((T) e)).toList();
+				.filter(e -> values.contains(type.cast(e))).toList();
 
 		if (!elements.isEmpty())
 		{
 			log += PersistentSet.persist(elements, "-", path, encryptor);
-			values.removeAll(elements);
+			elements.stream()
+					.filter(type::isInstance)
+					.map(type::cast)
+					.forEach(values::remove);
 			compact();
 			return true;
 		}
@@ -105,7 +108,7 @@ public class PersistentSet<T> implements Set<T>
 		if (!elements.isEmpty())
 		{
 			log += PersistentSet.persist(elements, "-", path, encryptor);
-			values.removeAll(elements);
+			elements.forEach(values::remove);
 			compact();
 			return true;
 		}
@@ -131,7 +134,7 @@ public class PersistentSet<T> implements Set<T>
 	public Iterator<T> iterator()
 	{
 		var iterator = values.iterator();
-		return new Iterator<T>()
+		return new Iterator<>()
 		{
 
 			private T value;

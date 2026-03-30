@@ -2,11 +2,12 @@ package gate.io;
 
 import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeDataFile;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -18,7 +19,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * An utility class to compress and extract zipped multipart MimeDataFile objects
+ * A utility class to compress and extract zipped multipart MimeDataFile objects
  */
 public class Zip
 {
@@ -26,7 +27,7 @@ public class Zip
 	/**
 	 * Compress a stream of MimeDataFile objects into a single multipart zipped MimeDataFile
 	 *
-	 * @param name the name of the zipped multipart MimeDataFile to be created
+	 * @param name   the name of the zipped multipart MimeDataFile to be created
 	 * @param source the stream to be compressed
 	 * @return a multipart zipped MimeDataFile object containing the files from the specified stream
 	 * @throws IOException if an IOException occurs during the compression process
@@ -34,7 +35,7 @@ public class Zip
 	public static MimeDataFile compress(String name, Stream<MimeDataFile> source) throws IOException
 	{
 		try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream))
+		     ZipOutputStream zipOutputStream = new ZipOutputStream(byteArrayOutputStream))
 		{
 			source.forEach(e ->
 			{
@@ -62,7 +63,7 @@ public class Zip
 	/**
 	 * Compress a list of MimeDataFile objects into a single multipart zipped MimeDataFile
 	 *
-	 * @param name the name of the zipped multipart MimeDataFile to be created
+	 * @param name   the name of the zipped multipart MimeDataFile to be created
 	 * @param source the list to be compressed
 	 * @return a multipart zipped MimeDataFile object containing the files from the specified list
 	 * @throws IOException if an IOException occurs during the compression process
@@ -107,16 +108,17 @@ public class Zip
 					try
 					{
 						ZipEntry entry;
-						do
+						while ((entry = zipInputStream.getNextEntry()) != null)
 						{
-							entry = zipInputStream.getNextEntry();
-							if (entry == null)
-								return false;
+							if (entry.isDirectory())
+								continue;
 
-							action.accept(MimeDataFile.of(zipInputStream.readAllBytes(),
-									new File(entry.getName()).getName()));
+							action.accept(MimeDataFile.of(
+									zipInputStream.readAllBytes(),
+									Path.of(entry.getName()).getFileName().toString()));
 							return true;
-						} while (entry.isDirectory());
+						}
+						return false;
 					} catch (IOException ex)
 					{
 						throw new UncheckedIOException(ex);

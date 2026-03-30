@@ -1,6 +1,7 @@
 package gate.lang.xml;
 
 import gate.error.TemplateException;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -37,11 +38,7 @@ class XMLParser
 	{
 		switch (token.getType())
 		{
-			case CHAR:
-				return next(scanner);
-			case ENTITY:
-				return next(scanner);
-			case VOID:
+			case CHAR, ENTITY, VOID:
 				return next(scanner);
 			case TOKEN:
 				if (token == XMLToken.OPEN_TAG)
@@ -71,10 +68,10 @@ class XMLParser
 	{
 		token = scanner.next();
 		while (token != XMLToken.EOF
-			&& token != XMLToken.CLOSE_TAG)
+		       && token != XMLToken.CLOSE_TAG)
 		{
 			if (token == XMLToken.QUOTE
-				|| token == XMLToken.DOUBLE_QUOTE)
+			    || token == XMLToken.DOUBLE_QUOTE)
 				string(scanner);
 			else
 				token = scanner.next();
@@ -92,26 +89,24 @@ class XMLParser
 			{
 				token = scanner.next();
 			} while (token != XMLToken.QUOTE
-				&& token != XMLToken.EOF);
+			         && token != XMLToken.EOF);
 
 			if (token != XMLToken.QUOTE)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token));
+				throw new TemplateException(String.format("Unexpected token: %s.", token));
 			token = scanner.next();
 		} else if (token == XMLToken.DOUBLE_QUOTE)
 		{
-			StringBuilder result = new StringBuilder();
 			do
 			{
-				result.append(token.toString());
 				token = scanner.next();
 			} while (token != XMLToken.DOUBLE_QUOTE
-				&& token != XMLToken.EOF);
+			         && token != XMLToken.EOF);
 
 			if (token != XMLToken.DOUBLE_QUOTE)
-				throw new TemplateException(String.format("Unexpeted token: %s.", token));
+				throw new TemplateException(String.format("Unexpected token: %s.", token));
 			token = scanner.next();
 		} else
-			throw new TemplateException(String.format("Unexpeted token: %s.", token.toString()));
+			throw new TemplateException(String.format("Unexpected token: %s.", token.toString()));
 	}
 
 }

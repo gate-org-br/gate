@@ -90,9 +90,6 @@ public class SSH implements AutoCloseable
 		} catch (UserAuthException ex)
 		{
 			return false;
-		} catch (TransportException ex)
-		{
-			throw ex;
 		}
 	}
 
@@ -123,9 +120,6 @@ public class SSH implements AutoCloseable
 		} catch (UserAuthException ex)
 		{
 			return false;
-		} catch (TransportException ex)
-		{
-			throw ex;
 		}
 	}
 
@@ -148,9 +142,6 @@ public class SSH implements AutoCloseable
 		} catch (UserAuthException ex)
 		{
 			return false;
-		} catch (TransportException ex)
-		{
-			throw ex;
 		}
 	}
 

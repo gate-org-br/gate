@@ -229,7 +229,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	@Override
 	public boolean containsAll(Collection<?> c)
 	{
-		return values.containsAll(c);
+		return new HashSet<>(values).containsAll(c);
 	}
 
 	@Override
@@ -636,7 +636,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * properties
 	 */
 	public static <T> JsonArray of(List<T> objects, Function<T, String> label, Function<T, Object> value,
-								   Function<T, JsonObject> properties)
+	                               Function<T, JsonObject> properties)
 	{
 		return objects.stream().map(e -> JsonObject.of(e, label, value, properties))
 				.collect(Collectors.toCollection(JsonArray::new));

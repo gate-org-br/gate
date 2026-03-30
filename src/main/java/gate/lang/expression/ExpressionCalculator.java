@@ -1,7 +1,9 @@
 package gate.lang.expression;
 
 import gate.error.ExpressionException;
+
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -235,7 +237,7 @@ class ExpressionCalculator
 		} else if (term1 instanceof Byte)
 		{
 			if (term2 instanceof String)
-				Stream.generate(() -> (String) term2).limit((Byte) term1)
+				return Stream.generate(() -> (String) term2).limit((Byte) term1)
 						.collect(Collectors.joining());
 			else if (term2 instanceof Byte)
 				return (Byte) term1 * (Byte) term2;
@@ -254,7 +256,7 @@ class ExpressionCalculator
 		} else if (term1 instanceof Short)
 		{
 			if (term2 instanceof String)
-				Stream.generate(() -> (String) term2).limit((Short) term1)
+				return Stream.generate(() -> (String) term2).limit((Short) term1)
 						.collect(Collectors.joining());
 			else if (term2 instanceof Byte)
 				return (Short) term1 * (Byte) term2;
@@ -273,7 +275,7 @@ class ExpressionCalculator
 		} else if (term1 instanceof Integer)
 		{
 			if (term2 instanceof String)
-				Stream.generate(() -> (String) term2).limit((Integer) term1)
+				return Stream.generate(() -> (String) term2).limit((Integer) term1)
 						.collect(Collectors.joining());
 			else if (term2 instanceof Byte)
 				return (Integer) term1 * (Byte) term2;
@@ -292,7 +294,7 @@ class ExpressionCalculator
 		} else if (term1 instanceof Long)
 		{
 			if (term2 instanceof String)
-				Stream.generate(() -> (String) term2).limit((Long) term1)
+				return Stream.generate(() -> (String) term2).limit((Long) term1)
 						.collect(Collectors.joining());
 			else if (term2 instanceof Byte)
 				return (Long) term1 * (Byte) term2;
@@ -361,7 +363,7 @@ class ExpressionCalculator
 			else if (term2 instanceof Double)
 				return (Byte) term1 / (Double) term2;
 			else if (term2 instanceof BigDecimal)
-				return BigDecimal.valueOf((Byte) term1).divide((BigDecimal) term2);
+				return BigDecimal.valueOf((Byte) term1).divide((BigDecimal) term2, RoundingMode.HALF_EVEN);
 		} else if (term1 instanceof Short)
 		{
 			if (term2 instanceof Byte)
@@ -377,7 +379,7 @@ class ExpressionCalculator
 			else if (term2 instanceof Double)
 				return (Short) term1 / (Double) term2;
 			else if (term2 instanceof BigDecimal)
-				return BigDecimal.valueOf((Short) term1).divide((BigDecimal) term2);
+				return BigDecimal.valueOf((Short) term1).divide((BigDecimal) term2, RoundingMode.HALF_EVEN);
 		} else if (term1 instanceof Integer)
 		{
 			if (term2 instanceof Byte)
@@ -393,7 +395,7 @@ class ExpressionCalculator
 			else if (term2 instanceof Double)
 				return (Integer) term1 / (Double) term2;
 			else if (term2 instanceof BigDecimal)
-				return BigDecimal.valueOf((Integer) term1).divide((BigDecimal) term2);
+				return BigDecimal.valueOf((Integer) term1).divide((BigDecimal) term2, RoundingMode.HALF_EVEN);
 		} else if (term1 instanceof Long)
 		{
 			if (term2 instanceof Byte)
@@ -409,7 +411,7 @@ class ExpressionCalculator
 			else if (term2 instanceof Double)
 				return (Long) term1 / (Double) term2;
 			else if (term2 instanceof BigDecimal)
-				return BigDecimal.valueOf((Long) term1).divide((BigDecimal) term2);
+				return BigDecimal.valueOf((Long) term1).divide((BigDecimal) term2, RoundingMode.HALF_EVEN);
 		} else if (term1 instanceof Float)
 		{
 			if (term2 instanceof Byte)
@@ -425,7 +427,7 @@ class ExpressionCalculator
 			else if (term2 instanceof Double)
 				return (Float) term1 / (Double) term2;
 			else if (term2 instanceof BigDecimal)
-				return BigDecimal.valueOf((Float) term1).divide((BigDecimal) term2);
+				return BigDecimal.valueOf((Float) term1).divide((BigDecimal) term2, RoundingMode.HALF_EVEN);
 		} else if (term1 instanceof Double)
 		{
 			if (term2 instanceof Byte)
@@ -441,7 +443,7 @@ class ExpressionCalculator
 			else if (term2 instanceof Double)
 				return (Double) term1 / (Double) term2;
 			else if (term2 instanceof BigDecimal)
-				return BigDecimal.valueOf((Double) term1).divide((BigDecimal) term2);
+				return BigDecimal.valueOf((Double) term1).divide((BigDecimal) term2, RoundingMode.HALF_EVEN);
 		}
 		throw new ExpressionException("Tentativa de dividir dados incompatíveis.");
 	}

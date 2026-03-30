@@ -1,13 +1,9 @@
 package gate.lang.expression;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Parameters
 {
-
 	private final Deque<Map<String, Object>> parameters = new ArrayDeque<>();
 
 	public Parameters()
@@ -17,12 +13,20 @@ public class Parameters
 
 	public Parameters(Parameters parameters)
 	{
-		this.parameters.peek().putAll(parameters.parameters.peek());
+		this.parameters.push(new HashMap<>());
+		if (parameters != null && !parameters.parameters.isEmpty())
+			Objects.requireNonNull(this.parameters.peek())
+					.putAll(parameters.parameters.peek());
 	}
 
 	public Parameters put(String name, Object value)
 	{
-		parameters.peek().put(name, value);
+		if (parameters.isEmpty())
+			parameters.push(new HashMap<>());
+
+		var values = parameters.peek();
+		if (values != null)
+			values.put(name, value);
 		return this;
 	}
 
@@ -31,6 +35,7 @@ public class Parameters
 		for (Map<String, Object> map : parameters)
 			if (map.containsKey(name))
 				return map.get(name);
+
 		return null;
 	}
 
@@ -41,6 +46,6 @@ public class Parameters
 
 	public Map<String, Object> poll()
 	{
-		return parameters.poll();
+		return parameters.size() > 1 ? parameters.poll() : parameters.peek();
 	}
 }

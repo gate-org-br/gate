@@ -2,25 +2,21 @@ package gate.thymeleaf.processors.tag;
 
 import gate.converter.Converter;
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.tag.property.PropertyProcessor;
 import gate.type.Attributes;
 import gate.type.Field;
 import gate.type.Form;
 import gate.util.Toolkit;
-import java.util.StringJoiner;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
+import java.util.StringJoiner;
+
 @ApplicationScoped
 public class FormProcessor extends PropertyProcessor
 {
-
-	@Inject
-	ELExpressionFactory expression;
 
 	public FormProcessor()
 	{
@@ -29,8 +25,8 @@ public class FormProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       IElementTagStructureHandler handler,
+	                       Object screen, Property property, Attributes attributes)
 	{
 
 		if ("g-form".equals(element.getElementCompleteName()))
@@ -38,7 +34,7 @@ public class FormProcessor extends PropertyProcessor
 
 		if (!property.getRawType().equals(Form.class))
 			throw new IllegalArgumentException(String.format("Property '%s' is not a %s.",
-				property, Form.class.getName()));
+					property, Form.class.getName()));
 
 		Form form = (Form) property.getValue(screen);
 		if (form == null)
@@ -46,7 +42,7 @@ public class FormProcessor extends PropertyProcessor
 
 		String value = Converter.toString(form);
 		if (value != null)
-			value = value.replaceAll("'", "");
+			value = value.replace("'", "");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
 		string.add(String.format("<input type='hidden' name='%s' value='%s'/>", property, value));
@@ -59,7 +55,7 @@ public class FormProcessor extends PropertyProcessor
 	}
 
 	public String getFieldControl(Field field,
-		String property, Attributes attributes)
+	                              String property, Attributes attributes)
 	{
 
 		Attributes size = new Attributes();
@@ -76,7 +72,7 @@ public class FormProcessor extends PropertyProcessor
 				if (Boolean.TRUE.equals(field.getRequired()))
 					attributes.put("required", "required");
 			if (!attributes.containsKey("readonly"))
-				if (Boolean.TRUE.equals(field.getReadonly()))
+				if (field.getReadonly())
 					attributes.put("readonly", "readonly");
 			if (!attributes.containsKey("maxlength"))
 				if (field.getMaxlength() != null)
@@ -92,19 +88,19 @@ public class FormProcessor extends PropertyProcessor
 			{
 				if (!attributes.containsKey("name"))
 					attributes.put("name", property);
-				if (Boolean.FALSE.equals(field.getMultiple()))
+				if (!field.getMultiple())
 				{
 					attributes.put("type", "text");
 					if (field.getValue() != null)
 						attributes.put("value", field.getValue());
-					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.getName(), attributes.toString());
+					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.getName(), attributes);
 				} else
 					return String.format("<label %s>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>",
-						size, field.getName(), attributes.toString(), field.getValue() != null ? field.getValue() : "");
+							size, field.getName(), attributes, field.getValue() != null ? field.getValue() : "");
 			} else
 			{
 				StringBuilder options = new StringBuilder();
-				if (Boolean.FALSE.equals(field.getMultiple()))
+				if (!field.getMultiple())
 				{
 					options.append("<option value=''></option>");
 					for (String option : field.getOptions())
@@ -113,13 +109,13 @@ public class FormProcessor extends PropertyProcessor
 						optionAttributes.put("value", option);
 						if (field.getValue().contains(option))
 							optionAttributes.put("selected", "selected");
-						options.append(String.format("<option %s>%s</option>", optionAttributes.toString(), option));
+						options.append(String.format("<option %s>%s</option>", optionAttributes, option));
 					}
 
 					attributes.put("name", property);
 					return String
-						.format("<label %s>%s:<span><select %s>%s</select></span></label>", size,
-							field.getName(), attributes.toString(), options.toString());
+							.format("<label %s>%s:<span><select %s>%s</select></span></label>", size,
+									field.getName(), attributes, options);
 				} else
 				{
 					attributes.put("type", "checkbox");
@@ -134,16 +130,13 @@ public class FormProcessor extends PropertyProcessor
 						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
 					return String.format("<fieldset %s><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
-						size, field.getName(), options.toString());
+							size, field.getName(), options);
 				}
 			}
-		} else if (Boolean.FALSE.equals(field.getMultiple()))
-		{
+		} else if (!field.getMultiple())
 			return String.format("<label %s>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
-		} else
-		{
+		else
 			return String.format("<label %s>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);
-		}
 	}
 
 }

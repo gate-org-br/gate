@@ -2,6 +2,8 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.PercentageConverter;
+
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -14,7 +16,7 @@ public class Percentage extends Number implements Comparable<Percentage>
 {
 
 	private final BigDecimal value;
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	public static final Percentage ZERO = new Percentage(BigDecimal.ZERO);
 	public static final Percentage ONE_HUNDRED =
@@ -64,7 +66,7 @@ public class Percentage extends Number implements Comparable<Percentage>
 
 	public Percentage div(int value)
 	{
-		return new Percentage(this.value.divide(new BigDecimal(value)));
+		return new Percentage(this.value.divide(new BigDecimal(value), RoundingMode.HALF_EVEN));
 	}
 
 	public Percentage mul(BigDecimal value)
@@ -74,12 +76,12 @@ public class Percentage extends Number implements Comparable<Percentage>
 
 	public Percentage div(BigDecimal value)
 	{
-		return new Percentage(this.value.divide(value));
+		return new Percentage(this.value.divide(value, RoundingMode.HALF_EVEN));
 	}
 
 	public BigDecimal get(BigDecimal value)
 	{
-		return this.value.multiply(value).divide(new BigDecimal(100));
+		return this.value.multiply(value).divide(new BigDecimal(100), RoundingMode.HALF_EVEN);
 	}
 
 	public BigDecimal getCoefficient()

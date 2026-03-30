@@ -2,6 +2,8 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.TaxConverter;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +16,7 @@ import java.util.Locale;
 public class Tax implements Serializable
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final BigDecimal value;
 
@@ -62,7 +64,7 @@ public class Tax implements Serializable
 
 	public Tax div(int value)
 	{
-		return new Tax(this.value.divide(new BigDecimal(value)));
+		return new Tax(this.value.divide(new BigDecimal(value), RoundingMode.HALF_EVEN));
 	}
 
 	public Tax mul(BigDecimal value)
@@ -72,11 +74,11 @@ public class Tax implements Serializable
 
 	public Tax div(BigDecimal value)
 	{
-		return new Tax(this.value.divide(value));
+		return new Tax(this.value.divide(value, RoundingMode.HALF_EVEN));
 	}
 
 	public BigDecimal get(BigDecimal value)
 	{
-		return this.value.multiply(value).divide(new BigDecimal(100));
+		return this.value.multiply(value).divide(new BigDecimal(100), RoundingMode.HALF_EVEN);
 	}
 }

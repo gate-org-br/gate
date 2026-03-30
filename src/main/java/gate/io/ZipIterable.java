@@ -2,6 +2,7 @@ package gate.io;
 
 import gate.Progress;
 import gate.type.DataFile;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -107,11 +108,13 @@ public class ZipIterable implements Iterable<DataFile>, AutoCloseable
 			try
 			{
 				ZipEntry entry = zipInputStream.getNextEntry();
-				while (entry.isDirectory())
+				while (entry != null && entry.isDirectory())
 				{
 					zipInputStream.closeEntry();
 					entry = zipInputStream.getNextEntry();
 				}
+				if (entry == null)
+					return null;
 
 				try (ByteArrayOutputStream data = new ByteArrayOutputStream())
 				{

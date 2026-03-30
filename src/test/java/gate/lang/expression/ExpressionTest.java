@@ -1,13 +1,15 @@
 package gate.lang.expression;
 
 import gate.error.ExpressionException;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.Test;
 
 public class ExpressionTest
 {
@@ -19,111 +21,117 @@ public class ExpressionTest
 	public ExpressionTest()
 	{
 		person = new Person().setName("Pessoa 1")
-			.setAge(64)
-			.setWeight(80.5)
-			.addChild(new Person()
-				.setName("Filho 1 Pessoa 1")
-				.setAge(35)
-				.setWeight(60.0))
-			.addChild(new Person()
-				.setName("Filho 2 Pessoa 1")
-				.setAge(25)
-				.setWeight(50.0))
-			.addRelacionamento("wife", new Person()
-				.setAge(56)
-				.setName("Esposa Pessoa 1")
-				.setWeight(65.7));
+				.setAge(64)
+				.setWeight(80.5)
+				.addChild(new Person()
+						.setName("Filho 1 Pessoa 1")
+						.setAge(35)
+						.setWeight(60.0))
+				.addChild(new Person()
+						.setName("Filho 2 Pessoa 1")
+						.setAge(25)
+						.setWeight(50.0))
+				.addRelacionamento("wife", new Person()
+						.setAge(56)
+						.setName("Esposa Pessoa 1")
+						.setWeight(65.7));
 
 		context.add(person);
 		parameters.put("idade", 1);
 	}
 
 	@Test
-	public void test1() throws ExpressionException
+	public void shouldEvaluateSimpleGreaterThanComparison() throws ExpressionException
 	{
-		assertEquals(Expression.of("age > 50").evaluate(person), Boolean.TRUE);
+		assertEquals(Boolean.TRUE, Expression.of("age > 50").evaluate(person));
 	}
 
 	@Test
-	public void test2() throws ExpressionException
+	public void shouldEvaluateNestedPropertyComparison() throws ExpressionException
 	{
-		assertEquals(Expression.of("relationships.wife.age > 60").evaluate(person), Boolean.FALSE);
+		assertEquals(Boolean.FALSE, Expression.of("relationships.wife.age > 60").evaluate(person));
 	}
 
 	@Test
-	public void test3() throws ExpressionException
+	public void shouldEvaluateMethodInvocationComparison() throws ExpressionException
 	{
-		assertEquals(Expression.of("relationships.wife.getAge() > 60").evaluate(person), Boolean.FALSE);
+		assertEquals(Boolean.FALSE, Expression.of("relationships.wife.getAge() > 60").evaluate(person));
 	}
 
 	@Test
-	public void test4() throws ExpressionException
+	public void shouldEvaluateArithmeticWithNestedProperty() throws ExpressionException
 	{
-		assertEquals(Expression.of("age + relationships.wife.age == 120").evaluate(person), Boolean.TRUE);
+		assertEquals(Boolean.TRUE, Expression.of("age + relationships.wife.age == 120").evaluate(person));
 	}
 
 	@Test
-	public void test5() throws ExpressionException
+	public void shouldReturnCollectionSize() throws ExpressionException
 	{
 		assertEquals(2, (int) Expression.of("size children").evaluate(person));
 	}
 
 	@Test
-	public void test6() throws ExpressionException
+	public void shouldEvaluateIndexedCollectionArithmetic() throws ExpressionException
 	{
 		assertEquals(60, (int) Expression.of("children[0].age + children[1].age").evaluate(person));
 	}
 
 	@Test
-	public void test7() throws ExpressionException
+	public void shouldRespectParenthesesInArithmeticExpression() throws ExpressionException
 	{
 		assertEquals(60, (int) Expression.of("(age + relationships.wife.age) / 2").evaluate(person));
 	}
 
 	@Test
-	public void test8() throws ExpressionException
+	public void shouldCompareArithmeticExpressionsUsingEqOperator() throws ExpressionException
 	{
 		assertEquals(Boolean.TRUE, Expression.of(
-			"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
-			.evaluate(person));
+						"(age + relationships.wife.age) / 2 eq children[0].age + children[1].age")
+				.evaluate(person));
 	}
 
 	@Test
-	public void test9() throws ExpressionException
+	public void shouldResolveParameterValue() throws ExpressionException
 	{
 		assertEquals(1, (int) Expression.of("@idade").evaluate(context, parameters));
 	}
 
 	@Test
-	public void test11() throws ExpressionException
+	public void shouldEvaluateMethodCallWithArgumentExpression() throws ExpressionException
 	{
 		Object result = Expression.of("multiply(getAge() + 1)").evaluate(context, parameters);
 		assertEquals(130, (int) result);
 	}
 
 	@Test
-	public void test12() throws ExpressionException
+	public void shouldEvaluateNestedArithmeticExpression() throws ExpressionException
 	{
-		Object result = Expression.of("(size children + 5) * 2")
-			.evaluate(context, parameters);
+		Object result = Expression.of("(size children + 5) * 2").evaluate(context, parameters);
 		assertEquals(14, (int) result);
 	}
 
 	@Test
-	public void testRx() throws ExpressionException
+	public void shouldEvaluateAndBeforeOr() throws ExpressionException
 	{
-		assertEquals(Boolean.TRUE,
-			Expression.of("this rx '^[0-9]{3}$'")
-				.evaluate("123"));
+		assertEquals(Boolean.TRUE, Expression.of("true or false and false").evaluate(person));
 	}
 
 	@Test
-	public void testRxError()
+	public void shouldPreserveBooleanPrecedenceAcrossMultipleOperators() throws ExpressionException
 	{
-		assertThrows(ExpressionException.class, () ->
-		{
-			Expression.of("this rx 123").evaluate("123");
-		});
+		assertEquals(Boolean.TRUE, Expression.of("true or false or true and false or true or false").evaluate(person));
+	}
+
+	@Test
+	public void shouldEvaluateRegexMatch() throws ExpressionException
+	{
+		assertEquals(Boolean.TRUE, Expression.of("this rx '^[0-9]{3}$'").evaluate("123"));
+	}
+
+	@Test
+	public void shouldThrowWhenRegexOperandIsNotString()
+	{
+		assertThrows(ExpressionException.class, () -> Expression.of("this rx 123").evaluate("123"));
 	}
 
 	public static class Person

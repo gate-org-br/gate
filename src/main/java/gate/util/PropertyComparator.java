@@ -1,7 +1,8 @@
 package gate.util;
 
-import java.util.Comparator;
 import gate.lang.property.Property;
+
+import java.util.Comparator;
 
 public class PropertyComparator implements Comparator<Object>
 {
@@ -31,11 +32,9 @@ public class PropertyComparator implements Comparator<Object>
 			return 0;
 		else if (comparable1 != null && comparable2 == null)
 			return 1;
-		else if (comparable1 == null && comparable2 != null)
+		else if (comparable1 == null)
 			return -1;
-		else if (comparable1 != null && comparable2 != null)
+		else
 			return comparable1.compareTo(comparable2);
-
-		return 0;
 	}
 }

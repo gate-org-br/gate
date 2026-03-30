@@ -1,6 +1,7 @@
 package gate.lang.expression;
 
 import gate.error.ExpressionException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -133,7 +134,7 @@ final class ExpressionScanner extends BufferedReader
 					for (c = read(); c != delimiter; c = read())
 						if (c != -1)
 							string.append((char) c);
-						else if (c == -1)
+						else
 							throw new ExpressionException("Unterminated string: " + string.toString());
 
 					c = read();

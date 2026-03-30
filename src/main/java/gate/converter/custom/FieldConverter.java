@@ -1,32 +1,17 @@
 package gate.converter.custom;
 
-import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.converter.ObjectConverter;
 import gate.error.ConversionException;
 import gate.type.Field;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Collections;
-import java.util.List;
 
 public class FieldConverter extends ObjectConverter
 {
-
-	@Override
-	public List<Constraint.Implementation<?>> getConstraints()
-	{
-		return Collections.emptyList();
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
 	@Override
 	public String getDescription()
 	{
@@ -46,14 +31,14 @@ public class FieldConverter extends ObjectConverter
 		if (field.getSize() != null)
 		{
 			int size = (int) Math.pow(2, field.getSize().ordinal());
-			if (Boolean.TRUE.equals(field.getMultiple()))
+			if (field.getMultiple())
 				return String.format("<label data-size='%d'>%s: <span style='flex-basis: 60px; overflow: auto'><label>%s</label></span></label>", size, field.getName(), value);
 			else
 				return String.format("<label data-size='%d'>%s: <span><label>%s</label></span></label>", size, field.getName(), value);
 
 		} else
 		{
-			if (Boolean.TRUE.equals(field.getMultiple()))
+			if (field.getMultiple())
 				return String.format("<label>%s: <span style='flex-basis: 60px; overflow: auto'><label>%s</label></span></label>", field.getName(), value);
 			else
 				return String.format("<label>%s: <span><label>%s</label></span></label>", field.getName(), value);

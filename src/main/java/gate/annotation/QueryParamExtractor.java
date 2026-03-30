@@ -7,6 +7,7 @@ import gate.http.ScreenServletRequest;
 import jakarta.servlet.http.Part;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.QueryParam;
+
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.reflect.Parameter;
@@ -24,11 +25,11 @@ public class QueryParamExtractor
 
 		Object value = request.getParameterValue(name);
 		if (parameter.isAnnotationPresent(DefaultValue.class)
-			&& (value == null || value instanceof String s && s.isBlank()))
+		    && (value == null || value instanceof String s && s.isBlank()))
 			value = parameter.getAnnotation(DefaultValue.class).value();
 
 		gate.converter.Converter converter
-			= gate.converter.Converter.getConverter(parameter);
+				= gate.converter.Converter.getConverter(parameter);
 
 		try
 		{
@@ -39,13 +40,7 @@ public class QueryParamExtractor
 					value = converter.ofPart(parameter.getType(), part);
 				} finally
 				{
-					try
-					{
-						part.delete();
-					} catch (IOException ex)
-					{
-						throw new UncheckedIOException(ex);
-					}
+					part.delete();
 				}
 			} else if (value instanceof String string)
 				value = converter.ofString(parameter.getType(), string);
@@ -56,6 +51,9 @@ public class QueryParamExtractor
 		} catch (ConversionException ex)
 		{
 			throw new BadRequestException("Invalid value for parameter " + name + ": " + value);
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

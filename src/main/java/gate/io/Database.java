@@ -4,16 +4,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -35,7 +26,7 @@ public class Database<T> implements Observable<T>
 
 	public boolean isEmpty()
 	{
-		return tables.values().stream().allMatch(e -> e.isEmpty());
+		return tables.values().stream().allMatch(Set::isEmpty);
 	}
 
 	public int size()
@@ -147,35 +138,35 @@ public class Database<T> implements Observable<T>
 	public long count(String tableName, Predicate<T> predicate)
 	{
 		return tables.entrySet().stream().filter(e -> e.getKey().equals(tableName)).findAny()
-				.map(e -> e.getValue().stream().filter(predicate).count()).orElse(Long.valueOf(0));
+				.map(e -> e.getValue().stream().filter(predicate).count()).orElse(0L);
 	}
 
 	public void delete(String tableName, Predicate<T> predicate)
 	{
 		Set<T> table = tables.get(tableName);
 		table.removeIf(predicate);
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(Set::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
 	public void delete(Predicate<T> predicate)
 	{
 		tables.values().forEach(e -> e.removeIf(predicate));
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(Set::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
 	public void delete(Collection<T> values)
 	{
 		tables.values().forEach(e -> e.removeAll(values));
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(Set::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
 	public void delete(List<T> values)
 	{
-		tables.values().forEach(e -> e.removeAll(values));
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().forEach(e -> values.forEach(e::remove));
+		tables.values().removeIf(Set::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -183,7 +174,7 @@ public class Database<T> implements Observable<T>
 	{
 		Set<T> table = tables.get(tableName);
 		table.removeAll(values);
-		tables.values().removeIf(e -> e.isEmpty());
+		tables.values().removeIf(Set::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -191,8 +182,8 @@ public class Database<T> implements Observable<T>
 	public final void delete(String tableName, T... values)
 	{
 		Set<T> table = tables.get(tableName);
-		table.removeAll(Arrays.asList(values));
-		tables.values().removeIf(e -> e.isEmpty());
+		Arrays.asList(values).forEach(table::remove);
+		tables.values().removeIf(Set::isEmpty);
 		observers.forEach(Observer::onUpdate);
 	}
 
@@ -242,8 +233,11 @@ public class Database<T> implements Observable<T>
 				Files.createDirectories(folder);
 
 			Map<String, Set<T>> tables = new HashMap<>();
-			Files.list(folder).forEach(path -> tables.put(path.getFileName().toString(), PersistentSet.of(type, path)));
-			return new Database<>(type, folder, tables);
+			try (var files = Files.list(folder))
+			{
+				files.forEach(path -> tables.put(path.getFileName().toString(), PersistentSet.of(type, path)));
+				return new Database<>(type, folder, tables);
+			}
 		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);

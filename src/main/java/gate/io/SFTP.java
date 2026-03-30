@@ -1,27 +1,19 @@
 package gate.io;
 
 import gate.type.DataFile;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.sftp.*;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import net.schmizz.sshj.xfer.InMemoryDestFile;
+import net.schmizz.sshj.xfer.InMemorySourceFile;
+
+import java.io.*;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.sftp.OpenMode;
-import net.schmizz.sshj.sftp.RemoteFile;
-import net.schmizz.sshj.sftp.RemoteResourceFilter;
-import net.schmizz.sshj.sftp.RemoteResourceInfo;
-import net.schmizz.sshj.sftp.SFTPClient;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
-import net.schmizz.sshj.xfer.InMemoryDestFile;
-import net.schmizz.sshj.xfer.InMemorySourceFile;
 
 public class SFTP implements AutoCloseable
 {
@@ -37,7 +29,7 @@ public class SFTP implements AutoCloseable
 	}
 
 	public static SFTP connect(String ip, int port,
-		String username, String password) throws IOException
+	                           String username, String password) throws IOException
 	{
 		SFTPClient client = null;
 		SSHClient ssh = new SSHClient();
@@ -50,7 +42,6 @@ public class SFTP implements AutoCloseable
 			return new SFTP(ssh, client);
 		} catch (IOException ex)
 		{
-			SFTP.close(client);
 			SFTP.close(ssh);
 			throw ex;
 		}
@@ -75,8 +66,8 @@ public class SFTP implements AutoCloseable
 	private String path(String filename)
 	{
 		return directory != null
-			? Path.of(directory, filename).toString()
-			: filename;
+				? Path.of(directory, filename).toString()
+				: filename;
 	}
 
 	public void cd(String directory) throws IOException
@@ -104,13 +95,13 @@ public class SFTP implements AutoCloseable
 
 	public List<String> ls(String directory) throws IOException
 	{
-		return client.ls(path(directory)).stream().map(e -> e.getName()).collect(Collectors.toList());
+		return client.ls(path(directory)).stream().map(RemoteResourceInfo::getName).collect(Collectors.toList());
 	}
 
 	public List<String> ls(String directory, int limit, Predicate<String> predicate) throws IOException
 	{
 		Filter filter = new Filter(predicate, limit);
-		return client.ls(path(directory), filter).stream().map(e -> e.getName()).collect(Collectors.toList());
+		return client.ls(path(directory), filter).stream().map(RemoteResourceInfo::getName).collect(Collectors.toList());
 	}
 
 	public void put(String filename, byte[] bytes) throws IOException
@@ -203,7 +194,7 @@ public class SFTP implements AutoCloseable
 
 	}
 
-	private class Filter implements RemoteResourceFilter
+	private static class Filter implements RemoteResourceFilter
 	{
 
 		private int limit;

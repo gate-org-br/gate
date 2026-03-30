@@ -108,7 +108,7 @@ class PropertyParser
 				Method method = attribute.getRawType().getMethod(name,
 						parameters.stream().map(Object::getClass).toArray(Class[]::new));
 
-				if (method.getReturnType() == null)
+				if (method.getReturnType() == void.class)
 					throw new PropertyError("Method %s has no return type.", method.toString());
 
 				return new MethodAttribute(method, parameters.toArray());
@@ -142,7 +142,7 @@ class PropertyParser
 
 		// Field access
 		for (Class<?> superclass = attribute.getRawType(); superclass != null;
-			 superclass = superclass.getSuperclass())
+		     superclass = superclass.getSuperclass())
 		{
 			Field field = Arrays.stream(superclass.getDeclaredFields())
 					.filter(e -> e.getName().equals(name))
@@ -260,7 +260,7 @@ class PropertyParser
 				if (name instanceof Number || name instanceof Boolean || name instanceof String)
 				{
 					if (name instanceof String
-							&& attribute.getGenericType() instanceof ParameterizedType paramType)
+					    && attribute.getGenericType() instanceof ParameterizedType paramType)
 					{
 						Class<?> keyType = Reflection.getRawType(
 								paramType.getActualTypeArguments()[0]);

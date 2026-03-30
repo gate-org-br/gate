@@ -43,7 +43,7 @@ public @interface Minlength
 				if (name == null)
 					name = property.toString();
 				throw new AppException(
-						String.format("O campo %s deve possuir no mínimo %d caracteres.", name, getValue()));
+						String.format("O campo %s deve possuir no mínimo %s caracteres.", name, getValue()));
 			}
 		}
 

@@ -8,13 +8,15 @@ import gate.util.Page;
 import gate.util.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IAttribute;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.context.IWebContext;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class PaginatorProcessor extends TagProcessor
@@ -37,18 +39,18 @@ public class PaginatorProcessor extends TagProcessor
 		queryString.remove("pageSize");
 		queryString.remove("pageIndx");
 
-		String url = String.format("Gate?%s", queryString.toString());
+		String url = String.format("Gate?%s", queryString);
 		Screen screen = (Screen) exchange.getAttributeValue("screen");
 
 		Page<?> page = element.hasAttribute("page")
-			? (Page<?>) expression.create().evaluate(element.getAttributeValue("page"))
-			: (Page<?>) Property.getValue(screen, "page");
+				? (Page<?>) expression.create().evaluate(element.getAttributeValue("page"))
+				: (Page<?>) Property.getValue(screen, "page");
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.filter(e -> !e.getAttributeCompleteName().equals("page"))
-			.filter(e -> !e.getAttributeCompleteName().equals("target"))
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.filter(e -> !e.getAttributeCompleteName().equals("page"))
+				.filter(e -> !e.getAttributeCompleteName().equals("target"))
+				.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,
+						IAttribute::getValue, (a, b) -> a, Attributes::new));
 
 		var paginator = page.getPaginator();
 
@@ -70,7 +72,7 @@ public class PaginatorProcessor extends TagProcessor
 			parameters.set("form", element.getAttributeValue("form"));
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
-		string.add(String.format("<g-paginator %s>", attributes.toString()));
+		string.add(String.format("<g-paginator %s>", attributes));
 
 		if (!page.isFirst())
 		{
@@ -90,7 +92,7 @@ public class PaginatorProcessor extends TagProcessor
 			string.add("<%s %s>&gt;&gt;</%s>&nbsp;&nbsp;".formatted(tag, parameters.set("title", "Último").set(action, last), tag));
 		}
 
-		string.add(String.format("</g-paginator>"));
+		string.add("</g-paginator>");
 
 		handler.replaceWith(string.toString(), false);
 	}

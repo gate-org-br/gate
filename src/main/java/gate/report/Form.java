@@ -27,7 +27,7 @@ public class Form extends ReportElement
 		this.columns = 8;
 		form.getFields().forEach((e) ->
 		{
-			if (Boolean.TRUE.equals(e.getMultiple()))
+			if (e.getMultiple())
 				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1).height(40f));
 			else
 				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1));
@@ -65,11 +65,11 @@ public class Form extends ReportElement
 		{
 
 			form.getFields().forEach(e -> add(e.getName(), e.getValue())
-				.colspan(e.getSize().ordinal() + 1));
+					.colspan(e.getSize().ordinal() + 1));
 
 			int count = form.getFields().stream()
-				.mapToInt(e -> e.getSize().ordinal() + 1)
-				.sum() % columns;
+								.mapToInt(e -> e.getSize().ordinal() + 1)
+								.sum() % columns;
 			if (count > 0)
 			{
 				Field field = (Field) elements.get(elements.size() - 1);

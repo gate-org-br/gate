@@ -1,56 +1,27 @@
 package gate.report.doc;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import com.lowagie.text.*;
+import com.lowagie.text.Element;
+import com.lowagie.text.Font;
+import com.lowagie.text.Rectangle;
+import com.lowagie.text.pdf.*;
+import gate.annotation.Icon;
+import gate.converter.Converter;
+import gate.error.AppError;
+import gate.lang.contentType.ContentType;
+import gate.report.*;
+import gate.report.Header;
+import gate.report.Image;
+import gate.report.Paragraph;
+import gate.util.Toolkit;
+
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
-import com.lowagie.text.Element;
-import com.lowagie.text.Font;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
-import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGraphics2D;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
-
-import gate.annotation.Icon;
-import gate.converter.Converter;
-import gate.error.AppError;
-import gate.lang.contentType.ContentType;
-import gate.report.Chart;
-import gate.report.ChartGenerator;
-import gate.report.Column;
-import gate.report.Dictionary;
-import gate.report.Doc;
-import gate.report.Field;
-import gate.report.Footer;
-import gate.report.Form;
-import gate.report.Grid;
-import gate.report.Header;
-import gate.report.Image;
-import gate.report.LineBreak;
-import gate.report.PageBreak;
-import gate.report.Paragraph;
-import gate.report.Report;
-import gate.report.ReportElement;
-import gate.report.ReportList;
-import gate.report.Style;
-import gate.util.Toolkit;
 
 /**
  * Generates PDF documents from objects of type {@link gate.report.Report}.
@@ -105,9 +76,8 @@ public class PDF extends Doc
 		{
 			Document document = switch (getReport().getOrientation())
 			{
-			case PORTRAIT -> new Document(PageSize.A4);
-			case LANDSCAPE -> new Document(PageSize.A4.rotate());
-			default -> throw new IllegalArgumentException("Invalid report orientation");
+				case PORTRAIT -> new Document(PageSize.A4);
+				case LANDSCAPE -> new Document(PageSize.A4.rotate());
 			};
 
 			var writer = PdfWriter.getInstance(document, os);
@@ -184,7 +154,7 @@ public class PDF extends Doc
 	{
 		try
 		{
-			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance((byte[]) image.getSource());
+			com.lowagie.text.Image element = com.lowagie.text.Image.getInstance(image.getSource());
 			element.setAlignment(getAlignment(image.style()));
 			return element;
 		} catch (BadElementException | IOException e)
@@ -217,7 +187,7 @@ public class PDF extends Doc
 		{
 			PdfPTable table = new PdfPTable(1);
 			table.setWidths(new float[]
-			{ 1f });
+					{1f});
 
 			PdfPCell label = new PdfPCell(new com.lowagie.text.Paragraph(field.getName(), FIELD_FONT));
 			label.setBorder(0);
@@ -265,7 +235,7 @@ public class PDF extends Doc
 
 			float[] widths = new float[form.getColumns()];
 			for (int i = 0; i < form.getColumns(); i++)
-				widths[i] = 100 / form.getColumns();
+				widths[i] = (float) 100 / form.getColumns();
 			PdfPTable table = new PdfPTable(form.getColumns());
 			table.setWidths(widths);
 
@@ -287,19 +257,13 @@ public class PDF extends Doc
 
 	private int getAlignment(Style style)
 	{
-		switch (style.getTextAlign())
+		return switch (style.getTextAlign())
 		{
-		case CENTER:
-			return PdfPCell.ALIGN_CENTER;
-		case JUSTIFY:
-			return PdfPCell.ALIGN_JUSTIFIED;
-		case LEFT:
-			return PdfPCell.ALIGN_LEFT;
-		case RIGHT:
-			return PdfPCell.ALIGN_RIGHT;
-		default:
-			return PdfPCell.ALIGN_CENTER;
-		}
+			case JUSTIFY -> PdfPCell.ALIGN_JUSTIFIED;
+			case LEFT -> PdfPCell.ALIGN_LEFT;
+			case RIGHT -> PdfPCell.ALIGN_RIGHT;
+			default -> PdfPCell.ALIGN_CENTER;
+		};
 	}
 
 	private PdfPCell createHeadCell(String value, Style style)
@@ -418,7 +382,7 @@ public class PDF extends Doc
 		}
 	}
 
-	private class Numerator extends PdfPageEventHelper
+	private static class Numerator extends PdfPageEventHelper
 	{
 
 		private PdfTemplate pages;
@@ -480,30 +444,34 @@ public class PDF extends Doc
 		Font font = getFont(reportList.style());
 		switch (reportList.style().getListStyleType())
 		{
-		case DECIMAL -> {
-			list.setNumbered(true);
-			list.setLettered(false);
-			list.setListSymbol(new Chunk("", font));
+			case DECIMAL ->
+			{
+				list.setNumbered(true);
+				list.setLettered(false);
+				list.setListSymbol(new Chunk("", font));
+			}
+
+			case LOWER_ALPHA ->
+			{
+				list.setNumbered(false);
+				list.setLettered(true);
+				list.setListSymbol(new Chunk("", font));
+			}
+			case DISC ->
+			{
+				list.setNumbered(false);
+				list.setLettered(false);
+				list.setListSymbol(new Chunk("\u2022 ", font));
+			}
+			case NONE ->
+			{
+				list.setNumbered(false);
+				list.setLettered(false);
+				list.setListSymbol(new Chunk("", font));
+			}
 		}
 
-		case LOWER_ALPHA -> {
-			list.setNumbered(false);
-			list.setLettered(true);
-			list.setListSymbol(new Chunk("", font));
-		}
-		case DISC -> {
-			list.setNumbered(false);
-			list.setLettered(false);
-			list.setListSymbol(new Chunk("\u2022 ", font));
-		}
-		case NONE -> {
-			list.setNumbered(false);
-			list.setLettered(false);
-			list.setListSymbol(new Chunk("", font));
-		}
-		}
-
-		reportList.getElements().stream().forEach(e ->
+		reportList.getElements().forEach(e ->
 		{
 			if (e instanceof String string)
 			{
@@ -526,7 +494,7 @@ public class PDF extends Doc
 
 			PdfPTable table = new PdfPTable(2);
 			table.setWidths(new float[]
-			{ 0.5f, 0.5f });
+					{0.5f, 0.5f});
 			table.setWidthPercentage(100);
 
 			Color lightGray = new Color(250, 250, 250);
@@ -577,15 +545,7 @@ public class PDF extends Doc
 
 	private int getFontWeight(Style style)
 	{
-		switch (style.getFontWeight())
-		{
-		case NORMAL:
-			return Font.NORMAL;
-		case BOLD:
-			return Font.BOLD;
-		default:
-			return Font.NORMAL;
-		}
+		return style.getFontWeight() == Style.FontWeight.BOLD ? Font.BOLD : Font.NORMAL;
 	}
 
 	private Font getFont(Style style)

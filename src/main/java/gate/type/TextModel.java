@@ -1,16 +1,17 @@
 package gate.type;
 
+import gate.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
-import gate.converter.Converter;
 
+import java.io.Serial;
 import java.util.HashSet;
 import java.util.Set;
 
 public class TextModel extends Model
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	public TextModel(DataFile attachment)
 	{
@@ -21,7 +22,7 @@ public class TextModel extends Model
 	{
 		int indx1 = 0;
 		Set<String> properties = new HashSet<>();
-		do
+		while (true)
 		{
 			indx1 = string.indexOf("${", indx1);
 			if (indx1 == -1)
@@ -32,7 +33,7 @@ public class TextModel extends Model
 
 			properties.add(string.substring(indx1 + 2, indx2));
 			indx1 = indx2 + 1;
-		} while (indx1 != -1);
+		}
 		return properties;
 	}
 

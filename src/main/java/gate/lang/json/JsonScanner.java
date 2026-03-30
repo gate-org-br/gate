@@ -2,6 +2,7 @@ package gate.lang.json;
 
 import gate.error.AppError;
 import gate.error.ConversionException;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -27,7 +28,6 @@ public final class JsonScanner implements AutoCloseable
 	 * Creates a JSONScanner for a string.
 	 *
 	 * @param string the string to be scanned for JSON tokens
-	 *
 	 * @throws gate.error.ConversionException if any Exception occurs while parsing the string
 	 */
 	public JsonScanner(String string) throws ConversionException
@@ -49,7 +49,6 @@ public final class JsonScanner implements AutoCloseable
 	 * Scans the source for the next JSON token.
 	 *
 	 * @return the next JSON token scanned
-	 *
 	 * @throws gate.error.ConversionException if any Exception occurs while parsing the string
 	 */
 	public JsonToken scan() throws ConversionException
@@ -117,14 +116,7 @@ public final class JsonScanner implements AutoCloseable
 								case 't':
 									c = '\t';
 									break;
-								case '"':
-									c = '"';
-									break;
-								case '\\':
-									c = '\\';
-									break;
-								case '/':
-									c = '/';
+								case '"', '/', '\\':
 									break;
 								default:
 									string.append('\\');

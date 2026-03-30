@@ -3,6 +3,7 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DataConverter;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -82,7 +83,7 @@ public class Data extends Number implements Comparable<Data>
 			if (bytes.compareTo(u.getValue()) >= 0)
 			{
 				unit = u;
-				value = bytes.divide(unit.getValue());
+				value = bytes.divide(unit.getValue(), RoundingMode.HALF_EVEN);
 			}
 		}
 
@@ -136,42 +137,42 @@ public class Data extends Number implements Comparable<Data>
 	{
 
 		B(BigDecimal.ONE), K(BigDecimal.ONE.multiply(FACTOR)), M(
-				BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR)), G(
-						BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), T(
-								BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(
-										FACTOR).multiply(FACTOR)), P(BigDecimal.ONE.multiply(FACTOR)
-												.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)
-												.multiply(FACTOR)), E(
-														BigDecimal.ONE.multiply(FACTOR)
-																.multiply(FACTOR).multiply(FACTOR)
-																.multiply(FACTOR).multiply(FACTOR)
-																.multiply(FACTOR)), Z(
-																		BigDecimal.ONE
-																				.multiply(FACTOR)
-																				.multiply(FACTOR)
-																				.multiply(FACTOR)
-																				.multiply(FACTOR)
-																				.multiply(FACTOR)
-																				.multiply(FACTOR)
-																				.multiply(
-																						FACTOR)), Y(
-																								BigDecimal.ONE
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR)
-																										.multiply(
-																												FACTOR));
+			BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR)), G(
+			BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)), T(
+			BigDecimal.ONE.multiply(FACTOR).multiply(FACTOR).multiply(
+					FACTOR).multiply(FACTOR)), P(BigDecimal.ONE.multiply(FACTOR)
+			.multiply(FACTOR).multiply(FACTOR).multiply(FACTOR)
+			.multiply(FACTOR)), E(
+			BigDecimal.ONE.multiply(FACTOR)
+					.multiply(FACTOR).multiply(FACTOR)
+					.multiply(FACTOR).multiply(FACTOR)
+					.multiply(FACTOR)), Z(
+			BigDecimal.ONE
+					.multiply(FACTOR)
+					.multiply(FACTOR)
+					.multiply(FACTOR)
+					.multiply(FACTOR)
+					.multiply(FACTOR)
+					.multiply(FACTOR)
+					.multiply(
+							FACTOR)), Y(
+			BigDecimal.ONE
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR)
+					.multiply(
+							FACTOR));
 
 		private final BigDecimal value;
 

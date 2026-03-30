@@ -3,18 +3,9 @@ package gate.util;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NameClassPair;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+
+import javax.naming.*;
+import java.util.*;
 
 public class JNDIContextMap<T> extends AbstractMap<String, T>
 {
@@ -53,7 +44,10 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			int i = 0;
 			NamingEnumeration<NameClassPair> list = context.list("");
 			while (list.hasMoreElements())
+			{
+				list.nextElement();
 				i++;
+			}
 			return i;
 		} catch (NamingException e)
 		{
