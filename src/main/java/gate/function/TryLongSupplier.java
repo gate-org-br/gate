@@ -15,7 +15,7 @@ public interface TryLongSupplier {
             try {
                 return supplier.get();
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

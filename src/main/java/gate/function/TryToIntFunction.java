@@ -14,7 +14,7 @@ public interface TryToIntFunction<T> {
             try {
                 return function.applyAsInt(t);
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

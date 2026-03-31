@@ -92,6 +92,56 @@ class ConstructionStrategyTest
 	}
 
 	@Test
+	void shouldPassNullForMissingCanonicalConstructorAttributes() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				attribute("arg0", String.class), "Ana");
+
+		var result = (CanonicalValue) ConstructionStrategy.newInstance(CanonicalValue.class, attributes);
+
+		Assertions.assertEquals("Ana", result.getArg0());
+		Assertions.assertNull(result.getArg1());
+	}
+
+	@Test
+	void shouldPassNullForMissingCanonicalConstructorProperties() throws ReflectiveOperationException
+	{
+		var properties = Map.<Attribute, Object>of(
+				attribute("arg0", String.class), "source-name");
+
+		var result = (CanonicalValue) ConstructionStrategy.newInstance(CanonicalValue.class, null, properties,
+				(attribute, currentValue, sourceValue) -> "Computed");
+
+		Assertions.assertEquals("Computed", result.getArg0());
+		Assertions.assertNull(result.getArg1());
+	}
+
+	@Test
+	void shouldPassNullForMissingFactoryMethodAttributes() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				attribute("arg0", String.class), "Ana");
+
+		var result = (FactoryValue) ConstructionStrategy.newInstance(FactoryValue.class, attributes);
+
+		Assertions.assertEquals("Ana", result.getArg0());
+		Assertions.assertNull(result.getArg1());
+	}
+
+	@Test
+	void shouldPassNullForMissingFactoryMethodProperties() throws ReflectiveOperationException
+	{
+		var properties = Map.<Attribute, Object>of(
+				attribute("arg0", String.class), "source-name");
+
+		var result = (FactoryValue) ConstructionStrategy.newInstance(FactoryValue.class, null, properties,
+				(attribute, currentValue, sourceValue) -> "Computed");
+
+		Assertions.assertEquals("Computed", result.getArg0());
+		Assertions.assertNull(result.getArg1());
+	}
+
+	@Test
 	void shouldThrowWhenCanonicalConstructorSelectionIsAmbiguous()
 	{
 		var attributes = Map.<Attribute, Object>of(
@@ -100,6 +150,20 @@ class ConstructionStrategyTest
 
 		Assertions.assertThrows(ConversionException.class,
 				() -> ConstructionStrategy.newInstance(AmbiguousCanonical.class, attributes));
+	}
+
+	@Test
+	void shouldIgnoreConstructorThatDoesNotConsumeAllAttributes()
+	{
+		var attributes = Map.<Attribute, Object>of(
+				attribute("arg0", String.class), "Ana",
+				attribute("arg1", Integer.class), 42);
+
+		var result = (FullMatchPreferred) Assertions.assertDoesNotThrow(
+				() -> ConstructionStrategy.newInstance(FullMatchPreferred.class, attributes));
+
+		Assertions.assertEquals("Ana", result.getName());
+		Assertions.assertEquals(42, result.getAge());
 	}
 
 	record Point(int x, int y)
@@ -160,6 +224,10 @@ class ConstructionStrategyTest
 	{
 		private Marker marker;
 		private int setterCalls;
+
+		public MutableBean()
+		{
+		}
 
 		public Marker getMarker()
 		{
@@ -241,6 +309,60 @@ class ConstructionStrategyTest
 		public Integer getArg1()
 		{
 			return arg1;
+		}
+	}
+
+	static class FactoryValue
+	{
+		private final String arg0;
+		private final Integer arg1;
+
+		private FactoryValue(String arg0, Integer arg1)
+		{
+			this.arg0 = arg0;
+			this.arg1 = arg1;
+		}
+
+		public static FactoryValue of(String arg0, Integer arg1)
+		{
+			return new FactoryValue(arg0, arg1);
+		}
+
+		public String getArg0()
+		{
+			return arg0;
+		}
+
+		public Integer getArg1()
+		{
+			return arg1;
+		}
+	}
+
+	static class FullMatchPreferred
+	{
+		private final String name;
+		private final Integer age;
+
+		public FullMatchPreferred(String name)
+		{
+			this(name, null);
+		}
+
+		public FullMatchPreferred(String name, Integer age)
+		{
+			this.name = name;
+			this.age = age;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public Integer getAge()
+		{
+			return age;
 		}
 	}
 

@@ -15,7 +15,7 @@ public interface TryLongUnaryOperator {
             try {
                 return operator.applyAsLong(operand);
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

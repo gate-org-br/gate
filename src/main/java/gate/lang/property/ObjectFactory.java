@@ -8,19 +8,19 @@ public class ObjectFactory
 	public static boolean canCreate(Class<?> type)
 	{
 		return type == List.class
-				|| type == Set.class
-				|| type == Map.class
-				|| type == ConcurrentMap.class
-				|| type == Queue.class
-				|| type == Deque.class
-				|| type == SortedSet.class
-				|| type == NavigableSet.class
-				|| type == SortedMap.class
-				|| type == NavigableMap.class
-				|| type == BlockingQueue.class
-				|| type == BlockingDeque.class
-				|| Arrays.stream(type.getDeclaredConstructors())
-				.anyMatch(c -> c.getParameterCount() == 0);
+		       || type == Set.class
+		       || type == Map.class
+		       || type == ConcurrentMap.class
+		       || type == Queue.class
+		       || type == Deque.class
+		       || type == SortedSet.class
+		       || type == NavigableSet.class
+		       || type == SortedMap.class
+		       || type == NavigableMap.class
+		       || type == BlockingQueue.class
+		       || type == BlockingDeque.class
+		       || Arrays.stream(type.getConstructors())
+					   .anyMatch(c -> c.getParameterCount() == 0);
 	}
 
 	public static Object create(Class<?> type) throws ReflectiveOperationException
@@ -50,6 +50,6 @@ public class ObjectFactory
 		if (type == BlockingDeque.class)
 			return new LinkedBlockingDeque<>();
 
-		return type.getDeclaredConstructor().newInstance();
+		return type.getConstructor().newInstance();
 	}
 }

@@ -16,7 +16,7 @@ public interface TryLongBinaryOperator {
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

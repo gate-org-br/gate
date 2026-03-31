@@ -23,7 +23,7 @@ public interface TryBiConsumer<T, U>
 				throw e;
 			} catch (Exception e)
 			{
-				throw new UncheckedException(e);
+				throw new RuntimeException(e);
 			}
 		};
 	}

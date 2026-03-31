@@ -16,7 +16,7 @@ public interface TryDoubleSupplier {
             try {
                 return supplier.get();
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

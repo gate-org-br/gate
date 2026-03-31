@@ -6,14 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(
-	{
-		ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
-	})
 /**
  * Override action name before authorization.
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(
+		{
+				ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
+		})
 public @interface Authorization
 {
 

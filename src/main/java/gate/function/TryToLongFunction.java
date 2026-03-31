@@ -14,7 +14,7 @@ public interface TryToLongFunction<T> {
             try {
                 return function.applyAsLong(t);
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

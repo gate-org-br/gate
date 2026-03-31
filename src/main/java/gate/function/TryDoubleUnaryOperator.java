@@ -15,7 +15,7 @@ public interface TryDoubleUnaryOperator {
             try {
                 return operator.applyAsDouble(operand);
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

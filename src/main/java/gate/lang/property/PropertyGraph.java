@@ -8,6 +8,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+/**
+ * Precompiled graph of nested {@link Property} paths used to materialize object trees from a
+ * flat property source.
+ * <p>
+ * A graph is built from property names such as {@code "role.name"} or {@code "items[0].id"} and
+ * then resolved recursively. Leaf properties obtain their value from the supplied
+ * {@code Function<Property, Object>}, while intermediate nodes are materialized through
+ * {@link ConstructionStrategy}.
+ * <p>
+ * This means partial updates follow the construction model of each target type:
+ * <ul>
+ *     <li>beans reuse or create an instance and apply only the provided attributes;</li>
+ *     <li>builders receive only the provided attributes;</li>
+ *     <li>records, constructors and static factories receive {@code null} for missing attributes.</li>
+ * </ul>
+ * As a result, immutable nested objects may be rebuilt from the provided subset, while mutable
+ * anemic objects preserve attributes that were not present in the graph.
+ */
 public class PropertyGraph<T>
 {
 	private final Class<T> type;

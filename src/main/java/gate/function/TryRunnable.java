@@ -13,7 +13,7 @@ public interface TryRunnable {
             try {
                 runnable.run();
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

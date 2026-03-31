@@ -13,7 +13,7 @@ public interface TryUnaryOperator<T> extends TryFunction<T, T> {
             try {
                 return operator.apply(t);
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }

@@ -14,7 +14,7 @@ public interface TryToDoubleFunction<T> {
             try {
                 return function.applyAsDouble(t);
             } catch (Exception e) {
-                throw new UncheckedException(e);
+                throw new RuntimeException(e);
             }
         };
     }
