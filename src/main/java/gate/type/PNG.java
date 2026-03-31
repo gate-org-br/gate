@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.PNGConverter;
@@ -23,6 +25,8 @@ public class PNG implements Serializable
 	private final int w;
 	private final int h;
 	private final byte[] bytes;
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public PNG(DataFile file)

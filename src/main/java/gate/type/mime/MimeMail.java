@@ -1,5 +1,7 @@
 package gate.type.mime;
 
+import java.io.Serial;
+
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -7,6 +9,8 @@ import java.util.stream.Stream;
 public final class MimeMail<T extends Mime> implements Serializable
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final T content;

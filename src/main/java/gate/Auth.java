@@ -1,5 +1,7 @@
 package gate;
 
+import java.io.Serial;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -31,6 +33,8 @@ public class Auth extends HttpServlet
 	@Inject
 	GateControl control;
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Override

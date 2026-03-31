@@ -62,7 +62,7 @@ public class PortugueseTextConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Nome válido.";
+		return "Texto válido.";
 	}
 
 	@Override

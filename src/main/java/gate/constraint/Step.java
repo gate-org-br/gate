@@ -4,6 +4,7 @@ import gate.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
 
+import java.io.Serial;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -22,7 +23,7 @@ public @interface Step
 	class Implementation extends Constraint.Implementation<BigDecimal>
 	{
 
-		private static final long serialVersionUID = 1L;
+		@Serial private static final long serialVersionUID = 1L;
 
 		public Implementation(Object value)
 		{

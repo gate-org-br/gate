@@ -1,5 +1,7 @@
 package gate.type.mime;
 
+import java.io.Serial;
+
 import gate.lang.contentType.ContentType;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,6 +13,8 @@ import java.util.function.Consumer;
 public class MimeList implements Mime, Iterable<Mime>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private final ContentType contentType;
 	private final List<Mime> list

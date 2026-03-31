@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.converter.custom.RangeConverter;
 import java.io.Serializable;
@@ -18,6 +20,8 @@ import java.util.stream.StreamSupport;
 public class Range implements Iterable<Long>, Serializable
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final long min;

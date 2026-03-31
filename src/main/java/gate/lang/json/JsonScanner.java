@@ -159,15 +159,11 @@ public final class JsonScanner implements AutoCloseable
 						if (!Character.isDigit(c))
 							throw new ConversionException("Expected digit and found " + (char) c);
 
-						string.append((char) c);
-
-						c = reader.read();
-
-						while (Character.isDigit(c))
+						do
 						{
 							string.append((char) c);
 							c = reader.read();
-						}
+						} while (Character.isDigit(c));
 					}
 
 					if (c == 'e' || c == 'E')

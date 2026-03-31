@@ -1,5 +1,7 @@
 package gate;
 
+import java.io.Serial;
+
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
@@ -37,6 +39,8 @@ public class ResetPassword extends HttpServlet
 	@Inject
 	private Messenger messenger;
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private static final SecretKey SECRET = Jwts.SIG.HS256.key().build();

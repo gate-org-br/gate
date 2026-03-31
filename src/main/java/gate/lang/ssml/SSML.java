@@ -131,18 +131,18 @@ public class SSML
 
 	private void doubleQuotedString()
 	{
-		target.append((char) consume());
-		while (current() != -1 && current() != '"')
+		do
 			target.append((char) consume());
+		while (current() != -1 && current() != '"');
 		if (current() != -1)
 			target.append((char) consume());
 	}
 
 	private void singleQuotedString()
 	{
-		target.append((char) consume());
-		while (current() != -1 && current() != '\'')
+		do
 			target.append((char) consume());
+		while (current() != -1 && current() != '\'');
 		if (current() != -1)
 			target.append((char) consume());
 	}

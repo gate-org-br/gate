@@ -8,12 +8,12 @@ import java.util.List;
 public class SearchParser implements Iterable<String>
 {
 
-	private String string;
-	private final List<String> tokens
-			= new ArrayList<>();
+	private final String string;
+	private final List<String> tokens = new ArrayList<>();
 
 	public SearchParser(String string)
 	{
+		this.string = string;
 		if (string != null)
 		{
 			int i = 0;
@@ -30,12 +30,8 @@ public class SearchParser implements Iterable<String>
 							case ' ':
 								tokens.add(token.toString());
 								token.setLength(0);
-								state = ' ';
 								break;
-							case '"':
-								token.append(string.charAt(i));
-								break;
-							case '\'':
+							case '"', '\'':
 								token.append(string.charAt(i));
 								break;
 						}
@@ -77,7 +73,7 @@ public class SearchParser implements Iterable<String>
 				}
 			} while (++i < string.length());
 
-			if (token.length() > 0)
+			if (!token.isEmpty())
 				tokens.add(token.toString());
 		}
 	}

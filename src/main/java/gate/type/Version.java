@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.VersionConverter;
@@ -76,6 +78,8 @@ public interface Version extends Serializable, Comparable<Version>
 		private final String qualifier;
 		private final String iteration;
 
+		
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		private VersionImpl(int major, int minor, int patch, String qualifier, String iteration)

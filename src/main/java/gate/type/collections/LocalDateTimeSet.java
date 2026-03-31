@@ -1,5 +1,7 @@
 package gate.type.collections;
 
+import java.io.Serial;
+
 import gate.converter.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
@@ -19,6 +21,8 @@ import java.util.HashSet;
 public class LocalDateTimeSet extends HashSet<LocalDateTime>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public LocalDateTimeSet()
@@ -68,6 +72,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 	public static class Comma extends LocalDateTimeSet
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public Comma()
@@ -102,6 +107,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 	public static class Semicolon extends LocalDateTimeSet
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public Semicolon()
@@ -136,6 +142,7 @@ public class LocalDateTimeSet extends HashSet<LocalDateTime>
 	public static class LineBreak extends LocalDateTimeSet
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public LineBreak()

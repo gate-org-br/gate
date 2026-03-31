@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.converter.Converter;
 import gate.lang.json.JsonObject;
 import java.io.Serializable;
@@ -8,6 +10,8 @@ import java.util.Objects;
 public class Status<T extends Serializable> implements Serializable
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final T value;

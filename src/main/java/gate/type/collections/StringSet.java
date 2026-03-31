@@ -1,5 +1,7 @@
 package gate.type.collections;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.converter.collections.StringSetConverter;
 import gate.annotation.ElementType;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 public class StringSet extends HashSet<String>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public StringSet()
@@ -69,6 +73,7 @@ public class StringSet extends HashSet<String>
 	public static class Comma extends StringSet
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public Comma()
@@ -109,6 +114,7 @@ public class StringSet extends HashSet<String>
 	public static class Semicolon extends StringSet
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public Semicolon()
@@ -150,6 +156,7 @@ public class StringSet extends HashSet<String>
 	public static class LineBreak extends StringSet
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public LineBreak()

@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.DataFileConverter;
@@ -38,6 +40,8 @@ import java.lang.reflect.InvocationTargetException;
 public class DataFile implements Serializable
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final byte[] data;

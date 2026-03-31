@@ -1,5 +1,7 @@
 package gate.type.mime;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.MimeTextFileConverter;
@@ -28,6 +30,8 @@ import java.util.Objects;
 public class MimeTextFile extends MimeText implements MimeFile
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String name;

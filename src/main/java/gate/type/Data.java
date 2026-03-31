@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.DataConverter;
@@ -17,6 +19,8 @@ import java.util.stream.Stream;
 public class Data extends Number implements Comparable<Data>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final BigDecimal bytes;

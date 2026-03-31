@@ -1,30 +1,31 @@
 package gate.thymeleaf;
 
 import jakarta.el.FunctionMapper;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JaveELFuncionMapper extends FunctionMapper
+public class JaveELFunctionMapper extends FunctionMapper
 {
 
-	private Map<String, Method> functions = null;
+	private final Map<String, Method> functions;
 
-	JaveELFuncionMapper(Map<String, Method> functions)
+	JaveELFunctionMapper(Map<String, Method> functions)
 	{
 		this.functions = functions == null ? new HashMap<>() : new HashMap<>(functions);
 
 		for (Method method : TagLib.class.getDeclaredMethods())
 			if (Modifier.isStatic(method.getModifiers())
-					&& Modifier.isPublic(method.getModifiers()))
+			    && Modifier.isPublic(method.getModifiers()))
 				this.functions.put("g:" + method.getName(), method);
 	}
 
 	@Override
 	public Method resolveFunction(String prefix, String name)
 	{
-		return (Method) functions.get(prefix + ":" + name);
+		return functions.get(prefix + ":" + name);
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Icon;
 import gate.converter.custom.EMailConverter;
@@ -12,6 +14,8 @@ public class EMail implements Serializable
 {
 
 	private final String value;
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 	public static final String REGEX = "^[^@ ]+@[^@ ]+$";
 	public static final Pattern PATTERN = Pattern.compile(REGEX);

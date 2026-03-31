@@ -59,7 +59,7 @@ public class App implements Serializable
 	}
 
 	public static App getInstance(String id, String name, String description,
-								  List<Class<Screen>> screens)
+	                              List<Class<Screen>> screens)
 	{
 		App app = new App();
 		app.id = id;
@@ -137,7 +137,7 @@ public class App implements Serializable
 	public static class Module implements Serializable
 	{
 
-		private static final long serialVersionUID = 1L;
+		@Serial private static final long serialVersionUID = 1L;
 
 		private String id;
 		private String icon;
@@ -218,7 +218,7 @@ public class App implements Serializable
 		public static class Screen implements Serializable
 		{
 
-			private static final long serialVersionUID = 1L;
+			@Serial private static final long serialVersionUID = 1L;
 
 			private String id;
 			private String name;
@@ -308,7 +308,7 @@ public class App implements Serializable
 			public static class Action implements Serializable
 			{
 
-				private static final long serialVersionUID = 1L;
+				@Serial private static final long serialVersionUID = 1L;
 
 				private String id;
 				private String name;

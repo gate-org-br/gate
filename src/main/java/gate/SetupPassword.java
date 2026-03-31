@@ -1,5 +1,7 @@
 package gate;
 
+import java.io.Serial;
+
 import java.io.IOException;
 import java.io.Writer;
 
@@ -29,6 +31,8 @@ public class SetupPassword extends HttpServlet
 	@Inject
 	private PasswordControl control;
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Override

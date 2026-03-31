@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.converter.custom.SHA256Converter;
 import java.io.Serializable;
@@ -12,6 +14,8 @@ import java.util.Objects;
 public class SHA256 implements Serializable
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String value;

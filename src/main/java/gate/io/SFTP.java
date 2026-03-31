@@ -31,7 +31,7 @@ public class SFTP implements AutoCloseable
 	public static SFTP connect(String ip, int port,
 	                           String username, String password) throws IOException
 	{
-		SFTPClient client = null;
+		SFTPClient client;
 		SSHClient ssh = new SSHClient();
 		try
 		{

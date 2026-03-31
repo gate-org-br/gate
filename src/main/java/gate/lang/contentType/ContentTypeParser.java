@@ -17,7 +17,7 @@ public class ContentTypeParser implements AutoCloseable
 	}
 
 	public ContentType parse() throws IOException,
-			ParseException
+	                                  ParseException
 	{
 
 		Map<String, String> parameters = new LinkedHashMap<>();
@@ -36,14 +36,14 @@ public class ContentTypeParser implements AutoCloseable
 			throw new ParseException("expected subtype and found " + current, 0);
 		String subtype = (String) current;
 
-		current = scanner.scan();
-		while (Character.valueOf(' ').equals(current))
+		do
 			current = scanner.scan();
+		while (Character.valueOf(' ').equals(current));
 		while (Character.valueOf(';').equals(current))
 		{
-			current = scanner.scan();
-			while (Character.valueOf(' ').equals(current))
+			do
 				current = scanner.scan();
+			while (Character.valueOf(' ').equals(current));
 
 			if (!(current instanceof String))
 				throw new ParseException("expected parameter and found " + current, 0);

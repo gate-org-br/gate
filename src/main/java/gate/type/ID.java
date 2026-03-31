@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.IDConverter;
@@ -11,6 +13,8 @@ import java.io.Serializable;
 public class ID implements Serializable, Comparable<ID>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final int value;

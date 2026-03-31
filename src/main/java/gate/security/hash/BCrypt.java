@@ -3,6 +3,8 @@ package gate.security.hash;
 import gate.annotation.Converter;
 import gate.converter.custom.BCryptConverter;
 import gate.error.AppError;
+
+import java.io.Serial;
 import java.util.Objects;
 
 @Converter(BCryptConverter.class)
@@ -10,7 +12,7 @@ public class BCrypt implements Hash
 {
 
 	private static final int ROUNDS = 12;
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final String value;
 
@@ -29,8 +31,8 @@ public class BCrypt implements Hash
 		try
 		{
 			String hash = at.favre.lib.crypto.bcrypt.BCrypt
-				.withDefaults()
-				.hashToString(ROUNDS, password.toCharArray());
+					.withDefaults()
+					.hashToString(ROUNDS, password.toCharArray());
 			return new BCrypt(hash);
 		} catch (Exception ex)
 		{
@@ -44,7 +46,7 @@ public class BCrypt implements Hash
 		try
 		{
 			at.favre.lib.crypto.bcrypt.BCrypt.Result result
-				= at.favre.lib.crypto.bcrypt.BCrypt
+					= at.favre.lib.crypto.bcrypt.BCrypt
 					.verifyer()
 					.verify(password.toCharArray(), value);
 			return result.verified;
@@ -64,7 +66,7 @@ public class BCrypt implements Hash
 	public boolean equals(Object obj)
 	{
 		return obj instanceof BCrypt
-			&& Objects.equals(((BCrypt) obj).value, value);
+		       && Objects.equals(((BCrypt) obj).value, value);
 	}
 
 	@Override

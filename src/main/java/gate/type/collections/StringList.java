@@ -1,5 +1,7 @@
 package gate.type.collections;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 public class StringList extends ArrayList<String>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public StringList()
@@ -66,6 +70,7 @@ public class StringList extends ArrayList<String>
 	public static class Comma extends StringList
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public Comma()
@@ -106,6 +111,7 @@ public class StringList extends ArrayList<String>
 	public static class Semicolon extends StringList
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public Semicolon()
@@ -147,6 +153,7 @@ public class StringList extends ArrayList<String>
 	public static class LineBreak extends StringList
 	{
 
+		@Serial
 		private static final long serialVersionUID = 1L;
 
 		public LineBreak()

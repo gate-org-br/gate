@@ -21,6 +21,7 @@ import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -39,102 +40,103 @@ import java.util.Objects;
 public class AppProducer implements Serializable
 {
 
-    private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
-    @Inject
-    private ServletContext servletContext;
+	@Inject
+	private ServletContext servletContext;
 
-    private App app;
+	private App app;
 
-    @Inject
-    private Instance<Screen> instances;
+	@Inject
+	private Instance<Screen> instances;
 
-    @Inject
-    private Logger logger;
+	@Inject
+	private Logger logger;
 
-    @Inject
-    AppControl control;
+	@Inject
+	AppControl control;
 
-    @Inject
-    Calls actionRegistry;
+	@Inject
+	Calls actionRegistry;
 
-    @PostConstruct
-    public void prepare()
-    {
-        String id = Objects.requireNonNullElse(servletContext.getServletContextName(),
-                servletContext.getInitParameter("id"));
+	@PostConstruct
+	public void prepare()
+	{
+		String id = Objects.requireNonNullElse(servletContext.getServletContextName(),
+				servletContext.getInitParameter("id"));
 
-        @SuppressWarnings("unchecked")
-        var types = instances.stream().map(e -> (Class<Screen>) e.getClass())
-                .map(e -> e.isSynthetic() ? e.getSuperclass() : e)
-                .filter(type -> !Modifier.isAbstract(type.getModifiers()))
-                .filter(type -> type.getSimpleName().endsWith("Screen"))
-                .filter(Screen.class::isAssignableFrom)
-                .map(e -> (Class<Screen>) e)
-                .toList();
+		@SuppressWarnings("unchecked")
+		var types = instances.stream().map(e -> (Class<Screen>) e.getClass())
+				.map(e -> e.isSynthetic() ? e.getSuperclass() : e)
+				.filter(type -> !Modifier.isAbstract(type.getModifiers()))
+				.filter(type -> type.getSimpleName().endsWith("Screen"))
+				.filter(Screen.class::isAssignableFrom)
+				.map(e -> (Class<Screen>) e)
+				.toList();
 
-        app = App.getInstance(id, servletContext.getInitParameter("name"),
-                servletContext.getInitParameter("description"), types);
+		app = App.getInstance(id, servletContext.getInitParameter("name"),
+				servletContext.getInitParameter("description"), types);
 
-        try
-        {
-            control.update(app);
+		try
+		{
+			control.update(app);
 
-            actionRegistry.register(types);
-        } catch (ConstraintViolationException ex)
-        {
-            logger.error("Erro trying to update app data " + ex.getMessage(), ex);
-        }
-    }
+			actionRegistry.register(types);
+		} catch (ConstraintViolationException ex)
+		{
+			logger.error("Erro trying to update app data {}", ex.getMessage(), ex);
+		}
+	}
 
-    @Current
-    @Produces
-    @Named("app")
-    public App produce()
-    {
-        return app;
-    }
+	@Current
+	@Produces
+	@Named("app")
+	public App produce()
+	{
+		return app;
+	}
 
-    @Dependent
-    private static class AppControl extends Control
-    {
+	@Dependent
+	private static class AppControl extends Control
+	{
 
-        public void update(App app) throws ConstraintViolationException
-        {
-            try (Link link = Link.of("Gate"); AppDao dao = new AppDao(link))
-            {
-                link.beginTran();
-                dao.delete(app);
-                dao.insert(app);
-                link.commit();
-            }
-        }
+		public void update(App app) throws ConstraintViolationException
+		{
+			try (Link link = Link.of("Gate");
+			     AppDao dao = new AppDao(link))
+			{
+				link.beginTran();
+				dao.delete(app);
+				dao.insert(app);
+				link.commit();
+			}
+		}
 
-        private static class AppDao extends Dao
-        {
+		private static class AppDao extends Dao
+		{
 
-            public AppDao(Link link)
-            {
-                super(link);
-            }
+			public AppDao(Link link)
+			{
+				super(link);
+			}
 
-            public void insert(App app) throws ConstraintViolationException
-            {
-                Insert.into("App")
-                        .set("id", app.getId())
-                        .set("json", app.toString())
-                        .build()
-                        .connect(getLink()).execute();
-            }
+			public void insert(App app) throws ConstraintViolationException
+			{
+				Insert.into("App")
+						.set("id", app.getId())
+						.set("json", app.toString())
+						.build()
+						.connect(getLink()).execute();
+			}
 
-            public void delete(App app) throws ConstraintViolationException
-            {
-                Delete.from("App")
-                        .where(Condition.of("id")
-                                .eq(app.getId()))
-                        .build()
-                        .connect(getLink()).execute();
-            }
-        }
-    }
+			public void delete(App app) throws ConstraintViolationException
+			{
+				Delete.from("App")
+						.where(Condition.of("id")
+								.eq(app.getId()))
+						.build()
+						.connect(getLink()).execute();
+			}
+		}
+	}
 }

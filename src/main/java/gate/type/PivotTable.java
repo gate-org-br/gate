@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -19,6 +21,8 @@ public class PivotTable<T> implements Serializable
 	private final String valueLabel;
 	private final T defaultValue;
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 	private final Set<String> columns = new LinkedHashSet<>();
 	private final Map<String, Map<String, T>> values = new LinkedHashMap<>();

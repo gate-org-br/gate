@@ -1,9 +1,11 @@
 package gate.error;
 
+import java.io.Serial;
+
 public class TemplateException extends EvaluableException
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	public TemplateException(String message)
 	{

@@ -7,6 +7,7 @@ import gate.constraint.Required;
 import gate.converter.EnumStringConverter;
 import gate.type.ID;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -17,7 +18,7 @@ import java.util.StringJoiner;
 public class Auth implements Serializable
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	@Required()
 	@Description
@@ -187,9 +188,9 @@ public class Auth implements Serializable
 	public boolean isSuperAuth()
 	{
 		return Access.GRANT == access
-			   && module == null
-			   && screen == null
-			   && action == null;
+		       && module == null
+		       && screen == null
+		       && action == null;
 	}
 
 	@Converter(EnumStringConverter.class)
@@ -220,25 +221,25 @@ public class Auth implements Serializable
 	public boolean blocked(String module, String screen, String action)
 	{
 		return this.access == Access.BLOCK
-			   && (this.module == null || this.module.equals(module))
-			   && (this.screen == null || this.screen.equals(screen))
-			   && (this.action == null || this.action.equals(action));
+		       && (this.module == null || this.module.equals(module))
+		       && (this.screen == null || this.screen.equals(screen))
+		       && (this.action == null || this.action.equals(action));
 	}
 
 	public boolean granted(String module, String screen, String action)
 	{
 		return this.access == Access.GRANT
-			   && (module == null || this.module == null || this.module.equals(module))
-			   && (screen == null || this.screen == null || this.screen.equals(screen))
-			   && (action == null || this.action == null || this.action.equals(action));
+		       && (module == null || this.module == null || this.module.equals(module))
+		       && (screen == null || this.screen == null || this.screen.equals(screen))
+		       && (action == null || this.action == null || this.action.equals(action));
 	}
 
 	public boolean equals(String module, String screen, String action)
 	{
 		return this.access == Access.GRANT
-			   && Objects.equals(module, this.module)
-			   && Objects.equals(screen, this.screen)
-			   && Objects.equals(action, this.action);
+		       && Objects.equals(module, this.module)
+		       && Objects.equals(screen, this.screen)
+		       && Objects.equals(action, this.action);
 	}
 
 }

@@ -156,8 +156,8 @@ class ConstructionStrategyTest
 	void shouldIgnoreConstructorThatDoesNotConsumeAllAttributes()
 	{
 		var attributes = Map.<Attribute, Object>of(
-				attribute("arg0", String.class), "Ana",
-				attribute("arg1", Integer.class), 42);
+				attribute("name", String.class), "Ana",
+				attribute("age", Integer.class), 42);
 
 		var result = (FullMatchPreferred) Assertions.assertDoesNotThrow(
 				() -> ConstructionStrategy.newInstance(FullMatchPreferred.class, attributes));
@@ -374,17 +374,17 @@ class ConstructionStrategyTest
 	}
 
 	private static <T> Attribute attribute(String name,
-										   Class<?> rawType,
-										   Function<T, Object> getter,
-										   BiConsumer<T, Object> setter)
+	                                       Class<?> rawType,
+	                                       Function<T, Object> getter,
+	                                       BiConsumer<T, Object> setter)
 	{
 		return new TestAttribute<>(name, rawType, getter, setter);
 	}
 
 	private record TestAttribute<T>(String name,
-									Class<?> rawType,
-									Function<T, Object> getter,
-									BiConsumer<T, Object> setter) implements Attribute
+	                                Class<?> rawType,
+	                                Function<T, Object> getter,
+	                                BiConsumer<T, Object> setter) implements Attribute
 	{
 		@Override
 		public java.lang.reflect.Type getGenericType()

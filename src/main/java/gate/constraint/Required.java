@@ -3,6 +3,7 @@ package gate.constraint;
 import gate.error.AppException;
 import gate.lang.property.Property;
 
+import java.io.Serial;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,7 +24,7 @@ public @interface Required
 	class Implementation extends Constraint.Implementation<String>
 	{
 
-		private static final long serialVersionUID = 1L;
+		@Serial private static final long serialVersionUID = 1L;
 
 		public Implementation(Object value)
 		{
@@ -37,7 +38,7 @@ public @interface Required
 			{
 				var value = property.getValue(entity);
 				if (value == null
-					|| (value instanceof String string && string.isBlank()))
+				    || (value instanceof String string && string.isBlank()))
 				{
 					String name = property.getMetadata().name();
 					if (name == null)

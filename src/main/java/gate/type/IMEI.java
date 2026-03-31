@@ -1,5 +1,7 @@
 package gate.type;
 
+import java.io.Serial;
+
 import gate.annotation.Converter;
 import gate.converter.custom.IMEIConverter;
 import java.io.Serializable;
@@ -8,6 +10,8 @@ import java.io.Serializable;
 public class IMEI implements Serializable, Comparable<IMEI>
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String value;

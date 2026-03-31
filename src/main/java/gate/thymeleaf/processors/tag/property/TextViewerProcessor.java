@@ -24,13 +24,13 @@ public class TextViewerProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       Object screen, Property property, Attributes attributes)
 	{
 
-		String value = "";
+		String value;
 		if (attributes.containsKey("value"))
 			value = Converter.toString(expression.create()
-				.evaluate((String) attributes.remove("value")));
+					.evaluate((String) attributes.remove("value")));
 		else
 			value = Converter.toString(property.getValue(screen));
 

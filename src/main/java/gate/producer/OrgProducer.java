@@ -10,13 +10,15 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Optional;
 
 /**
  *
  * @author davins
- *
+ * <p>
  * Produces an Org object with current organization data.
  *
  */
@@ -27,9 +29,9 @@ public class OrgProducer implements Serializable
 	@Inject
 	private Control control;
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 	private static final Org DEFAULT = new Org().setOrgID("ORG")
-		.setName("Organização");
+			.setName("Organização");
 
 	@Current
 	@Produces
@@ -60,26 +62,26 @@ public class OrgProducer implements Serializable
 				try (Link link = Link.of("Gate"))
 				{
 					return Select.expression("orgID")
-						.expression("name")
-						.expression("description")
-						.expression("sun__min")
-						.expression("sun__max")
-						.expression("mon__min")
-						.expression("mon__max")
-						.expression("tue__min")
-						.expression("tue__max")
-						.expression("wed__min")
-						.expression("wed__max")
-						.expression("thu__min")
-						.expression("thu__max")
-						.expression("fri__min")
-						.expression("fri__max")
-						.expression("sat__min")
-						.expression("sat__max")
-						.from("Org")
-						.build()
-						.connect(link)
-						.fetchEntity(Org.class);
+							.expression("name")
+							.expression("description")
+							.expression("sun__min")
+							.expression("sun__max")
+							.expression("mon__min")
+							.expression("mon__max")
+							.expression("tue__min")
+							.expression("tue__max")
+							.expression("wed__min")
+							.expression("wed__max")
+							.expression("thu__min")
+							.expression("thu__max")
+							.expression("fri__min")
+							.expression("fri__max")
+							.expression("sat__min")
+							.expression("sat__max")
+							.from("Org")
+							.build()
+							.connect(link)
+							.fetchEntity(Org.class);
 				}
 			}
 		}

@@ -1,17 +1,6 @@
 package gate.thymeleaf;
 
-import jakarta.el.ArrayELResolver;
-import jakarta.el.BeanELResolver;
-import jakarta.el.CompositeELResolver;
-import jakarta.el.ELContext;
-import jakarta.el.ELResolver;
-import jakarta.el.ExpressionFactory;
-import jakarta.el.FunctionMapper;
-import jakarta.el.ListELResolver;
-import jakarta.el.MapELResolver;
-import jakarta.el.ResourceBundleELResolver;
-import jakarta.el.StaticFieldELResolver;
-import jakarta.el.VariableMapper;
+import jakarta.el.*;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -23,8 +12,8 @@ public class JavaELContext extends ELContext
 	private final VariableMapper variableMapper;
 
 	public JavaELContext(ExpressionFactory factory,
-		BeanManager beanManager,
-		HttpServletRequest request)
+	                     BeanManager beanManager,
+	                     HttpServletRequest request)
 	{
 		resolver = new CompositeELResolver();
 		resolver.add(factory.getStreamELResolver());
@@ -34,7 +23,7 @@ public class JavaELContext extends ELContext
 		resolver.add(new ListELResolver());
 		resolver.add(new ArrayELResolver());
 		resolver.add(new BeanELResolver());
-		funcionMapper = new JaveELFuncionMapper(factory.getInitFunctionMap());
+		funcionMapper = new JaveELFunctionMapper(factory.getInitFunctionMap());
 		variableMapper = new JaveELVariableMapper(factory, beanManager, request);
 	}
 

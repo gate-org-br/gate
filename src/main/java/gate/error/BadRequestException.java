@@ -3,10 +3,12 @@ package gate.error;
 import gate.type.RequestCommand;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serial;
+
 public class BadRequestException extends HttpException
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	public BadRequestException()
 	{

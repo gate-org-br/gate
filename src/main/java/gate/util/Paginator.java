@@ -1,5 +1,7 @@
 package gate.util;
 
+import java.io.Serial;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -18,6 +20,8 @@ public class Paginator<E> implements Iterable<Page<E>>, Serializable
 	private final int size;
 	private final int pageSize;
 	private final int dataSize;
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	public Paginator(List<E> data, int pageSize, Object resume)

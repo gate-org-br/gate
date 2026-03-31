@@ -1,5 +1,7 @@
 package gate.type.mime;
 
+import java.io.Serial;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -24,6 +26,8 @@ import gate.lang.dataurl.DataURL;
 public class MimeText implements Mime
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String charset;

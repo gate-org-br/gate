@@ -16,21 +16,21 @@ public class PropertyScanner
 	private int peek()
 	{
 		return position < input.length()
-			? input.charAt(position)
-			: -1;
+				? input.charAt(position)
+				: -1;
 	}
 
 	private int read()
 	{
 		return position < input.length()
-			? input.charAt(position++)
-			: -1;
+				? input.charAt(position++)
+				: -1;
 	}
 
 	public Object next()
 	{
 		while (position < input.length()
-			&& Character.isWhitespace(input.charAt(position)))
+		       && Character.isWhitespace(input.charAt(position)))
 			position++;
 
 		int c = peek();
@@ -54,12 +54,10 @@ public class PropertyScanner
 			}
 
 			// Strings
-			case '"', '\'' ->
-				readString((char) c);
+			case '"', '\'' -> readString((char) c);
 
 			// Numbers
-			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' ->
-				readNumber();
+			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> readNumber();
 
 			// Identifiers or error
 			default ->
@@ -98,20 +96,13 @@ public class PropertyScanner
 		int c = read();
 		return switch (c)
 		{
-			case 'n' ->
-				'\n';
-			case 't' ->
-				'\t';
-			case 'r' ->
-				'\r';
-			case '\\' ->
-				'\\';
-			case '"' ->
-				'"';
-			case '\'' ->
-				'\'';
-			default ->
-				throw new PropertyError("Invalid escape: \\" + (char) c);
+			case 'n' -> '\n';
+			case 't' -> '\t';
+			case 'r' -> '\r';
+			case '\\' -> '\\';
+			case '"' -> '"';
+			case '\'' -> '\'';
+			default -> throw new PropertyError("Invalid escape: \\" + (char) c);
 		};
 	}
 
@@ -136,9 +127,9 @@ public class PropertyScanner
 		// Decimal part
 		if (peek() == '.')
 		{
-			sb.append((char) read());
-			while (Character.isDigit(peek()))
+			do
 				sb.append((char) read());
+			while (Character.isDigit(peek()));
 
 			return Double.valueOf(sb.toString());
 		}
@@ -149,10 +140,10 @@ public class PropertyScanner
 	private Object readIdentifier()
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append((char) read());
 
-		while (Character.isJavaIdentifierPart(peek()))
+		do
 			sb.append((char) read());
+		while (Character.isJavaIdentifierPart(peek()));
 
 		String result = sb.toString();
 

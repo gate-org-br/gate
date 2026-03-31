@@ -1,27 +1,21 @@
 package gate.io;
 
 import gate.type.DataFile;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import net.schmizz.sshj.userauth.UserAuthException;
+import net.schmizz.sshj.xfer.InMemoryDestFile;
+import net.schmizz.sshj.xfer.InMemorySourceFile;
+
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Spliterator;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.IOUtils;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.transport.TransportException;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
-import net.schmizz.sshj.userauth.UserAuthException;
-import net.schmizz.sshj.xfer.InMemoryDestFile;
-import net.schmizz.sshj.xfer.InMemorySourceFile;
 
 /**
  * Used to execute remote commands on remote hosts via SSH.
@@ -41,9 +35,7 @@ public class SSH implements AutoCloseable
 	 * Create a new SSH connection to the specified host on port 22
 	 *
 	 * @param host address of name of the host where to connect
-	 *
 	 * @return this, for chained invocations
-	 *
 	 * @throws IOException in case of failure during connection
 	 */
 	public static SSH connect(String host) throws IOException
@@ -56,9 +48,7 @@ public class SSH implements AutoCloseable
 	 *
 	 * @param host address of name of the host where to connect
 	 * @param port the port to be used when connecting
-	 *
 	 * @return this, for chained invocations
-	 *
 	 * @throws IOException in case of failure during connection
 	 */
 	public static SSH connect(String host, int port) throws IOException
@@ -76,9 +66,7 @@ public class SSH implements AutoCloseable
 	 * This method does not provide a way to specify a passphrase.
 	 *
 	 * @param username user to authenticate
-	 *
 	 * @return true if successful, false otherwise
-	 *
 	 * @throws IOException in case of failure during authentication
 	 */
 	public boolean authenticate(String username) throws IOException
@@ -102,11 +90,9 @@ public class SSH implements AutoCloseable
 	 * <p>
 	 * This method does not provide a way to specify a passphrase.
 	 *
-	 * @param username user to authenticate
+	 * @param username  user to authenticate
 	 * @param locations one or more locations in the file system containing the private key
-	 *
 	 * @return true if successful, false otherwise
-	 *
 	 * @throws IOException in case of failure during authentication
 	 */
 	public boolean authenticate(String username, Path... locations) throws IOException
@@ -114,8 +100,8 @@ public class SSH implements AutoCloseable
 		try
 		{
 			client.authPublickey(username, Stream.of(locations)
-				.map(e -> e.toAbsolutePath().toString())
-				.toArray(String[]::new));
+					.map(e -> e.toAbsolutePath().toString())
+					.toArray(String[]::new));
 			return true;
 		} catch (UserAuthException ex)
 		{
@@ -128,9 +114,7 @@ public class SSH implements AutoCloseable
 	 *
 	 * @param username user to authenticate
 	 * @param password the password to use for authentication
-	 *
 	 * @return true if successful, false otherwise
-	 *
 	 * @throws IOException in case of failure during authentication
 	 */
 	public boolean authenticate(String username, String password) throws IOException
@@ -160,9 +144,7 @@ public class SSH implements AutoCloseable
 	 * Execute the specified command on the remote host
 	 *
 	 * @param command command to execute
-	 *
 	 * @return true if the command was successful, false otherwise
-	 *
 	 * @throws IOException in case of failure during command execution
 	 */
 	public boolean execute(String command) throws IOException
@@ -174,18 +156,23 @@ public class SSH implements AutoCloseable
 				try (InputStream stream = sessionCommand.getInputStream())
 				{
 					for (int c = stream.read(); c != -1; c = stream.read())
-						OutputStream.nullOutputStream().write(c);
+						try (var nos = OutputStream.nullOutputStream())
+						{
+							nos.write(c);
+						}
 				}
 
 				try (InputStream stream = sessionCommand.getErrorStream())
 				{
 					for (int c = stream.read(); c != -1; c = stream.read())
-						OutputStream.nullOutputStream().write(c);
+						try (var nos = OutputStream.nullOutputStream())
+						{
+							nos.write(c);
+						}
 				}
 
 				sessionCommand.close();
 				return sessionCommand.getExitStatus() == 0;
-
 			}
 		}
 	}
@@ -193,11 +180,9 @@ public class SSH implements AutoCloseable
 	/**
 	 * Execute the specified command on the remote host
 	 *
-	 * @param command formatting string of the command to execute
+	 * @param command    formatting string of the command to execute
 	 * @param parameters parameters to be used when formatting the command to be executed
-	 *
 	 * @return true if the command was successful, false otherwise
-	 *
 	 * @throws IOException in case of failure during command execution
 	 */
 	public boolean execute(String command, Object... parameters) throws IOException
@@ -209,7 +194,6 @@ public class SSH implements AutoCloseable
 	 * Execute the specified command on the remote host and read result
 	 *
 	 * @param command command to execute
-	 *
 	 * @return The command result as a SSHResult object
 	 */
 	public SSHResult call(String command)
@@ -220,9 +204,8 @@ public class SSH implements AutoCloseable
 	/**
 	 * Execute the specified command with the specified parameters on the remote host and read result
 	 *
-	 * @param command command to execute
+	 * @param command    command to execute
 	 * @param parameters parameters to be used on execution
-	 *
 	 * @return The command result as a SSHResult object
 	 */
 	public SSHResult call(String command, Object... parameters)
@@ -234,9 +217,7 @@ public class SSH implements AutoCloseable
 	 * Downloads the specified file from the remote host via SCP
 	 *
 	 * @param filename the file to be downloaded
-	 *
 	 * @return The contents of the downloaded file as a byte array
-	 *
 	 * @throws IOException in case of failure during command execution
 	 */
 	public byte[] get(String filename) throws IOException
@@ -274,9 +255,8 @@ public class SSH implements AutoCloseable
 	 * Uploads a file to the remote host
 	 *
 	 * @param directory the directory where to put file
-	 * @param filename the name of the file to be uploaded
-	 * @param data the contents of the file to be uploaded
-	 *
+	 * @param filename  the name of the file to be uploaded
+	 * @param data      the contents of the file to be uploaded
 	 * @throws IOException in case of failure during command execution
 	 */
 	public void put(String directory, String filename, byte[] data) throws IOException
@@ -311,8 +291,7 @@ public class SSH implements AutoCloseable
 	 * Uploads a file to the remote host
 	 *
 	 * @param filename the name of the file to be uploaded
-	 * @param data the contents of the file to be uploaded
-	 *
+	 * @param data     the contents of the file to be uploaded
 	 * @throws IOException in case of failure during command execution
 	 */
 	public void put(String filename, byte[] data) throws IOException
@@ -324,15 +303,13 @@ public class SSH implements AutoCloseable
 	 * Downloads the specified file from the remote host via SCP
 	 *
 	 * @param filename the file to be downloaded
-	 *
 	 * @return The contents of the downloaded file as a DataFile
-	 *
 	 * @throws IOException in case of failure during command execution
 	 */
 	public DataFile download(String filename) throws IOException
 	{
 		return DataFile.of(get(filename),
-			new File(filename).getName());
+				new File(filename).getName());
 	}
 
 	@Override
@@ -372,7 +349,7 @@ public class SSH implements AutoCloseable
 
 					String error;
 					try (InputStream stream = command.getErrorStream();
-						ByteArrayOutputStream baos = IOUtils.readFully(stream))
+					     ByteArrayOutputStream baos = IOUtils.readFully(stream))
 					{
 						error = baos.toString();
 					}
@@ -403,7 +380,7 @@ public class SSH implements AutoCloseable
 
 					String error;
 					try (InputStream stream = command.getErrorStream();
-						ByteArrayOutputStream baos = IOUtils.readFully(stream))
+					     ByteArrayOutputStream baos = IOUtils.readFully(stream))
 					{
 						error = baos.toString();
 					}
@@ -437,7 +414,7 @@ public class SSH implements AutoCloseable
 					{
 						String error;
 						try (InputStream stream = _command.getErrorStream();
-							ByteArrayOutputStream baos = IOUtils.readFully(stream))
+						     ByteArrayOutputStream baos = IOUtils.readFully(stream))
 						{
 							error = baos.toString();
 						}

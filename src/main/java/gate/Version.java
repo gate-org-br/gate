@@ -1,5 +1,7 @@
 package gate;
 
+import java.io.Serial;
+
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +14,8 @@ import java.io.Writer;
 public class Version extends HttpServlet
 {
 
+	
+	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Inject
