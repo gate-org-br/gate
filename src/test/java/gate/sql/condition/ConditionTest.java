@@ -1,7 +1,9 @@
 package gate.sql.condition;
 
+import gate.entity.User;
 import gate.sql.select.Select;
 import gate.sql.statement.Query;
+import gate.type.PropertyReference;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,15 +32,33 @@ public class ConditionTest
 	}
 
 	@Test
+	public void testWhenFactoryPropertyReference()
+	{
+		Condition condition = Condition.when(true).expression(User::getName).isEq("name");
+
+		assertEquals("name = name", condition.toString());
+		assertTrue(condition.getParameters().toList().isEmpty());
+	}
+
+	@Test
+	public void testWhenFactoryFalseSkipsPropertyReferenceResolution()
+	{
+		PropertyReference<User, String> invalidReference = user -> user.getName();
+
+		Condition condition = Condition.when(false).expression(invalidReference).isEq("name");
+
+		assertEquals("", condition.toString());
+		assertTrue(condition.getParameters().toList().isEmpty());
+	}
+
+	@Test
 	public void testOfConditionWrappersAndFromString()
 	{
 		ConstantCondition constant = Condition.of("x").isEq("y");
-		GenericCondition generic = Condition.of("id").eq();
-		CompiledCondition compiled = Condition.of("n").eq(10);
+			CompiledCondition compiled = Condition.of("n").eq(10);
 
-		assertEquals("(x = y)", Condition.of(constant).toString());
-		assertEquals("(id = ?)", Condition.of(generic).toString());
-		assertEquals("(n = ?)", Condition.of(compiled).toString());
+			assertEquals("(x = y)", Condition.of(constant).toString());
+			assertEquals("(n = ?)", Condition.of(compiled).toString());
 		assertEquals(List.of(10), Condition.of(compiled).getParameters().toList());
 		assertEquals("custom condition", Condition.from("custom condition").toString());
 	}

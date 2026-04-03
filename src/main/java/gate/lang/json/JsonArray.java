@@ -125,18 +125,21 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	@SuppressWarnings("unchecked")
 	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
-
 		Class<T> clazz = (Class<T>) type;
+		Class<?> elementClazz = Reflection.getRawType(elementType);
 
-		if (clazz.isAssignableFrom(Set.class))
-			return (T) stream()
-					.map(e -> e.toObject(Reflection.getRawType(elementType), Reflection.getElementType(elementType)))
-					.collect(Collectors.toSet());
+		var adapter = JsonAdapter.of(elementClazz);
+		if (adapter != null)
+			return clazz.isAssignableFrom(Set.class) ?
+					(T) stream().map(adapter::fromJson).collect(Collectors.toSet())
+					: (T) stream().map(adapter::fromJson).toList();
 
-		return (T) stream()
-				.map(e -> e.toObject(Reflection.getRawType(elementType), Reflection.getElementType(elementType)))
-				.collect(Collectors.toList());
-
+		return clazz.isAssignableFrom(Set.class)
+				? (T) stream()
+					  .map(e -> e.toObject(elementClazz, Reflection.getElementType(elementType)))
+					  .collect(Collectors.toSet())
+				: (T) stream()
+					  .map(e -> e.toObject(elementClazz, Reflection.getElementType(elementType))).toList();
 	}
 
 	/**

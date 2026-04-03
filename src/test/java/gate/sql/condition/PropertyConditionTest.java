@@ -2,6 +2,7 @@ package gate.sql.condition;
 
 import gate.entity.User;
 import gate.lang.property.Property;
+import gate.type.PropertyReference;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -53,5 +54,34 @@ public class PropertyConditionTest
     {
         assertEquals("0 = 0", PropertyCondition.PROPERTY_TRUE.toString());
         assertEquals("0 = 1", PropertyCondition.PROPERTY_FALSE.toString());
+    }
+
+    @Test
+    public void testPropertyReferenceAndOrChain()
+    {
+        Property id = Property.getProperty(User.class, "id");
+        Property active = Property.getProperty(User.class, "active");
+        Property roleId = Property.getProperty(User.class, "role.id");
+
+        PropertyCondition condition = Condition.of("name").isEq(id)
+                .and(User::getActive).isEq(active)
+                .or(User::getRole).isEq(roleId);
+
+        assertEquals("name = ? and active = ? or Role$id = ?", condition.toString());
+        assertEquals(List.of(id, active, roleId), condition.getProperties().toList());
+    }
+
+    @Test
+    public void testPropertyRollbackSkipsPropertyReferenceResolution()
+    {
+        Property id = Property.getProperty(User.class, "id");
+        PropertyReference<User, String> invalidReference = user -> user.getName();
+
+        PropertyCondition condition = Condition.of("column1").isEq(id)
+                .and().when(false).expression(invalidReference).isEq(id)
+                .or().when(false).not(invalidReference).isEq(id);
+
+        assertEquals("column1 = ?", condition.toString());
+        assertEquals(List.of(id), condition.getProperties().toList());
     }
 }

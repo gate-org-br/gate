@@ -6,7 +6,7 @@ import gate.sql.Clause;
  * A single predicate of a constant condition.
  */
 public abstract class ConstantPredicate extends Predicate implements ConstantPredicateMethods,
-		GenericPredicateMethods, CompiledPredicateMethods, PropertyPredicateMethods
+			CompiledPredicateMethods, PropertyPredicateMethods
 {
 
 	ConstantPredicate(Clause clause)
@@ -131,8 +131,8 @@ public abstract class ConstantPredicate extends Predicate implements ConstantPre
 		};
 	}
 
-	static class Rollback extends ConstantPredicate
-			implements GenericPredicateMethods.Rollback, CompiledPredicateMethods.Rollback
+		static class Rollback extends ConstantPredicate
+				implements CompiledPredicateMethods.Rollback
 	{
 
 		public Rollback(Clause clause)

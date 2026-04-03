@@ -40,28 +40,6 @@ public abstract class JoinedSubqueryAlias implements Clause, Aliasable
 		}
 	}
 
-	public abstract static class Generic extends JoinedSubqueryAlias
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public JoinedSelect.Generic as(String alias)
-		{
-			return new JoinedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " as " + alias;
-				}
-			};
-		}
-	}
-
 	public abstract static class Compiled extends JoinedSubqueryAlias
 	{
 

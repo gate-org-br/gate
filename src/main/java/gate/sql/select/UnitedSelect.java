@@ -36,22 +36,6 @@ public abstract class UnitedSelect implements SelectClause, Unitable
 		}
 	}
 
-	public abstract static class Generic extends UnitedSelect implements Unitable.Generic,
-		Query.Builder
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public Query build()
-		{
-			return Query.of(toString());
-		}
-	}
-
 	public abstract static class Compiled extends UnitedSelect implements Unitable.Compiled,
 		Query.Compiled.Builder
 	{
@@ -64,7 +48,7 @@ public abstract class UnitedSelect implements SelectClause, Unitable
 		@Override
 		public Query.Compiled build()
 		{
-			return Query.of(toString()).parameters(getParameters()
+			return Query.of(toString(), getParameters()
 				.collect(Collectors.toList()));
 		}
 	}

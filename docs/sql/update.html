@@ -1,19 +1,18 @@
 <g-callout class='fill'>
 	<h1>Update</h1>
 	<p>
-		Update operations should make scope and safety explicit:
-		clear <code>where</code> predicates, optional assignments with <code>when(...)</code>, and row-count guards.
+		Use <code>Update</code> when the write needs to be explicit: which table, which columns, and
+		which rows are affected.
 	</p>
 </g-callout>
 
 <g-tab-control>
 	<a href="#">Standard Update</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Clear table/field mapping with ID-scoped update.</p>
-				<g-message class='fill'>
-					<pre><code>Update.table("UserAccount")
+		<g-callout>
+			<p>A clear update normally has a fixed <code>where</code> clause.</p>
+			<g-message class='fill'>
+				<pre><code>Update.table("UserAccount")
 	.set("taxId", value.getTaxId())
 	.set("Role$id", value.getRole().getId())
 	.set("ContactCenter$id", value.getContactCenter().getId())
@@ -21,80 +20,73 @@
 	.build()
 	.connect(getLink())
 	.execute();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Update scope is explicit</li>
-					<li>Low chance of accidental full-table updates</li>
-					<li>Easy to review and maintain</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Conditional Assignments with when(...)</a>
+	<a href="#">Optional Assignments</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Only assign optional fields when values exist.</p>
-				<g-message class='fill'>
-					<pre><code>Update.table("Category")
+		<g-callout>
+			<p>Use <code>when(...)</code> to include a column assignment only when the value exists.</p>
+			<g-message class='fill'>
+				<pre><code>Update.table("Category")
 	.set("name", value.getName())
 	.set("description", value.getDescription())
 	.when(value.getIcon() != null).set("icon", value.getIcon())
-	.where(Condition.of("id").eq(ID.class, value.getId()))
-	.build()
-	.connect(getLink())
-	.execute();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Prevents unintended null overwrites</li>
-					<li>Keeps optional logic inside the fluent block</li>
-					<li>Matches patch-like update semantics</li>
-				</ul>
-			</g-callout>
-		</div>
-	</div>
-
-	<a href="#">Not Found Guard</a>
-	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Common production guard: fail if no row was updated.</p>
-				<g-message class='fill'>
-					<pre><code>if (Update.table("Organization")
-	.set("name", value.getName())
-	.set("host", value.getHost())
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
 	.connect(getLink())
-	.execute() == 0)
-	throw new NotFoundException();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>No silent no-op write</li>
-					<li>Makes API behavior deterministic</li>
-					<li>Good protection against stale IDs</li>
-				</ul>
-			</g-callout>
-		</div>
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Batch Entity Update</a>
+	<a href="#">Conditional Clauses</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Batch pattern with entity extractors.</p>
-				<g-message class='fill'>
-					<pre><code>Update.table("Ticket")
+		<g-callout>
+			<p>
+				Use <code>when(...)</code> when an assignment should only exist if some runtime
+				condition is true.
+			</p>
+			<p>
+				This is important in updates because optional assignments are common: patch-style fields,
+				nullable uploads, audit values that only exist in specific transitions, or values that
+				should only be sent when the caller explicitly asked for them. With
+				<code>when(...)</code>, the update stays linear and readable while still expressing
+				those optional branches.
+			</p>
+			<p>
+				After <code>when(...)</code>, the fluent API offers <code>Supplier</code>-based
+				<code>set(...)</code> methods. This keeps the value lazy: if the condition is false,
+				the assignment is skipped and the supplier is not evaluated.
+			</p>
+			<p>
+				The result is a safer update definition. The SQL only receives the columns that belong
+				to the active branch, and the Java code does not waste work computing values for
+				assignments that never enter the statement.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Update.table("Category")
+	.set("name", value.getName())
+	.when(value.getIcon() != null).set("icon", value::getIcon)
+	.when(value.getUpdatedAt() != null).set(LocalDateTime.class, "updatedAt", value::getUpdatedAt)
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Property References</a>
+	<div>
+		<g-callout>
+			<p>
+				In update flows based on Java models, property references help keep extractors explicit
+				and avoid repeating column names in the value side.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Update.table("Ticket")
 	.from(Ticket.class)
 	.set("notifiedUsers", Ticket::getNotifiedUsers)
 	.where(Condition.from(Ticket.class)
@@ -102,16 +94,95 @@
 	.build()
 	.connect(getLink())
 	.execute(tickets);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Efficient for multi-row updates</li>
-					<li>Type-safe value extraction</li>
-					<li>Less repetitive than manual loops</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Property Reference Lists</a>
+	<div>
+		<g-callout>
+			<p>
+				When an update should copy several values from the current object, use the list-based
+				overload instead of repeating each property assignment manually.
+			</p>
+			<p>
+				This is especially useful in object-based updates where the write shape is already
+				described by the model and the query should only declare which properties are part of
+				the update.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Update.table(value)
+	.set(List.of(
+		Category::getName,
+		Category::getDescription))
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Not Found Guard</a>
+	<div>
+		<g-callout>
+			<p>
+				If the API expects an existing row, check the affected row count explicitly.
+			</p>
+			<g-message class='fill'>
+				<pre><code>if (Update.table("Organization")
+	.set("name", value.getName())
+	.set("host", value.getHost())
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(getLink())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Main Methods</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>table(...)</code></td>
+					<td>Choose the table to update</td>
+				</tr>
+				<tr>
+					<td><code>set(...)</code></td>
+					<td>Assign new values to columns, including values extracted through property references</td>
+				</tr>
+				<tr>
+					<td><code>set(List.of(...))</code></td>
+					<td>Copy several properties from the current object in one step</td>
+				</tr>
+				<tr>
+					<td><code>when(...)</code></td>
+					<td>Include a column assignment only when a runtime condition is true</td>
+				</tr>
+				<tr>
+					<td><code>where(...)</code></td>
+					<td>Restrict which rows will be updated</td>
+				</tr>
+				<tr>
+					<td><code>build()</code></td>
+					<td>Produce the executable update</td>
+				</tr>
+				<tr>
+					<td><code>execute()</code></td>
+					<td>Run the update and return the affected row count</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
 	</div>
 </g-tab-control>

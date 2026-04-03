@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fetches a cursor as a list of java objects of the specified types.
+ * Fetches the first column of all rows as objects of the specified type.
  *
- * 
+ * @param <T> target type
  */
 public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 {
@@ -21,13 +21,10 @@ public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 	}
 
 	/**
-	 * Fetches each row as a list of java arrays of Objects of the specified
-	 * types.
+	 * Fetches the first column of all rows as the requested type.
 	 *
-	 * @param cursor the cursor to be fetched
-	 *
-	 * @return each row fetched as a list of java Objects of the specified
-	 * types
+	 * @param cursor cursor to be fetched
+	 * @return list of fetched values converted to the requested type
 	 */
 	@Override
 	public List<T> fetch(Cursor cursor)
@@ -38,9 +35,9 @@ public class TypedObjectListFetcher<T> implements Fetcher<List<T>>
 	}
 
 	/**
-	 * Return the accumulated result of fetch operations.
+	 * Returns the accumulated result of fetch operations.
 	 *
-	 * @return the accumulated result of fetch operations
+	 * @return accumulated result
 	 */
 	public List<T> getResult()
 	{

@@ -28,16 +28,16 @@ class GateDao extends gate.base.Dao
 
 	public User select(ID id) throws InvalidUsernamePasswordException
 	{
-		return getLink().from(getClass().getResource("select(ID).sql"))
-			.parameters(id, id, id)
+		return getLink().from(getClass().getResource("select(ID).sql"), List.of(id, id, id))
 			.fetch(new UzerFetcher())
 			.orElseThrow(InvalidUsernamePasswordException::new);
 	}
 
 	public User select(String username) throws InvalidUsernamePasswordException
 	{
-		return getLink().from(getClass().getResource("select(String).sql"))
-			.parameters(username, username, username, username, username, username)
+		return getLink().from(
+				getClass().getResource("select(String).sql"),
+				List.of(username, username, username, username, username, username))
 			.fetch(new UzerFetcher())
 			.orElseThrow(InvalidUsernamePasswordException::new);
 	}

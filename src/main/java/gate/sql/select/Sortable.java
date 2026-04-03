@@ -39,36 +39,6 @@ public interface Sortable extends Clause
 		}
 	}
 
-	interface Generic extends Sortable
-	{
-
-		@Override
-		default SortedSelect.Generic asc()
-		{
-			return new SortedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " asc";
-				}
-			};
-		}
-
-		@Override
-		default SortedSelect.Generic desc()
-		{
-			return new SortedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " desc";
-				}
-			};
-		}
-	}
-
 	interface Compiled extends Sortable
 	{
 

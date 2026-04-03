@@ -164,18 +164,6 @@ public class Select implements SelectClause
 		};
 	}
 
-	public static ProjectedSelect.Constant expression(Query query)
-	{
-		return new ProjectedSelect.Constant(new Select())
-		{
-			@Override
-			public String toString()
-			{
-				return getClause() + ", (" + query.toString() + ")";
-			}
-		};
-	}
-
 	public static ProjectedSelect.Compiled expression(Query.Compiled query)
 	{
 		return new ProjectedSelect.Compiled(new Select())
@@ -188,72 +176,9 @@ public class Select implements SelectClause
 		};
 	}
 
-	public static ProjectedSelect.Constant expression(Query.Builder query)
-	{
-		return expression(query.build());
-	}
-
 	public static ProjectedSelect.Compiled expression(Query.Compiled.Builder query)
 	{
 		return expression(query.build());
-	}
-
-	/**
-	 * Creates a query from GQN notation.
-	 *
-	 * @param type     the type of the entity to be selected
-	 * @param notation GQN notation to be used to generate the query
-	 * @return a new query object based on the specified type and the specified GQN notation
-	 * @throws gate.error.PropertyError       if specified type is not an entity
-	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
-	 */
-	public static <T> Query of(Class<T> type, String... notation)
-	{
-		GQN<T> GQN = new GQN<>(type, notation);
-		OrderBy.Ordering ordering = GQN.getOrderBy();
-
-		return ordering != null
-				? Select.from(type)
-				.properties(GQN.getProperties())
-				.where(GQN.getCondition(EntityHelper::getFullColumnName))
-				.orderBy(ordering)
-				.build()
-				: Select.from(type)
-				.properties(GQN.getProperties())
-				.where(GQN.getCondition(EntityHelper::getFullColumnName))
-				.build();
-	}
-
-	/**
-	 * Creates a compiled query from GQN notation ignoring null values.
-	 *
-	 * @param type     the type of the entity to be selected
-	 * @param object   the object whose properties will be compiled with the query
-	 * @param notation GQN notation to be used to generate the query
-	 * @return the entity matching the specified filter and the specified GQN notation
-	 * @throws gate.error.PropertyError       if specified type is not an entity
-	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
-	 */
-	public static <T> Query.Compiled of(Class<T> type, T object, String... notation)
-	{
-		GQN<T> GQN = new GQN<>(type, notation);
-		OrderBy.Ordering ordering = GQN.getOrderBy();
-
-		return ordering != null
-				? Select.from(type)
-				.properties(GQN.getProperties())
-				.where(GQN.getCondition(object))
-				.orderBy(ordering)
-				.build()
-				: Select.from(type)
-				.properties(GQN.getProperties())
-				.where(GQN.getCondition(object))
-				.build();
-	}
-
-	public static <T> TypedSelect<T> from(Class<T> type)
-	{
-		return new TypedSelect<>(type);
 	}
 
 	public static Query.Compiled.Builder exists(SelectClause select)
@@ -269,7 +194,7 @@ public class Select implements SelectClause
 			@Override
 			public Query.Compiled build()
 			{
-				return Query.of(toString()).parameters(select.getParameters().toList());
+				return Query.of(toString(), select.getParameters().toList());
 			}
 		};
 	}

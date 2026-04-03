@@ -1,0 +1,160 @@
+<g-callout class='fill'>
+	<h1>Replace</h1>
+	<p>
+		Use <code>Replace</code> when the database supports replace-style writes and your flow wants
+		to overwrite an existing row or insert it when it does not exist yet.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Single Replace</a>
+	<div>
+		<g-callout>
+			<p>Use it when the write semantics are "insert or replace".</p>
+			<g-message class='fill'>
+				<pre><code>Replace.into("UserPreference")
+	.set("User$id", userId)
+	.set("theme", value.getTheme())
+	.set("language", value.getLanguage())
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Property References</a>
+	<div>
+		<g-callout>
+			<p>
+				For model-based writes, property references help keep the value mapping explicit and
+				aligned with the Java type.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Replace.into(UserPreference.class)
+	.set(UserPreference::getTheme, value.getTheme())
+	.set(UserPreference::getLanguage, value.getLanguage())
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Property Reference Lists</a>
+	<div>
+		<g-callout>
+			<p>
+				When several columns should come directly from the same object, the list-based overload
+				keeps the replace statement shorter and clearer.
+			</p>
+			<p>
+				This is the natural choice when the write is basically "replace this object using these
+				properties" rather than "manually map every column one by one".
+			</p>
+			<g-message class='fill'>
+				<pre><code>Replace.into(value)
+	.set(List.of(
+		UserPreference::getTheme,
+		UserPreference::getLanguage))
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Batch Replace</a>
+	<div>
+		<g-callout>
+			<p>Use <code>from(...)</code> for replace flows that process many objects of the same shape.</p>
+			<g-message class='fill'>
+				<pre><code>Replace.into("Department")
+	.from(Department.class)
+	.set("name", Department::getName)
+	.set("active", Department::getActive)
+	.build()
+	.connect(getLink())
+	.execute(values);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Conditional Clauses</a>
+	<div>
+		<g-callout>
+			<p>
+				Use <code>when(...)</code> when a replace value should only be present under a runtime
+				condition.
+			</p>
+			<p>
+				In replace flows this is especially useful when part of the row is optional. You still
+				define one replace statement, but the columns that only make sense in a given scenario
+				are attached conditionally instead of forcing multiple Java branches around the same
+				operation.
+			</p>
+			<p>
+				After <code>when(...)</code>, the API offers supplier-based <code>set(...)</code>
+				methods. That makes the value lazy: it is only read when the condition is true and the
+				assignment is really included in the final SQL.
+			</p>
+			<p>
+				This is the right choice whenever the value is optional, derived, or expensive to
+				obtain, because it aligns value evaluation with clause inclusion.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Replace.into("UserPreference")
+	.set("User$id", userId)
+	.when(value.getTheme() != null).set("theme", value::getTheme)
+	.when(value.getLanguage() != null).set("language", value::getLanguage)
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Main Methods</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>into(...)</code></td>
+					<td>Choose the target table or Java type</td>
+				</tr>
+				<tr>
+					<td><code>set(...)</code></td>
+					<td>Map columns to fixed values, extractors, or property references</td>
+				</tr>
+				<tr>
+					<td><code>set(List.of(...))</code></td>
+					<td>Copy several properties from the current object in one step</td>
+				</tr>
+				<tr>
+					<td><code>from(...)</code></td>
+					<td>Describe batch replace operations from a Java type</td>
+				</tr>
+				<tr>
+					<td><code>when(...)</code></td>
+					<td>Include a value assignment only when a runtime condition is true</td>
+				</tr>
+				<tr>
+					<td><code>build()</code></td>
+					<td>Produce the executable replace statement</td>
+				</tr>
+				<tr>
+					<td><code>execute()</code></td>
+					<td>Run the replace statement</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+</g-tab-control>

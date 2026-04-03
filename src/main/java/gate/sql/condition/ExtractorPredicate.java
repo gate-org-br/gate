@@ -3,7 +3,7 @@ package gate.sql.condition;
 import gate.sql.Clause;
 
 /**
- * A single predicate of a compiled condition.
+ * A single predicate of an extractor-based condition.
  */
 public class ExtractorPredicate<T> extends Predicate
 		implements ConstantPredicateMethods, ExtractorPredicateMethods<T>

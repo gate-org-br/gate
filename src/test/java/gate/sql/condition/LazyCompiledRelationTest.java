@@ -1,6 +1,8 @@
 package gate.sql.condition;
 
+import gate.entity.User;
 import gate.sql.select.Select;
+import gate.type.PropertyReference;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -35,6 +37,19 @@ public class LazyCompiledRelationTest
                 .and().when(false).not("bw_col").bw(counter::incrementAndGet, counter::incrementAndGet);
 
         assertEquals(0, counter.get());
+        assertEquals("id = ?", condition.toString());
+        assertEquals(List.of(1), condition.getParameters().toList());
+    }
+
+    @Test
+    public void testWhenFalseSkipsPropertyReferenceResolution()
+    {
+        PropertyReference<User, String> invalidReference = user -> user.getName();
+
+        Condition condition = Condition.of("id").eq(1)
+                .and().when(false).expression(invalidReference).eq(() -> "x")
+                .and().when(false).not(invalidReference).eq(() -> "y");
+
         assertEquals("id = ?", condition.toString());
         assertEquals(List.of(1), condition.getParameters().toList());
     }

@@ -172,9 +172,9 @@ public class ConstantConditionTest
     @Test
     public void testIsEqQuery()
     {
-        Condition condition1 = Condition.of("column1").isEq(Select.expression("column2").from("table1").where(Condition.of("column3").eq()));
-        assertEquals("column1 = (select column2 from table1 where column3 = ?)", condition1.toString());
-        assertEquals(0, condition1.getParameters().count());
+	        Condition condition1 = Condition.of("column1").isEq("(select column2 from table1 where column3 = column4)");
+	        assertEquals("column1 = (select column2 from table1 where column3 = column4)", condition1.toString());
+	        assertEquals(0, condition1.getParameters().count());
     }
 
     @Test
@@ -203,9 +203,9 @@ public class ConstantConditionTest
     @Test
     public void testIsNeQuery()
     {
-        Condition condition1 = Condition.of("column1").isNe(Select.expression("column2").from("table1").where(Condition.of("column3").ne()));
-        assertEquals("column1 <> (select column2 from table1 where column3 <> ?)", condition1.toString());
-        assertEquals(0, condition1.getParameters().count());
+	        Condition condition1 = Condition.of("column1").isNe("(select column2 from table1 where column3 <> column4)");
+	        assertEquals("column1 <> (select column2 from table1 where column3 <> column4)", condition1.toString());
+	        assertEquals(0, condition1.getParameters().count());
     }
 
     @Test
@@ -234,9 +234,9 @@ public class ConstantConditionTest
     @Test
     public void testIsLtQuery()
     {
-        Condition condition1 = Condition.of("column1").isLt(Select.expression("column2").from("table1").where(Condition.of("column3").lt()));
-        assertEquals("column1 < (select column2 from table1 where column3 < ?)", condition1.toString());
-        assertEquals(0, condition1.getParameters().count());
+	        Condition condition1 = Condition.of("column1").isLt("(select column2 from table1 where column3 < column4)");
+	        assertEquals("column1 < (select column2 from table1 where column3 < column4)", condition1.toString());
+	        assertEquals(0, condition1.getParameters().count());
     }
 
     @Test
@@ -278,9 +278,9 @@ public class ConstantConditionTest
     @Test
     public void testIsLeQuery()
     {
-        Condition condition1 = Condition.of("column1").isLe(Select.expression("column2").from("table1").where(Condition.of("column3").le()));
-        assertEquals("column1 <= (select column2 from table1 where column3 <= ?)", condition1.toString());
-        assertEquals(0, condition1.getParameters().count());
+	        Condition condition1 = Condition.of("column1").isLe("(select column2 from table1 where column3 <= column4)");
+	        assertEquals("column1 <= (select column2 from table1 where column3 <= column4)", condition1.toString());
+	        assertEquals(0, condition1.getParameters().count());
     }
 
     @Test
@@ -309,9 +309,9 @@ public class ConstantConditionTest
     @Test
     public void testIsGtQuery()
     {
-        Condition condition1 = Condition.of("column1").isGt(Select.expression("column2").from("table1").where(Condition.of("column3").gt()));
-        assertEquals("column1 > (select column2 from table1 where column3 > ?)", condition1.toString());
-        assertEquals(0, condition1.getParameters().count());
+	        Condition condition1 = Condition.of("column1").isGt("(select column2 from table1 where column3 > column4)");
+	        assertEquals("column1 > (select column2 from table1 where column3 > column4)", condition1.toString());
+	        assertEquals(0, condition1.getParameters().count());
     }
 
     @Test
@@ -353,9 +353,9 @@ public class ConstantConditionTest
     @Test
     public void testIsGeQuery()
     {
-        Condition condition1 = Condition.of("column1").isGe(Select.expression("column2").from("table1").where(Condition.of("column3").ge()));
-        assertEquals("column1 >= (select column2 from table1 where column3 >= ?)", condition1.toString());
-        assertEquals(0, condition1.getParameters().count());
+	        Condition condition1 = Condition.of("column1").isGe("(select column2 from table1 where column3 >= column4)");
+	        assertEquals("column1 >= (select column2 from table1 where column3 >= column4)", condition1.toString());
+	        assertEquals(0, condition1.getParameters().count());
     }
 
     @Test
@@ -369,7 +369,7 @@ public class ConstantConditionTest
     @Test
     public void testBwWithoutArguments()
     {
-        Condition condition = Condition.of("column1").bw();
+	        Condition condition = Condition.from("column1 between ? and ?");
         assertEquals("column1 between ? and ?", condition.toString());
         assertEquals(0, condition.getParameters().count());
     }

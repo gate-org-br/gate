@@ -19,7 +19,6 @@ class BasicQuery implements Query
 	BasicQuery(String sql)
 	{
 		this.sql = sql;
-
 	}
 
 	@Override
@@ -41,9 +40,9 @@ class BasicQuery implements Query
 	}
 
 	@Override
-	public Query.Connected connect(Link link)
+	public Query.Connected connect(Link connection)
 	{
-		return new Connected(link);
+		return new Connected(connection);
 	}
 
 	@Override
@@ -69,21 +68,10 @@ class BasicQuery implements Query
 	private class Constant implements Query.Constant
 	{
 
-		Constant()
-		{
-		}
-
 		@Override
 		public Query.Constant.Connected connect(Link connection)
 		{
 			return new Connected(connection);
-		}
-
-		@Override
-		public Query.Constant print(Logger logger)
-		{
-			logger.debug("{}", this);
-			return this;
 		}
 
 		@Override
@@ -94,9 +82,16 @@ class BasicQuery implements Query
 		}
 
 		@Override
+		public Query.Constant print(Logger logger)
+		{
+			logger.debug("{}", this);
+			return this;
+		}
+
+		@Override
 		public String toString()
 		{
-			return BasicQuery.this.toString();
+			return sql;
 		}
 
 		private class Connected implements Query.Constant.Connected
@@ -220,7 +215,7 @@ class BasicQuery implements Query
 			@Override
 			public String toString()
 			{
-				return Constant.this.toString();
+				return sql;
 			}
 		}
 	}
@@ -266,7 +261,7 @@ class BasicQuery implements Query
 		@Override
 		public String toString()
 		{
-			return BasicQuery.this.toString();
+			return sql;
 		}
 
 		private class Connected implements Query.Compiled.Connected
@@ -282,8 +277,7 @@ class BasicQuery implements Query
 			@Override
 			public Command createCommand()
 			{
-				return link.createCommand(toString())
-						.setParameters(parameters);
+				return link.createCommand(toString()).setParameters(parameters);
 			}
 
 			@Override
@@ -393,7 +387,7 @@ class BasicQuery implements Query
 			@Override
 			public String toString()
 			{
-				return Compiled.this.toString();
+				return sql;
 			}
 		}
 	}
@@ -415,7 +409,7 @@ class BasicQuery implements Query
 		}
 
 		@Override
-		public Constant constant()
+		public Query.Connected.Constant constant()
 		{
 			return new Constant();
 		}
@@ -453,8 +447,7 @@ class BasicQuery implements Query
 			@Override
 			public Command createCommand()
 			{
-				return link.createCommand(sql)
-						.setParameters(parameters);
+				return link.createCommand(sql).setParameters(parameters);
 			}
 
 			@Override
@@ -576,10 +569,6 @@ class BasicQuery implements Query
 
 		private class Constant implements Query.Connected.Constant
 		{
-
-			Constant()
-			{
-			}
 
 			@Override
 			public Command createCommand()

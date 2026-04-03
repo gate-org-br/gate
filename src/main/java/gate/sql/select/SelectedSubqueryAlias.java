@@ -40,28 +40,6 @@ public abstract class SelectedSubqueryAlias implements Clause, Aliasable
 		}
 	}
 
-	public abstract static class Generic extends SelectedSubqueryAlias
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public SelectedSelect.Generic as(String alias)
-		{
-			return new SelectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " as " + alias;
-				}
-			};
-		}
-	}
-
 	public abstract static class Compiled extends SelectedSubqueryAlias
 	{
 

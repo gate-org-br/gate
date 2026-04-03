@@ -36,21 +36,6 @@ public abstract class OfSelect implements SelectClause
 		}
 	}
 
-	public static abstract class Generic extends OfSelect implements Query.Builder
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public Query build()
-		{
-			return Query.of(toString());
-		}
-	}
-
 	public static abstract class Compiled extends OfSelect implements Query.Compiled.Builder
 	{
 
@@ -62,9 +47,8 @@ public abstract class OfSelect implements SelectClause
 		@Override
 		public Query.Compiled build()
 		{
-			return Query.of(toString())
-					.parameters(getParameters()
-							.collect(Collectors.toList()));
+			return Query.of(toString(), getParameters()
+					.collect(Collectors.toList()));
 		}
 	}
 

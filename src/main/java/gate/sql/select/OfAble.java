@@ -28,21 +28,6 @@ public interface OfAble extends Clause
 		}
 	}
 
-	interface Generic extends OfAble
-	{
-		default OfSelect.Generic of(String table)
-		{
-			return new OfSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " of " + table;
-				}
-			};
-		}
-	}
-
 	interface Compiled extends OfAble
 	{
 		default OfSelect.Compiled of(String table)

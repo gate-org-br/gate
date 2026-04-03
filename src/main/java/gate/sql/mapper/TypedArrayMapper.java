@@ -29,7 +29,7 @@ public class TypedArrayMapper implements Mapper<Object[]>
 	public Object[] apply(Cursor cursor)
 	{
 		return Stream.of(types)
-			.map(e -> cursor.getCurrentValue(e))
+			.map(cursor::getCurrentValue)
 			.toArray();
 	}
 }

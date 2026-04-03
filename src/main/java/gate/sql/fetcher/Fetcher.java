@@ -3,20 +3,18 @@ package gate.sql.fetcher;
 import gate.sql.Cursor;
 
 /**
- * Fetches a cursor as a java object of the specified type.
+ * Consumes a {@link Cursor} and returns a result object.
  *
- * @author Davi Nunes da Silva
- * 
+ * @param <T> result type produced by the fetcher
  */
 public interface Fetcher<T>
 {
 
 	/**
-	 * Fetches a cursor as a java object of the specified type.
+	 * Consumes the given cursor.
 	 *
-	 * @param cursor the cursor to be fetched
-	 *
-	 * @return the results as a object of the specified type
+	 * @param cursor cursor to consume
+	 * @return fetched result
 	 */
 	T fetch(Cursor cursor);
 }

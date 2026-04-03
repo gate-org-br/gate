@@ -53,38 +53,6 @@ public abstract class WithRollupSelect implements SelectClause, Orderable, Limit
 		}
 	}
 
-	public static abstract class Generic extends WithRollupSelect implements
-		Refinable.Generic,
-		Orderable.Generic,
-		Limitable.Generic,
-		Query.Builder
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public RefinedSelect.Generic having(ConstantCondition predicate)
-		{
-			return new RefinedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " having " + predicate.toString();
-				}
-			};
-		}
-
-		@Override
-		public Query build()
-		{
-			return Query.of(toString());
-		}
-	}
-
 	public static abstract class Compiled extends WithRollupSelect implements
 		Refinable.Compiled,
 		Orderable.Compiled,
@@ -113,9 +81,8 @@ public abstract class WithRollupSelect implements SelectClause, Orderable, Limit
 		@Override
 		public Query.Compiled build()
 		{
-			return Query.of(toString())
-				.parameters(getParameters()
-					.collect(Collectors.toList()));
+			return Query.of(toString(), getParameters()
+				.collect(Collectors.toList()));
 		}
 	}
 

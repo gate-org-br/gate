@@ -3,7 +3,7 @@ package gate.sql.condition;
 import gate.sql.Clause;
 
 /**
- * A single predicate of a compiled condition.
+ * A single predicate of a property-based condition.
  */
 public abstract class PropertyPredicate extends Predicate implements
 	ConstantPredicateMethods,

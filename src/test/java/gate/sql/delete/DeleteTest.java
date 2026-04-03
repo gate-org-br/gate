@@ -30,11 +30,10 @@ public class DeleteTest
 	{
 		String expected = "delete from Uzer where id = ? and name like ?";
 
-		String result = Delete.from("Uzer")
-			.where(Condition.of("id").eq()
-				.and("name").lk())
-			.build()
-			.toString();
+			String result = Delete.from("Uzer")
+				.where(Condition.from("id = ? and name like ?"))
+				.build()
+				.toString();
 
 		assertEquals(expected, result);
 	}
@@ -89,8 +88,8 @@ public class DeleteTest
 	@Test
 	public void test5()
 	{
-		String expected = "delete from Contact where 0 = 0 and Person$id = ?";
-		String result = Delete.of(Contact.class, "=person.id").toString();
+		String expected = "delete from Contact where Person$id = ?";
+			String result = Delete.from("Contact").where(Condition.from("Person$id = ?")).build().toString();
 
 		assertEquals(expected, result);
 	}

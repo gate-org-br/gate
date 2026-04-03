@@ -4,21 +4,16 @@ import gate.sql.Cursor;
 import java.util.Optional;
 
 /**
- * Fetches the first column of the first row from a Cursor as a java object.
- *
- * @author davins
+ * Fetches the first column of the first row as a Java object.
  */
 public class ObjectFetcher implements Fetcher<Optional<Object>>
 {
 
 	/**
-	 * Fetches the first column of the first row of the specified Cursor as a java object.
+	 * Fetches the first column of the first row.
 	 *
-	 * @param cursor Cursor from where to fetch the result
-	 *
-	 * @return an Optional containing the first column of the first row of the specified Cursor as a java object or a
-	 *         empty optional if the Cursor is empty
-	 *
+	 * @param cursor cursor to be fetched
+	 * @return optional containing the first value, or empty if the cursor has no rows
 	 */
 	@Override
 	public Optional<Object> fetch(Cursor cursor)

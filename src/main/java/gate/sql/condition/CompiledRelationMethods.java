@@ -2,6 +2,7 @@ package gate.sql.condition;
 
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+
 import java.util.stream.Stream;
 
 interface CompiledRelationMethods extends Clause
@@ -12,7 +13,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param expression the expression to be associated with the new predicate
 	 * @return the new predicate created, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	CompiledPredicate expression(String expression, Object... parameters);
@@ -22,7 +22,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param condition the sub condition to be evaluated
 	 * @return the current condition, for chained invocations
-	 *
 	 * @see gate.sql.condition.Condition
 	 */
 	default CompiledCondition condition(CompiledCondition condition)
@@ -42,7 +41,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					condition.getParameters());
+						condition.getParameters());
 			}
 		};
 	}
@@ -52,7 +51,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param subquery the sub query to be associated with the new predicate
 	 * @return the new predicate created, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	default CompiledPredicate subquery(Query.Compiled subquery)
@@ -72,7 +70,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					subquery.getParameters().stream());
+						subquery.getParameters().stream());
 			}
 		};
 	}
@@ -82,7 +80,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param subquery the sub query to be associated with the new predicate
 	 * @return the new predicate created, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	default CompiledPredicate subquery(Query.Compiled.Builder subquery)
@@ -95,7 +92,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param subquery the sub query to be associated with the new predicate
 	 * @return the new negated predicate created, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	default CompiledPredicate not(Query.Compiled subquery)
@@ -115,7 +111,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					subquery.getParameters().stream());
+						subquery.getParameters().stream());
 			}
 		};
 	}
@@ -125,7 +121,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param subquery the sub query to be associated with the new predicate
 	 * @return the new negated predicate created, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	default CompiledPredicate not(Query.Compiled.Builder subquery)
@@ -138,7 +133,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param subquery the sub query to be checked for emptiness
 	 * @return the current condition, for chained invocations
-	 *
 	 * @see gate.sql.condition.Condition
 	 */
 	default CompiledCondition exists(Query.Compiled subquery)
@@ -158,7 +152,7 @@ interface CompiledRelationMethods extends Clause
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					subquery.getParameters().stream());
+						subquery.getParameters().stream());
 			}
 		};
 	}
@@ -168,7 +162,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param subquery the sub query to be checked for emptiness
 	 * @return the current condition, for chained invocations
-	 *
 	 * @see gate.sql.condition.Condition
 	 */
 	default CompiledCondition exists(Query.Compiled.Builder subquery)
@@ -181,7 +174,6 @@ interface CompiledRelationMethods extends Clause
 	 *
 	 * @param condition the sub condition to be evaluated
 	 * @return the current condition, for chained invocations
-	 *
 	 * @see gate.sql.condition.Condition
 	 */
 	CompiledCondition not(CompiledCondition condition);

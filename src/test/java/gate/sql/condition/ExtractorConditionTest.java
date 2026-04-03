@@ -4,6 +4,7 @@ import gate.entity.User;
 import gate.sql.select.Select;
 import gate.sql.statement.Query;
 import gate.type.ID;
+import gate.type.PropertyReference;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +18,15 @@ public class ExtractorConditionTest
 	{
 		Condition condition = Condition.from(User.class)
 			.expression("id").eq(User::getId);
+
+		assertEquals("id = ?", condition.toString());
+	}
+
+	@Test
+	public void testExtractorPropertyReferenceExpressionEq()
+	{
+		Condition condition = Condition.from(User.class)
+				.expression(User::getId).eq(User::getId);
 
 		assertEquals("id = ?", condition.toString());
 	}
@@ -37,6 +47,18 @@ public class ExtractorConditionTest
 		assertEquals("id = ? and name <> ? and name < ? and name <= ? and name > ? and name >= ? and id between ? and ? and id between ? and ?",
 				condition.toString());
 		assertEquals(9, condition.getParameters().count());
+	}
+
+	@Test
+	public void testExtractorPropertyReferenceAndOrChain()
+	{
+		Condition condition = Condition.from(User.class)
+				.expression("id").eq(User::getId)
+				.and(User::getName).eq(User::getName)
+				.or(User::getRole).eq(User::getRole);
+
+		assertEquals("id = ? and name = ? or Role$id = ?", condition.toString());
+		assertEquals(3, condition.getParameters().count());
 	}
 
 	@Test
@@ -67,6 +89,21 @@ public class ExtractorConditionTest
 				.and().when(false).expression("name").ne(User::getName)
 				.or().when(false).exists(Select.expression("id").from("Role"))
 				.and().when(false).not(Condition.of("x").isEq("y"))
+				.and().expression("active").isEq("true");
+
+		assertEquals("id = ? and active = true", condition.toString());
+		assertEquals(1, condition.getParameters().count());
+	}
+
+	@Test
+	public void testExtractorRollbackSkipsPropertyReferenceResolution()
+	{
+		PropertyReference<User, String> invalidReference = user -> user.getName();
+
+		Condition condition = Condition.from(User.class)
+				.expression("id").eq(User::getId)
+				.and().when(false).expression(invalidReference).ne(User::getName)
+				.and().when(false).not(invalidReference).isEq("x")
 				.and().expression("active").isEq("true");
 
 		assertEquals("id = ? and active = true", condition.toString());

@@ -1,68 +1,49 @@
 <g-callout class='fill'>
 	<h1>Delete</h1>
 	<p>
-		Delete flows should be explicit about scope and outcome.
-		The best production patterns combine strict predicates and row-count validation.
+		Use <code>Delete</code> when the removal must stay explicit and auditable. In most cases,
+		that means a clear predicate and an explicit row-count check.
 	</p>
 </g-callout>
 
 <g-tab-control>
 	<a href="#">Delete By ID</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Canonical delete with typed ID.</p>
-				<g-message class='fill'>
-					<pre><code>Delete.from("Attachment")
-	.where(Condition.of("id").eq(ID.class, value.getId()))
+		<g-callout>
+			<p>The most common delete flow is a simple, scoped delete by identifier.</p>
+			<g-message class='fill'>
+				<pre><code>Delete.from("Attachment")
+	.where(Condition.of("id").eq(value.getId()))
 	.build()
 	.connect(getLink())
 	.execute();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Precise and auditable deletion target</li>
-					<li>Simple to reason about and test</li>
-					<li>Avoids accidental broad deletes</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Delete + Not Found Guard</a>
+	<a href="#">Not Found Guard</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Preferred API behavior when deleting a required record.</p>
-				<g-message class='fill'>
-					<pre><code>if (Delete.from("Organization")
+		<g-callout>
+			<p>If the record must exist, validate the affected row count.</p>
+			<g-message class='fill'>
+				<pre><code>if (Delete.from("Organization")
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
 	.connect(getLink())
 	.execute() == 0)
 	throw new NotFoundException();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>No silent failures</li>
-					<li>Caller receives clear status semantics</li>
-					<li>Supports optimistic concurrency checks</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Delete with Subquery Predicate</a>
+	<a href="#">Delete With Subquery</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Useful when deletion key is discovered through relational lookup.</p>
-				<g-message class='fill'>
-					<pre><code>Delete.from("Attachment")
+		<g-callout>
+			<p>
+				Use a subquery when the delete target depends on another relational lookup.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Delete.from("Attachment")
 	.where(Condition.of("Attachment.id")
 		.isEq(Select.expression("Category.Attachment$id")
 			.from("Category")
@@ -70,39 +51,39 @@
 	.build()
 	.connect(getLink())
 	.execute();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Encodes relationship rule in one SQL operation</li>
-					<li>Avoids extra select-then-delete roundtrip</li>
-					<li>Keeps cleanup logic consistent with relational model</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Full Table Delete (Administrative)</a>
+	<a href="#">Main Methods</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Only for controlled maintenance flows.</p>
-				<g-message class='fill'>
-					<pre><code>Delete.from("Device")
-	.build()
-	.connect(getLink())
-	.execute();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Important:</p>
-				<ul>
-					<li>Use only in explicit admin/maintenance paths</li>
-					<li>Prefer transaction boundaries and audit logs</li>
-					<li>Avoid exposing this in user-facing APIs</li>
-				</ul>
-			</g-callout>
-		</div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>from(...)</code></td>
+					<td>Choose the table to delete from</td>
+				</tr>
+				<tr>
+					<td><code>where(...)</code></td>
+					<td>Restrict which rows will be deleted</td>
+				</tr>
+				<tr>
+					<td><code>build()</code></td>
+					<td>Produce the executable delete</td>
+				</tr>
+				<tr>
+					<td><code>execute()</code></td>
+					<td>Run the delete and return the affected row count</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
 	</div>
 </g-tab-control>

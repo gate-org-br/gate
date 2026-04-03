@@ -68,29 +68,33 @@ public class App implements Serializable
 
 		app.modules = screens.stream()
 				.filter(type -> type.getSimpleName().length() > 6)
-				.map(type -> type.getPackage().getName()).distinct().map(pack ->
-				{
-					Module module = new Module();
-					module.id = pack;
-
-					screens.stream()
-							.filter(e -> e.getPackage().getName().equals(pack))
-							.filter(type -> type.getSimpleName().equals("Screen")).findAny().ifPresent(type ->
-							{
-								Name.Extractor.extract(type).ifPresent(e -> module.name = e);
-								Description.Extractor.extract(type).ifPresent(e -> module.description = e);
-								Icon.Extractor.extract(type).ifPresent(e -> module.icon = e.getCode());
-							});
-
-					module.screens = screens.stream()
-							.filter(e -> e.getPackage().getName().equals(pack))
-							.map(Module.Screen::of)
-							.toList();
-
-					return module;
-				}).collect(Collectors.toList());
+				.map(type -> type.getPackage().getName()).distinct()
+				.map(pack -> getModule(screens, pack))
+				.collect(Collectors.toList());
 
 		return app;
+	}
+
+	private static Module getModule(List<Class<Screen>> screens, String pack)
+	{
+		Module module = new Module();
+		module.id = pack;
+
+		screens.stream()
+				.filter(e -> e.getPackage().getName().equals(pack))
+				.filter(type -> type.getSimpleName().equals("Screen")).findAny().ifPresent(type ->
+				{
+					Name.Extractor.extract(type).ifPresent(e -> module.name = e);
+					Description.Extractor.extract(type).ifPresent(e -> module.description = e);
+					Icon.Extractor.extract(type).ifPresent(e -> module.icon = e.getCode());
+				});
+
+		module.screens = screens.stream()
+				.filter(e -> e.getPackage().getName().equals(pack))
+				.map(Module.Screen::of)
+				.toList();
+
+		return module;
 	}
 
 	public JsonObject toJsonObject()

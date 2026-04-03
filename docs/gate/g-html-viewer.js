@@ -1,3 +1,53 @@
+let template = document.createElement("template");
+template.innerHTML = `
+	<div id="html-pane"><slot></slot></div><div id="code-pane"><pre><code></code></pre></div>
+<style data-element="g-html-viewer">* {
+	box-sizing: border-box;
+}
+
+:host(*) {
+	width: 100%;
+	min-width: 0;
+	display: grid;
+	font-size: 10px;
+	grid-template-rows: auto auto;
+	border: 1px solid var(--main2, #F0F0F0);
+}
+
+#code-pane {
+	min-width: 0;
+	padding: 10px;
+	overflow: auto;
+	background-color: var(--hovered, #FFFACD);
+	border-bottom: 1px solid var(--main3, #DDDDDD);
+}
+
+#code-pane * {
+	font-size: inherit;
+	background-color: var(--hovered, #FFFACD);
+}
+
+#html-pane {
+	gap: 10px;
+	min-width: 0;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid var(--main2, #F0F0F0);
+}
+
+.tag {
+	color: var(--b1, #1A2D5F);
+}
+
+.key {
+	color: var(--g1, #003D26);
+}
+
+.val {
+	color: var(--r1, #5e0000);
+}
+</style>`;
 function highlightHTML(htmlString)
 {
 	const selfClosing = ["AREA", "BASE", "BR", "COL", "COMMAND", "EMBED", "HR", "IMG", "INPUT",
@@ -43,7 +93,7 @@ function highlightHTML(htmlString)
 	return highlightedString;
 }
 
-customElements.define('g-code-viewer', class extends HTMLElement
+customElements.define('g-html-viewer', class extends HTMLElement
 {
 	constructor()
 	{

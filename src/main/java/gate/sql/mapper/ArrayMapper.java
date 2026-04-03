@@ -12,14 +12,13 @@ public class ArrayMapper implements Mapper<Object[]>
 	 * Extract each row of the specified cursor as stream of arrays.
 	 *
 	 * @param cursor the cursor from where to extract the values
-	 *
 	 * @return each row of the specified cursor as stream of arrays
 	 */
 	@Override
 	public Object[] apply(Cursor cursor)
 	{
 		return cursor.getColumnTypes().stream()
-			.map(e -> cursor.getCurrentValue(e))
-			.toArray();
+				.map(cursor::getCurrentValue)
+				.toArray();
 	}
 }

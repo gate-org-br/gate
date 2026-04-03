@@ -3,7 +3,6 @@ package gate.sql.select;
 import gate.sql.Clause;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.ConstantCondition;
-import gate.sql.condition.GenericCondition;
 import java.util.stream.Stream;
 
 public abstract class JoinedSelect implements SelectClause
@@ -52,18 +51,6 @@ public abstract class JoinedSelect implements SelectClause
 			};
 		}
 
-		public SelectedSelect.Generic on(GenericCondition predicate)
-		{
-			return new SelectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " on " + predicate.toString();
-				}
-			};
-		}
-
 		public SelectedSelect.Compiled on(CompiledCondition predicate)
 		{
 			return new SelectedSelect.Compiled(this)
@@ -86,53 +73,6 @@ public abstract class JoinedSelect implements SelectClause
 		public Aliased.Constant as(String alias)
 		{
 			return new Aliased.Constant(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " as " + alias;
-				}
-			};
-		}
-	}
-
-	public abstract static class Generic extends JoinedSelect implements Aliasable
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public SelectedSelect.Generic on(ConstantCondition predicate)
-		{
-			return new SelectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " on " + predicate.toString();
-				}
-			};
-		}
-
-		public SelectedSelect.Generic on(GenericCondition predicate)
-		{
-			return new SelectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " on " + predicate.toString();
-				}
-			};
-		}
-
-		@Override
-		public Aliased.Generic as(String alias)
-		{
-			return new Aliased.Generic(this)
 			{
 				@Override
 				public String toString()
@@ -216,28 +156,6 @@ public abstract class JoinedSelect implements SelectClause
 			public SelectedSelect.Constant on(ConstantCondition predicate)
 			{
 				return new SelectedSelect.Constant(this)
-				{
-					@Override
-					public String toString()
-					{
-						return getClause() + " on " + predicate.toString();
-					}
-				};
-			}
-		}
-
-		public abstract static class Generic extends Aliased
-		{
-
-			public Generic(Clause clause)
-			{
-				super(clause);
-			}
-
-			@Override
-			public SelectedSelect.Generic on(ConstantCondition predicate)
-			{
-				return new SelectedSelect.Generic(this)
 				{
 					@Override
 					public String toString()

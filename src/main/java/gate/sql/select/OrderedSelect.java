@@ -52,41 +52,7 @@ public abstract class OrderedSelect implements SelectClause, Limitable, Sortable
         @Override
         public Query.Constant build()
         {
-            return Query.of(toString())
-                    .constant();
-        }
-    }
-
-    public abstract static class Generic extends OrderedSelect implements
-            Orderable.Generic,
-            Sortable.Generic,
-            Lockable.Constant,
-            Limitable.Generic,
-            Query.Builder
-    {
-
-        public Generic(Clause clause)
-        {
-            super(clause);
-        }
-
-        @Override
-        public OrderedSelect.Generic and(String exp)
-        {
-            return new OrderedSelect.Generic(this)
-            {
-                @Override
-                public String toString()
-                {
-                    return getClause() + ", " + exp;
-                }
-            };
-        }
-
-        @Override
-        public Query build()
-        {
-            return Query.of(toString());
+            return Query.of(toString()).constant();
         }
     }
 
@@ -119,9 +85,8 @@ public abstract class OrderedSelect implements SelectClause, Limitable, Sortable
         @Override
         public Query.Compiled build()
         {
-            return Query.of(toString())
-                    .parameters(getParameters()
-                            .collect(Collectors.toList()));
+            return Query.of(toString(), getParameters()
+                    .collect(Collectors.toList()));
         }
     }
 }

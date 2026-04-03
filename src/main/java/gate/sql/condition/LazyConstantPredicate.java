@@ -7,7 +7,6 @@ import gate.sql.Clause;
  */
 public abstract class LazyConstantPredicate extends Predicate
         implements ConstantPredicateMethods,
-        GenericPredicateMethods,
         LazyCompiledPredicateMethods,
         PropertyPredicateMethods
 {
@@ -136,7 +135,6 @@ public abstract class LazyConstantPredicate extends Predicate
 
     static class Rollback extends LazyConstantPredicate
             implements
-            GenericPredicateMethods.Rollback,
             LazyCompiledPredicateMethods.Rollback
     {
 

@@ -29,8 +29,7 @@ class MailDao extends Dao
     public boolean isEnabled()
     {
         return getLink()
-                .from("select exists (select * from Server where type = ?)")
-                .parameters(Server.Type.SMTP)
+                .from("select exists (select * from Server where type = ?)", List.of(Server.Type.SMTP))
                 .fetchBoolean();
     }
 

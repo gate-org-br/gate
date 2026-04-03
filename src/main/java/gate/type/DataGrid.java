@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.converter.DataGridConverter;
 import gate.lang.json.JsonArray;
-import gate.lang.json.Jsonable;
 
 import java.io.Serial;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Converter(DataGridConverter.class)
-public class DataGrid extends ArrayList<Object[]> implements Jsonable
+public class DataGrid extends ArrayList<Object[]>
 {
 
 	@Serial private static final long serialVersionUID = 1L;

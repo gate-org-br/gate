@@ -1,99 +1,105 @@
 package gate.sql.fetcher;
 
-import gate.lang.property.Property;
 import gate.sql.Cursor;
 import gate.util.Page;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
- * Fetches a cursor as a list of java objects of the specified type with it's properties set to their respective column values.
+ * Fetches the current cursor as a {@link Page} of entities.
  *
- * @param <T> the java type to be fetched
+ * <p>The cursor must expose a {@code dataSize} column containing the total number of rows that
+ * match the filter, ignoring pagination. This fetcher does not run a separate count query; it
+ * reads that value directly from the current result set.</p>
+ *
+ * <p>Each row is materialized through {@link Cursor#getEntity(gate.lang.property.PropertyGraph)},
+ * so paged entity fetching follows the same construction rules as the rest of the framework.</p>
+ *
+ * @param <T> the Java type to be fetched
  */
 public class EntityPageFetcher<T> implements Fetcher<Page<T>>
 {
 
-    private final int pageSize;
-    private final int pageIndx;
-    private final Class<T> type;
+	private final int pageSize;
+	private final int pageIndx;
+	private final Class<T> type;
+	private final Function<String, Object> context;
 
-    /**
-     * Creates a new EntityListFetcher for the specified java type.
-     *
-     * @param type     the java type to be fetched
-     * @param pageSize number of entities per page
-     * @param pageIndx index of the page
-     */
-    public EntityPageFetcher(Class<T> type, int pageSize, int pageIndx)
-    {
-        this.type = type;
-        this.pageSize = pageSize;
-        this.pageIndx = pageIndx;
-    }
+	/**
+	 * Creates a new paged entity fetcher for the specified Java type.
+	 *
+	 * @param type the Java type to be fetched
+	 * @param pageSize number of entities per page
+	 * @param pageIndx index of the page
+	 */
+	public EntityPageFetcher(Class<T> type, int pageSize, int pageIndx)
+	{
+		this.type = type;
+		this.pageSize = pageSize;
+		this.pageIndx = pageIndx;
+		this.context = ignore -> null;
+	}
 
-    /**
-     * Fetches each row from the specified Cursor as a list of java objects of the specified type with it's properties set to their respective column
-     * values.
-     *
-     * @param cursor the Cursor to be fetched
-     * @return a List with each row or the specified Cursor as a java object of the specified type with it's properties set to their respective column
-     * values
-     */
-    @Override
-    public Page<T> fetch(Cursor cursor)
-    {
-        try
-        {
+	/**
+	 * Creates a new paged entity fetcher for the specified Java type.
+	 *
+	 * <p>The {@code context} may provide a value for a property, identified by its full name,
+	 * before the cursor tries to read it from the current row. Returning {@code null} means
+	 * the property should be resolved
+	 * normally from the cursor.</p>
+	 *
+	 * @param type the Java type to be fetched
+	 * @param pageSize number of entities per page
+	 * @param pageIndx index of the page
+	 * @param context function used to provide contextual values for specific property names
+	 */
+	public EntityPageFetcher(Class<T> type, int pageSize, int pageIndx, Function<String, Object> context)
+	{
+		this.type = type;
+		this.pageSize = pageSize;
+		this.pageIndx = pageIndx;
+		this.context = context;
+	}
 
-            if (!cursor.next())
-                return Page.of(List.of(), 0, pageSize, pageIndx);
+	/**
+	 * Fetches the current cursor as a page of entities.
+	 *
+	 * <p>The result set must contain a {@code dataSize} column. If it does not, this method fails
+	 * with {@link UnsupportedOperationException}.</p>
+	 *
+	 * @param cursor the cursor to be fetched
+	 * @return a page containing the current rows and the total size informed by {@code dataSize}
+	 * @throws IllegalStateException if the cursor cannot be read or the entities cannot be materialized
+	 */
+	@Override
+	public Page<T> fetch(Cursor cursor)
+	{
+		try
+		{
 
-            List<T> result = new ArrayList<>();
-            List<String> names = cursor.getPropertyNames();
-            if (!names.contains("dataSize"))
-                throw new UnsupportedOperationException("Result set does not contain a dataSize column");
-            names.removeIf(e -> e.equals("dataSize"));
-            List<Property> properties = Property.getProperties(type, names);
+			if (!cursor.next())
+				return Page.of(List.of(), 0, pageSize, pageIndx);
 
-            int dataSize = cursor.getIntValue("dataSize");
+			List<T> result = new ArrayList<>();
+			List<String> names = cursor.getPropertyNames();
+			if (!names.contains("dataSize"))
+				throw new UnsupportedOperationException("Result set does not contain a dataSize column");
+			names.removeIf(e -> e.equals("dataSize"));
+			var graph = cursor.getPropertyGraph(type);
 
-            do
-            {
+			int dataSize = cursor.getIntValue("dataSize");
 
-                T entity = type.getDeclaredConstructor().newInstance();
-                properties.forEach(e ->
-                {
-                    Class<?> clazz = e.getRawType();
-                    if (clazz == boolean.class)
-                        e.setBoolean(entity, cursor.getCurrentBooleanValue());
-                    else if (clazz == char.class)
-                        e.setChar(entity, cursor.getCurrentCharValue());
-                    else if (clazz == byte.class)
-                        e.setByte(entity, cursor.getCurrentByteValue());
-                    else if (clazz == short.class)
-                        e.setShort(entity, cursor.getCurrentShortValue());
-                    else if (clazz == int.class)
-                        e.setInt(entity, cursor.getCurrentIntValue());
-                    else if (clazz == long.class)
-                        e.setLong(entity, cursor.getCurrentLongValue());
-                    else if (clazz == float.class)
-                        e.setFloat(entity, cursor.getCurrentFloatValue());
-                    else if (clazz == double.class)
-                        e.setDouble(entity, cursor.getCurrentDoubleValue());
-                    else
-                        e.setValue(entity, cursor.getCurrentValue(clazz));
-                });
-                result.add(entity);
-            } while (cursor.next());
+			do
+				result.add(cursor.getEntity(graph, context));
+			while (cursor.next());
 
-            return Page.of(result, dataSize, pageSize, pageIndx);
+			return Page.of(result, dataSize, pageSize, pageIndx);
 
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-                 | SecurityException | IllegalArgumentException | InvocationTargetException ex)
-        {
-            throw new IllegalStateException("Failed to fetch entity page from cursor", ex);
-        }
-    }
+		} catch (RuntimeException ex)
+		{
+			throw new IllegalStateException("Failed to fetch entity page from cursor", ex);
+		}
+	}
 }

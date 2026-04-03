@@ -6,19 +6,15 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Fetches the first row as a map whose keys are the column names and values are
- * the column values.
+ * Fetches the first row as a map whose keys are the column names and values are the column values.
  */
 public class MapFetcher implements Fetcher<Optional<Map<String, Object>>> {
 
 	/**
-	 * Fetches the first row as a map whose keys are the column names and values are
-	 * the column values.
+	 * Fetches the first row as a map.
 	 *
-	 * @return an Optional describing the first row as a map whose keys are the
-	 *         column names and values are the
-	 *         column values or an empty Optional if the result is empty
-	 *
+	 * @param cursor cursor to be fetched
+	 * @return optional containing the first row as a map, or empty if the cursor has no rows
 	 */
 	@Override
 	public Optional<Map<String, Object>> fetch(Cursor cursor) {

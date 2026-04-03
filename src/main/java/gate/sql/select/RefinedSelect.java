@@ -38,25 +38,6 @@ public abstract class RefinedSelect implements SelectClause, Orderable, Limitabl
 		}
 	}
 
-	public abstract static class Generic extends RefinedSelect implements
-		Orderable.Constant,
-		Limitable.Constant,
-		Query.Builder
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public Query build()
-		{
-			return Query.of(toString());
-		}
-
-	}
-
 	public abstract static class Compiled extends RefinedSelect implements
 		Orderable.Compiled,
 		Limitable.Compiled,
@@ -71,9 +52,8 @@ public abstract class RefinedSelect implements SelectClause, Orderable, Limitabl
 		@Override
 		public Query.Compiled build()
 		{
-			return Query.of(toString())
-				.parameters(getParameters()
-					.collect(Collectors.toList()));
+			return Query.of(toString(), getParameters()
+				.collect(Collectors.toList()));
 		}
 	}
 }

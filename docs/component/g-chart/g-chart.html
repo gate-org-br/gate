@@ -29,13 +29,13 @@
 			</p>
 		</g-callout>
 
-		<g-code-viewer ignore='<div.*</div>|_echarts_instance_="[^"]*"| position: relative; | user-select: none;'>
+		<g-html-viewer ignore='<div.*</div>|_echarts_instance_="[^"]*"| position: relative; | user-select: none;'>
 			<g-chart type='line'
 				 toolbar
 				 title='Top languages'
 				 style='width: 100%; height: 600px'
 				 value='./component/g-chart/popularity.json'>
 			</g-chart>
-		</g-code-viewer>
+		</g-html-viewer>
 	</div>
 </g-tab-control>

@@ -1,145 +1,122 @@
 <g-callout class='fill'>
 	<h1>Production Patterns</h1>
 	<p>
-		This page consolidates robust patterns extracted from real DAO usage.
-		The focus is on maintainability, safe writes, and predictable query behavior.
+		This page focuses on combinations that usually age well in DAO code: readable SQL,
+		explicit write scope, and predictable result handling.
 	</p>
 </g-callout>
 
 <g-tab-control>
-	<a href="#">Dynamic Filter Baseline</a>
+	<a href="#">Resource SQL + Java Filters</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Use <code>Condition.TRUE</code> to compose optional filters without special branching.</p>
-				<g-message class='fill'>
-					<pre><code>var condition = Condition.TRUE
+		<g-callout>
+			<p>
+				Keep the base SQL in a resource file and assemble only the dynamic pieces in Java.
+			</p>
+			<g-message class='fill'>
+				<pre><code>var condition = Condition.TRUE
 	.and("User.name").lk(filter.getName())
 	.and("User.username").eq(filter.getUsername())
-	.and("Role.id").eq(filter.getRole().getId())
-	.and().when(!getUser().isSuperUser()).expression("Access.id").isNotNull();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this pattern is good:</p>
-				<ul>
-					<li>No duplicated query blocks</li>
-					<li>Optional filters remain local and readable</li>
-					<li>Works well with both raw SQL resources and builder queries</li>
-				</ul>
-			</g-callout>
-		</div>
+	.and().when(!getUser().isSuperUser()).expression("Access.id").isNotNull();
+
+List&lt;User&gt; users = Select
+	.of(getClass().getResource("UserDao/search(User).sql"))
+	.where(condition)
+	.orderBy("User.name")
+	.build()
+	.connect(getLink())
+	.fetchEntityList(User.class);</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Access Rules with EXISTS</a>
+	<a href="#">EXISTS For Access Rules</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Use <code>exists</code>/<code>not exists</code> for permission and visibility logic.</p>
-				<g-message class='fill'>
-					<pre><code>Condition access = Condition
+		<g-callout>
+			<p>
+				When the access rule is relational, keep it in SQL with <code>exists</code>.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Condition access = Condition
 	.of("Ticket.confidential").isEq("false")
 	.or("Ticket.requesterId").eq(getUser().getId())
-	.or().exists(Select.expression("id").from("Share")
-		.where(Condition.of("Ticket$id").isEq("Ticket.id")
-			.and("Person$id").eq(getUser().getId())));
-
-Condition c = Condition.TRUE.and(access);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this pattern is good:</p>
-				<ul>
-					<li>Authorization rules stay in SQL, close to data filtering</li>
-					<li>Easy to extend with new OR branches</li>
-					<li>Avoids loading excess data and filtering in memory</li>
-				</ul>
-			</g-callout>
-		</div>
+	.or().exists(Select.expression("id")
+		.from("Share")
+		.where(Condition.of("Share.Ticket$id").isEq("Ticket.id")
+			.and("Share.User$id").eq(getUser().getId())));</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Write Safety Guards</a>
+	<a href="#">Write Guard</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>For updates/deletes, validate affected rows when the API expects an existing record.</p>
-				<g-message class='fill'>
-					<pre><code>if (Delete.from("Organization")
+		<g-callout>
+			<p>
+				If an update or delete is supposed to hit one existing row, treat zero affected rows
+				as a failure.
+			</p>
+			<g-message class='fill'>
+				<pre><code>if (Delete.from("Organization")
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
 	.connect(getLink())
 	.execute() == 0)
 	throw new NotFoundException();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this pattern is good:</p>
-				<ul>
-					<li>Prevents silent no-op writes</li>
-					<li>Improves API semantics for callers</li>
-					<li>Detects race conditions early</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Generated Key Strategies</a>
+	<a href="#">Generated Keys</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Choose the generated key method by insert shape.</p>
-				<g-message class='fill'>
-					<pre><code>// single insert
-Insert.into("Organization")
+		<g-callout>
+			<p>
+				Use generated key helpers immediately after inserts so the caller leaves the DAO with
+				the final identifier already attached.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into("Organization")
 	.set("name", value.getName())
-	.build().connect(getLink())
+	.build()
+	.connect(getLink())
 	.fetchGeneratedKey(ID.class)
-	.ifPresent(value::setId);
-
-// repeated or multi-key scenario
-Insert.into("QuickMessage")
-	.set("description", quickMessage.getDescription())
-	.build().connect(getLink())
-	.fetchGeneratedKeys(ID.class)
-	.forEach(quickMessage::setId);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this pattern is good:</p>
-				<ul>
-					<li>Makes identity handling explicit</li>
-					<li>Supports both simple and batched workflows</li>
-					<li>Prevents detached entities without IDs</li>
-				</ul>
-			</g-callout>
-		</div>
+	.ifPresent(value::setId);</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Complex Optional Subfilters</a>
+	<a href="#">Checklist</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Compose optional subqueries only when needed.</p>
-				<g-message class='fill'>
-					<pre><code>if (filter.getFeedback().getQuestion() != null
-	|| filter.getFeedback().getText() != null)
-	condition = condition.and().exists(Select
-		.expression("id")
-		.from("Feedback")
-		.where(Condition.of("Feedback.Organization$id").isEq("Call.Organization$id")
-			.and("Feedback.protocol").isEq("Call.protocol")
-			.and("Feedback.question").eq(filter.getFeedback().getQuestion())
-			.and("Feedback.text").eq(filter.getFeedback().getText())));</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this pattern is good:</p>
-				<ul>
-					<li>Avoids expensive subqueries when filters are empty</li>
-					<li>Keeps dynamic behavior explicit and testable</li>
-					<li>Maintains query readability under high complexity</li>
-				</ul>
-			</g-callout>
-		</div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Guideline</th>
+					<th>Why it helps</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>Keep long SQL in resource files</td>
+					<td>Readability improves without losing SQL control</td>
+				</tr>
+				<tr>
+					<td>Use <code>Condition.TRUE</code> as the default baseline</td>
+					<td>Optional filters stay easy to compose</td>
+				</tr>
+				<tr>
+					<td>Prefer <code>exists</code> for relational visibility rules</td>
+					<td>The filtering stays in the database</td>
+				</tr>
+				<tr>
+					<td>Check affected rows on required updates and deletes</td>
+					<td>No silent write failures</td>
+				</tr>
+				<tr>
+					<td>Attach generated keys immediately after inserts</td>
+					<td>The object leaves the DAO complete</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
 	</div>
 </g-tab-control>

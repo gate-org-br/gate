@@ -4,13 +4,13 @@
  * <hr>
  * Creating a {@link gate.sql.Link} to a database using a JDBC connection or a data source name:
  * <pre>{@code
- * try (Link link = new Link(jdbcConnection))
- * try (Link link = new Link("datasourcename"))
+ * try (Link link = Link.of(jdbcConnection)) { }
+ * try (Link link = Link.of("datasourcename")) { }
  * }</pre>
  * <hr>
  * Executing a hard coded SQL statement:
  * <pre>{@code
- * try (Link link = new Link("datasourcename"))
+ * try (Link link = Link.of("datasourcename"))
  * {
  *	link
  *		.prepare("insert into Table (field1, field2) values (?, ?)")
@@ -21,7 +21,7 @@
  * <hr>
  * Executing a SQL statement loaded from a resource file:
  * <pre>{@code
- * try (Link link = new Link("datasourcename"))
+ * try (Link link = Link.of("datasourcename"))
  * {
  *	link
  *		.prepare(getClass().getResource("InsertStatement.sql"))
@@ -32,7 +32,7 @@
  * <hr>
  * Executing hard coded SQL queries and fetching results on various formats:
  * <pre>{@code
- * try (Link link = new Link("datasourcename"))
+ * try (Link link = Link.of("datasourcename"))
  * {
  *		Integer count = link
  *		.from("select count(*) from User where Role$id = ?")
@@ -40,7 +40,7 @@
  *			.fetchObject(Integer.class)
  *			.get();
  *
- *		Query.Connected.Compiled query = link
+ *		Query.Compiled.Connected query = link
  *		.from("select id, name from User where Role$id = ?")
  *		.parameters(ID.of(1));
  *
@@ -65,7 +65,7 @@
  * <hr>
  * Building SQL sentences using the provided sentence Builders:
  * <pre>{@code
- * try (Link link = new Link("datasourcename"))
+ * try (Link link = Link.of("datasourcename"))
  * {
  *	link.prepare(Insert
  *		.into("Person")
@@ -90,7 +90,7 @@
  * <hr>
  * Building SQL sentences from java types:
  * <pre>{@code
- * try (Link link = new Link("datasourcename"))
+ * try (Link link = Link.of("datasourcename"))
  * {
  *	Person person = new Person();
  *	person.setId(ID.of(1));

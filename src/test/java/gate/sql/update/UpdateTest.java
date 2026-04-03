@@ -47,8 +47,7 @@ public class UpdateTest
 					.execute());
 
 			Optional<Object[]> optional
-					= link.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					= link.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -79,8 +78,7 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -115,8 +113,7 @@ public class UpdateTest
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -143,17 +140,15 @@ public class UpdateTest
 			assertEquals(1, link
 					.prepare(Update
 							.table("Person")
-							.set(String.class, "name")
-							.set(LocalDate.class, "birthdate")
-							.set(LocalDateInterval.class, "contract")
-							.where(Condition.of("id").eq()))
-					.parameters(name, birthdate, contract, id)
+							.set(String.class, "name", name)
+							.set(LocalDate.class, "birthdate", birthdate)
+							.set(LocalDateInterval.class, "contract", contract)
+							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(ID.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -207,14 +202,12 @@ public class UpdateTest
 			assertEquals(1, link
 					.prepare(Update
 							.table(Person.class)
-							.set(Person::getName)
-							.where(Condition.of("id").eq()))
-					.parameters(name, id)
+							.set(Person::getName, name)
+							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional = link
-					.from("select name from Person where id = ?")
-					.parameters(id)
+					.from("select name from Person where id = ?", List.of(id))
 					.fetchArray(String.class);
 
 			if (optional.isPresent())
@@ -236,15 +229,13 @@ public class UpdateTest
 			assertEquals(1, link
 					.prepare(Update
 							.table(Person.class)
-							.set(Person::getName)
-							.set(Person::getBirthdate)
-							.where(Condition.of("id").eq()))
-					.parameters(name, birthdate, id)
+							.set(Person::getName, name)
+							.set(Person::getBirthdate, birthdate)
+							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional = link
-					.from("select name, birthdate from Person where id = ?")
-					.parameters(id)
+					.from("select name, birthdate from Person where id = ?", List.of(id))
 					.fetchArray(String.class, LocalDate.class);
 
 			if (optional.isPresent())
@@ -272,12 +263,36 @@ public class UpdateTest
 					.execute());
 
 			Optional<Object[]> optional = link
-					.from("select name from Person where id = ?")
-					.parameters(id)
+					.from("select name from Person where id = ?", List.of(id))
 					.fetchArray(String.class);
 
 			if (optional.isPresent())
 				assertEquals(name, optional.get()[0]);
+			else
+				fail("No result found");
+		}
+	}
+
+	@Test
+	public void testCompiledTableBuilderWithMultiColumnPropertyReference() throws ConstraintViolationException
+	{
+		try (Link link = TestDataSource.getLink())
+		{
+			ID id = ID.valueOf(1);
+			LocalDateInterval contract = LocalDateInterval.of(LocalDate.of(2015, 1, 1), LocalDate.of(2015, 12, 31));
+
+			assertEquals(1, link.prepare(Update
+							.table(Person.class)
+							.set(Person::getContract, contract)
+							.where(Condition.of("id").eq(id)))
+					.execute());
+
+			Optional<Object[]> optional = link
+					.from("select contract__min, contract__max from Person where id = ?", List.of(id))
+					.fetchArray(LocalDateInterval.class);
+
+			if (optional.isPresent())
+				assertEquals(contract, optional.get()[0]);
 			else
 				fail("No result found");
 		}
@@ -296,13 +311,12 @@ public class UpdateTest
 			assertEquals(1, link
 					.prepare(Update
 							.table(Person.class)
-							.set(person, Person::getName, Person::getBirthdate)
+							.set(person, List.of(Person::getName, Person::getBirthdate))
 							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional = link
-					.from("select name, birthdate from Person where id = ?")
-					.parameters(id)
+					.from("select name, birthdate from Person where id = ?", List.of(id))
 					.fetchArray(String.class, LocalDate.class);
 
 			if (optional.isPresent())
@@ -326,15 +340,14 @@ public class UpdateTest
 
 			assertEquals(1, link
 					.prepare(Update
-							.table(Person.class)
-							.from(person)
-							.set(Person::getName, Person::getBirthdate)
+							.table(person)
+							.set(Person::getName)
+							.set(Person::getBirthdate)
 							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional = link
-					.from("select name, birthdate from Person where id = ?")
-					.parameters(id)
+					.from("select name, birthdate from Person where id = ?", List.of(id))
 					.fetchArray(String.class, LocalDate.class);
 
 			if (optional.isPresent())
@@ -347,7 +360,33 @@ public class UpdateTest
 	}
 
 	@Test
-	public void testTypedBuilder() throws ConstraintViolationException
+	public void testObjectUpdateBuilderWithMultiColumnPropertyReference() throws ConstraintViolationException
+	{
+		try (Link link = TestDataSource.getLink())
+		{
+			ID id = ID.valueOf(2);
+			Person person = new Person()
+					.setContract(LocalDateInterval.of(LocalDate.of(2016, 1, 1), LocalDate.of(2016, 12, 31)));
+
+			assertEquals(1, link.prepare(Update
+							.table(person)
+							.set(Person::getContract)
+							.where(Condition.of("id").eq(id)))
+					.execute());
+
+			Optional<Object[]> optional = link
+					.from("select contract__min, contract__max from Person where id = ?", List.of(id))
+					.fetchArray(LocalDateInterval.class);
+
+			if (optional.isPresent())
+				assertEquals(person.getContract(), optional.get()[0]);
+			else
+				fail("No result found");
+		}
+	}
+
+	@Test
+	public void testOperationBuilder() throws ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -362,17 +401,17 @@ public class UpdateTest
 					.setBirthdate(birthdate)
 					.setContract(contract);
 
-			assertEquals(1, link
-					.prepare(Update
-							.type(Person.class)
-							.set("id", "name", "birthdate", "contract"))
-					.value(person)
+			assertEquals(1, link.prepare(Update.table(person)
+							.set(Person::getId)
+							.set(Person::getName)
+							.set(Person::getBirthdate)
+							.set(Person::getContract)
+							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -387,7 +426,7 @@ public class UpdateTest
 	}
 
 	@Test
-	public void testFullTypedBuilder() throws ConstraintViolationException
+	public void testFullOperationBuilder() throws ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -402,16 +441,17 @@ public class UpdateTest
 					.setBirthdate(birthdate)
 					.setContract(contract);
 
-			assertEquals(1, link
-					.prepare(Update
-							.type(Person.class))
-					.value(person)
+			assertEquals(1, link.prepare(Update.table(person)
+							.set(Person::getId)
+							.set(Person::getName)
+							.set(Person::getBirthdate)
+							.set(Person::getContract)
+							.where(Condition.of("id").eq(id)))
 					.execute());
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -426,7 +466,7 @@ public class UpdateTest
 	}
 
 	@Test
-	public void testGQN() throws ConstraintViolationException
+	public void testObjectUpdateWithSelectedProperties() throws ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -441,15 +481,16 @@ public class UpdateTest
 					.setBirthdate(birthdate)
 					.setContract(contract);
 
-			assertEquals(1, link
-					.update(Person.class)
-					.properties("=id", "name", "birthdate", "contract")
-					.execute(person));
+			assertEquals(1, link.prepare(Update.table(person)
+							.set(Person::getName)
+							.set(Person::getBirthdate)
+							.set(Person::getContract)
+							.where(Condition.of("id").eq(id)))
+					.execute());
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -464,7 +505,7 @@ public class UpdateTest
 	}
 
 	@Test
-	public void testFullGQN() throws ConstraintViolationException
+	public void testObjectUpdateWithAllProperties() throws ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -479,14 +520,17 @@ public class UpdateTest
 					.setBirthdate(birthdate)
 					.setContract(contract);
 
-			assertEquals(1, link
-					.update(Person.class)
-					.execute(person));
+			assertEquals(1, link.prepare(Update.table(person)
+							.set(Person::getId)
+							.set(Person::getName)
+							.set(Person::getBirthdate)
+							.set(Person::getContract)
+							.where(Condition.of("id").eq(id)))
+					.execute());
 
 			Optional<Object[]> optional
 					= link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(id)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(id))
 					.fetchArray(Integer.class, String.class, LocalDate.class, LocalDateInterval.class);
 			if (optional.isPresent())
 			{
@@ -501,7 +545,7 @@ public class UpdateTest
 	}
 
 	@Test
-	public void testGQN2() throws ConstraintViolationException, NotFoundException
+	public void testObjectUpdateWithNestedProperties() throws ConstraintViolationException, NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
@@ -513,15 +557,22 @@ public class UpdateTest
 					.setPerson(new Person()
 							.setId(1));
 
-			assertEquals(1, link
-					.update(Contact.class)
-					.properties("=id", "type", "val", "person.id")
-					.execute(expected));
+			assertEquals(1, link.prepare(Update.table(expected)
+							.set(Contact::getType)
+							.set(Contact::getVal)
+							.set(Contact::getPerson)
+							.where(Condition.of("id").eq(expected.getId())))
+					.execute());
 
-			Contact result = link
-					.select(Contact.class)
-					.properties("=id", "type", "val", "person.id")
-					.matching(expected)
+			Contact result = Select.expression("id")
+					.expression("type")
+					.expression("val")
+					.expression("Person$id").as("person.id")
+					.from("Contact")
+					.where(Condition.of("id").eq(expected.getId()))
+					.build()
+					.connect(link)
+					.fetchEntity(Contact.class)
 					.orElseThrow(NotFoundException::new);
 
 			assertEquals(expected.getVal(), result.getVal());
@@ -538,9 +589,10 @@ public class UpdateTest
 				.setId(ID.valueOf(1))
 				.setName("Name")
 				.setRole(new Role().setId(ID.valueOf(2)));
-		var update = Update.table(User.class)
-				.from(user)
-				.set(User::getId, User::getName, User::getRole)
+		var update = Update.table(user)
+				.set(User::getId)
+				.set(User::getName)
+				.set(User::getRole)
 				.build();
 
 		assertEquals("update gate.Uzer set id = ?, name = ?, Role$id = ?", update.toString());

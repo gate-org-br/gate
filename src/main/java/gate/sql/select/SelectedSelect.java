@@ -73,44 +73,6 @@ public abstract class SelectedSelect implements SelectClause, Groupable, Orderab
         }
     }
 
-    public abstract static class Generic extends SelectedSelect implements
-            Joinable.Generic,
-            Filterable.Generic,
-            Refinable.Generic,
-            Groupable.Generic,
-            Orderable.Generic,
-            Limitable.Generic,
-            Unitable.Generic,
-            Lockable.Generic,
-            Aliasable,
-            Query.Builder
-    {
-
-        public Generic(Clause clause)
-        {
-            super(clause);
-        }
-
-        @Override
-        public Aliased.Generic as(String alias)
-        {
-            return new Aliased.Generic(this)
-            {
-                @Override
-                public String toString()
-                {
-                    return getClause() + " as " + alias;
-                }
-            };
-        }
-
-        @Override
-        public Query build()
-        {
-            return Query.of(toString());
-        }
-    }
-
     public abstract static class Compiled extends SelectedSelect implements
             Joinable.Compiled,
             Filterable.Compiled,
@@ -145,7 +107,7 @@ public abstract class SelectedSelect implements SelectClause, Groupable, Orderab
         @Override
         public Query.Compiled build()
         {
-            return Query.of(toString()).parameters(getParameters()
+            return Query.of(toString(), getParameters()
                     .collect(Collectors.toList()));
         }
     }
@@ -182,30 +144,6 @@ public abstract class SelectedSelect implements SelectClause, Groupable, Orderab
             }
         }
 
-        public abstract static class Generic extends Aliased implements
-                Joinable.Generic,
-                Filterable.Generic,
-                Refinable.Generic,
-                Groupable.Generic,
-                Orderable.Generic,
-                Limitable.Generic,
-                Unitable.Generic,
-                Lockable.Generic,
-                Query.Builder
-        {
-
-            public Generic(Clause clause)
-            {
-                super(clause);
-            }
-
-            @Override
-            public Query build()
-            {
-                return Query.of(toString());
-            }
-        }
-
         public abstract static class Compiled extends Aliased implements
                 Joinable.Compiled,
                 Filterable.Compiled,
@@ -226,7 +164,7 @@ public abstract class SelectedSelect implements SelectClause, Groupable, Orderab
             @Override
             public Query.Compiled build()
             {
-                return Query.of(toString()).parameters(getParameters()
+                return Query.of(toString(), getParameters()
                         .collect(Collectors.toList()));
             }
 

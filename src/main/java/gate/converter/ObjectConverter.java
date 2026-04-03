@@ -3,6 +3,8 @@ package gate.converter;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.io.Encoder;
+import gate.lang.json.JsonAdapter;
+import gate.lang.json.JsonElement;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
@@ -95,6 +97,12 @@ public class ObjectConverter implements Converter
 	public Object ofJson(JsonScanner scanner, Type type, Type elementType)
 			throws ConversionException
 	{
+		Class<Object> clazz = (Class<Object>) type;
+		var jsonAdapter = JsonAdapter.of(clazz);
+		if (jsonAdapter != null)
+			return jsonAdapter.fromJson((JsonElement) Converter.getConverter(JsonElement.class)
+					.ofJson(scanner, JsonElement.class, JsonElement.class));
+
 		try
 		{
 			if (scanner.getCurrent().getType() != JsonToken.Type.OPEN_OBJECT)
@@ -102,7 +110,6 @@ public class ObjectConverter implements Converter
 
 			boolean empty = true;
 
-			Class<Object> clazz = (Class<Object>) type;
 			Map<Attribute, Object> values = new HashMap<>();
 			var attributes = FieldAttribute.getAttributes(clazz);
 			do
@@ -145,6 +152,14 @@ public class ObjectConverter implements Converter
 	@SuppressWarnings("unchecked")
 	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
+		var jsonAdapter = JsonAdapter.of(type);
+		if (jsonAdapter != null)
+		{
+			JsonElement json = jsonAdapter.toJson(object);
+			Converter.getConverter(JsonElement.class).toJson(stack, writer, JsonElement.class, json);
+			return;
+		}
+
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 		int i = 0;
@@ -172,6 +187,14 @@ public class ObjectConverter implements Converter
 	@SuppressWarnings("unchecked")
 	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
 	{
+		var jsonAdapter = JsonAdapter.of(type);
+		if (jsonAdapter != null)
+		{
+			JsonElement json = jsonAdapter.toJsonText(object);
+			Converter.getConverter(JsonElement.class).toJsonText(stack, writer, JsonElement.class, json);
+			return;
+		}
+
 		writer.write(JsonToken.Type.OPEN_OBJECT, null);
 
 		int i = 0;

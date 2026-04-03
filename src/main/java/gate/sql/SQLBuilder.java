@@ -3,17 +3,17 @@ package gate.sql;
 import gate.sql.statement.SQL;
 
 /**
- * Builder of SQL
+ * Builder of SQL objects.
  *
- * 
+ * @param <T> SQL type produced by this builder
  */
 public interface SQLBuilder<T extends SQL>
 {
 
 	/**
-	 * Creates the SQL to be executed on the database.
+	 * Builds the SQL object represented by this builder.
 	 *
-	 * @return the SQL to be executed on the database
+	 * @return built SQL object
 	 */
 	T build();
 }

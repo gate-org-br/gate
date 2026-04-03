@@ -3,7 +3,6 @@ package gate.sql.select;
 import gate.sql.Clause;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.ConstantCondition;
-import gate.sql.condition.GenericCondition;
 import java.util.stream.Stream;
 
 /**
@@ -47,25 +46,6 @@ public interface Filterable extends Clause
 		 *
 		 * @return the current builder, for chained invocations
 		 */
-		default FilteredSelect.Generic where(GenericCondition predicate)
-		{
-			return new FilteredSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " where " + predicate.toString();
-				}
-			};
-		}
-
-		/**
-		 * Defines the where clause of the SQL statement.
-		 *
-		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
-		 *
-		 * @return the current builder, for chained invocations
-		 */
 		default FilteredSelect.Compiled where(CompiledCondition predicate)
 		{
 			return new FilteredSelect.Compiled(this)
@@ -83,46 +63,6 @@ public interface Filterable extends Clause
 				}
 			};
 		}
-	}
-
-	/**
-	 * A filtered clause whose parameters are yet to be defined
-	 */
-	interface Generic extends Filterable
-	{
-
-		@Override
-		default FilteredSelect.Generic where(ConstantCondition predicate)
-		{
-			return new FilteredSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " where " + predicate.toString();
-				}
-			};
-		}
-
-		/**
-		 * Defines the where clause of the SQL statement.
-		 *
-		 * @param predicate the {@link gate.sql.condition.Predicate} associated with the where clause
-		 *
-		 * @return the current builder, for chained invocations
-		 */
-		default FilteredSelect.Generic where(GenericCondition predicate)
-		{
-			return new FilteredSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " where " + predicate.toString();
-				}
-			};
-		}
-
 	}
 
 	/**

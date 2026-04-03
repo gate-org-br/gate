@@ -795,6 +795,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	@Override
 	public <T> T toObject(Class<T> type)
 	{
+		var jsonAdapter = JsonAdapter.of(type);
+		if (jsonAdapter != null)
+			return jsonAdapter.fromJson(this);
+
 		try
 		{
 			Constructor<T> constructor = type.getDeclaredConstructor();

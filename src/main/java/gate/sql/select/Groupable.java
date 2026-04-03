@@ -57,39 +57,6 @@ public interface Groupable extends Clause
 		}
 	}
 
-	interface Generic extends Groupable
-	{
-
-		@Override
-		default GroupedSelect.Generic groupBy(List<String> columns)
-		{
-			Objects.requireNonNull(columns, "Attempt to define a null group by clause");
-			return new GroupedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return columns.isEmpty() ? getClause().toString() : getClause() + " group by " + String.join(", ", columns);
-				}
-			};
-		}
-
-		@Override
-		default GroupedSelect.Generic groupBy(String... columns)
-		{
-			Objects.requireNonNull(columns, "Attempt to define a null group by clause");
-			return new GroupedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return columns.length == 0 ? getClause().toString() : getClause() + " group by " + String.join(", ", columns);
-				}
-			};
-		}
-
-	}
-
 	interface Compiled extends Groupable
 	{
 

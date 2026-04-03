@@ -1,7 +1,10 @@
 package gate.sql.condition;
 
 import gate.sql.Clause;
+import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
+import gate.type.PropertyReference;
+
 import java.util.stream.Stream;
 
 /**
@@ -11,9 +14,8 @@ import java.util.stream.Stream;
  * @see gate.sql.condition.ConstantPredicate
  */
 public class ConstantRelation extends Relation
-	implements ConstantRelationMethods,
-	GenericRelationMethods,
-	CompiledRelationMethods
+		implements ConstantRelationMethods,
+		CompiledRelationMethods
 {
 
 	ConstantRelation(Clause clause)
@@ -21,14 +23,18 @@ public class ConstantRelation extends Relation
 		super(clause);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantRelation when(boolean assertion)
 	{
 		return assertion ? this : new Rollback(getClause());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantRelation not()
 	{
@@ -45,7 +51,9 @@ public class ConstantRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantPredicate expression(String expression)
 	{
@@ -60,6 +68,15 @@ public class ConstantRelation extends Relation
 				return string + expression;
 			}
 		};
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T, R> ConstantPredicate expression(PropertyReference<T, R> reference)
+	{
+		return expression(ColumnReference.of(reference).name());
 	}
 
 	/**
@@ -87,19 +104,32 @@ public class ConstantRelation extends Relation
 			public Stream<Object> getParameters()
 			{
 				return Stream.concat(getClause().getParameters(),
-					Stream.of(parameters));
+						Stream.of(parameters));
 			}
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantPredicate not(String expression)
 	{
 		return not().expression(expression);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T, R> ConstantPredicate not(PropertyReference<T, R> reference)
+	{
+		return not().expression(ColumnReference.of(reference).name());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantCondition condition(ConstantCondition condition)
 	{
@@ -116,28 +146,27 @@ public class ConstantRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantCondition not(ConstantCondition condition)
 	{
 		return not().condition(condition);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public GenericCondition not(GenericCondition condition)
-	{
-		return not().condition(condition);
-	}
-
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public CompiledCondition not(CompiledCondition condition)
 	{
 		return not().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantPredicate subquery(Query.Constant subquery)
 	{
@@ -154,14 +183,18 @@ public class ConstantRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantPredicate subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantPredicate not(Query.Constant subquery)
 	{
@@ -178,14 +211,18 @@ public class ConstantRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantPredicate not(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantCondition exists(Query.Constant subquery)
 	{
@@ -203,14 +240,16 @@ public class ConstantRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ConstantCondition exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
 	}
 
-	static class Rollback extends ConstantRelation implements GenericRelationMethods.Rollback, CompiledRelationMethods.Rollback
+	static class Rollback extends ConstantRelation implements CompiledRelationMethods.Rollback
 	{
 
 		public Rollback(Clause clause)
@@ -261,27 +300,18 @@ public class ConstantRelation extends Relation
 		}
 
 		@Override
-		public GenericCondition not(GenericCondition condition)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
 		public ConstantPredicate expression(String expression)
 		{
 			return new ConstantPredicate.Rollback(getClause());
 		}
 
 		@Override
+		public <T, R> ConstantPredicate expression(PropertyReference<T, R> reference) {return new ConstantPredicate.Rollback(getClause());}
+
+		@Override
 		public CompiledPredicate expression(String expression, Object... parameters)
 		{
 			return new CompiledPredicate.Rollback(getClause());
-		}
-
-		@Override
-		public GenericCondition exists(Query.Builder subquery)
-		{
-			return new GenericCondition(getClause().rollback());
 		}
 
 		@Override
@@ -297,21 +327,9 @@ public class ConstantRelation extends Relation
 		}
 
 		@Override
-		public GenericCondition exists(Query subquery)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
 		public ConstantPredicate not(Query.Constant.Builder subquery)
 		{
 			return new ConstantPredicate.Rollback(getClause());
-		}
-
-		@Override
-		public GenericPredicate not(Query.Builder subquery)
-		{
-			return new GenericPredicate.Rollback(getClause());
 		}
 
 		@Override
@@ -345,12 +363,6 @@ public class ConstantRelation extends Relation
 		}
 
 		@Override
-		public GenericPredicate subquery(Query.Builder subquery)
-		{
-			return new GenericPredicate.Rollback(getClause());
-		}
-
-		@Override
 		public CompiledPredicate subquery(Query.Compiled.Builder subquery)
 		{
 			return new CompiledPredicate.Rollback(getClause());
@@ -369,25 +381,13 @@ public class ConstantRelation extends Relation
 		}
 
 		@Override
-		public GenericPredicate subquery(Query subquery)
-		{
-			return new GenericPredicate.Rollback(getClause());
-		}
-
-		@Override
-		public GenericPredicate not(Query subquery)
-		{
-			return new GenericPredicate.Rollback(getClause());
-		}
-
-		@Override
-		public GenericCondition condition(GenericCondition condition)
-		{
-			return new GenericCondition(getClause().rollback());
-		}
-
-		@Override
 		public ConstantPredicate not(String expression)
+		{
+			return new ConstantPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public <T, R> ConstantPredicate not(PropertyReference<T, R> reference)
 		{
 			return new ConstantPredicate.Rollback(getClause());
 		}

@@ -3,499 +3,100 @@ package gate.sql.insert;
 import gate.converter.Converter;
 import gate.sql.statement.Sentence;
 
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 /**
- * Insert sentence builder for a table.
+ * Compiled insert builder for a table.
  */
-public class TableInsert implements Insert
+public class TableInsert implements Insert, Sentence.Compiled.Builder
 {
 
 	private final String table;
-	private final Set<String> insert = new HashSet<>();
+	private final boolean ignore;
+	private final List<Object> values = new ArrayList<>();
+	private final StringJoiner columns = new StringJoiner(", ", "(", ")");
+	private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
-	TableInsert(String table)
+	TableInsert(String table, boolean ignore)
 	{
-		this.table = table;
-		insert.add("insert");
+		this.table = Objects.requireNonNull(table);
+		this.ignore = ignore;
 	}
 
-	/**
-	 * Binds the insert statement to a list of entities.
-	 *
-	 * @param type the type of the entity where parameter values are to be extracted
-	 * @return the same builder with the associated entities
-	 */
-	public <T> Prepared<T> from(Class<T> type)
+	public TableInsert set(String column, Object value)
 	{
-		return new Prepared<>(type);
-	}
-
-	/**
-	 * Adds an ignore modifier to the select sentence.
-	 *
-	 * @return the same builder with the added column
-	 */
-	public TableInsert ignore()
-	{
-		insert.add("ignore");
+		columns.add(Objects.requireNonNull(column));
+		parameters.add("?");
+		values.add(value);
 		return this;
 	}
 
-	/**
-	 * Adds a new column to be persisted.
-	 *
-	 * @param column the column to be added
-	 * @return the same builder with the added column
-	 */
-	public Generic set(String column)
+	public <T> TableInsert set(Class<T> type, String column, T value)
 	{
-		return new Generic().set(column);
+		values.add(value);
+		Converter.getConverter(Objects.requireNonNull(type))
+				.getColumns(Objects.requireNonNull(column))
+				.peek(columns::add)
+				.map(e -> "?")
+				.forEach(parameters::add);
+		return this;
 	}
 
-	/**
-	 * Adds a new column to be persisted.
-	 *
-	 * @param type   type of the column to be persisted
-	 * @param column the column to be persisted
-	 * @return the same builder with the added column
-	 */
-	public <T> Generic set(Class<T> type, String column)
+	public <E> BatchInsert<E> from(Class<E> type)
 	{
-		return new Generic().set(type, column);
+		return new BatchInsert<>(table, type, ignore);
 	}
 
-	/**
-	 * Adds a new column to be persisted with the specified value.
-	 *
-	 * @param column the column to be persisted
-	 * @param value  the value associated
-	 * @return the same builder with the added column
-	 */
-	public Compiled set(String column, Object value)
-	{
-		return new Compiled().set(column, value);
-	}
-
-	/**
-	 * Adds a new column to be persisted with the specified value.
-	 *
-	 * @param type   type of the column to be added
-	 * @param column the column to be added
-	 * @param value  the value associated
-	 * @return the same builder with the added column
-	 */
-	public <T> Compiled set(Class<T> type, String column, T value)
-	{
-		return new Compiled().set(type, column, value);
-	}
-
-	/**
-	 * Adds the next column to the builder if previous specified condition is true.
-	 *
-	 * @param assertion the condition to be checked
-	 * @return the same builder with the applied condition
-	 */
 	public When when(boolean assertion)
 	{
-		return assertion ? new When() : new DisabledWhen();
+		return new When(assertion);
 	}
 
-	/**
-	 * Insert sentence builder for a table with no values specified.
-	 */
-	public class Generic implements Sentence.Builder
+	@Override
+	public Sentence.Compiled build()
 	{
-
-		private final StringJoiner columns = new StringJoiner(", ", "(", ")");
-		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
-
-		private Generic()
-		{
-		}
-
-		/**
-		 * Adds a new column to the builder.
-		 *
-		 * @param column the column to be added
-		 * @return the same builder with the added column
-		 */
-		public Generic set(String column)
-		{
-			columns.add(column);
-			parameters.add("?");
-			return this;
-		}
-
-		/**
-		 * Adds a new column to the builder.
-		 *
-		 * @param column the column to be added
-		 * @param type   type of the column to be added
-		 * @return the same builder with the added column
-		 */
-		public <T> Generic set(Class<T> type, String column)
-		{
-			Converter.getConverter(type).getColumns(column).forEach(this::set);
-			return this;
-		}
-
-		@Override
-		public Sentence build()
-		{
-			return Sentence.of(toString());
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.join(" ", insert) + " into " + table + " " + columns + " values "
-			       + parameters;
-		}
+		return Sentence.of(toString()).parameters(values);
 	}
 
-	/**
-	 * SQL insert sentence builder for a table with values specified and ready for execution.
-	 */
-	public class Compiled implements Sentence.Compiled.Builder
+	@Override
+	public String toString()
 	{
-
-		private final List<Object> values = new ArrayList<>();
-		private final StringJoiner columns = new StringJoiner(", ", "(", ")");
-		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
-
-		private Compiled()
-		{
-		}
-
-		/**
-		 * Adds a new column, and it's associated value to the builder.
-		 *
-		 * @param column the column to be added
-		 * @param value  the value associated
-		 * @return the same builder with the added column and value
-		 */
-		public Compiled set(String column, Object value)
-		{
-			columns.add(column);
-			parameters.add("?");
-			values.add(value);
-			return this;
-		}
-
-		/**
-		 * Adds a new column, and it's associated value to the builder.
-		 *
-		 * @param type   type of the column to be added
-		 * @param column the column to be added
-		 * @param value  the value associated
-		 * @return the same builder with the added column and value
-		 */
-		public <T> Compiled set(Class<T> type, String column, T value)
-		{
-			values.add(value);
-			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
-					.forEach(parameters::add);
-			return this;
-		}
-
-		@Override
-		public Sentence.Compiled build()
-		{
-			return Sentence.of(toString()).parameters(values);
-		}
-
-		/**
-		 * Adds the next column to the builder if previous specified condition is true.
-		 *
-		 * @param assertion the condition to be checked
-		 * @return the same builder with the applied condition
-		 */
-		public When when(boolean assertion)
-		{
-			return assertion ? new When() : new DisabledWhen();
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.join(" ", insert) + " into " + table + " " + columns + " values "
-			       + parameters;
-		}
-
-		public class When
-		{
-
-			/**
-			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
-			 *
-			 * @param column   the column to be added
-			 * @param supplier the supplier of the value associated
-			 * @return the same builder with the added column and value
-			 */
-			public Compiled set(String column, Supplier<Object> supplier)
-			{
-				return Compiled.this.set(column, supplier.get());
-			}
-
-			/**
-			 * Adds a new column, and it's associated value to the builder if the previous specified condition was true.
-			 *
-			 * @param type     type of the column to be added
-			 * @param column   the column to be added
-			 * @param supplier the supplier of the value associated
-			 * @return the same builder with the added column and value
-			 */
-			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
-			{
-				return Compiled.this.set(type, column, supplier.get());
-			}
-
-			/**
-			 * Adds the next column to the builder if previous specified condition is true.
-			 *
-			 * @param assertion the condition to be checked
-			 * @return the same builder with the applied condition
-			 */
-			public When when(boolean assertion)
-			{
-				return assertion ? this : new DisabledWhen();
-			}
-
-			/**
-			 * Returns the current SQL insert sentence.
-			 *
-			 * @return the current SQL insert sentence
-			 */
-			@Override
-			public String toString()
-			{
-				return Compiled.this.toString();
-			}
-		}
-
-		/**
-		 * Conditional helper for ignored branches on compiled table insert builders.
-		 */
-		public class DisabledWhen extends When
-		{
-
-			/**
-			 * Ignores the specified column/value pair and keeps current builder unchanged.
-			 *
-			 * @param column   the column to be added
-			 * @param supplier the supplier of the value associated
-			 * @return the current compiled builder unchanged
-			 */
-			@Override
-			public Compiled set(String column, Supplier<Object> supplier)
-			{
-				return Compiled.this;
-			}
-
-			/**
-			 * Ignores the specified typed column/value pair and keeps current builder unchanged.
-			 *
-			 * @param type     type of the column to be added
-			 * @param column   the column to be added
-			 * @param supplier the supplier of the value associated
-			 * @param <T>      type of the value added
-			 * @return the current compiled builder unchanged
-			 */
-			@Override
-			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
-			{
-				return Compiled.this;
-			}
-
-			/**
-			 * Keeps this conditional helper disabled for subsequent operations.
-			 *
-			 * @param assertion the condition to be checked
-			 * @return this disabled conditional helper
-			 */
-			@Override
-			public When when(boolean assertion)
-			{
-				return this;
-			}
-		}
+		return "insert " + (ignore ? "ignore " : "") + "into " + table + " " + columns + " values "
+		       + parameters;
 	}
 
-	/**
-	 * SQL insert sentence builder for a table with values specified and ready for execution.
-	 *
-	 * @param <E> type of the entities to be inserted on database
-	 */
-	public class Prepared<E> implements Sentence.Extractor.Compiled.Builder<E>
-	{
-
-		private final Class<E> type;
-		private final List<Function<E, ?>> extractors = new ArrayList<>();
-		private final StringJoiner columns = new StringJoiner(", ", "(", ")");
-		private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
-
-		private Prepared(Class<E> type)
-		{
-			this.type = type;
-		}
-
-		/**
-		 * Adds an ignore modifier to the select sentence.
-		 *
-		 * @return the same builder with the added column
-		 */
-		public Prepared<E> ignore()
-		{
-			insert.add("ignore");
-			return this;
-		}
-
-		/**
-		 * Adds a new column, and it's associated value to the builder.
-		 *
-		 * @param column    the column to be added
-		 * @param extractor the extractor function associated with the column
-		 * @return the same builder with the added column and value
-		 */
-		public Prepared<E> set(String column, Function<E, ?> extractor)
-		{
-			columns.add(column);
-			parameters.add("?");
-			extractors.add(extractor);
-			return this;
-		}
-
-		/**
-		 * Adds a new column, and it's associated value to the builder.
-		 *
-		 * @param <K>       type of the value added
-		 * @param column    the column to be added
-		 * @param type      type of the column to be added
-		 * @param extractor the extractor function associated with the column
-		 * @return the same builder with the added column and value
-		 */
-		public <K> Prepared<E> set(Class<K> type, String column, Function<E, K> extractor)
-		{
-			extractors.add(extractor);
-			Converter.getConverter(type).getColumns(column).peek(columns::add).map(e -> "?")
-					.forEach(parameters::add);
-			return this;
-		}
-
-		@Override
-		public Sentence.Extractor.Compiled<E> build()
-		{
-			return Sentence.of(toString()).from(type).parameters(extractors);
-		}
-
-		@Override
-		public String toString()
-		{
-			return String.join(" ", insert) + " into " + table + " " + columns + " values "
-			       + parameters;
-		}
-	}
-
-	/**
-	 * Conditional helper for table insert builders.
-	 */
 	public class When
 	{
-		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
-		 *
-		 * @param column   the column to be persisted
-		 * @param supplier the supplier of the value associated
-		 * @return the same builder with the added column
-		 */
-		public Compiled set(String column, Supplier<Object> supplier)
+		private final boolean assertion;
+
+		private When(boolean assertion)
 		{
-			return new Compiled().set(column, supplier.get());
+			this.assertion = assertion;
 		}
 
-		/**
-		 * Adds a new column to be persisted with the specified value if the previous specified condition was true.
-		 *
-		 * @param type     type of the column to be added
-		 * @param column   the column to be added
-		 * @param supplier the supplier of the value associated
-		 * @return the same builder with the added column
-		 */
-		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		public TableInsert set(String column, Supplier<?> supplier)
 		{
-			return new Compiled().set(type, column, supplier.get());
+			return assertion ? TableInsert.this.set(column, supplier.get()) : TableInsert.this;
 		}
 
-		/**
-		 * Adds the next column to the builder if previous specified condition is true.
-		 *
-		 * @param assertion the condition to be checked
-		 * @return the same builder with the applied condition
-		 */
+		public <T> TableInsert set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return assertion ? TableInsert.this.set(type, column, supplier.get()) : TableInsert.this;
+		}
+
 		public When when(boolean assertion)
 		{
-			return assertion ? this : new DisabledWhen();
+			return new When(this.assertion && assertion);
 		}
 
-		/**
-		 * Returns the current SQL insert sentence.
-		 *
-		 * @return the current SQL insert sentence
-		 */
 		@Override
 		public String toString()
 		{
 			return TableInsert.this.toString();
-		}
-	}
-
-	/**
-	 * Conditional helper for ignored branches on table insert builders.
-	 */
-	public class DisabledWhen extends When
-	{
-
-		/**
-		 * Ignores the specified column/value pair and returns an empty compiled builder.
-		 *
-		 * @param column   the column to be persisted
-		 * @param supplier the supplier of the value associated
-		 * @return an empty compiled builder
-		 */
-		@Override
-		public Compiled set(String column, Supplier<Object> supplier)
-		{
-			return new Compiled();
-		}
-
-		/**
-		 * Ignores the specified typed column/value pair and returns an empty compiled builder.
-		 *
-		 * @param type     type of the column to be added
-		 * @param column   the column to be added
-		 * @param supplier the supplier of the value associated
-		 * @param <T>      type of the value added
-		 * @return an empty compiled builder
-		 */
-		@Override
-		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
-		{
-			return new Compiled();
-		}
-
-		/**
-		 * Keeps this conditional helper disabled for subsequent operations.
-		 *
-		 * @param assertion the condition to be checked
-		 * @return this disabled conditional helper
-		 */
-		@Override
-		public When when(boolean assertion)
-		{
-			return this;
 		}
 	}
 }

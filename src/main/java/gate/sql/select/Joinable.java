@@ -2,6 +2,7 @@ package gate.sql.select;
 
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+
 import java.util.stream.Stream;
 
 public interface Joinable extends Clause
@@ -49,30 +50,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " join (" + query.toString() + ")";
+					return getClause() + " join (" + query + ")";
 				}
 			};
 		}
 
 		@Override
 		default JoinedSubqueryAlias.Constant join(Query.Constant.Builder query)
-		{
-			return join(query.build());
-		}
-
-		default JoinedSubqueryAlias.Generic join(Query query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default JoinedSubqueryAlias.Generic join(Query.Builder query)
 		{
 			return join(query.build());
 		}
@@ -84,14 +68,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " join (" + query.toString() + ")";
+					return getClause() + " join (" + query + ")";
 				}
 
 				@Override
 				public Stream<Object> getParameters()
 				{
-					return Stream.concat(getClause().getParameters(),
-							query.getParameters().stream());
+					return Stream.concat(getClause().getParameters(), query.getParameters().stream());
 				}
 			};
 		}
@@ -122,30 +105,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " left join (" + query.toString() + ")";
+					return getClause() + " left join (" + query + ")";
 				}
 			};
 		}
 
 		@Override
 		default JoinedSubqueryAlias.Constant leftJoin(Query.Constant.Builder query)
-		{
-			return leftJoin(query.build());
-		}
-
-		default JoinedSubqueryAlias.Generic leftJoin(Query query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " left join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default JoinedSubqueryAlias.Generic leftJoin(Query.Builder query)
 		{
 			return leftJoin(query.build());
 		}
@@ -157,14 +123,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " left join (" + query.toString() + ")";
+					return getClause() + " left join (" + query + ")";
 				}
 
 				@Override
 				public Stream<Object> getParameters()
 				{
-					return Stream.concat(getClause().getParameters(),
-							query.getParameters().stream());
+					return Stream.concat(getClause().getParameters(), query.getParameters().stream());
 				}
 			};
 		}
@@ -195,30 +160,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " right join (" + query.toString() + ")";
+					return getClause() + " right join (" + query + ")";
 				}
 			};
 		}
 
 		@Override
 		default JoinedSubqueryAlias.Constant rightJoin(Query.Constant.Builder query)
-		{
-			return rightJoin(query.build());
-		}
-
-		default JoinedSubqueryAlias.Generic rightJoin(Query query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " right join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default JoinedSubqueryAlias.Generic rightJoin(Query.Builder query)
 		{
 			return rightJoin(query.build());
 		}
@@ -230,14 +178,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " right join (" + query.toString() + ")";
+					return getClause() + " right join (" + query + ")";
 				}
 
 				@Override
 				public Stream<Object> getParameters()
 				{
-					return Stream.concat(getClause().getParameters(),
-							query.getParameters().stream());
+					return Stream.concat(getClause().getParameters(), query.getParameters().stream());
 				}
 			};
 		}
@@ -246,158 +193,6 @@ public interface Joinable extends Clause
 		{
 			return rightJoin(query.build());
 		}
-	}
-
-	interface Generic extends Joinable
-	{
-
-		@Override
-		default JoinedSelect.Generic join(String exp)
-		{
-			return new JoinedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " join " + exp;
-				}
-			};
-		}
-
-		@Override
-		default JoinedSubqueryAlias.Generic join(Query.Constant query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		@Override
-		default JoinedSubqueryAlias.Generic join(Query.Constant.Builder query)
-		{
-			return join(query.build());
-		}
-
-		default JoinedSubqueryAlias.Generic join(Query query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default JoinedSubqueryAlias.Generic join(Query.Builder query)
-		{
-			return join(query.build());
-		}
-
-		@Override
-		default JoinedSelect.Generic leftJoin(String exp)
-		{
-			return new JoinedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " left join " + exp;
-				}
-			};
-		}
-
-		@Override
-		default JoinedSubqueryAlias.Generic leftJoin(Query.Constant query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " left join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		@Override
-		default JoinedSubqueryAlias.Generic leftJoin(Query.Constant.Builder query)
-		{
-			return leftJoin(query.build());
-		}
-
-		default JoinedSubqueryAlias.Generic leftJoin(Query query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " left join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default JoinedSubqueryAlias.Generic leftJoin(Query.Builder query)
-		{
-			return leftJoin(query.build());
-		}
-
-		@Override
-		default JoinedSelect.Generic rightJoin(String exp)
-		{
-			return new JoinedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " right join " + exp;
-				}
-			};
-		}
-
-		@Override
-		default JoinedSubqueryAlias.Generic rightJoin(Query.Constant query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " right join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		@Override
-		default JoinedSubqueryAlias.Generic rightJoin(Query.Constant.Builder query)
-		{
-			return rightJoin(query.build());
-		}
-
-		default JoinedSubqueryAlias.Generic rightJoin(Query query)
-		{
-			return new JoinedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " right join (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default JoinedSubqueryAlias.Generic rightJoin(Query.Builder query)
-		{
-			return leftJoin(query.build());
-		}
-
 	}
 
 	interface Compiled extends Joinable
@@ -424,7 +219,7 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " join (" + query.toString() + ")";
+					return getClause() + " join (" + query + ")";
 				}
 			};
 		}
@@ -432,7 +227,7 @@ public interface Joinable extends Clause
 		@Override
 		default JoinedSubqueryAlias.Compiled join(Query.Constant.Builder query)
 		{
-			return rightJoin(query.build());
+			return join(query.build());
 		}
 
 		default JoinedSubqueryAlias.Compiled join(Query.Compiled query)
@@ -442,14 +237,13 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " join (" + query.toString() + ")";
+					return getClause() + " join (" + query + ")";
 				}
 
 				@Override
 				public Stream<Object> getParameters()
 				{
-					return Stream.concat(getClause().getParameters(),
-							query.getParameters().stream());
+					return Stream.concat(getClause().getParameters(), query.getParameters().stream());
 				}
 			};
 		}
@@ -480,7 +274,7 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " left join (" + query.toString() + ")";
+					return getClause() + " left join (" + query + ")";
 				}
 			};
 		}
@@ -488,7 +282,7 @@ public interface Joinable extends Clause
 		@Override
 		default JoinedSubqueryAlias.Compiled leftJoin(Query.Constant.Builder query)
 		{
-			return rightJoin(query.build());
+			return leftJoin(query.build());
 		}
 
 		default JoinedSubqueryAlias.Compiled leftJoin(Query.Compiled query)
@@ -498,21 +292,20 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " left join (" + query.toString() + ")";
+					return getClause() + " left join (" + query + ")";
 				}
 
 				@Override
 				public Stream<Object> getParameters()
 				{
-					return Stream.concat(getClause().getParameters(),
-							query.getParameters().stream());
+					return Stream.concat(getClause().getParameters(), query.getParameters().stream());
 				}
 			};
 		}
 
 		default JoinedSubqueryAlias.Compiled leftJoin(Query.Compiled.Builder query)
 		{
-			return join(query.build());
+			return leftJoin(query.build());
 		}
 
 		@Override
@@ -536,7 +329,7 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " right join (" + query.toString() + ")";
+					return getClause() + " right join (" + query + ")";
 				}
 			};
 		}
@@ -554,21 +347,20 @@ public interface Joinable extends Clause
 				@Override
 				public String toString()
 				{
-					return getClause() + " right join (" + query.toString() + ")";
+					return getClause() + " right join (" + query + ")";
 				}
 
 				@Override
 				public Stream<Object> getParameters()
 				{
-					return Stream.concat(getClause().getParameters(),
-							query.getParameters().stream());
+					return Stream.concat(getClause().getParameters(), query.getParameters().stream());
 				}
 			};
 		}
 
 		default JoinedSubqueryAlias.Compiled rightJoin(Query.Compiled.Builder query)
 		{
-			return join(query.build());
+			return rightJoin(query.build());
 		}
 	}
 }

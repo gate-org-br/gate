@@ -5,8 +5,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Fetches a cursor as a set of java objects of the specified types.
- * 
+ * Fetches the first column of all rows as a set of objects of the specified type.
+ *
+ * @param <T> target type
  */
 public class TypedObjectSetFetcher<T> implements Fetcher<Set<T>>
 {
@@ -20,13 +21,10 @@ public class TypedObjectSetFetcher<T> implements Fetcher<Set<T>>
 	}
 
 	/**
-	 * Fetches each row as a set of java arrays of Objects of the specified
-	 * types.
+	 * Fetches the first column of all rows as the requested type.
 	 *
-	 * @param cursor the cursor to be fetched
-	 *
-	 * @return each row fetched as a set of java Objects of the specified
-	 * types
+	 * @param cursor cursor to be fetched
+	 * @return set of fetched values converted to the requested type
 	 */
 	@Override
 	public Set<T> fetch(Cursor cursor)
@@ -37,9 +35,9 @@ public class TypedObjectSetFetcher<T> implements Fetcher<Set<T>>
 	}
 
 	/**
-	 * Return the accumulated result of fetch operations.
+	 * Returns the accumulated result of fetch operations.
 	 *
-	 * @return the accumulated result of fetch operations
+	 * @return accumulated result
 	 */
 	public Set<T> getResult()
 	{

@@ -1,12 +1,18 @@
 package gate.sql.fetcher;
 
-import gate.error.AppError;
 import gate.lang.property.Property;
+import gate.lang.property.PropertyGraph;
 import gate.sql.Cursor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
-public class PropertyEntityFetcher<T> implements Fetcher<T>
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Fetches the first row as an entity built only from the specified properties.
+ *
+ * @param <T> the Java type to be fetched
+ */
+public class PropertyEntityFetcher<T> implements Fetcher<Optional<T>>
 {
 
 	private final Class<T> type;
@@ -25,21 +31,17 @@ public class PropertyEntityFetcher<T> implements Fetcher<T>
 	}
 
 	@Override
-	public T fetch(Cursor cursor)
+	public Optional<T> fetch(Cursor cursor)
 	{
 		try
 		{
+			var graph = PropertyGraph.of(type, properties.stream().map(Property::toString).toList());
 			if (cursor.next())
-			{
-				T result = type.getDeclaredConstructor().newInstance();
-				properties.forEach(e -> e.setValue(result, cursor.getValue(e.getRawType(), e.toString())));
-				return result;
-			}
-			return null;
-		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-				| SecurityException | IllegalArgumentException | InvocationTargetException ex)
+				return Optional.of(cursor.getEntity(graph));
+			return Optional.empty();
+		} catch (RuntimeException ex)
 		{
-			throw new AppError(ex);
+			throw new IllegalStateException("Failed to fetch partial entity from cursor", ex);
 		}
 	}
 }

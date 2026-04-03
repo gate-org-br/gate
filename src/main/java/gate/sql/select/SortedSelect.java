@@ -50,37 +50,6 @@ public abstract class SortedSelect implements SelectClause, Limitable
 		{
 			return Query.of(toString()).constant();
 		}
-
-	}
-
-	public abstract static class Generic extends SortedSelect implements
-		Limitable.Generic,
-		Query.Builder
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public OrderedSelect.Generic and(String exp)
-		{
-			return new OrderedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + ", " + exp;
-				}
-			};
-		}
-
-		@Override
-		public Query build()
-		{
-			return Query.of(toString());
-		}
 	}
 
 	public abstract static class Compiled extends SortedSelect implements
@@ -109,9 +78,8 @@ public abstract class SortedSelect implements SelectClause, Limitable
 		@Override
 		public Query.Compiled build()
 		{
-			return Query.of(toString())
-				.parameters(getParameters()
-					.collect(Collectors.toList()));
+			return Query.of(toString(), getParameters()
+				.collect(Collectors.toList()));
 		}
 	}
 }

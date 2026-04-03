@@ -37,18 +37,6 @@ public interface Projectable extends Clause
 			};
 		}
 
-		default ProjectedSelect.Generic expression(Query query)
-		{
-			return new ProjectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + ", (" + query.toString() + ")";
-				}
-			};
-		}
-
 		default ProjectedSelect.Compiled expression(Query.Compiled query)
 		{
 			return new ProjectedSelect.Compiled(this)
@@ -67,11 +55,6 @@ public interface Projectable extends Clause
 			};
 		}
 
-		default ProjectedSelect.Generic expression(Query.Builder query)
-		{
-			return expression(query.build());
-		}
-
 		default ProjectedSelect.Constant expression(Query.Constant.Builder query)
 		{
 			return expression(query.build());
@@ -82,58 +65,6 @@ public interface Projectable extends Clause
 		{
 			return expression(query.build());
 		}
-	}
-
-	interface Generic extends Projectable
-	{
-
-		@Override
-		default ProjectedSelect.Generic expression(String exp)
-		{
-			return new ProjectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + ", " + exp;
-				}
-			};
-		}
-
-		default ProjectedSelect.Generic expression(Query.Constant query)
-		{
-			return new ProjectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + ", (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default ProjectedSelect.Generic expression(Query query)
-		{
-			return new ProjectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + ", (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default ProjectedSelect.Generic expression(Query.Constant.Builder query)
-		{
-			return expression(query.build());
-		}
-
-		default ProjectedSelect.Generic expression(Query.Builder query)
-		{
-			return expression(query.build());
-		}
-
 	}
 
 	interface Compiled extends Projectable

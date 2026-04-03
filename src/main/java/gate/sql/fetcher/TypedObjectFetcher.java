@@ -4,9 +4,9 @@ import gate.sql.Cursor;
 import java.util.Optional;
 
 /**
- * Fetches a Cursor as a object of the specified type.
+ * Fetches the first column of the first row as an object of the specified type.
  *
- * 
+ * @param <T> target type
  */
 public class TypedObjectFetcher<T> implements Fetcher<Optional<T>> {
 
@@ -22,15 +22,10 @@ public class TypedObjectFetcher<T> implements Fetcher<Optional<T>> {
 	}
 
 	/**
-	 * Fetches the first column of the first row as a java object of the specified
-	 * type.
+	 * Fetches the first column of the first row as the requested type.
 	 *
-	 * @param cursor the cursor to be fetched
-	 *
-	 * @return an Optional describing the first column of the first row as a java
-	 *         object of the specified type or an
-	 *         empty Optional if the result is empty
-	 *
+	 * @param cursor cursor to be fetched
+	 * @return optional containing the first value converted to the requested type, or empty if the cursor has no rows
 	 */
 	@Override
 	public Optional<T> fetch(Cursor cursor) {

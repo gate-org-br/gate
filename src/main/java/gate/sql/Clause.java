@@ -4,7 +4,7 @@ import gate.lang.property.Property;
 import java.util.stream.Stream;
 
 /**
- * A single clause of a SQL statement.
+ * Single clause of a SQL statement.
  */
 public interface Clause
 {
@@ -25,9 +25,9 @@ public interface Clause
 	String toString();
 
 	/**
-	 * Rollback the clause.
+	 * Rolls the clause back to its previous valid state.
 	 *
-	 * @return the preceding clause
+	 * @return the preceding valid clause
 	 */
 	default Clause rollback()
 	{
@@ -35,9 +35,9 @@ public interface Clause
 	}
 
 	/**
-	 * Returns the stream of parameters of this clause.
+	 * Returns the parameters contributed by this clause.
 	 *
-	 * @return the stream of parameters of this clause
+	 * @return stream of parameters contributed by this clause
 	 */
 	default Stream<Object> getParameters()
 	{
@@ -45,9 +45,9 @@ public interface Clause
 	}
 
 	/**
-	 * Returns the columns associated with this clause.
+	 * Returns the properties referenced by this clause.
 	 *
-	 * @return the columns of associated of this clause
+	 * @return stream of properties referenced by this clause
 	 */
 	default Stream<Property> getProperties()
 	{

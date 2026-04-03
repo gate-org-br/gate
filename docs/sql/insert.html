@@ -1,19 +1,18 @@
 <g-callout class='fill'>
 	<h1>Insert</h1>
 	<p>
-		In production DAOs, insert flows usually follow this sequence:
-		map fields with <code>set(...)</code>, execute through <code>Link</code>, and collect generated IDs.
+		Use <code>Insert</code> when you want explicit field mapping and SQL-friendly generated key
+		handling.
 	</p>
 </g-callout>
 
 <g-tab-control>
-	<a href="#">Single Row + Generated Key</a>
+	<a href="#">Single Insert</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Most common insert pattern.</p>
-				<g-message class='fill'>
-					<pre><code>Insert.into("Organization")
+		<g-callout>
+			<p>This is the most common insert flow.</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into("Organization")
 	.set("code", value.getCode())
 	.set("name", value.getName())
 	.set("host", value.getHost())
@@ -21,96 +20,181 @@
 	.connect(getLink())
 	.fetchGeneratedKey(ID.class)
 	.ifPresent(value::setId);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Explicit and readable field mapping</li>
-					<li>Generated ID is attached immediately</li>
-					<li>No manual SQL string formatting</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
 	<a href="#">Insert Ignore</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Useful for idempotent association or bootstrap flows.</p>
-				<g-message class='fill'>
-					<pre><code>Insert.into("UserAccount")
+		<g-callout>
+			<p>Use <code>ignore()</code> when duplicate rows are expected and should not fail the flow.</p>
+			<g-message class='fill'>
+				<pre><code>
+Insert
 	.ignore()
+	.into("UserAccount")
 	.set("id", value.getId())
 	.set("taxId", value.getTaxId())
 	.set("ContactCenter$id", value.getContactCenter().getId())
 	.build()
 	.connect(getLink())
-	.fetchGeneratedKey(ID.class)
-	.ifPresent(value::setId);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Safer behavior under uniqueness races</li>
-					<li>Reduces duplicate-key exceptions in controlled cases</li>
-					<li>Still supports generated key capture</li>
-				</ul>
-			</g-callout>
-		</div>
+	.execute();
+				</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Optional Binary/Attachment Insert</a>
+	<a href="#">Batch Insert</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Pattern used for nullable files and payloads.</p>
-				<g-message class='fill'>
-					<pre><code>if (value != null &amp;&amp; value.getFile() != null)
-	Insert.into("Attachment")
-		.set("file", value.getFile())
-		.build()
-		.connect(getLink())
-		.fetchGeneratedKeys(ID.class)
-		.forEach(value::setId);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Avoids inserting meaningless empty rows</li>
-					<li>Keeps null handling explicit</li>
-					<li>Works with key-list APIs</li>
-				</ul>
-			</g-callout>
-		</div>
-	</div>
-
-	<a href="#">Batch/Collection Key Propagation</a>
-	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Use generated key helpers for collections when supported by your flow.</p>
-				<g-message class='fill'>
-					<pre><code>Insert.into("Department")
+		<g-callout>
+			<p>Use <code>from(...)</code> plus method references when inserting many values of the same shape.</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into("Department")
 	.from(Department.class)
 	.set("name", Department::getName)
 	.set("active", Department::getActive)
 	.build()
 	.connect(getLink())
 	.fetchGeneratedKey(values, ID.class, Department::setId);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>No manual key assignment loops</li>
-					<li>Keeps batch write APIs concise</li>
-					<li>Pairs well with repository-level bulk operations</li>
-				</ul>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Property References</a>
+	<div>
+		<g-callout>
+			<p>
+				When the inserted data comes from a Java model, property references keep the mapping
+				close to the model instead of repeating the same column/value pair by hand.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into(User.class)
+	.set(User::getName, value.getName())
+	.set(User::getUsername, value.getUsername())
+	.set(User::getActive, value.getActive())
+	.build()
+	.connect(getLink())
+	.fetchGeneratedKey(ID.class)
+	.ifPresent(value::setId);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Property Reference Lists</a>
+	<div>
+		<g-callout>
+			<p>
+				When the insert should copy several values directly from the same object, use the
+				list-based overload instead of repeating one <code>set(...)</code> per property.
+			</p>
+			<p>
+				This is useful when the Java object already matches the insert shape and you want the
+				statement to say only which properties participate in the write.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into(value)
+	.set(List.of(
+		User::getName,
+		User::getUsername,
+		User::getActive))
+	.build()
+	.connect(getLink())
+	.fetchGeneratedKey(ID.class)
+	.ifPresent(value::setId);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Conditional Clauses</a>
+	<div>
+		<g-callout>
+			<p>
+				Use <code>when(...)</code> when a column should only be included if some runtime
+				condition is true.
+			</p>
+			<p>
+				This is useful in insert flows because many values are optional by nature: attachments,
+				binary payloads, secondary timestamps, derived metadata, or columns that only make
+				sense in a specific branch of the workflow. With <code>when(...)</code>, you keep the
+				insert definition linear and simply say that the next assignment belongs to the query
+				only when the condition is satisfied.
+			</p>
+			<p>
+				After <code>when(...)</code>, the API offers supplier-based <code>set(...)</code>
+				overloads. That makes the value lazy. If the condition is false, the assignment is not
+				added and the supplier is never evaluated. This matters not only for performance but
+				also for correctness, because optional values often depend on state that only exists in
+				the active branch.
+			</p>
+			<p>
+				In practice, this gives you a safe way to keep optional columns close to the base
+				insert instead of splitting the whole statement into several branches.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into("Attachment")
+	.set("name", file.getName())
+	.when(file.getContent() != null).set("content", file::getContent)
+	.when(file.getSize() != null).set(Long.class, "size", file::getSize)
+	.build()
+	.connect(getLink())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Main Methods</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+					<tr>
+						<th>Method</th>
+						<th>Use it for</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>into(...)</code></td>
+						<td>Choose the target table</td>
+					</tr>
+				<tr>
+					<td><code>set(...)</code></td>
+					<td>Map a column to a fixed value, extractor, or property reference</td>
+				</tr>
+				<tr>
+					<td><code>set(List.of(...))</code></td>
+					<td>Copy several properties from the current object in one step</td>
+				</tr>
+				<tr>
+					<td><code>ignore()</code></td>
+					<td>Turn the insert into an ignore-style insert when supported by the database</td>
+				</tr>
+				<tr>
+					<td><code>when(...)</code></td>
+					<td>Conditionally add values; if the condition is false, the next value is skipped</td>
+				</tr>
+				<tr>
+					<td><code>from(...)</code></td>
+					<td>Describe batch inserts based on an object type</td>
+				</tr>
+					<tr>
+						<td><code>build()</code></td>
+						<td>Produce the executable insert</td>
+					</tr>
+					<tr>
+						<td><code>fetchGeneratedKey(...)</code></td>
+						<td>Read one generated key or propagate generated keys into a collection</td>
+					</tr>
+					<tr>
+						<td><code>fetchGeneratedKeys(...)</code></td>
+						<td>Read multiple generated keys</td>
+					</tr>
+					<tr>
+						<td><code>execute()</code></td>
+						<td>Run the insert without reading generated keys</td>
+					</tr>
+				</tbody>
+			</table>
+		</g-callout>
 	</div>
 </g-tab-control>

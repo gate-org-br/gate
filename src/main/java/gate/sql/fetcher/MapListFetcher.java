@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Fetches a cursor as a list maps whose keys are the column names and values their respective column values.
+ * Fetches all rows as maps whose keys are the column names and values are the column values.
  */
 public class MapListFetcher implements Fetcher<List<Map<String, Object>>>
 {

@@ -103,8 +103,8 @@ public interface JsonElement extends Serializable
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
-			 JsonWriter jsonWriter = new JsonWriter(stringWriter);
-			 JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
+		     JsonWriter jsonWriter = new JsonWriter(stringWriter);
+		     JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
 		{
 			jsonFormatter.format(element);
 			return stringWriter.toString();
@@ -117,16 +117,17 @@ public interface JsonElement extends Serializable
 	<T> T toObject(Class<T> type);
 
 	<T> T toObject(java.lang.reflect.Type type,
-				   java.lang.reflect.Type elementType);
+	               java.lang.reflect.Type elementType);
 
 	/**
 	 * Creates a {@link JsonElement} representation for the specified object.
 	 * <p>
 	 * Resolution follows this order:
 	 * null values become {@link JsonNull};
-	 * {@link Jsonable} values provide their own representation;
+	 * {@link JsonElement} values are returned as-is;
 	 * booleans, numbers and strings become their respective JSON scalar types;
-	 * collections and object arrays become {@link JsonArray}.
+	 * collections and object arrays become {@link JsonArray};
+	 * types associated with a {@link JsonAdapter} are adapted through it.
 	 * <p>
 	 * If none of the cases above apply and the object class declares a no-argument constructor,
 	 * this method falls back to reflective field-based conversion, producing a {@link JsonObject}
@@ -142,8 +143,6 @@ public interface JsonElement extends Serializable
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
-		if (obj instanceof Jsonable jsonSerializable)
-			return jsonSerializable.toJson();
 		if (obj instanceof JsonElement jsonElement)
 			return jsonElement;
 
@@ -153,6 +152,10 @@ public interface JsonElement extends Serializable
 			return JsonNumber.of(number);
 		if (obj instanceof String string)
 			return JsonString.of(string);
+
+		var jsonAdapter = JsonAdapter.of((Class<Object>) obj.getClass());
+		if (jsonAdapter != null)
+			return jsonAdapter.toJson(obj);
 
 		if (obj instanceof Collection<?> collection)
 			return JsonArray.of(collection);
@@ -193,9 +196,10 @@ public interface JsonElement extends Serializable
 	 * <p>
 	 * Resolution follows this order:
 	 * null values become {@link #UNDEFINED};
-	 * {@link Jsonable} values provide their own text-oriented representation;
+	 * {@link JsonElement} values are returned as-is;
 	 * numbers become {@link JsonNumber};
-	 * collections and object arrays become formatted {@link JsonArray} values.
+	 * collections and object arrays become formatted {@link JsonArray} values;
+	 * types associated with a {@link JsonAdapter} are adapted through it.
 	 * <p>
 	 * For other object types, this method falls back to a {@link JsonString}
 	 * built from {@link gate.converter.Converter#toText(Object)}.
@@ -214,13 +218,15 @@ public interface JsonElement extends Serializable
 		if (obj instanceof JsonElement jsonElement)
 			return jsonElement;
 
-		if (obj instanceof Jsonable jsonSerializable)
-			return jsonSerializable.toJsonText();
-
 		if (obj instanceof Number number)
 			return JsonNumber.format(number);
 		if (obj instanceof Boolean bool)
 			return JsonBoolean.format(bool);
+
+		var jsonAdapter = JsonAdapter.of((Class<Object>) obj.getClass());
+		if (jsonAdapter != null)
+			return jsonAdapter.toJsonText(obj);
+
 		if (obj instanceof Collection<?> collection)
 			return JsonArray.format(collection);
 		if (obj instanceof Object[] objects)

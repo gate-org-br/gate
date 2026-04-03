@@ -28,11 +28,13 @@ public class MapListFetcherTest
 		try (Link connection = TestDataSource.getLink())
 		{
 
-			List<Map<String, Object>> results = connection
-				.from(Select.from(Person.class)
-					.properties("id", "name", "birthdate")
-					.where(Condition.TRUE))
-				.fetchMapList();
+				List<Map<String, Object>> results = connection
+					.from(Select.expression("id")
+						.expression("name")
+						.expression("birthdate")
+						.from("Person")
+						.where(Condition.TRUE))
+					.fetchMapList();
 
 			results.forEach(e -> assertEquals(e.get("name"), String.format("Person %s", e.get("id").toString())));
 

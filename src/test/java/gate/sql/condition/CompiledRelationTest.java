@@ -1,5 +1,6 @@
 package gate.sql.condition;
 
+import gate.entity.User;
 import gate.sql.select.Select;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -51,10 +52,22 @@ public class CompiledRelationTest
 	{
 		Condition condition = Condition
 				.of("column1").eq(1)
-				.and().not(() -> gate.sql.statement.Query.of("select score from table2 where active = ?").parameters(9))
+				.and().not(() -> gate.sql.statement.Query.of("select score from table2 where active = ?", java.util.List.of(9)))
 				.eq(2);
 
 		assertEquals("column1 = ? and  not (select score from table2 where active = ?) = ?", condition.toString());
 		assertEquals(Arrays.asList(1, 9, 2), condition.getParameters().collect(Collectors.toList()));
+	}
+
+	@Test
+	public void testPropertyReferenceExpressionAndNot()
+	{
+		Condition condition = Condition
+				.of("id").eq(1)
+				.and().expression(User::getName).eq(2)
+				.and().not(User::getActive).eq(3);
+
+		assertEquals("id = ? and name = ? and not active = ?", condition.toString());
+		assertEquals(Arrays.asList(1, 2, 3), condition.getParameters().collect(Collectors.toList()));
 	}
 }

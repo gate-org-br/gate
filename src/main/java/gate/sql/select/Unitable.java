@@ -33,23 +33,6 @@ public interface Unitable extends Clause
 			return union(query.build());
 		}
 
-		default UnitedSelect.Generic union(Query query)
-		{
-			return new UnitedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " union " + query.toString();
-				}
-			};
-		}
-
-		default UnitedSelect.Generic union(Query.Builder query)
-		{
-			return union(query.build());
-		}
-
 		default UnitedSelect.Compiled union(Query.Compiled query)
 		{
 			return new UnitedSelect.Compiled(this)
@@ -73,47 +56,6 @@ public interface Unitable extends Clause
 		{
 			return union(query.build());
 		}
-	}
-
-	interface Generic extends Unitable
-	{
-
-		@Override
-		default UnitedSelect.Generic union(Query.Constant query)
-		{
-			return new UnitedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " union " + query.toString();
-				}
-			};
-		}
-
-		@Override
-		default UnitedSelect.Generic union(Query.Constant.Builder query)
-		{
-			return union(query.build());
-		}
-
-		default UnitedSelect.Generic union(Query query)
-		{
-			return new UnitedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " union " + query.toString();
-				}
-			};
-		}
-
-		default UnitedSelect.Generic union(Query.Builder query)
-		{
-			return union(query.build());
-		}
-
 	}
 
 	interface Compiled extends Unitable

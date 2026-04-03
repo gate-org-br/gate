@@ -10,309 +10,189 @@ import org.slf4j.Logger;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * A SQL query not linked to a database and whose parameters are not defined.
- * <p>
- * A query must be linked to a database and compiled with a set of parameters before execution
- *
- * @author Davi Nunes da Silva
- */
 public interface Query extends SQL, Compilable
 {
 
-    /**
-     * Creates a new query.
-     *
-     * @param sql the SQL string of the query
-     * @return the new query created
-     */
-    static Query of(String sql)
-    {
-        return new BasicQuery(sql);
-    }
+	static Query of(String sql)
+	{
+		return new BasicQuery(sql);
+	}
 
-    /**
-     * Binds the query to a link
-     *
-     * @param link link to be bound to the query
-     * @return the same query bound to the specified link
-     */
-    Connected connect(Link link);
+	static Compiled of(String sql, List<Object> parameters)
+	{
+		return Query.of(sql).parameters(parameters);
+	}
 
-    @Override
-    Compiled parameters(List<Object> parameters);
+	static Compiled of(String sql, Object... parameters)
+	{
+		return Query.of(sql).parameters(parameters);
+	}
 
-    @Override
-    Compiled parameters(Object... parameters);
+	Connected connect(Link link);
 
-    @Override
-    Constant constant();
+	@Override
+	Compiled parameters(List<Object> parameters);
 
-    @Override
-    Query print(Logger logger);
+	@Override
+	Compiled parameters(Object... parameters);
 
-    @Override
-    String toString();
+	@Override
+	Constant constant();
 
-    /**
-     * A SQL query compiled with a set of parameters and not linked to a database.
-     * <p>
-     * A compiled query must be linked to a database before execution
-     *
-     * @author Davi Nunes da Silva
-     */
-    interface Compiled extends SQL
-    {
+	@Override
+	Query print(Logger logger);
 
-        /**
-         * Binds the query to a connection
-         *
-         * @param connection connection to be bound to the query
-         * @return the same query bound to the specified connection
-         */
-        Connected connect(Link connection);
+	@Override
+	String toString();
 
-        @Override
-        Compiled print(Logger logger);
+	interface Compiled extends SQL
+	{
 
-        @Override
-        String toString();
+		Connected connect(Link connection);
 
-        /**
-         * A SQL query linked to a database and compiled with a set of parameters.
-         * <p>
-         * A Compiled and Connected Query is ready for execution
-         *
-         * @author Davi Nunes da Silva
-         */
-        interface Connected extends SQL, Fetchable
-        {
+		@Override
+		Compiled print(Logger logger);
 
-            /**
-             * Creates a command for the query.
-             *
-             * @return the new command created
-             */
-            Command createCommand();
+		@Override
+		String toString();
 
-            @Override
-            <T> T fetch(Fetcher<T> fetcher);
+		interface Connected extends SQL, Fetchable
+		{
 
-            @Override
-            Connected print(Logger logger);
+			Command createCommand();
 
-            @Override
-            String toString();
-        }
+			@Override
+			<T> T fetch(Fetcher<T> fetcher);
 
-        /**
-         * Compiled query builder.
-         */
-        interface Builder extends SQLBuilder<Query.Compiled>
-        {
+			@Override
+			Connected print(Logger logger);
 
-            /**
-             * Creates a new compiled query.
-             *
-             * @return the compiled query created
-             */
-            @Override
-            Query.Compiled build();
+			@Override
+			String toString();
+		}
 
-            @FunctionalInterface
-            interface Supplier
-            {
-                Builder get();
-            }
-        }
+		interface Builder extends SQLBuilder<Query.Compiled>
+		{
 
-        @FunctionalInterface
-        interface Supplier
-        {
-            Compiled get();
-        }
-    }
+			@Override
+			Query.Compiled build();
 
-    /**
-     * A SQL query without parameters and not linked to a database.
-     * <p>
-     * A constant query must be linked to a database before execution
-     *
-     * @author Davi Nunes da Silva
-     */
-    interface Constant extends SQL
-    {
+			@FunctionalInterface
+			interface Supplier
+			{
+				Builder get();
+			}
+		}
 
-        /**
-         * Binds the query to a connection
-         *
-         * @param connection connection to be bound to the query
-         * @return the same query bound to the specified connection
-         */
-        Connected connect(Link connection);
+		@FunctionalInterface
+		interface Supplier
+		{
+			Compiled get();
+		}
+	}
 
-        @Override
-        Constant print(Logger logger);
+	interface Constant extends SQL
+	{
 
-        @Override
-        String toString();
+		Connected connect(Link connection);
 
-        /**
-         * A SQL query without parameters and linked to a database.
-         * <p>
-         * A Constant and Connected Query is ready for execution
-         *
-         * @author Davi Nunes da Silva
-         */
-        interface Connected extends SQL, Fetchable
-        {
+		@Override
+		Constant print(Logger logger);
 
-            /**
-             * Creates a command for the query.
-             *
-             * @return the new command created
-             */
-            Command createCommand();
+		@Override
+		String toString();
 
-            @Override
-            <T> T fetch(Fetcher<T> fetcher);
+		interface Connected extends SQL, Fetchable
+		{
 
-            @Override
-            Connected print(Logger logger);
+			Command createCommand();
 
-            @Override
-            String toString();
-        }
+			@Override
+			<T> T fetch(Fetcher<T> fetcher);
 
-        /**
-         * Compiled query builder.
-         */
-        interface Builder extends SQLBuilder<Query.Constant>
-        {
+			@Override
+			Connected print(Logger logger);
 
-            /**
-             * Creates a new compiled query.
-             *
-             * @return the compiled query created
-             */
-            @Override
-            Query.Constant build();
-        }
-    }
+			@Override
+			String toString();
+		}
 
-    /**
-     * A SQL query linked to a database whose parameters are not defined.
-     * <p>
-     * A connected query must be compiled with a set of parameters before execution
-     */
-    interface Connected extends SQL, Compilable
-    {
+		interface Builder extends SQLBuilder<Query.Constant>
+		{
 
-        /**
-         * Compiles the query with a list of parameters making it ready for execution.
-         *
-         * @param parameters the list of parameters to be compiled with the query
-         * @return the same query compiled with the specified parameters
-         */
-        @Override
-        Compiled parameters(List<Object> parameters);
+			@Override
+			Query.Constant build();
+		}
+	}
 
-        /**
-         * Compiles the query with a list of parameters making it ready for execution.
-         *
-         * @param parameters the list of parameters to be compiled with the query
-         * @return the same query compiled with the specified parameters and ready for execution
-         */
-        @Override
-        default Compiled parameters(Object... parameters)
-        {
-            return Connected.this.parameters(Arrays.asList(parameters));
-        }
+	interface Connected extends SQL, Compilable
+	{
 
-        @Override
-        Constant constant();
+		@Override
+		Compiled parameters(List<Object> parameters);
 
-        @Override
-        Connected print(Logger logger);
+		@Override
+		default Compiled parameters(Object... parameters)
+		{
+			return Connected.this.parameters(Arrays.asList(parameters));
+		}
 
-        @Override
-        String toString();
+		@Override
+		Constant constant();
 
-        /**
-         * A SQL query linked to a database and compiled with a set of parameters.
-         * <p>
-         * A connected and compiled query is ready for execution
-         */
-        interface Compiled extends SQL, Fetchable
-        {
+		@Override
+		Connected print(Logger logger);
 
-            /**
-             * Creates a command for the query.
-             *
-             * @return the new command created
-             */
-            Command createCommand();
+		@Override
+		String toString();
 
-            @Override
-            <T> T fetch(Fetcher<T> fetcher);
+		interface Compiled extends SQL, Fetchable
+		{
 
-            @Override
-            Compiled print(Logger logger);
+			Command createCommand();
 
-            @Override
-            String toString();
-        }
+			@Override
+			<T> T fetch(Fetcher<T> fetcher);
 
-        /**
-         * A SQL query without parameters and linked to a database.
-         * <p>
-         * A connected and constant query is ready for execution
-         */
-        interface Constant extends SQL, Fetchable
-        {
+			@Override
+			Compiled print(Logger logger);
 
-            /**
-             * Creates a command for the query.
-             *
-             * @return the new command created
-             */
-            Command createCommand();
+			@Override
+			String toString();
+		}
 
-            @Override
-            <T> T fetch(Fetcher<T> fetcher);
+		interface Constant extends SQL, Fetchable
+		{
 
-            @Override
-            Constant print(Logger logger);
+			Command createCommand();
 
-            @Override
-            String toString();
-        }
-    }
+			@Override
+			<T> T fetch(Fetcher<T> fetcher);
 
-    /**
-     * Query builder.
-     */
-    interface Builder extends SQLBuilder<Query>
-    {
+			@Override
+			Constant print(Logger logger);
 
-        /**
-         * Creates a new query.
-         *
-         * @return the query created
-         */
-        @Override
-        Query build();
+			@Override
+			String toString();
+		}
+	}
 
-        @FunctionalInterface
-        interface Supplier
-        {
-            Builder get();
-        }
-    }
+	interface Builder extends SQLBuilder<Query>
+	{
 
-    @FunctionalInterface
-    interface Supplier
-    {
-        Query get();
-    }
+		@Override
+		Query build();
+
+		@FunctionalInterface
+		interface Supplier
+		{
+			Builder get();
+		}
+	}
+
+	@FunctionalInterface
+	interface Supplier
+	{
+		Query get();
+	}
 }

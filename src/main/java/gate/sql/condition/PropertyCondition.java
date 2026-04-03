@@ -2,31 +2,34 @@ package gate.sql.condition;
 
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+import gate.type.PropertyReference;
 
 /**
- * Parameterized condition compiled with it's parameter values.
+ * Condition composed from property references.
  */
 public class PropertyCondition extends Condition implements PropertyConditionMethods
 {
 
 	/**
-	 * A compiled condition that is always true.
+	 * A property condition that is always true.
 	 */
 	public static final PropertyCondition PROPERTY_TRUE
-		= new PropertyCondition(Condition.of("0").isEq("0"));
+			= new PropertyCondition(Condition.of("0").isEq("0"));
 
 	/**
-	 * A compiled condition that is always false.
+	 * A property condition that is always false.
 	 */
 	public static final PropertyCondition PROPERTY_FALSE
-		= new PropertyCondition(Condition.of("0").isEq("1"));
+			= new PropertyCondition(Condition.of("0").isEq("1"));
 
 	PropertyCondition(Clause clause)
 	{
 		super(clause);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyRelation and()
 	{
@@ -41,7 +44,9 @@ public class PropertyCondition extends Condition implements PropertyConditionMet
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyRelation or()
 	{
@@ -56,18 +61,41 @@ public class PropertyCondition extends Condition implements PropertyConditionMet
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate and(String expression)
 	{
 		return and().expression(expression);
 	}
 
-	/** {@inheritDoc} */
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T, R> PropertyPredicate and(PropertyReference<T, R> reference)
+	{
+		return and().expression(reference);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate or(String expression)
 	{
 		return or().expression(expression);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T, R> PropertyPredicate or(PropertyReference<T, R> reference)
+	{
+		return or().expression(reference);
 	}
 
 	/**
@@ -94,42 +122,54 @@ public class PropertyCondition extends Condition implements PropertyConditionMet
 		return or().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition and(ConstantCondition condition)
 	{
 		return and().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition or(ConstantCondition condition)
 	{
 		return or().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate and(Query.Constant subquery)
 	{
 		return and().subquery(subquery);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate and(Query.Constant.Builder subquery)
 	{
 		return and().subquery(subquery);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate or(Query.Constant subquery)
 	{
 		return or().subquery(subquery);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate or(Query.Constant.Builder subquery)
 	{

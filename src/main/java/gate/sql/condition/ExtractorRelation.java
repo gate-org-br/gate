@@ -1,10 +1,12 @@
 package gate.sql.condition;
 
 import gate.sql.Clause;
+import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
+import gate.type.PropertyReference;
 
 /**
- * A relation between two predicates of a compiled condition
+ * A relation between two predicates of an extractor-based condition
  *
  * @see gate.sql.condition.ExtractorCondition
  * @see gate.sql.condition.ExtractorPredicate
@@ -18,18 +20,22 @@ public class ExtractorRelation<T> extends Relation
 		super(clause);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorRelation<T> when(boolean assertion)
 	{
-		return assertion ? this : new Rollback<>(getClause());
+		return assertion ? this : new Rollback<T>(getClause());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> expression(String expression)
 	{
-		return new ExtractorPredicate<T>(this)
+		return new ExtractorPredicate<>(this)
 		{
 			@Override
 			public String toString()
@@ -42,7 +48,18 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E, R> ExtractorPredicate<T> expression(PropertyReference<E, R> reference)
+	{
+		return expression(ColumnReference.of(reference).name());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> condition(ConstantCondition expression)
 	{
@@ -59,7 +76,9 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> subquery(Query.Constant subquery)
 	{
@@ -76,14 +95,18 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> exists(Query.Constant subquery)
 	{
@@ -101,14 +124,18 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> not(Query.Constant subquery)
 	{
@@ -125,14 +152,18 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> not(Query.Constant.Builder subquery)
 	{
 		return not(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorRelation<T> not()
 	{
@@ -149,21 +180,36 @@ public class ExtractorRelation<T> extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> not(String expression)
 	{
 		return not().expression(expression);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E, R> ExtractorPredicate<T> not(PropertyReference<E, R> reference)
+	{
+		return not().expression(ColumnReference.of(reference).name());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> not(ConstantCondition expression)
 	{
 		return not().condition(expression);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> not(ExtractorCondition<T> condition)
 	{
@@ -227,6 +273,15 @@ public class ExtractorRelation<T> extends Relation
 			return new ExtractorPredicate.Rollback<>(getClause());
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public <E, R> ExtractorPredicate<T> not(PropertyReference<E, R> reference)
+		{
+			return new ExtractorPredicate.Rollback<>(getClause());
+		}
+
 		@Override
 		public ExtractorPredicate<T> not(Query.Constant.Builder subquery)
 		{
@@ -253,6 +308,12 @@ public class ExtractorRelation<T> extends Relation
 
 		@Override
 		public ExtractorPredicate<T> expression(String expression)
+		{
+			return new ExtractorPredicate.Rollback<>(getClause());
+		}
+
+		@Override
+		public <E, R> ExtractorPredicate<T> expression(PropertyReference<E, R> reference)
 		{
 			return new ExtractorPredicate.Rollback<>(getClause());
 		}

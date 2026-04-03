@@ -4,14 +4,12 @@ import gate.sql.statement.Query;
 
 interface CompiledConditionMethods
 {
-
 	/**
 	 * Adds the specified expression and the specified parameters to the condition associated by an AND relation.
 	 *
 	 * @param expression the expression to be associated with the condition
 	 * @param parameters the parameters to be associated with the condition
 	 * @return the current predicate, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	CompiledPredicate and(String expression, Object... parameters);
@@ -22,7 +20,6 @@ interface CompiledConditionMethods
 	 * @param expression the expression to be associated with the condition
 	 * @param parameters the parameters to be associated with the condition
 	 * @return the current predicate, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	CompiledPredicate or(String expression, Object... parameters);
@@ -32,7 +29,6 @@ interface CompiledConditionMethods
 	 *
 	 * @param condition the sub condition to be associated with the current condition
 	 * @return the current condition, for chained invocations
-	 *
 	 * @see gate.sql.condition.Condition
 	 */
 	CompiledCondition and(CompiledCondition condition);
@@ -42,7 +38,6 @@ interface CompiledConditionMethods
 	 *
 	 * @param subquery the sub query to be associated with the condition
 	 * @return the current predicate, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	CompiledPredicate and(Query.Compiled subquery);
@@ -52,7 +47,6 @@ interface CompiledConditionMethods
 	 *
 	 * @param condition the sub condition to be associated with the current condition
 	 * @return the current condition, for chained invocations
-	 *
 	 * @see gate.sql.condition.Condition
 	 */
 	CompiledCondition or(CompiledCondition condition);
@@ -62,7 +56,6 @@ interface CompiledConditionMethods
 	 *
 	 * @param subquery the sub query to be associated with the condition
 	 * @return the current predicate, for chained invocations
-	 *
 	 * @see gate.sql.condition.Predicate
 	 */
 	CompiledPredicate or(Query.Compiled subquery);

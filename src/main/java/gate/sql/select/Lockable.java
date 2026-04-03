@@ -49,33 +49,6 @@ public interface Lockable extends Clause
 		}
 	}
 
-	interface Generic extends Lockable
-	{
-		default LockedSelect.Generic forUpdate()
-		{
-			return new LockedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " for update";
-				}
-			};
-		}
-
-		default LockedSelect.Generic forShare()
-		{
-			return new LockedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " for share";
-				}
-			};
-		}
-	}
-
 	interface Compiled extends Lockable
 	{
 		default LockedSelect.Compiled forUpdate()

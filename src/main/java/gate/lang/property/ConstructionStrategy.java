@@ -7,9 +7,11 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.lang.reflect.*;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Strategy used to construct objects from a set of {@link Attribute} values.
@@ -67,32 +69,44 @@ public interface ConstructionStrategy
 
 				var constructors = Arrays.stream(type.getConstructors())
 						.filter(c -> !c.isAnnotationPresent(Deprecated.class))
-						.filter(c -> matchesAttributes(attributes, c.getParameters()))
 						.toList();
+
 				var factories = Arrays.stream(type.getDeclaredMethods())
 						.filter(m -> Modifier.isPublic(m.getModifiers()))
 						.filter(m -> Modifier.isStatic(m.getModifiers()))
 						.filter(m -> !m.isAnnotationPresent(Deprecated.class))
 						.filter(m -> m.getName().equals("of"))
-						.filter(m -> matchesAttributes(attributes, m.getParameters()))
 						.toList();
+
+				if (factories.isEmpty() && constructors.size() == 1
+				    && constructors.get(0).getParameters().length > 0)
+					return new CanonicalConstructorStrategy(constructors.get(0));
+
+				if (factories.size() == 1 && constructors.isEmpty()
+				    && factories.get(0).getParameters().length > 0)
+					return new CanonicalFactoryMethodStrategy(factories.get(0));
 
 				var canonicalConstructor = constructors.stream()
 						.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
 				var canonicalFactory = factories.stream()
 						.filter(m -> m.isAnnotationPresent(Canonical.class)).toList();
-
 				if (canonicalConstructor.size() + canonicalFactory.size() > 1)
 					throw new ConversionException("Ambiguous @Canonical for " + type.getName());
 				if (!canonicalConstructor.isEmpty())
 					return new CanonicalConstructorStrategy(canonicalConstructor.get(0));
 				if (!canonicalFactory.isEmpty())
-					return new FactoryMethodStrategy(canonicalFactory.get(0));
+					return new CanonicalFactoryMethodStrategy(canonicalFactory.get(0));
 
+				constructors = constructors.stream()
+						.filter(c -> matchesAttributes(attributes, c.getParameters()))
+						.toList();
+				factories = factories.stream()
+						.filter(m -> matchesAttributes(attributes, m.getParameters()))
+						.toList();
 				if (factories.size() + constructors.size() > 1)
 					throw new ConversionException("Ambiguous construction strategy for " + type.getName());
 				if (!constructors.isEmpty())
-					return new CanonicalConstructorStrategy(constructors.get(0));
+					return new ConstructorStrategy(constructors.get(0));
 				if (!factories.isEmpty())
 					return new FactoryMethodStrategy(factories.get(0));
 
@@ -110,6 +124,17 @@ public interface ConstructionStrategy
 	private static boolean matchesAttributes(Set<Attribute> attributes, Parameter[] parameters)
 	{
 		return attributes.stream().allMatch(a -> Arrays.stream(parameters).anyMatch(a::matches));
+	}
+
+	private static LinkedHashSet<Attribute> getConstructorAttributes(Executable executable,
+	                                                                 Set<Attribute> attributes)
+	{
+		return Arrays.stream(executable.getParameters())
+				.map(parameter -> attributes.stream()
+						.filter(attribute -> attribute.matches(parameter))
+						.findFirst()
+						.orElse(null))
+				.collect(Collectors.toCollection(LinkedHashSet::new));
 	}
 
 	static Object newInstance(Class<?> type,
@@ -195,17 +220,14 @@ public interface ConstructionStrategy
 		}
 	}
 
-	record CanonicalConstructorStrategy(Constructor<?> constructor) implements ConstructionStrategy
+	record ConstructorStrategy(Constructor<?> constructor) implements ConstructionStrategy
 	{
 		@Override
 		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
 		{
-			var values = Arrays.stream(constructor.getParameters())
-					.map(p -> attributes.entrySet().stream()
-							.filter(a -> a.getKey().matches(p))
-							.findFirst()
-							.map(Map.Entry::getValue)
-							.orElse(null))
+			var constructorAttributes = getConstructorAttributes(constructor, attributes.keySet());
+			var values = constructorAttributes.stream()
+					.map(attribute -> attribute != null ? attributes.get(attribute) : null)
 					.toArray();
 			return constructor.newInstance(values);
 		}
@@ -217,14 +239,53 @@ public interface ConstructionStrategy
 		                        TriFunction<Attribute, Object, Object, Object> getValue)
 				throws ReflectiveOperationException
 		{
-			Object[] args = Arrays.stream(constructor.getParameters())
-					.map(p -> propertyMap.keySet().stream()
-							.filter(a -> a.matches(p))
-							.findFirst()
-							.map(e -> getValue.apply(e, null, null))
-							.orElse(null))
+			var constructorAttributes = getConstructorAttributes(constructor, propertyMap.keySet());
+			Object[] args = constructorAttributes.stream()
+					.map(attribute -> attribute != null ? getValue.apply(attribute, null, propertyMap.get(attribute)) : null)
 					.toArray();
 			return constructor.newInstance(args);
+		}
+	}
+
+	record CanonicalConstructorStrategy(Constructor<?> constructor) implements ConstructionStrategy
+	{
+		@Override
+		public Object construct(Class<?> type, Map<Attribute, Object> attributes) throws ReflectiveOperationException
+		{
+			var constructorAttributes = getConstructorAttributes(constructor, attributes.keySet());
+			var values = constructorAttributes.stream()
+					.map(attribute -> attribute != null ? attributes.get(attribute) : null)
+					.toArray();
+
+			var value = constructor.newInstance(values);
+			for (var entry : attributes.entrySet())
+				if (!constructorAttributes.contains(entry.getKey()))
+					entry.getKey().setValue(value, entry.getValue());
+			return value;
+		}
+
+		@Override
+		public Object construct(Class<?> type,
+		                        Object value,
+		                        Map<Attribute, Object> propertyMap,
+		                        TriFunction<Attribute, Object, Object, Object> getValue)
+				throws ReflectiveOperationException
+		{
+			var constructorAttributes = getConstructorAttributes(constructor, propertyMap.keySet());
+			var args = constructorAttributes.stream()
+					.map(attribute -> attribute != null ? getValue.apply(attribute, null,
+							propertyMap.get(attribute)) : null)
+					.toArray();
+
+			value = constructor.newInstance(args);
+			for (var entry : propertyMap.entrySet())
+			{
+				var attribute = entry.getKey();
+				if (!constructorAttributes.contains(attribute))
+					attribute.setValue(value, getValue.apply(attribute, null, entry.getValue()));
+			}
+
+			return value;
 		}
 	}
 
@@ -259,6 +320,49 @@ public interface ConstructionStrategy
 							.orElse(null))
 					.toArray();
 			return constructor.newInstance(args);
+		}
+	}
+
+	record CanonicalFactoryMethodStrategy(Method method) implements ConstructionStrategy
+	{
+		@Override
+		public Object construct(Class<?> type, Map<Attribute, Object> attributes)
+				throws ReflectiveOperationException
+		{
+			var constructorAttributes = getConstructorAttributes(method, attributes.keySet());
+			var values = constructorAttributes.stream()
+					.map(attribute -> attribute != null ? attributes.get(attribute) : null)
+					.toArray();
+
+			var value = method.invoke(null, values);
+			for (var entry : attributes.entrySet())
+				if (!constructorAttributes.contains(entry.getKey()))
+					entry.getKey().setValue(value, entry.getValue());
+			return value;
+		}
+
+		@Override
+		public Object construct(Class<?> type,
+		                        Object value,
+		                        Map<Attribute, Object> propertyMap,
+		                        TriFunction<Attribute, Object, Object, Object> getValue)
+				throws ReflectiveOperationException
+		{
+			var constructorAttributes = getConstructorAttributes(method, propertyMap.keySet());
+			var args = constructorAttributes.stream()
+					.map(attribute -> attribute != null ? getValue.apply(attribute, null, propertyMap.get(attribute)) : null)
+					.toArray();
+
+			value = method.invoke(null, args);
+
+			for (var entry : propertyMap.entrySet())
+			{
+				var attribute = entry.getKey();
+				if (!constructorAttributes.contains(attribute))
+					attribute.setValue(value, getValue.apply(attribute, null, entry.getValue()));
+			}
+
+			return value;
 		}
 	}
 

@@ -5,6 +5,8 @@ import gate.Person;
 import gate.error.AppException;
 import gate.error.ConstraintViolationException;
 import gate.error.NotFoundException;
+import gate.sql.condition.Condition;
+import gate.sql.select.Select;
 import gate.type.ID;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -40,11 +42,16 @@ public class EntityUpdateTest
 				.setVal(expected.getVal())
 				.execute();
 
-			Contact result = link
-				.select(Contact.class)
-				.properties("=id", "type", "val", "person.id")
-				.matching(expected)
-				.orElseThrow(NotFoundException::new);
+				Contact result = Select.expression("id")
+					.expression("type")
+					.expression("val")
+					.expression("Person$id").as("person.id")
+					.from("Contact")
+					.where(Condition.of("id").eq(expected.getId()))
+					.build()
+					.connect(link)
+					.fetchEntity(Contact.class)
+					.orElseThrow(NotFoundException::new);
 
 			assertEquals(expected.getVal(), result.getVal());
 			assertEquals(expected.getType(), result.getType());

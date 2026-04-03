@@ -37,18 +37,6 @@ public interface Selectable extends Clause
 			};
 		}
 
-		default SelectedSubqueryAlias.Generic from(Query query)
-		{
-			return new SelectedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " from (" + query.toString() + ")";
-				}
-			};
-		}
-
 		default SelectedSubqueryAlias.Compiled from(Query.Compiled query)
 		{
 			return new SelectedSubqueryAlias.Compiled(this)
@@ -73,63 +61,7 @@ public interface Selectable extends Clause
 			return from(query.build());
 		}
 
-		default SelectedSubqueryAlias.Generic from(Query.Builder query)
-		{
-			return from(query.build());
-		}
-
 		default SelectedSubqueryAlias.Compiled from(Query.Compiled.Builder query)
-		{
-			return from(query.build());
-		}
-	}
-
-	interface Generic extends Selectable
-	{
-
-		@Override
-		default SelectedSelect.Generic from(String exp)
-		{
-			return new SelectedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " from " + exp;
-				}
-			};
-		}
-
-		default SelectedSubqueryAlias.Generic from(Query.Constant query)
-		{
-			return new SelectedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " from (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default SelectedSubqueryAlias.Generic from(Query query)
-		{
-			return new SelectedSubqueryAlias.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " from (" + query.toString() + ")";
-				}
-			};
-		}
-
-		default SelectedSubqueryAlias.Generic from(Query.Constant.Builder query)
-		{
-			return from(query.build());
-		}
-
-		default SelectedSubqueryAlias.Generic from(Query.Builder query)
 		{
 			return from(query.build());
 		}

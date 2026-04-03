@@ -153,8 +153,6 @@ public class JsonElementConverter implements Converter
 					if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
 					{
 						empty = false;
-
-						scanner.scan();
 						Converter converter = Converter.getConverter(JsonElement.class);
 						JsonElement value
 								= (JsonElement) converter.ofJson(scanner, elementType, elementType);

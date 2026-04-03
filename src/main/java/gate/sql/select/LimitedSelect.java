@@ -38,23 +38,6 @@ public abstract class LimitedSelect implements SelectClause, Lockable
         }
     }
 
-    public abstract static class Generic extends LimitedSelect implements
-            Lockable.Generic,
-            Query.Builder
-    {
-
-        public Generic(Clause clause)
-        {
-            super(clause);
-        }
-
-        @Override
-        public Query build()
-        {
-            return Query.of(toString());
-        }
-    }
-
     public abstract static class Compiled extends LimitedSelect implements
             Lockable.Compiled,
             Query.Compiled.Builder
@@ -68,9 +51,8 @@ public abstract class LimitedSelect implements SelectClause, Lockable
         @Override
         public Query.Compiled build()
         {
-            return Query.of(toString())
-                    .parameters(getParameters()
-                            .collect(Collectors.toList()));
+            return Query.of(toString(), getParameters()
+                    .collect(Collectors.toList()));
         }
     }
 

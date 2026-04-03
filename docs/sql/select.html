@@ -1,178 +1,172 @@
 <g-callout class='fill'>
 	<h1>Select</h1>
 	<p>
-		<code>Select</code> is used from simple projections to multi-join analytical queries.
-		This page prioritizes high-value patterns seen in production DAOs.
+		Use <code>Select</code> to build read queries. In most codebases, the common pattern is:
+		keep the base SQL readable, add the dynamic parts in Java, then fetch the result in the
+		shape the caller needs.
 	</p>
 </g-callout>
 
 <g-tab-control>
-	<a href="#">Resource SQL + Dynamic Condition</a>
+	<a href="#">Recommended Style</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Most common production pattern: SQL in resource file, dynamic predicates in Java.</p>
-				<g-message class='fill'>
-					<pre><code>List&lt;Map&lt;String, Object&gt;&gt; rows = Select
-	.of(getClass().getResource("CallReportDao/search(Call).sql"))
-	.where(getCondition(call))
-	.orderBy("Call.createdAt")
+		<g-callout>
+			<p>
+				The most practical style is SQL in a resource file plus dynamic filtering in Java.
+			</p>
+			<g-message class='fill'>
+				<pre><code>List&lt;Map&lt;String, Object&gt;&gt; rows = Select
+	.of(getClass().getResource("CallDao/search(Call).sql"))
+	.where(getCondition(filter))
+	.orderBy("Call.createdAt desc")
 	.build()
 	.connect(getLink())
-	.fetchMapList(String.class, String.class, LocalDateTime.class);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Long SQL stays readable in dedicated files</li>
-					<li>Java still controls dynamic filtering</li>
-					<li>Typed fetch output for predictable mapping</li>
-				</ul>
-			</g-callout>
-		</div>
+	.fetchMapList();</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Join + isEq</a>
+	<a href="#">Inline Builder</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Use <code>isEq</code> for field-to-field join conditions.</p>
-				<g-message class='fill'>
-					<pre><code>List&lt;User&gt; users = Select
-	.expression("UserAccount.id").as("id")
+		<g-callout>
+			<p>For shorter queries, build the whole <code>select</code> in Java.</p>
+			<g-message class='fill'>
+				<pre><code>List&lt;User&gt; users = Select
+	.expression("User.id").as("id")
 	.expression("User.name").as("name")
-	.expression("User.username").as("username")
-	.from("UserAccount")
-	.join("gate.User").on(Condition.of("UserAccount.id").isEq("User.id"))
-	.where(Condition.of("UserAccount.ContactCenter$id").eq(contactCenter.getId()))
+	.from("User")
+	.where(Condition.of("User.active").eq(true))
 	.orderBy("User.name")
 	.build()
 	.connect(getLink())
 	.fetchEntityList(User.class);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Generated SQL shape:</p>
-				<g-message class='fill'>
-					<pre><code>select UserAccount.id as "id", User.name as "name", User.username as "username"
-from UserAccount
-join gate.User on UserAccount.id = User.id
-where UserAccount.ContactCenter$id = ?
-order by User.name</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Conditional Access Join</a>
+	<a href="#">Join and Condition</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Pattern used for role-based visibility in list screens.</p>
-				<g-message class='fill'>
-					<pre><code>List&lt;Organization&gt; organizations = Select
-	.expression("Organization.id").as("id")
-	.expression("Organization.name").as("name")
-	.from("Organization")
-	.leftJoin("Access")
-	.on(Condition.of("Organization.id").isEq("Access.Organization$id")
-		.and("Access.User$id").eq(getUser().getId()))
-	.where(Condition.TRUE
-		.and().when(!getUser().isSuperUser()).expression("Access.id").isNotNull())
-	.orderBy("Organization.name")
+		<g-callout>
+			<p>
+				Join clauses and filters normally use <code>Condition</code>. Use
+				<code>isEq(...)</code> when comparing one field with another field.
+			</p>
+			<g-message class='fill'>
+				<pre><code>List&lt;User&gt; users = Select
+	.expression("UserAccount.id").as("id")
+	.expression("User.name").as("name")
+	.from("UserAccount")
+	.join("User").on(Condition.of("UserAccount.id").isEq("User.id"))
+	.where(Condition.of("UserAccount.active").eq(true))
 	.build()
 	.connect(getLink())
-	.fetchEntityList(Organization.class);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Single query for super-user and regular-user flows</li>
-					<li>Readable and auditable access rule</li>
-					<li>No post-filter in application memory</li>
-				</ul>
-			</g-callout>
-		</div>
+	.fetchEntityList(User.class);</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Group By and Rollup</a>
+	<a href="#">Property References</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Analytical summaries with rollup are common in dashboard DAOs.</p>
-				<g-message class='fill'>
-					<pre><code>DataGrid grid = Select
-	.of(getClass().getResource("CallReportDao/byQueue(Call).sql"))
-	.where(getCondition(call))
-	.groupBy("Queue.id")
-	.withRollup()
+		<g-callout>
+			<p>
+				When a selected field belongs to a mapped Java type, you can reference it directly from
+				the model instead of writing the column name by hand.
+			</p>
+			<g-message class='fill'>
+				<pre><code>List&lt;User&gt; users = Select
+	.expression(User::getId).as("id")
+	.expression(User::getName).as("name")
+	.from("User")
+	.where(Condition.of(User::getActive).eq(true))
+	.orderBy("name")
 	.build()
 	.connect(getLink())
-	.fetchDataGrid(String.class, Integer.class, Integer.class, Integer.class)
-	.rollup();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Aggregations are done in SQL, not in Java loops</li>
-					<li>Natural fit for report pages and BI-like widgets</li>
-					<li>Typed grid output keeps rendering stable</li>
-				</ul>
-			</g-callout>
-		</div>
+	.fetchEntityList(User.class);</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Pagination</a>
+	<a href="#">Grouping and Pagination</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Use <code>paginate</code> with typed map pages for server-side listing endpoints.</p>
-				<g-message class='fill'>
-					<pre><code>Page&lt;Map&lt;String, Object&gt;&gt; page = Select
-	.of(getClass().getResource("CallReportDao/search(Call, String, int, int).sql"))
-	.where(getCondition(call))
+		<g-callout>
+			<p>
+				Use the builder methods directly for grouping, ordering, and pagination. The result
+				can still be fetched as maps, entities, grids, or pages.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Page&lt;Map&lt;String, Object&gt;&gt; page = Select
+	.of(getClass().getResource("CallDao/search(Call).sql"))
+	.where(getCondition(filter))
 	.sort(order)
 	.paginate(pageSize, pageIndx)
 	.build()
 	.connect(getLink())
-	.fetchMapPage(pageSize, pageIndx, ID.class, String.class, LocalDateTime.class);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Consistent page contract for UI/API consumers</li>
-					<li>Avoids loading full result sets</li>
-					<li>Works with dynamic ordering and filters</li>
-				</ul>
-			</g-callout>
-		</div>
+	.fetchMapPage(pageSize, pageIndx);</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">exists(select ...)</a>
+	<a href="#">Main Methods</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>When you need a boolean existence query, use <code>Select.exists(...)</code>.</p>
-				<g-message class='fill'>
-					<pre><code>boolean exists = Select.exists(Select
-		.expression("id")
-		.from("User")
-		.where(Condition.of("id").eq(userId)))
-	.build()
-	.connect(getLink())
-	.fetchBoolean();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Generated SQL shape:</p>
-				<g-message class='fill'>
-					<pre><code>select exists (select id from User where id = ?)</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>of(...)</code></td>
+					<td>Start from a SQL resource file or existing SQL text</td>
+				</tr>
+				<tr>
+					<td><code>expression(...)</code></td>
+					<td>Add selected columns or expressions, including property references</td>
+				</tr>
+				<tr>
+					<td><code>from(...)</code></td>
+					<td>Define the base table or subquery source</td>
+				</tr>
+				<tr>
+					<td><code>join(...)</code>, <code>leftJoin(...)</code></td>
+					<td>Add joins</td>
+				</tr>
+				<tr>
+					<td><code>where(...)</code></td>
+					<td>Attach a condition built with <code>Condition</code>, including property-reference predicates</td>
+				</tr>
+				<tr>
+					<td><code>groupBy(...)</code></td>
+					<td>Group rows for aggregate queries</td>
+				</tr>
+				<tr>
+					<td><code>having(...)</code></td>
+					<td>Filter grouped rows</td>
+				</tr>
+				<tr>
+					<td><code>orderBy(...)</code></td>
+					<td>Apply a fixed ordering</td>
+				</tr>
+				<tr>
+					<td><code>sort(...)</code></td>
+					<td>Apply a runtime ordering string</td>
+				</tr>
+				<tr>
+					<td><code>paginate(...)</code></td>
+					<td>Apply page size and page index</td>
+				</tr>
+				<tr>
+					<td><code>build()</code></td>
+					<td>Produce the executable query object</td>
+				</tr>
+				<tr>
+					<td><code>connect(link)</code></td>
+					<td>Attach the query to a <code>Link</code> for execution</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
 	</div>
 </g-tab-control>

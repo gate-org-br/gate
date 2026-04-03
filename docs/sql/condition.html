@@ -1,198 +1,191 @@
 <g-callout class='fill'>
 	<h1>Condition</h1>
 	<p>
-		<code>Condition</code> builds SQL predicates for <code>where</code>, <code>having</code>, and join clauses.
-		In practice, DAO code uses three styles: no parameters, direct parameters, and placeholders resolved at execution.
+		Use <code>Condition</code> for <code>where</code>, <code>having</code>, and join predicates.
+		It is designed for the common DAO problem: keep the SQL readable while still adding optional
+		filters and nested logic in Java.
 	</p>
 </g-callout>
 
 <g-tab-control>
-	<a href="#">No Parameters</a>
+	<a href="#">Fixed SQL Expressions</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Use literal SQL expressions when no bound values are needed.</p>
-				<g-message class='fill'>
-					<pre><code>Condition c = Condition
+		<g-callout>
+			<p>Use literal SQL expressions when no bound parameter is needed.</p>
+			<g-message class='fill'>
+				<pre><code>Condition condition = Condition
 	.of("User.active").isEq("true")
-	.and("deletedAt").isNull();</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Output:</p>
-				<g-message class='fill'>
-					<pre><code>User.active = true and deletedAt is null
-params: []</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+	.and("User.deletedAt").isNull();</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
 	<a href="#">Direct Parameters</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>Most common style in DAOs: pass values while composing.</p>
-				<g-message class='fill'>
-					<pre><code>Condition c = Condition.TRUE
-	.and("User.name").lk("Paul")
-	.and("User.active").eq(true)
-	.and("Department.id").eq(10);</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Output:</p>
-				<g-message class='fill'>
-					<pre><code>0 = 0 and User.name like ? and User.active = ? and Department.id = ?
-params: ["%Paul%", true, 10]</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+		<g-callout>
+			<p>This is the most common style in application code.</p>
+			<g-message class='fill'>
+				<pre><code>Condition condition = Condition.TRUE
+	.and("User.name").lk(filter.getName())
+	.and("User.active").eq(filter.getActive())
+	.and("Department$id").eq(filter.getDepartmentId());</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Null-Skipping Form Filters</a>
+	<a href="#">Property References</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>
-					To simplify search forms, <code>eq</code>, <code>ne</code>, and <code>gt</code>
-					ignore <code>null</code> values. If a field is not filled, the predicate and parameter are not added.
-				</p>
-				<g-message class='fill'>
-					<pre><code>Filter filter = getFilterFromForm();
-
-Condition c = Condition.TRUE
-	.and("User.username").eq(filter.getUsername())
-	.and("User.email").ne(filter.getExcludedEmail())
-	.and("User.createdAt").gt(filter.getCreatedAfter());</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Example behavior:</p>
-				<g-message class='fill'>
-					<pre><code>// if only username is filled
-c.toString():
-0 = 0 and User.username = ?
-
-c.getParameters():
-["paul"]</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+		<g-callout>
+			<p>
+				When the field belongs to a mapped Java type, you can use a property reference instead
+				of a raw SQL column name.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Condition condition = Condition.TRUE
+	.and(User::getName).lk(filter.getName())
+	.and(User::getActive).eq(filter.getActive());</code></pre>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">Execution-Time Parameters</a>
+	<a href="#">Conditional Clauses</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>
-					Use placeholder methods like <code>eq()</code> and <code>lk()</code>
-					when values will be provided during execution.
-				</p>
-				<g-message class='fill'>
-					<pre><code>Condition c = Condition
-	.of("Department$id").eq()
-	.and("name").lk()
-	.and("createdAt").ge();
-
-Query q = Select.expression("id")
-	.from("User")
-	.where(c)
-	.build()
-	.connect(getLink())
-	.parameters(1, "Paul", LocalDate.now().minusDays(7));</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Condition output before execution:</p>
-				<g-message class='fill'>
-					<pre><code>Department$id = ? and name like ? and createdAt >= ?
-params: []</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+		<g-callout>
+			<p>
+				<code>when(...)</code> is the mechanism used by <code>gate.sql</code> to make a clause
+				conditional without forcing you to branch the whole query in Java. Instead of writing
+				multiple <code>if/else</code> blocks around the query, you keep one fluent expression
+				and say that the next part of it should only exist when a runtime condition is true.
+			</p>
+			<p>
+				That is why <code>when(...)</code> reads naturally in search filters. A date range,
+				an optional status, a user-specific restriction, or any other filter that may or may
+				not exist can stay close to the clause it controls. This keeps the query readable,
+				local, and easy to review, because the optional rule is expressed exactly where the SQL
+				would appear.
+			</p>
+			<p>
+				When the assertion is true, the fluent chain continues normally and the next predicate
+				is added to the SQL. When the assertion is false, that next predicate is skipped and
+				the SQL remains unchanged. In other words, <code>when(...)</code> does not produce a
+				different query object for you to manage separately; it keeps the same query flow and
+				either lets the next clause in or quietly ignores it.
+			</p>
+			<p>
+				After <code>when(...)</code>, the API starts offering supplier-based methods. That is
+				not an implementation detail leaking by accident; it is there because the value of the
+				next clause should be lazy as well. If a clause may disappear, the value associated with
+				it should not be computed eagerly. This avoids work that will never be used and, more
+				importantly, protects code that only makes sense inside the enabled branch.
+			</p>
+			<p>
+				That is why the idiomatic pattern after <code>when(...)</code> is to use the normal
+				operator methods with supplier arguments, such as <code>ge(...)</code>,
+				<code>lt(...)</code>, and the other supplier-based variants.
+				They express two things at once: the clause is optional, and the value should only be
+				obtained if the clause is really going to be part of the final SQL.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Condition condition = Condition.TRUE
+	.and("User.name").lk(filter.getName())
+	.and().when(filter.getStartDate() != null).expression("User.createdAt")
+		.ge(() -> filter.getStartDate().atStartOfDay())
+	.and().when(filter.getEndDate() != null).expression("User.createdAt")
+		.lt(() -> filter.getEndDate().plusDays(1).atStartOfDay());</code></pre>
+			</g-message>
+			<p>
+				If <code>filter.getStartDate()</code> is <code>null</code>, the lower-bound clause is
+				not added and its supplier is never used. The same applies to the end date. The result
+				is one query definition that stays linear and readable even when several filters are
+				optional.
+			</p>
+		</g-callout>
 	</div>
 
-	<a href="#">when(...) for Optional Filters</a>
+	<a href="#">Nested Logic</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>
-					<code>when(...)</code> is heavily used in production DAOs to include predicates only when input is present.
-				</p>
-				<g-message class='fill'>
-					<pre><code>Condition c = Condition.TRUE
-	.and("User.username").eq(filter.getUsername())
-	.and().when(filter.getStartDate() != null).expression("Event.createdAt")
-		.geGet(() -> filter.getStartDate().atStartOfDay())
-	.and().when(filter.getEndDate() != null).expression("Event.createdAt")
-		.ltGet(() -> filter.getEndDate().plusDays(1).atStartOfDay());</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>No duplicated query branches</li>
-					<li>Optional filter logic stays close to each predicate</li>
-					<li>Easy to combine with reusable baseline conditions</li>
-				</ul>
-			</g-callout>
-		</div>
-	</div>
-
-	<a href="#">Field To Field and Nested Composition</a>
-	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>
-					Use <code>isEq</code> to compare field-to-field and pass conditions directly into <code>and(Condition...)</code>.
-					The nested call is parenthesized, which is the safe form.
-				</p>
-				<g-message class='fill'>
-					<pre><code>Condition c = Condition
+		<g-callout>
+			<p>
+				Pass a condition into another condition when you need parentheses and explicit grouping.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Condition condition = Condition
 	.of("Supervisor.teamId").isEq("Shift.teamId")
 	.and(Condition
 		.of("Shift.userId").isEq("User.id")
 		.or("User.active").eq(true));</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Output:</p>
-				<g-message class='fill'>
-					<pre><code>Supervisor.teamId = Shift.teamId
-and (Shift.userId = User.id or User.active = ?)
-params: [true]</code></pre>
-				</g-message>
-			</g-callout>
-		</div>
+			</g-message>
+		</g-callout>
 	</div>
 
-	<a href="#">EXISTS and NOT EXISTS</a>
+	<a href="#">EXISTS</a>
 	<div>
-		<div style='display:grid; grid-template-columns: 1fr 1fr; gap: 12px'>
-			<g-callout>
-				<p>
-					Use <code>exists(Select...)</code> with full subqueries.
-					A common pattern is combining multiple alternatives with <code>Condition.FALSE.or()</code>.
-				</p>
-				<g-message class='fill'>
-					<pre><code>Condition c = Condition.TRUE
-	.and(Condition.FALSE
-		.or().exists(NEXT_RECEIVED_CONTACT)
-		.or().exists(NEXT_MADE_CONTACT))
+		<g-callout>
+			<p>
+				Use <code>exists(...)</code> and <code>not().exists(...)</code> for subquery-based
+				filtering and permission checks.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Condition condition = Condition.TRUE
+	.and().exists(Select.expression("id")
+		.from("Share")
+		.where(Condition.of("Share.User$id").eq(userId)))
 	.and().not().exists(Select.expression("id")
-		.from("VisibilityException")
-		.where(Condition.of("VisibilityException.contactId").isEq("Contact.id")));</code></pre>
-				</g-message>
-			</g-callout>
-			<g-callout>
-				<p>Why this is useful:</p>
-				<ul>
-					<li>Strong support for permission and visibility rules</li>
-					<li>Efficient filtering without materializing intermediate data</li>
-					<li>Expressive enough for complex business constraints</li>
-				</ul>
-			</g-callout>
-		</div>
+		.from("BlockList")
+		.where(Condition.of("BlockList.User$id").eq(userId)));</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Main Methods</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>of(...)</code></td>
+					<td>Start a new predicate from a field, expression, or property reference</td>
+				</tr>
+				<tr>
+					<td><code>TRUE</code>, <code>FALSE</code></td>
+					<td>Start composition from a neutral or always-false baseline</td>
+				</tr>
+				<tr>
+					<td><code>eq</code>, <code>ne</code>, <code>lt</code>, <code>le</code>, <code>gt</code>, <code>ge</code></td>
+					<td>Compare with bound values</td>
+				</tr>
+				<tr>
+					<td><code>lk</code>, <code>rx</code>, <code>bw</code>, <code>in</code></td>
+					<td>Use common SQL operators</td>
+				</tr>
+				<tr>
+					<td><code>isEq</code>, <code>isNe</code>, <code>isNull</code>, <code>isNotNull</code></td>
+					<td>Compare with SQL expressions instead of bound values</td>
+				</tr>
+				<tr>
+					<td><code>and(...)</code>, <code>or(...)</code></td>
+					<td>Combine conditions and predicates, including property references</td>
+				</tr>
+				<tr>
+					<td><code>when(...)</code></td>
+					<td>Add the next clause only if a runtime condition is true; after it, supplier-based methods become available for lazy values</td>
+				</tr>
+				<tr>
+					<td><code>exists(...)</code></td>
+					<td>Attach an <code>exists (subquery)</code> predicate</td>
+				</tr>
+				<tr>
+					<td><code>not()</code></td>
+					<td>Negate the next predicate or subquery</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
 	</div>
 </g-tab-control>

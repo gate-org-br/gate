@@ -1,322 +1,158 @@
 package gate.sql.insert;
 
+import gate.converter.Converter;
+import gate.sql.ColumnReference;
+import gate.sql.EntityHelper;
 import gate.sql.statement.Sentence;
 import gate.type.PropertyReference;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * Insert builder bound to a source object.
- * <p>
- * Column values are extracted from the source object using property references.
+ * Compiled insert builder bound to a source object.
  */
-public class ObjectInsert<T> implements Insert
+public class ObjectInsert<T> implements Insert, Sentence.Compiled.Builder
 {
 
-    private final T object;
-    private final ClassInsert<T> insert;
+	private final T object;
+	private final Class<T> type;
+	private final boolean ignore;
+	private final List<Object> values = new ArrayList<>();
+	private final StringJoiner columns = new StringJoiner(", ", "(", ")");
+	private final StringJoiner parameters = new StringJoiner(", ", "(", ")");
 
-    ObjectInsert(Class<T> type, T object)
-    {
-        this.object = Objects.requireNonNull(object);
-        this.insert = new ClassInsert<>(type);
-    }
+	ObjectInsert(Class<T> type, T object, boolean ignore)
+	{
+		this.type = Objects.requireNonNull(type);
+		this.object = Objects.requireNonNull(object);
+		EntityHelper.check(type);
+		this.ignore = ignore;
+	}
 
-    /**
-     * Adds an ignore modifier to the sentence.
-     *
-     * @return the same builder with ignore enabled
-     */
-    public ObjectInsert<T> ignore()
-    {
-        insert.ignore();
-        return this;
-    }
+	public ObjectInsert<T> set(String column, Object value)
+	{
+		columns.add(Objects.requireNonNull(column));
+		parameters.add("?");
+		values.add(value);
+		return this;
+	}
 
-    /**
-     * Adds a new column/value pair, extracting value from the bound object.
-     *
-     * @param property property reference used to resolve column and value
-     * @param <R>      property type
-     * @return compiled builder with the added column/value pair
-     */
-    public <R> Compiled set(PropertyReference<T, R> property)
-    {
-        return compiled().set(property);
-    }
+	public <R> ObjectInsert<T> set(Class<R> type, String column, R value)
+	{
+		values.add(value);
+		Converter.getConverter(Objects.requireNonNull(type))
+				.getColumns(Objects.requireNonNull(column))
+				.peek(columns::add)
+				.map(e -> "?")
+				.forEach(parameters::add);
+		return this;
+	}
 
-    /**
-     * Adds new column/value pairs, extracting values from the bound object.
-     *
-     * @param properties property references used to resolve columns and values
-     * @return compiled builder with the added column/value pairs
-     */
-    @SafeVarargs
-    public final Compiled set(PropertyReference<T, ?>... properties)
-    {
-        return compiled().set(properties);
-    }
+	public ObjectInsert<T> set(PropertyReference<T, ?> property, Object value)
+	{
+		var column = ColumnReference.of(Objects.requireNonNull(property));
+		Converter.getConverter(property.metadata().method().getReturnType())
+				.getColumns(column.name())
+				.peek(columns::add)
+				.map(e -> "?")
+				.forEach(parameters::add);
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		Object extracted = ((ColumnReference) column).extractor().apply(value);
+		values.add(extracted);
+		return this;
+	}
 
-    /**
-     * Creates a compiled builder bound to this source object.
-     *
-     * @return compiled object insert builder
-     */
-    public Compiled compiled()
-    {
-        return new Compiled();
-    }
+	public <R> ObjectInsert<T> set(PropertyReference<T, R> property)
+	{
+		return set(property, property.apply(object));
+	}
 
-    /**
-     * Adds the next column(s) only if previous specified condition is true.
-     *
-     * @param assertion condition to be checked
-     * @return conditional builder
-     */
-    public When when(boolean assertion)
-    {
-        return assertion ? new When() : new DisabledWhen();
-    }
+	public final ObjectInsert<T> set(List<PropertyReference<T, ?>> properties)
+	{
+		for (PropertyReference<T, ?> property : Objects.requireNonNull(properties))
+			set(property);
+		return this;
+	}
 
-    /**
-     * SQL insert sentence builder bound to a source object with values extracted from property references.
-     */
-    public class Compiled implements Sentence.Compiled.Builder
-    {
+	public ObjectInsert<T> set(PropertyReference<T, ?> property, Function<T, ?> extractor)
+	{
+		@SuppressWarnings({"rawtypes", "unchecked"})
+		ObjectInsert<T> insert = set((PropertyReference) Objects.requireNonNull(property),
+				Objects.requireNonNull(extractor).apply(object));
+		return insert;
+	}
 
-        private final ClassInsert<T>.Compiled delegate;
+	public When when(boolean assertion)
+	{
+		return new When(assertion);
+	}
 
-        private Compiled()
-        {
-            this.delegate = insert.new Compiled();
-        }
+	@Override
+	public Sentence.Compiled build()
+	{
+		return Sentence.of(toString()).parameters(values);
+	}
 
-        /**
-         * Adds a new column/value pair, extracting value from the bound object.
-         *
-         * @param property property reference used to resolve column and value
-         * @param <R>      property type
-         * @return the same builder with the added column/value pair
-         */
-        public <R> Compiled set(PropertyReference<T, R> property)
-        {
-            PropertyReference<T, R> reference = Objects.requireNonNull(property);
-            delegate.set(reference, reference.apply(object));
-            return this;
-        }
+	@Override
+	public String toString()
+	{
+		return "insert " + (ignore ? "ignore " : "") + "into " + EntityHelper.getFullTableName(type)
+		       + " " + columns + " values " + parameters;
+	}
 
-        /**
-         * Adds new column/value pairs, extracting values from the bound object.
-         *
-         * @param properties property references used to resolve columns and values
-         * @return the same builder with the added column/value pairs
-         */
-        @SafeVarargs
-        public final Compiled set(PropertyReference<T, ?>... properties)
-        {
-            for (PropertyReference<T, ?> property : Objects.requireNonNull(properties))
-                setUnchecked(Objects.requireNonNull(property));
-            return this;
-        }
+	public class When
+	{
+		private final boolean assertion;
 
-        @SuppressWarnings({"rawtypes", "unchecked"})
-        private void setUnchecked(PropertyReference<T, ?> property)
-        {
-            PropertyReference<T, Object> reference = (PropertyReference) property;
-            delegate.set(reference, reference.apply(object));
-        }
+		private When(boolean assertion)
+		{
+			this.assertion = assertion;
+		}
 
-        /**
-         * Adds the next column(s) only if previous specified condition is true.
-         *
-         * @param assertion condition to be checked
-         * @return conditional builder
-         */
-        public When when(boolean assertion)
-        {
-            return assertion ? new When() : new DisabledWhen();
-        }
+			public ObjectInsert<T> set(String column, Supplier<?> supplier)
+			{
+				return assertion ? ObjectInsert.this.set(column, supplier.get()) : ObjectInsert.this;
+			}
 
-        @Override
-        public Sentence.Compiled build()
-        {
-            return delegate.build();
-        }
+			public <R> ObjectInsert<T> set(Class<R> type, String column, Supplier<R> supplier)
+			{
+				return assertion ? ObjectInsert.this.set(type, column, supplier.get()) : ObjectInsert.this;
+			}
 
-        @Override
-        public String toString()
-        {
-            return delegate.toString();
-        }
+			public ObjectInsert<T> set(PropertyReference<T, ?> property, Supplier<?> supplier)
+			{
+				return assertion ? ObjectInsert.this.set(property, supplier.get()) : ObjectInsert.this;
+			}
 
-        /**
-         * Conditional helper for compiled object insert builders.
-         */
-        public class When
-        {
-            /**
-             * Adds a new column/value pair if previous specified condition was true.
-             *
-             * @param property property reference used to resolve column and value
-             * @param <R>      property type
-             * @return the same builder with the added column/value pair
-             */
-            public <R> Compiled set(PropertyReference<T, R> property)
-            {
-                return Compiled.this.set(property);
-            }
+		public <R> ObjectInsert<T> set(PropertyReference<T, R> property)
+		{
+			return assertion ? ObjectInsert.this.set(property) : ObjectInsert.this;
+		}
 
-            /**
-             * Adds new column/value pairs if previous specified condition was true.
-             *
-             * @param properties property references used to resolve columns and values
-             * @return the same builder with the added column/value pairs
-             */
-            @SuppressWarnings({"varargs", "unchecked"})
-            public Compiled set(PropertyReference<T, ?>... properties)
-            {
-                return Compiled.this.set(properties);
-            }
+		public ObjectInsert<T> set(List<PropertyReference<T, ?>> properties)
+		{
+			return assertion ? ObjectInsert.this.set(properties) : ObjectInsert.this;
+		}
 
-            /**
-             * Adds the next column(s) only if previous specified condition is true.
-             *
-             * @param assertion condition to be checked
-             * @return conditional builder
-             */
-            public When when(boolean assertion)
-            {
-                return assertion ? this : new DisabledWhen();
-            }
-        }
+		public ObjectInsert<T> set(PropertyReference<T, ?> property, Function<T, ?> extractor)
+		{
+			return assertion ? ObjectInsert.this.set(property, extractor) : ObjectInsert.this;
+		}
 
-        /**
-         * Conditional helper for ignored branches on compiled object insert builders.
-         */
-        public class DisabledWhen extends When
-        {
-            /**
-             * Ignores the specified column/value pair and keeps current builder unchanged.
-             *
-             * @param property property reference used to resolve column and value
-             * @param <R>      property type
-             * @return the current compiled builder unchanged
-             */
-            @Override
-            public <R> Compiled set(PropertyReference<T, R> property)
-            {
-                return Compiled.this;
-            }
+		public When when(boolean assertion)
+		{
+			return new When(this.assertion && assertion);
+		}
 
-            /**
-             * Ignores the specified column/value pairs and keeps current builder unchanged.
-             *
-             * @param properties property references used to resolve columns and values
-             * @return the current compiled builder unchanged
-             */
-            @Override
-            @SuppressWarnings({"varargs", "unchecked"})
-            public Compiled set(PropertyReference<T, ?>... properties)
-            {
-                return Compiled.this;
-            }
-
-            /**
-             * Keeps this conditional helper disabled for subsequent operations.
-             *
-             * @param assertion condition to be checked
-             * @return this disabled conditional helper
-             */
-            @Override
-            public When when(boolean assertion)
-            {
-                return this;
-            }
-        }
-    }
-
-    /**
-     * Conditional helper for object insert builders.
-     */
-    public class When
-    {
-        /**
-         * Adds a new column/value pair if previous specified condition was true.
-         *
-         * @param property property reference used to resolve column and value
-         * @param <R>      property type
-         * @return compiled builder with the added column/value pair
-         */
-        public <R> Compiled set(PropertyReference<T, R> property)
-        {
-            return compiled().set(property);
-        }
-
-        /**
-         * Adds new column/value pairs if previous specified condition was true.
-         *
-         * @param properties property references used to resolve columns and values
-         * @return compiled builder with the added column/value pairs
-         */
-        @SuppressWarnings({"varargs", "unchecked"})
-        public Compiled set(PropertyReference<T, ?>... properties)
-        {
-            return compiled().set(properties);
-        }
-
-        /**
-         * Adds the next column(s) only if previous specified condition is true.
-         *
-         * @param assertion condition to be checked
-         * @return conditional builder
-         */
-        public When when(boolean assertion)
-        {
-            return assertion ? this : new DisabledWhen();
-        }
-    }
-
-    /**
-     * Conditional helper for ignored branches on object insert builders.
-     */
-    public class DisabledWhen extends When
-    {
-        /**
-         * Ignores the specified column/value pair and returns an empty compiled builder.
-         *
-         * @param property property reference used to resolve column and value
-         * @param <R>      property type
-         * @return an empty compiled builder
-         */
-        @Override
-        public <R> Compiled set(PropertyReference<T, R> property)
-        {
-            return compiled();
-        }
-
-        /**
-         * Ignores the specified column/value pairs and returns an empty compiled builder.
-         *
-         * @param properties property references used to resolve columns and values
-         * @return an empty compiled builder
-         */
-        @Override
-        @SuppressWarnings({"varargs", "unchecked"})
-        public Compiled set(PropertyReference<T, ?>... properties)
-        {
-            return compiled();
-        }
-
-        /**
-         * Keeps this conditional helper disabled for subsequent operations.
-         *
-         * @param assertion condition to be checked
-         * @return this disabled conditional helper
-         */
-        @Override
-        public When when(boolean assertion)
-        {
-            return this;
-        }
-    }
+		@Override
+		public String toString()
+		{
+			return ObjectInsert.this.toString();
+		}
+	}
 }

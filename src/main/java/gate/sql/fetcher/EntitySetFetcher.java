@@ -1,17 +1,14 @@
 package gate.sql.fetcher;
 
-import gate.lang.property.Property;
 import gate.sql.Cursor;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
- * Fetches a cursor as a set of java objects of the specified type with it's
- * properties set to their respective column values.
+ * Fetches all rows as a set of entities of the specified type.
  *
- *
+ * @param <T> entity type
  */
 public class EntitySetFetcher<T> implements Fetcher<Set<T>>
 {
@@ -20,9 +17,9 @@ public class EntitySetFetcher<T> implements Fetcher<Set<T>>
     private final Set<T> result = new LinkedHashSet<>();
 
     /**
-     * Creates a new EntityListFetcher for the specified java type.
+     * Creates a new entity set fetcher for the specified type.
      *
-     * @param type the java type to be fetched
+     * @param type entity type to be fetched
      */
     public EntitySetFetcher(Class<T> type)
     {
@@ -30,63 +27,24 @@ public class EntitySetFetcher<T> implements Fetcher<Set<T>>
     }
 
     /**
-     * Fetches each row from the specified Cursor as a set of java objects
-     * of the specified type with its properties set to their respective
-     * column values.
+     * Fetches all rows as entities.
      *
-     * @param cursor the Cursor to be fetched
-     * @return a Set with each row or the specified Cursor as a java object
-     * of the specified type with its properties set to their respective
-     * column values
+     * @param cursor cursor to be fetched
+     * @return set of fetched entities
      */
-    @Override
-    public Set<T> fetch(Cursor cursor)
-    {
-        try
-        {
-            List<Property> properties
-                    = Property.getProperties(type, cursor.getPropertyNames());
-
-            while (cursor.next())
-            {
-                T entity = type.getDeclaredConstructor().newInstance();
-                properties.forEach(e ->
-                {
-                    Class<?> clazz = e.getRawType();
-                    if (clazz == boolean.class)
-                        e.setBoolean(entity, cursor.getCurrentBooleanValue());
-                    else if (clazz == char.class)
-                        e.setChar(entity, cursor.getCurrentCharValue());
-                    else if (clazz == byte.class)
-                        e.setByte(entity, cursor.getCurrentByteValue());
-                    else if (clazz == short.class)
-                        e.setShort(entity, cursor.getCurrentShortValue());
-                    else if (clazz == int.class)
-                        e.setInt(entity, cursor.getCurrentIntValue());
-                    else if (clazz == long.class)
-                        e.setLong(entity, cursor.getCurrentLongValue());
-                    else if (clazz == float.class)
-                        e.setFloat(entity, cursor.getCurrentFloatValue());
-                    else if (clazz == double.class)
-                        e.setDouble(entity, cursor.getCurrentDoubleValue());
-                    else
-                        e.setValue(entity, cursor.getCurrentValue(clazz));
-                });
-                result.add(entity);
-            }
-            return result;
-
-        } catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-                 | SecurityException | IllegalArgumentException | InvocationTargetException ex)
-        {
-            throw new IllegalStateException("Failed to fetch entity set from cursor", ex);
-        }
-    }
+	@Override
+	public Set<T> fetch(Cursor cursor)
+	{
+		var graph = cursor.getPropertyGraph(type);
+		while (cursor.next())
+			result.add(cursor.getEntity(graph));
+		return result;
+	}
 
     /**
-     * Return the accumulated result of fetch operations.
+     * Returns the accumulated result of fetch operations.
      *
-     * @return the accumulated result of fetch operations
+     * @return accumulated result
      */
     public Set<T> getResult()
     {

@@ -1,11 +1,7 @@
 package gate.sql.condition;
 
 import gate.entity.User;
-import gate.lang.property.Property;
-import gate.sql.EntityHelper;
-import gate.sql.GQN;
 import gate.sql.select.Select;
-import gate.type.ID;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -218,56 +214,6 @@ public class CompiledConditionTest
 		assertEquals("Person 1", parameters.get(1));
 	}
 
-	@Test
-	public void testAndPropertyEquals()
-	{
-		Condition condition = Condition
-				.of(EntityHelper.getFullColumnName(Property.getProperty(User.class, "id")))
-				.eq(ID.valueOf(1))
-				.and(EntityHelper.getFullColumnName(Property.getProperty(User.class, "name")))
-				.eq("Person 1")
-				.and(EntityHelper.getFullColumnName(Property.getProperty(User.class, "role.id")))
-				.eq(ID.valueOf(2))
-				.and(EntityHelper.getFullColumnName(Property.getProperty(User.class, "role.name")))
-				.eq(null);
-		assertEquals("Uzer.id = ? and Uzer.name = ? and Uzer$Role.id = ?", condition.toString());
-		assertEquals(condition.getParameters().toList(),
-				Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
-	}
-
-	@Test
-	public void testOrPropertyEquals()
-	{
-		CompiledCondition condition =
-				Condition.of(EntityHelper.getFullColumnName(Property.getProperty(User.class, "id")))
-						.eq(ID.valueOf(1))
-						.or(EntityHelper.getFullColumnName(Property.getProperty(User.class, "name")))
-						.eq("Person 1")
-						.or(EntityHelper.getFullColumnName(Property.getProperty(User.class, "role.id")))
-						.eq(ID.valueOf(2))
-						.or(EntityHelper.getFullColumnName(Property.getProperty(User.class, "role.name")))
-						.eq(null);
-		assertEquals("Uzer.id = ? or Uzer.name = ? or Uzer$Role.id = ?", condition.toString());
-		assertEquals(condition.getParameters().toList(),
-				Arrays.asList(ID.valueOf(1), "Person 1", ID.valueOf(2)));
-	}
-
-	@Test
-	public void testGQN()
-	{
-		GQN<User> GQN = new GQN<>(User.class, "=id", "%name", "=email");
-		CompiledCondition condition =
-				GQN.getCondition(new User().setId(ID.valueOf(1)).setName("Person 1"));
-
-		String expected = "0 = 0 and Uzer.id = ? and Uzer.name like ?";
-		String result = condition.toString();
-
-		List<Object> parameters = condition.getParameters().toList();
-		assertEquals(expected, result);
-		assertEquals(2, parameters.size());
-		assertEquals(parameters.get(0), ID.valueOf(1));
-		assertEquals("%Person 1%", parameters.get(1));
-	}
 
 	@Test
 	public void testGqnNullTypeThrowsNullPointerException()
@@ -292,24 +238,14 @@ public class CompiledConditionTest
 	}
 
 	@Test
-	public void testPropertyWhenChainSkipsFalseBranches()
+	public void testPropertyReferenceFactoryAndChain()
 	{
-		CompiledCondition condition = Condition
-				.of(EntityHelper.getFullColumnName(Property.getProperty(User.class, "id")))
-				.eq(ID.valueOf(1))
-				.and().when(false)
-				.expression(EntityHelper.getFullColumnName(Property.getProperty(User.class, "name")))
-				.eq(() -> "Person 1")
-				.and().when(true).expression(EntityHelper.getFullColumnName(Property.getProperty(User.class, "role.id")))
-				.eq(() -> ID.valueOf(2))
-				.and(EntityHelper.getFullColumnName(Property.getProperty(User.class, "role.name")))
-				.eq(null);
+		Condition condition = Condition.of(User::getName).eq(1)
+				.and(User::getActive).eq(2)
+				.or(User::getRole).eq(3);
 
-		List<Object> parameters = condition.getParameters().toList();
-		assertEquals("Uzer.id = ? and Uzer$Role.id = ?", condition.toString());
-		assertEquals(2, parameters.size());
-		assertEquals(parameters.get(0), ID.valueOf(1));
-		assertEquals(parameters.get(1), ID.valueOf(2));
+		assertEquals("name = ? and active = ? or Role$id = ?", condition.toString());
+		assertEquals(List.of(1, 2, 3), condition.getParameters().toList());
 	}
 
 	@Test

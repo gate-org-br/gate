@@ -81,16 +81,14 @@ public class SelectTest
 	@Test
 	public void testFromGenericSubquery()
 	{
-		Query query = Select
+			Query.Constant query = Select
 				.expression("id")
 				.expression("name")
 				.from(Select
 						.expression("id")
-						.expression("name")
-						.from("Uzer")
-						.where(Condition
-								.of("Role$id")
-								.eq())).as("Users")
+							.expression("name")
+							.from("Uzer")
+							.where(Condition.from("Role$id = ?"))).as("Users")
 				.build();
 
 		assertEquals("select id, name from (select id, name from Uzer where Role$id = ?) as Users", query.toString());
@@ -157,16 +155,15 @@ public class SelectTest
 	@Test
 	public void testJoinGenericSubquery()
 	{
-		Query query = Select
+			Query.Constant query = Select
 				.expression("id")
 				.expression("name")
 				.from("Role")
 				.join(Select
 						.expression("id")
-						.expression("name")
-						.from("Uzer")
-						.where(Condition
-								.of("Role$id").eq())).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
+							.expression("name")
+							.from("Uzer")
+							.where(Condition.from("Role$id = ?"))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
 		assertEquals("select id, name from Role join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
@@ -176,16 +173,15 @@ public class SelectTest
 	@Test
 	public void testLeftJoinGenericSubquery()
 	{
-		Query query = Select
+			Query.Constant query = Select
 				.expression("id")
 				.expression("name")
 				.from("Role")
 				.leftJoin(Select
 						.expression("id")
-						.expression("name")
-						.from("Uzer")
-						.where(Condition
-								.of("Role$id").eq())).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
+							.expression("name")
+							.from("Uzer")
+							.where(Condition.from("Role$id = ?"))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
 		assertEquals("select id, name from Role left join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
@@ -195,16 +191,15 @@ public class SelectTest
 	@Test
 	public void testRightJoinGenericSubquery()
 	{
-		Query query = Select
+			Query.Constant query = Select
 				.expression("id")
 				.expression("name")
 				.from("Role")
 				.rightJoin(Select
 						.expression("id")
-						.expression("name")
-						.from("Uzer")
-						.where(Condition
-								.of("Role$id").eq())).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
+							.expression("name")
+							.from("Uzer")
+							.where(Condition.from("Role$id = ?"))).as("Users").on(Condition.of("Users.Role$id").isEq("Role.id"))
 				.build();
 
 		assertEquals("select id, name from Role right join (select id, name from Uzer where Role$id = ?) as Users on Users.Role$id = Role.id", query.toString());
@@ -287,16 +282,16 @@ public class SelectTest
 	@Test
 	public void testJoinWithGenericCondition()
 	{
-		Query query = Select
+			Query.Constant query = Select
 				.expression("Uzer.id").as("id")
 				.expression("Uzer.name").as("name")
 				.expression("Role.id").as("role.id")
 				.expression("Role.name").as("role.name")
 				.from("Uzer")
-				.join("Role").on(Condition.of("Uzer.Role$id").eq())
+					.join("Role").on(Condition.from("Uzer.Role$id = ?"))
 				.build();
 
-		assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = ?", query.toString());
+			assertEquals("select Uzer.id as \"id\", Uzer.name as \"name\", Role.id as \"role.id\", Role.name as \"role.name\" from Uzer join Role on Uzer.Role$id = ?", query.toString());
 		assertEquals(query.getParameters(), List.of());
 	}
 
@@ -337,15 +332,15 @@ public class SelectTest
 	@Test
 	public void testGenericSubqueryColumn()
 	{
-		Query query = Select
+			Query.Constant query = Select
 				.expression("Role.id").as("id")
 				.expression("Role.name").as("name")
 				.expression(Select
-						.expression("count(*)")
-						.from("Uzer")
-						.where(Condition.of("Role$id").isEq("Role.id").and("active").eq())).as("users")
-				.from("Role")
-				.where(Condition.of("Role.id").eq())
+							.expression("count(*)")
+							.from("Uzer")
+							.where(Condition.from("Role$id = Role.id and active = ?"))).as("users")
+					.from("Role")
+					.where(Condition.from("Role.id = ?"))
 				.build();
 
 		assertEquals("select Role.id as \"id\", Role.name as \"name\", (select count(*) from Uzer where Role$id = Role.id and active = ?) as \"users\" from Role where Role.id = ?", query.toString());
@@ -379,8 +374,7 @@ public class SelectTest
 		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
-					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?")
-					.parameters(1)
+					.from("select id, name, birthdate, contract__min, contract__max from Person where id = ?", List.of(1))
 					.fetchEntity(Person.class)
 					.orElseThrow(NotFoundException::new);
 			assertEquals(1, person.getId());
@@ -397,8 +391,7 @@ public class SelectTest
 		try (Link link = TestDataSource.getLink())
 		{
 			Person person = link
-					.from(getClass().getResource("SelectTest/Select.sql"))
-					.parameters(1)
+					.from(getClass().getResource("SelectTest/Select.sql"), List.of(1))
 					.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
 			assertEquals(1, person.getId());
 			assertEquals("Person 1", person.getName());
@@ -414,8 +407,12 @@ public class SelectTest
 		try (Link link = TestDataSource.getLink())
 		{
 			List<Person> persons = link
-					.from(Select.of(
-									"select id, name, birthdate, contract__min, contract__max from Person")
+					.from(Select.expression("id")
+							.expression("name")
+							.expression("birthdate")
+							.expression("contract__min")
+							.expression("contract__max")
+							.from("Person")
 							.where(Condition
 									.of("id").eq(null)
 									.and("name").lk("1")))
@@ -453,17 +450,16 @@ public class SelectTest
 	{
 		try (Link link = TestDataSource.getLink())
 		{
-			Person person = link
-					.from(Select
-							.expression("id")
-							.expression("name")
-							.expression("birthdate")
-							.expression("`contract__min`")
-							.expression("`contract__max`")
-							.from("Person")
-							.where(Condition.of("id").eq()))
-					.parameters(1)
-					.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
+				Person person = link
+						.from(Select
+								.expression("id")
+								.expression("name")
+								.expression("birthdate")
+								.expression("`contract__min`")
+								.expression("`contract__max`")
+								.from("Person")
+								.where(Condition.of("id").eq(1)))
+						.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
 			assertEquals(1, person.getId());
 			assertEquals("Person 1", person.getName());
 			assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
@@ -477,12 +473,16 @@ public class SelectTest
 	{
 		try (Link link = TestDataSource.getLink())
 		{
-			Person person = link
-					.from(Select
-							.from(Person.class)
-							.where(Condition.of(EntityHelper.getFullColumnName(Property.getProperty(Person.class, "id"))).eq()))
-					.parameters(1)
-					.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
+				Person person = link
+						.from(Select
+								.expression("id")
+								.expression("name")
+								.expression("birthdate")
+								.expression("contract__min")
+								.expression("contract__max")
+								.from("Person")
+								.where(Condition.of("Person.id").eq(1)))
+						.fetchEntity(Person.class).orElseThrow(NotFoundException::new);
 			assertEquals(1, person.getId());
 			assertEquals("Person 1", person.getName());
 			assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
@@ -496,9 +496,39 @@ public class SelectTest
 	{
 		try (Link link = TestDataSource.getLink())
 		{
-			Person person = link
-					.from(Select.from(Person.class))
-					.parameters(1)
+				Person person = link
+						.from(
+								Select.expression("id")
+										.expression("name")
+										.expression("birthdate")
+										.expression("contract__min")
+										.expression("contract__max")
+										.from("Person")
+										.where(Condition.of("id").eq(1)))
+						.fetchEntity(Person.class)
+						.orElseThrow(NotFoundException::new);
+			assertEquals(1, person.getId());
+			assertEquals("Person 1", person.getName());
+			assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
+			assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
+					person.getContract());
+		}
+	}
+
+	@Test
+	public void testFetchEntityFromExplicitColumnsWithParameter() throws NotFoundException
+	{
+		try (Link link = TestDataSource.getLink())
+		{
+				Person person = Select.expression("id")
+						.expression("name")
+						.expression("birthdate")
+						.expression("contract__min")
+						.expression("contract__max")
+						.from("Person")
+						.where(Condition.of("id").eq(1))
+						.build()
+					.connect(link)
 					.fetchEntity(Person.class)
 					.orElseThrow(NotFoundException::new);
 			assertEquals(1, person.getId());
@@ -510,36 +540,21 @@ public class SelectTest
 	}
 
 	@Test
-	public void testFetchEntityFromGQNWithParameter() throws NotFoundException
+	public void testFetchEntityFromExplicitJoinColumns() throws NotFoundException
 	{
 		try (Link link = TestDataSource.getLink())
 		{
-			Person person = link
-					.select(Person.class)
-					.properties("=id", "name", "birthdate", "contract")
-					.parameters(1)
-					.orElseThrow(NotFoundException::new);
-			assertEquals(1, person.getId());
-			assertEquals("Person 1", person.getName());
-			assertEquals(LocalDate.of(2000, 12, 1), person.getBirthdate());
-			assertEquals(LocalDateInterval.of(LocalDate.of(2000, 12, 1), LocalDate.of(2020, 12, 1)),
-					person.getContract());
-		}
-	}
-
-	@Test
-	public void testFetchEntityFromGQNWithMatcher() throws NotFoundException
-	{
-
-		try (Link link = TestDataSource.getLink())
-		{
-			Contact contact = new Contact();
-			contact.getPerson().setId(1);
-
-			contact = link
-					.select(Contact.class)
-					.properties("=person.id", "person.name", "person.birthdate", "person.contract")
-					.matching(contact)
+				Contact contact = Select.expression("Person.id as \"person.id\"")
+						.expression("Person.name as \"person.name\"")
+						.expression("Person.birthdate as \"person.birthdate\"")
+						.expression("Person.contract__min as \"person.contract__min\"")
+						.expression("Person.contract__max as \"person.contract__max\"")
+						.from("Contact")
+						.join("Person").on(Condition.of("Contact.Person$id").isEq("Person.id"))
+						.where(Condition.of("Person$id").eq(1))
+						.build()
+					.connect(link)
+					.fetchEntity(Contact.class)
 					.orElseThrow(NotFoundException::new);
 			assertEquals(1, contact.getPerson().getId());
 			assertEquals("Person 1", contact.getPerson().getName());
@@ -590,15 +605,15 @@ public class SelectTest
 	@Test
 	public void testGenericUnion()
 	{
-		Query query = Select
-				.expression("id")
-				.expression("name")
-				.from("Uzer").where(Condition.of("name").lk())
-				.union(Select
-						.expression("id")
-						.expression("name")
-						.from("Role").where(Condition.of("name").lk()))
-				.build();
+			Query.Constant query = Select
+					.expression("id")
+					.expression("name")
+					.from("Uzer").where(Condition.from("name like ?"))
+					.union(Select
+							.expression("id")
+							.expression("name")
+							.from("Role").where(Condition.from("name like ?")))
+					.build();
 
 		assertEquals("select id, name from Uzer where name like ? union select id, name from Role where name like ?", query.toString());
 		assertTrue(query.getParameters().isEmpty());

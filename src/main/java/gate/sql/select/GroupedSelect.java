@@ -61,39 +61,6 @@ public abstract class GroupedSelect implements SelectClause, Orderable, Limitabl
         }
     }
 
-    public static abstract class Generic extends GroupedSelect implements
-            Refinable.Generic,
-            Orderable.Generic,
-            Limitable.Generic,
-            Lockable.Generic,
-            Query.Builder
-    {
-
-        public Generic(Clause clause)
-        {
-            super(clause);
-        }
-
-        @Override
-        public WithRollupSelect.Generic withRollup()
-        {
-            return new WithRollupSelect.Generic(this)
-            {
-                @Override
-                public String toString()
-                {
-                    return getClause() + " with rollup";
-                }
-            };
-        }
-
-        @Override
-        public Query build()
-        {
-            return Query.of(toString());
-        }
-    }
-
     public static abstract class Compiled extends GroupedSelect implements
             Refinable.Compiled,
             Orderable.Compiled,
@@ -123,9 +90,8 @@ public abstract class GroupedSelect implements SelectClause, Orderable, Limitabl
         @Override
         public Query.Compiled build()
         {
-            return Query.of(toString())
-                    .parameters(getParameters()
-                            .collect(Collectors.toList()));
+            return Query.of(toString(), getParameters()
+                    .collect(Collectors.toList()));
         }
     }
 

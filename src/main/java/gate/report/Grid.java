@@ -1,33 +1,26 @@
 package gate.report;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import gate.converter.Converter;
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonNumber;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
+import gate.lang.json.*;
 import gate.language.Language;
 import gate.type.DataGrid;
 import gate.type.PivotTable;
 import gate.util.Toolkit;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * Represents a grid on a report.
  * <p>
  * A grid is associated with a data source from where it obtains the values to
- * be displayed on each of it's cells. Each object of the associated data source
+ * be displayed on each of its cells. Each object of the associated data source
  * will generate a single row on the Grid. The value to be displayed on each
- * column is obtained using a mapping function on it's row value.
- *
- *
+ * column is obtained using a mapping function on its row value.
  *
  * @author davins
  */
@@ -72,7 +65,6 @@ public class Grid<T> extends ReportElement
 	 * Sets a value to be displayed on the grid's caption.
 	 *
 	 * @param caption the caption to be displayed on the grid
-	 *
 	 * @return this, for chained invocations
 	 */
 	public final Grid<T> setCaption(String caption)
@@ -85,9 +77,8 @@ public class Grid<T> extends ReportElement
 	 * Sets a value to be displayed on the grid's caption using a java Formatter.
 	 *
 	 * @param caption the format string of the caption to be passed to the java
-	 * Formatter
-	 * @param args the parameters to be passed to the java Formatter
-	 *
+	 *                Formatter
+	 * @param args    the parameters to be passed to the java Formatter
 	 * @return this, for chained invocations
 	 * @see java.util.Formatter
 	 */
@@ -102,8 +93,7 @@ public class Grid<T> extends ReportElement
 	 * the current grid.
 	 *
 	 * @param children the function where to get the values to be displayed on the
-	 * sub grid
-	 *
+	 *                 sub grid
 	 * @return the same object, for chained invocations
 	 */
 	public final Grid<T> setChildren(Function<T, Object> children)
@@ -133,23 +123,21 @@ public class Grid<T> extends ReportElement
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public final Grid<T> style(Style style)
 	{
 		return (Grid<T>) super.style(style);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Element compact()
 	{
-		Iterator<Column<T>> iterator = columns.iterator();
-		while (iterator.hasNext())
-		{
-			Column<T> column = iterator.next();
-			if (Toolkit.collection(datasource).stream().map(e -> column.getBody().apply((T) e))
-					.allMatch(e -> e == null))
-				iterator.remove();
-		}
-
+		columns.removeIf(column ->
+				Toolkit.collection(datasource)
+						.stream()
+						.map(e -> column.getBody().apply((T) e))
+						.allMatch(Objects::isNull));
 		return this;
 	}
 
@@ -157,8 +145,7 @@ public class Grid<T> extends ReportElement
 	 * Sets the max number of columns to be shown on doc types of limited size.
 	 *
 	 * @param limit the max number of columns to be shown on doc types of limited
-	 * size
-	 *
+	 *              size
 	 * @return the same object, for chained invocations
 	 */
 	public Grid<T> setLimit(Integer limit)
@@ -185,7 +172,7 @@ public class Grid<T> extends ReportElement
 		return columns.isEmpty();
 	}
 
-	public static Grid<List<Object>> of(String caption, PivotTable dataset)
+	public static Grid<List<Object>> of(String caption, PivotTable<?> dataset)
 	{
 		Grid<List<Object>> grid = new Grid<>(dataset.values()).setCaption(caption)
 				.add(new Column<List<Object>>().head(dataset.header().get(0))
@@ -220,15 +207,14 @@ public class Grid<T> extends ReportElement
 	public static Grid<JsonElement> of(JsonObject jsonObject) throws IllegalArgumentException
 	{
 		if (jsonObject.get("columns") instanceof JsonArray columns
-				&& jsonObject.get("dataset") instanceof JsonArray dataset)
+		    && jsonObject.get("dataset") instanceof JsonArray dataset)
 		{
 			Grid<JsonElement> grid = new Grid<>(dataset);
 			if (jsonObject.get("caption") instanceof JsonString caption)
 				grid.setCaption(caption.toString());
 
-			for (int i = 0; i < columns.size(); i++)
+			for (JsonElement element : columns)
 			{
-				var element = columns.get(i);
 				if (element instanceof JsonObject object)
 					grid.add(Column.of(object));
 				else if (element instanceof JsonString string)

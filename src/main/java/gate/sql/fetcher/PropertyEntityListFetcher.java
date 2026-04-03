@@ -1,12 +1,17 @@
 package gate.sql.fetcher;
 
-import gate.error.AppError;
 import gate.lang.property.Property;
+import gate.lang.property.PropertyGraph;
 import gate.sql.Cursor;
-import java.lang.reflect.InvocationTargetException;
+
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fetches each row as an entity built only from the specified properties.
+ *
+ * @param <T> the Java type to be fetched
+ */
 public class PropertyEntityListFetcher<T> implements Fetcher<List<T>>
 {
 
@@ -31,18 +36,13 @@ public class PropertyEntityListFetcher<T> implements Fetcher<List<T>>
 	{
 		try
 		{
-
+			var graph = PropertyGraph.of(type, properties.stream().map(Property::toString).toList());
 			while (rs.next())
-			{
-				T entity = type.getDeclaredConstructor().newInstance();
-				properties.forEach(e -> e.setValue(entity, rs.getValue(e.getRawType(), e.toString())));
-				result.add(entity);
-			}
+				result.add(rs.getEntity(graph));
 			return result;
-		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-			| SecurityException | IllegalArgumentException | InvocationTargetException e)
+		} catch (RuntimeException e)
 		{
-			throw new AppError(e);
+			throw new IllegalStateException("Failed to fetch partial entity list from cursor", e);
 		}
 	}
 
@@ -50,6 +50,4 @@ public class PropertyEntityListFetcher<T> implements Fetcher<List<T>>
 	{
 		return result;
 	}
-	
-	
 }

@@ -1,54 +1,130 @@
 <g-callout class='fill'>
 	<h1>Link</h1>
 	<p>
-		<code>Link</code> encapsulates the JDBC connection and execution/query operations.
-		You can create it from a <code>DataSource</code>, a JNDI datasource name, or a direct JDBC connection.
+		<code>Link</code> is the entry point for execution. It owns the JDBC connection, controls
+		the transaction, and creates executable queries and commands.
 	</p>
 </g-callout>
 
 <g-tab-control>
-	<a href="#">Connection and Query</a>
+	<a href="#">Basic Read</a>
 	<div>
 		<g-callout>
-			<pre><code>try (Link link = new Link("datasourcename"))
+			<p>Use <code>from(...)</code> when you want to execute a query.</p>
+			<g-message class='fill'>
+				<pre><code>try (Link link = Link.of("datasourcename"))
 {
-	Optional&lt;Integer&gt; count = link
+	Optional&lt;Integer&gt; total = link
 		.from("select count(*) from Person where name like ?")
 		.parameters("A%")
 		.fetchObject(Integer.class);
 }</code></pre>
+			</g-message>
 		</g-callout>
 	</div>
+
+	<a href="#">SQL From Resource</a>
+	<div>
+		<g-callout>
+			<p>
+				For long queries, keep SQL in a resource file and load it through
+				<code>from(...)</code> or <code>prepare(...)</code>.
+			</p>
+			<g-message class='fill'>
+				<pre><code>try (Link link = Link.of("datasourcename"))
+{
+	List&lt;User&gt; users = link
+		.from(getClass().getResource("UserDao/search(User).sql"))
+		.parameters(active, name)
+		.fetchEntityList(User.class);
+}</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Command Execution</a>
+	<div>
+		<g-callout>
+			<p>Use <code>prepare(...)</code> for commands such as insert, update, and delete.</p>
+			<g-message class='fill'>
+				<pre><code>try (Link link = Link.of("datasourcename"))
+{
+	int rows = link
+		.prepare("update User set active = ? where id = ?")
+		.parameters(true, userId)
+		.execute();
+}</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
 	<a href="#">Transaction</a>
 	<div>
 		<g-callout>
-			<pre><code>try (Link link = new Link("datasourcename"))
+			<p>
+				Start the transaction explicitly. If the <code>Link</code> is closed before a
+				<code>commit()</code>, it rolls back automatically.
+			</p>
+			<g-message class='fill'>
+				<pre><code>
+try (Link link = Link.of("datasourcename"))
 {
 	link.beginTran();
-	try
-	{
 		link.prepare("insert into Audit (message) values (?)")
 			.parameters("created person")
 			.execute();
-		link.commit();
-	}
-	catch (Exception ex)
-	{
-		link.rollback();
-		throw ex;
-	}
-}</code></pre>
+	link.commit();
+}
+				</code></pre>
+			</g-message>
 		</g-callout>
 	</div>
-	<a href="#">SQL From Resource File</a>
+
+	<a href="#">Main Methods</a>
 	<div>
 		<g-callout>
-			<pre><code>try (Link link = new Link("datasourcename"))
-{
-	link.prepare(getClass().getResource("InsertPerson.sql"))
-		.parameters(id, name, birthdate)
-		.execute();
-}</code></pre>
+			<table>
+				<thead>
+					<tr>
+						<th>Method</th>
+						<th>Use it for</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td><code>of(...)</code></td>
+						<td>Open a link from a datasource name, datasource, or JDBC connection</td>
+					</tr>
+					<tr>
+						<td><code>from(...)</code></td>
+						<td>Create an executable query from SQL text, a resource, or a built query</td>
+					</tr>
+					<tr>
+						<td><code>prepare(...)</code></td>
+						<td>Create an executable command from SQL text, a resource, or a built write statement</td>
+					</tr>
+					<tr>
+						<td><code>createCommand(...)</code></td>
+						<td>Access the lower-level command API directly</td>
+					</tr>
+					<tr>
+						<td><code>beginTran()</code></td>
+						<td>Start an explicit transaction</td>
+					</tr>
+					<tr>
+						<td><code>commit()</code></td>
+						<td>Persist the transaction changes</td>
+					</tr>
+					<tr>
+						<td><code>rollback()</code></td>
+						<td>Cancel the transaction changes</td>
+					</tr>
+					<tr>
+						<td><code>close()</code></td>
+						<td>Close the connection; if a transaction is still open, it is rolled back</td>
+					</tr>
+				</tbody>
+			</table>
 		</g-callout>
 	</div>
 </g-tab-control>

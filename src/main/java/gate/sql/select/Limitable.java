@@ -77,50 +77,6 @@ public interface Limitable extends Clause
 		}
 	}
 
-	interface Generic extends Limitable
-	{
-
-		@Override
-		default LimitedSelect.Generic limit(int value)
-		{
-			return new LimitedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " limit " + value;
-				}
-			};
-		}
-
-		@Override
-		default LimitedSelect.Generic limit(int offset, int count)
-		{
-			return new LimitedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " limit " + offset + ", " + count;
-				}
-			};
-		}
-
-		@Override
-		default LimitedSelect.Generic paginate(int pageSize, int pageIndex)
-		{
-			return new LimitedSelect.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " limit " + (pageIndex * pageSize) + ", " + pageSize;
-				}
-			};
-		}
-
-	}
-
 	interface Compiled extends Limitable
 	{
 

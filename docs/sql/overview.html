@@ -1,21 +1,22 @@
 <g-callout class='fill'>
 	<h1>gate.sql</h1>
 	<p>
-		The <strong>gate.sql</strong> package provides a fluent API for SQL composition and execution,
-		with practical support for dynamic filtering, transactional writes, and typed fetchers.
+		<code>gate.sql</code> is a SQL-first API. You write SQL, compose the dynamic parts in Java,
+		execute through <code>Link</code>, and choose how the result should be fetched.
 	</p>
-	<ul>
-		<li><code>Link</code>: connection, transaction, and command execution</li>
-		<li><code>Select</code> + <code>Condition</code>: composable query and predicate builders</li>
-		<li><code>Insert</code>, <code>Update</code>, <code>Delete</code>: write operations with generated key and affected-row patterns</li>
-		<li><code>Fetchable</code>: typed output mapping for entities, maps, grids, JSON, and scalar values</li>
-	</ul>
 </g-callout>
 
 <g-tab-control>
-	<a href="#">Typical Read Flow</a>
+	<a href="#">Quick Start</a>
 	<div>
 		<g-callout>
+			<p>A typical read flow has four steps:</p>
+			<ol>
+				<li>Start from a SQL resource file or a builder</li>
+				<li>Add dynamic filters with <code>Condition</code></li>
+				<li>Connect the query with <code>Link</code></li>
+				<li>Fetch the result in the shape you need</li>
+			</ol>
 			<g-message class='fill'>
 				<pre><code>List&lt;User&gt; users = Select
 	.of(getClass().getResource("UserDao/search(User).sql"))
@@ -30,9 +31,13 @@
 		</g-callout>
 	</div>
 
-	<a href="#">Typical Write Flow</a>
+	<a href="#">Write Flow</a>
 	<div>
 		<g-callout>
+			<p>
+				Write operations follow the same idea: build the SQL, connect it, execute it, and
+				handle the result explicitly.
+			</p>
 			<g-message class='fill'>
 				<pre><code>if (Update.table("Organization")
 	.set("name", value.getName())
@@ -46,19 +51,44 @@
 		</g-callout>
 	</div>
 
-	<a href="#">How To Read This Tutorial</a>
+	<a href="#">How To Read These Docs</a>
 	<div>
 		<g-callout>
-			<p>
-				The examples were curated from real DAO usage across large codebases.
-				Not every pattern from production code is ideal, so the pages focus on patterns that are both common and robust.
-			</p>
-			<ul>
-				<li>Start with <strong>Condition</strong> and <strong>Select</strong> for query composition</li>
-				<li>Then review <strong>Insert/Update/Delete</strong> for write semantics and safety guards</li>
-				<li>Use <strong>Fetchers</strong> for output mapping choices</li>
-				<li>Finish with <strong>Production Patterns</strong> for end-to-end DAO style</li>
-			</ul>
+			<p>Recommended order:</p>
+			<table>
+				<thead>
+				<tr>
+					<th>Page</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>Link</code></td>
+					<td>Opening connections, executing queries and commands, and controlling transactions</td>
+				</tr>
+				<tr>
+					<td><code>Select</code></td>
+					<td>Building read queries, ordering, grouping, and pagination</td>
+				</tr>
+				<tr>
+					<td><code>Condition</code></td>
+					<td>Dynamic filters, joins, nested predicates, and optional clauses</td>
+				</tr>
+				<tr>
+					<td><code>Fetchers</code></td>
+					<td>Choosing the result shape: entity, map, page, JSON, grid, scalar</td>
+				</tr>
+				<tr>
+					<td><code>Insert / Update / Delete</code></td>
+					<td>Write operations and safety patterns</td>
+				</tr>
+				<tr>
+					<td><code>Production Patterns</code></td>
+					<td>Common DAO-style combinations for real application code</td>
+				</tr>
+				</tbody>
+			</table>
 		</g-callout>
 	</div>
 </g-tab-control>

@@ -2,21 +2,22 @@ package gate.sql.condition;
 
 import gate.sql.Clause;
 import gate.sql.statement.Query;
+import gate.type.PropertyReference;
 
 /**
- * Parameterized condition compiled with it's parameter values.
+ * Condition composed from extractor-based predicates.
  */
 public class ExtractorCondition<T> extends Condition implements ExtractorConditionMethods<T>
 {
 
 	/**
-	 * A compiled condition that is always true.
+	 * An extractor condition that is always true.
 	 */
 	public static final ExtractorCondition<?> EXTRACTOR_TRUE =
 			new ExtractorCondition<>(Condition.of("0").isEq("0"));
 
 	/**
-	 * A compiled condition that is always false.
+	 * An extractor condition that is always false.
 	 */
 	public static final ExtractorCondition<?> EXTRACTOR_FALSE =
 			new ExtractorCondition<>(Condition.of("0").isEq("1"));
@@ -26,7 +27,9 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		super(clause);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorRelation<T> and()
 	{
@@ -41,7 +44,9 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorRelation<T> or()
 	{
@@ -56,18 +61,40 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> and(String expression)
 	{
 		return and().expression(expression);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E, R> ExtractorPredicate<T> and(PropertyReference<E, R> reference)
+	{
+		return and().expression(reference);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> or(String expression)
 	{
 		return or().expression(expression);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <E, R> ExtractorPredicate<T> or(PropertyReference<E, R> reference)
+	{
+		return or().expression(reference);
 	}
 
 	/**
@@ -94,42 +121,54 @@ public class ExtractorCondition<T> extends Condition implements ExtractorConditi
 		return or().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> and(ConstantCondition condition)
 	{
 		return and().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorCondition<T> or(ConstantCondition condition)
 	{
 		return or().condition(condition);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> and(Query.Constant subquery)
 	{
 		return and().subquery(subquery);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> and(Query.Constant.Builder subquery)
 	{
 		return and().subquery(subquery);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> or(Query.Constant subquery)
 	{
 		return or().subquery(subquery);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public ExtractorPredicate<T> or(Query.Constant.Builder subquery)
 	{

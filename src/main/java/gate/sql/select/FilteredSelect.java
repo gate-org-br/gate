@@ -49,30 +49,8 @@ public abstract class FilteredSelect implements
         }
     }
 
-    public abstract static class Generic extends FilteredSelect implements
-            Refinable.Constant,
-            Groupable.Generic,
-            Orderable.Generic,
-            Limitable.Generic,
-            Unitable.Generic,
-            Lockable.Generic,
-            Query.Builder
-    {
-
-        public Generic(Clause clause)
-        {
-            super(clause);
-        }
-
-        @Override
-        public Query build()
-        {
-            return Query.of(toString());
-        }
-    }
-
     public abstract static class Compiled extends FilteredSelect implements
-            Refinable.Constant,
+            Refinable.Compiled,
             Groupable.Compiled,
             Orderable.Compiled,
             Limitable.Compiled,
@@ -89,9 +67,8 @@ public abstract class FilteredSelect implements
         @Override
         public Query.Compiled build()
         {
-            return Query.of(toString())
-                    .parameters(getParameters()
-                            .collect(Collectors.toList()));
+            return Query.of(toString(), getParameters()
+                    .collect(Collectors.toList()));
         }
     }
 }

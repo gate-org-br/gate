@@ -32,6 +32,16 @@ public class Annotations
 	}
 
 	public static <T extends Annotation> Optional<T> search(Class<T> annotation,
+			Class<?> clazz)
+	{
+		if (clazz.isAnnotationPresent(annotation))
+			return Optional.of(clazz.getAnnotation(annotation));
+		if (clazz.getPackage().isAnnotationPresent(annotation))
+			return Optional.of(clazz.getPackage().getAnnotation(annotation));
+		return Optional.empty();
+	}
+
+	public static <T extends Annotation> Optional<T> search(Class<T> annotation,
 			Class<?> clazz, Method method)
 	{
 		if (method.isAnnotationPresent(annotation))

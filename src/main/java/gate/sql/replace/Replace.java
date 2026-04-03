@@ -1,7 +1,6 @@
 package gate.sql.replace;
 
-import gate.sql.GQN;
-import gate.sql.statement.Operation;
+import java.util.Objects;
 
 /**
  * SQL replace sentence builder.
@@ -24,32 +23,28 @@ public interface Replace
 	}
 
 	/**
-	 * Creates a new SQL replace sentence builder for a java type.
+	 * Creates a new SQL replace sentence builder for a java type using
+	 * {@link gate.type.PropertyReference} accessors.
 	 *
-	 * 
 	 * @param type the java type to be persisted
-	 *
 	 * @return the new replace sentence builder created
 	 */
-	static <T> TypedReplace<T> into(Class<T> type)
+	static <T> ClassReplace<T> into(Class<T> type)
 	{
-		return new TypedReplace<>(type);
+		return new ClassReplace<>(type);
 	}
 
 	/**
-	 * Creates an replace sentence from GQN notation.
+	 * Creates a new SQL replace sentence builder bound to an object.
 	 *
-	 * 
-	 * @param type the type of the entity to be replaced
-	 * @param notation GQN notation to be used to generate the sentence
-	 *
-	 * @return a new sentence based on the specified type and the specified GQN notation
-	 *
-	 * @throws gate.error.PropertyError if specified type is not an entity
-	 * @throws gate.error.NoSuchPropertyError if any of the specified properties is invalid
+	 * @param object source object to be persisted
+	 * @return the new replace sentence builder created
 	 */
-	static <T> Operation<T> of(Class<T> type, String... notation)
+	static <T> ObjectReplace<T> into(T object)
 	{
-		return Replace.into(type).set(new GQN<>(type, notation).getProperties()).build();
+		@SuppressWarnings("unchecked")
+		Class<T> type = (Class<T>) Objects.requireNonNull(object).getClass();
+		return new ObjectReplace<>(type, object);
 	}
+
 }

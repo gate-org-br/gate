@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fetches a cursor as a list of java objects.
+ * Fetches the first column of all rows as a list of Java objects.
  */
 public class ObjectListFetcher implements Fetcher<List<Object>>
 {
@@ -13,11 +13,10 @@ public class ObjectListFetcher implements Fetcher<List<Object>>
 	private final List<Object> result = new ArrayList<>();
 
 	/**
-	 * Fetches each row as a list of java arrays of Objects.
+	 * Fetches the first column of all rows.
 	 *
-	 * @param cursor the cursor to be fetched
-	 *
-	 * @return each row fetched as a list of java Objects
+	 * @param cursor cursor to be fetched
+	 * @return list of fetched values
 	 */
 	@Override
 	public List<Object> fetch(Cursor cursor)
@@ -28,9 +27,9 @@ public class ObjectListFetcher implements Fetcher<List<Object>>
 	}
 
 	/**
-	 * Return the accumulated result of fetch operations.
+	 * Returns the accumulated result of fetch operations.
 	 *
-	 * @return the accumulated result of fetch operations
+	 * @return accumulated result
 	 */
 	public List<Object> getResult()
 	{

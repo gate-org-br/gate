@@ -1,42 +1,60 @@
 package gate.sql.fetcher;
 
-import java.util.Optional;
-
 import gate.sql.Cursor;
 
+import java.util.Optional;
+import java.util.function.Function;
+
 /**
- * Fetches first row from a Cursor as a java object of the specified type with
- * its properties set to their respective column values.
+ * Fetches the first row as an entity of the specified type.
+ *
+ * @param <T> entity type
  */
 public class EntityFetcher<T> implements Fetcher<Optional<T>>
 {
 
 	private final Class<T> type;
+	private final Function<String, Object> context;
 
 	/**
-	 * Creates a new EntityFetcher for the specified java type.
+	 * Creates a new entity fetcher for the specified type.
 	 *
-	 * @param type the java type to be fetched
+	 * @param type entity type to be fetched
 	 */
 	public EntityFetcher(Class<T> type)
 	{
 		this.type = type;
+		this.context = e -> null;
 	}
 
 	/**
-	 * Fetches first row from the specified Cursor as a java object of the specified
-	 * type with its properties set to their respective column values.
+	 * Creates a new entity fetcher for the specified type.
 	 *
-	 * @param cursor the Cursor from with the object will be fetched
-	 * @return an Optional with the first row or the specified Cursor as a java
-	 * object of the specified type with its properties set to their respective
-	 * column values or an empty Optional if the Cursor is empty
+	 * @param type entity type to be fetched
+	 * @param context function used to provide contextual values for specific property names
+	 *
+	 * <p>The {@code context} may provide a value for a property, identified by its full name,
+	 * before the cursor tries to read it from the current row. Returning {@code null} means
+	 * the property should be resolved
+	 * normally from the cursor.</p>
+	 */
+	public EntityFetcher(Class<T> type, Function<String, Object> context)
+	{
+		this.type = type;
+		this.context = context;
+	}
+
+	/**
+	 * Fetches the first row as an entity.
+	 *
+	 * @param cursor cursor to be fetched
+	 * @return optional containing the first entity, or empty if the cursor has no rows
 	 */
 	@Override
 	public Optional<T> fetch(Cursor cursor)
 	{
 		if (!cursor.next())
 			return Optional.empty();
-		return Optional.of(cursor.getEntity(type));
+		return Optional.of(cursor.getEntity(type, context));
 	}
 }

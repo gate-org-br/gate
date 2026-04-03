@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * Fetches a cursor as a list of java objects.
+ * Fetches the first column of all rows as a set of Java objects.
  */
 public class ObjectSetFetcher implements Fetcher<Set<Object>>
 {
@@ -13,11 +13,10 @@ public class ObjectSetFetcher implements Fetcher<Set<Object>>
 	private final Set<Object> result = new LinkedHashSet<>();
 
 	/**
-	 * Fetches each row as a set of java arrays of Objects.
+	 * Fetches the first column of all rows.
 	 *
-	 * @param cursor the cursor to be fetched
-	 *
-	 * @return each row fetched as a set of java Objects
+	 * @param cursor cursor to be fetched
+	 * @return set of fetched values
 	 */
 	@Override
 	public Set<Object> fetch(Cursor cursor)
@@ -28,9 +27,9 @@ public class ObjectSetFetcher implements Fetcher<Set<Object>>
 	}
 
 	/**
-	 * Return the accumulated result of fetch operations.
+	 * Returns the accumulated result of fetch operations.
 	 *
-	 * @return the accumulated result of fetch operations
+	 * @return accumulated result
 	 */
 	public Set<Object> getResult()
 	{

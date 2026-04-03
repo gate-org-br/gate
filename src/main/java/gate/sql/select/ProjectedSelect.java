@@ -41,29 +41,6 @@ public abstract class ProjectedSelect implements SelectClause, Aliasable, Projec
 		}
 	}
 
-	public abstract static class Generic extends ProjectedSelect
-			implements Projectable.Generic, Selectable.Generic
-	{
-
-		public Generic(Clause clause)
-		{
-			super(clause);
-		}
-
-		@Override
-		public Aliased.Generic as(String alias)
-		{
-			return new Aliased.Generic(this)
-			{
-				@Override
-				public String toString()
-				{
-					return getClause() + " as \"" + alias + "\"";
-				}
-			};
-		}
-	}
-
 	public abstract static class Compiled extends ProjectedSelect
 			implements Projectable.Compiled, Selectable.Compiled
 	{
@@ -108,16 +85,6 @@ public abstract class ProjectedSelect implements SelectClause, Aliasable, Projec
 		{
 
 			public Constant(Clause clause)
-			{
-				super(clause);
-			}
-		}
-
-		public abstract static class Generic extends Aliased
-				implements Projectable.Generic, Selectable.Generic
-		{
-
-			public Generic(Clause clause)
 			{
 				super(clause);
 			}

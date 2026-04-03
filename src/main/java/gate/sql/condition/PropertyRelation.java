@@ -1,16 +1,18 @@
 package gate.sql.condition;
 
 import gate.sql.Clause;
+import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
+import gate.type.PropertyReference;
 
 /**
- * A relation between two predicates of a compiled condition
+ * A relation between two predicates of a property-based condition
  *
  * @see gate.sql.condition.PropertyCondition
  * @see gate.sql.condition.PropertyPredicate
  */
 public class PropertyRelation extends Relation
-	implements ConstantRelationMethods, PropertyRelationMethods
+		implements ConstantRelationMethods, PropertyRelationMethods
 {
 
 	PropertyRelation(Clause clause)
@@ -18,14 +20,18 @@ public class PropertyRelation extends Relation
 		super(clause);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyRelation when(boolean assertion)
 	{
 		return assertion ? this : new Rollback(getClause());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate expression(String expression)
 	{
@@ -42,7 +48,18 @@ public class PropertyRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T, R> PropertyPredicate expression(PropertyReference<T, R> reference)
+	{
+		return expression(ColumnReference.of(reference).name());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition condition(ConstantCondition expression)
 	{
@@ -59,7 +76,9 @@ public class PropertyRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate subquery(Query.Constant subquery)
 	{
@@ -76,14 +95,18 @@ public class PropertyRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate subquery(Query.Constant.Builder subquery)
 	{
 		return subquery(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition exists(Query.Constant subquery)
 	{
@@ -101,14 +124,18 @@ public class PropertyRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition exists(Query.Constant.Builder subquery)
 	{
 		return exists(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate not(Query.Constant subquery)
 	{
@@ -125,14 +152,18 @@ public class PropertyRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate not(Query.Constant.Builder subquery)
 	{
 		return not(subquery.build());
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyRelation not()
 	{
@@ -149,21 +180,36 @@ public class PropertyRelation extends Relation
 		};
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyPredicate not(String expression)
 	{
 		return not().expression(expression);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <T, R> PropertyPredicate not(PropertyReference<T, R> reference)
+	{
+		return not().expression(ColumnReference.of(reference).name());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition not(ConstantCondition expression)
 	{
 		return not().condition(expression);
 	}
 
-	/** {@inheritDoc} */
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public PropertyCondition not(PropertyCondition condition)
 	{
@@ -221,10 +267,10 @@ public class PropertyRelation extends Relation
 		}
 
 		@Override
-		public PropertyPredicate not(String expression)
-		{
-			return new PropertyPredicate.Rollback(getClause());
-		}
+		public PropertyPredicate not(String expression) {return new PropertyPredicate.Rollback(getClause());}
+
+		@Override
+		public <T, R> PropertyPredicate not(PropertyReference<T, R> reference) {return new PropertyPredicate.Rollback(getClause());}
 
 		@Override
 		public PropertyPredicate not(Query.Constant.Builder subquery)
@@ -252,6 +298,12 @@ public class PropertyRelation extends Relation
 
 		@Override
 		public PropertyPredicate expression(String expression)
+		{
+			return new PropertyPredicate.Rollback(getClause());
+		}
+
+		@Override
+		public <T, R> PropertyPredicate expression(PropertyReference<T, R> reference)
 		{
 			return new PropertyPredicate.Rollback(getClause());
 		}

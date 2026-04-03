@@ -50,17 +50,10 @@ public class JsonNull implements JsonElement, JsonScalar
 	}
 
 	@Override
-	public <T> T toObject(Class<T> type)
-	{
-		return null;
-	}
+	public <T> T toObject(Class<T> type) {return null;}
 
 	@Override
-	public <T> T toObject(java.lang.reflect.Type type,
-						  java.lang.reflect.Type elementType)
-	{
-		return toObject((Class<T>) type);
-	}
+	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return null;}
 
 	@Override
 	public Object getScalarValue()
