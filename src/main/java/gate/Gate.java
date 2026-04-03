@@ -12,7 +12,6 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
-import gate.i18n.CurrentLocale;
 import gate.security.Credentials;
 import gate.type.RequestCommand;
 import gate.type.TempFile;
@@ -72,6 +71,9 @@ public class Gate extends HttpServlet
 	Instance<User> userInstance;
 
 	@Inject
+	GateContext gateContext;
+
+	@Inject
 	Calls actionRegistry;
 
 	@Inject
@@ -106,8 +108,8 @@ public class Gate extends HttpServlet
 			request.setAttribute("METHOD", request.getMethod());
 
 			if (command.equals(RequestCommand.DEFAULT)
-				&& (actionRegistry.getMainAction() == null
-					|| !authenticator.hasCredentials(request)))
+			    && (actionRegistry.getMainAction() == null
+			        || !authenticator.hasCredentials(request)))
 			{
 				String provider = authenticator.provider(request, response);
 				if (provider != null)
@@ -128,7 +130,7 @@ public class Gate extends HttpServlet
 					response.createSubjectCookie(credentials.fromToken(token));
 
 					if (actionRegistry.getMainAction() != null
-						&& command.equals(RequestCommand.DEFAULT))
+					    && command.equals(RequestCommand.DEFAULT))
 					{
 						response.sendRedirect(actionRegistry.getMainAction()
 								.command().toString());
@@ -176,16 +178,19 @@ public class Gate extends HttpServlet
 				Handler handler = handlers.select(HTMLCommandHandler.class).get();
 				handler.handle(httpServletRequest, response, HTML);
 			}
-		} catch (RuntimeException ex)
-		{
-			var type = Catcher.getCatcher(ex.getClass());
-			Catcher catcher = catchers.select(type).get();
-			catcher.catches(httpServletRequest, response, ex);
-		}
+			} catch (RuntimeException ex)
+			{
+				var type = Catcher.getCatcher(ex.getClass());
+				Catcher catcher = catchers.select(type).get();
+				catcher.catches(httpServletRequest, response, ex);
+			} finally
+			{
+				gateContext.clear();
+			}
 	}
 
 	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
-						 Method method)
+	                     Method method)
 	{
 		try
 		{
@@ -207,24 +212,25 @@ public class Gate extends HttpServlet
 	}
 
 	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
-							  Screen screen, Method method)
+	                          Screen screen, Method method)
 	{
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Connection", "keep-alive");
 
-		AsyncContext asyncContext = request.startAsync(request, response);
-		asyncContext.setTimeout(0);
-
-		Runnable contextualTask = threadContext.contextualRunnable(() ->
-		{
-			Progress progress = null;
-			CurrentLocale.set(request.getLocale());
-			try (Writer writer = response.getWriter())
+			AsyncContext asyncContext = request.startAsync(request, response);
+			asyncContext.setTimeout(0);
+			var context = gateContext.get();
+			Runnable contextualTask = threadContext.contextualRunnable(() ->
 			{
-				progress = Progress.create(user, writer);
-				heartbeatRegistry.register(progress);
+				Progress progress = null;
+				gateContext.set(context);
+				try (Writer writer = response.getWriter())
+				{
+					gateContext.set(User.class, user);
+					progress = Progress.create(user, writer);
+					heartbeatRegistry.register(progress);
 				try
 				{
 					Object result = screen.execute(method);
@@ -249,15 +255,15 @@ public class Gate extends HttpServlet
 			{
 				logger.error(ex.getMessage(), ex);
 			} finally
-			{
-				if (progress != null)
-					heartbeatRegistry.unregister(progress);
-				Progress.finish();
-				TempFile.cleanup();
-				CurrentLocale.clear();
-				asyncContext.complete();
-			}
-		});
+				{
+					if (progress != null)
+						heartbeatRegistry.unregister(progress);
+					Progress.finish();
+					TempFile.cleanup();
+					gateContext.clear();
+					asyncContext.complete();
+				}
+			});
 
 		asyncContext.start(contextualTask);
 	}

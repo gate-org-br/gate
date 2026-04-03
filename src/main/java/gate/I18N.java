@@ -1,4 +1,6 @@
-package gate.i18n;
+package gate;
+
+import jakarta.enterprise.inject.spi.CDI;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -18,9 +20,21 @@ public final class I18N
 	{
 	}
 
+	public static Locale getLocale()
+	{
+		try
+		{
+			return CDI.current().select(GateContext.class).get().get(Locale.class)
+					.orElseGet(Locale::getDefault);
+		} catch (RuntimeException ex)
+		{
+			return Locale.getDefault();
+		}
+	}
+
 	public static String get(String key)
 	{
-		return get("gate.i18n.messages", CurrentLocale.get(), key);
+		return get("gate.i18n.messages", getLocale(), key);
 	}
 
 	public static String get(Locale locale, String key)
@@ -30,7 +44,7 @@ public final class I18N
 
 	public static String get(String context, String key)
 	{
-		return get(context, CurrentLocale.get(), key);
+		return get(context, getLocale(), key);
 	}
 
 	public static String get(String context, Locale locale, String key)
@@ -64,8 +78,7 @@ public final class I18N
 			throw new IllegalArgumentException("Unsupported element: " + element);
 		}
 
-		return get("%s.%s".formatted(owner.getPackageName(), localName(owner)),
-				CurrentLocale.get(), key);
+		return get("%s.%s".formatted(owner.getPackageName(), localName(owner)), getLocale(), key);
 	}
 
 	private static String localName(Class<?> owner)

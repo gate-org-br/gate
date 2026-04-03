@@ -195,9 +195,10 @@ public class User implements Serializable
 		return creation;
 	}
 
-	public void setCreation(LocalDateTime creation)
+	public User setCreation(LocalDateTime creation)
 	{
 		this.creation = creation;
+		return this;
 	}
 
 	public LocalDateTime getActivity()
@@ -205,9 +206,10 @@ public class User implements Serializable
 		return activity;
 	}
 
-	public void setActivity(LocalDateTime activity)
+	public User setActivity(LocalDateTime activity)
 	{
 		this.activity = activity;
+		return this;
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
-import gate.i18n.I18N;
 import gate.type.ID;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
@@ -19,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -67,7 +67,7 @@ public class Exit extends HttpServlet
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse)
+	                    HttpServletResponse httpServletResponse)
 			throws ServletException, IOException
 	{
 		httpServletResponse.addHeader("Vary", "X-G-Fragment");

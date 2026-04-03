@@ -1,6 +1,6 @@
 package gate.annotation;
 
-import gate.i18n.I18N;
+import gate.I18N;
 import gate.util.Reflection;
 import jakarta.enterprise.util.Nonbinding;
 
