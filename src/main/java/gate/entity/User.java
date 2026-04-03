@@ -215,7 +215,7 @@ public class User implements Serializable
 	{
 
 		return obj instanceof User
-			   && Objects.equals(this.getId(), ((User) obj).getId());
+		       && Objects.equals(this.getId(), ((User) obj).getId());
 	}
 
 	@Override
@@ -256,7 +256,7 @@ public class User implements Serializable
 	{
 		return computedAuthStream()
 					   .noneMatch(e -> e.blocked(module, screen, action))
-			   && computedAuthStream()
+		       && computedAuthStream()
 					   .anyMatch(e -> e.granted(module, screen, action));
 	}
 
@@ -264,7 +264,7 @@ public class User implements Serializable
 	{
 		return computedAuthStream()
 					   .noneMatch(e -> e.blocked(module, screen, action))
-			   && computedAuthStream()
+		       && computedAuthStream()
 					   .anyMatch(e -> e.equals(module, screen, action));
 	}
 

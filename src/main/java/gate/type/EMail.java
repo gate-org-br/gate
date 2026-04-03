@@ -18,6 +18,7 @@ public class EMail implements Serializable
 
 	@Serial
 	private static final long serialVersionUID = 1L;
+	public static final String REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,63}$";
 	public static final Pattern PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,63}$");
 
 	public EMail(String value)

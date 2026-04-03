@@ -20,15 +20,12 @@ public class EMailConverter implements Converter
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation(EMail.PATTERN.toString()));
+		constraints.add(new Pattern.Implementation(EMail.REGEX));
 		return constraints;
 	}
 
 	@Override
-	public String getMask()
-	{
-		return null;
-	}
+	public String getMask() {return null;}
 
 	@Override
 	public String getDescription()
