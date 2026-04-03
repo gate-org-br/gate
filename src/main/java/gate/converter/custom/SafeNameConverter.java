@@ -61,7 +61,7 @@ public class SafeNameConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Use apenas letras, números, espaços, _, - ou .";
+		return "Use apenas letras, números, espaços ou hífen.";
 	}
 
 	@Override

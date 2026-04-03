@@ -4,18 +4,16 @@ import gate.constraint.Constraint;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.type.br.PortugueseText;
+import gate.type.SafeText;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.LinkedList;
 import java.util.List;
 
-public class PortugueseTextConverter implements Converter
+public class SafeTextConverter implements Converter
 {
-
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
@@ -24,11 +22,10 @@ public class PortugueseTextConverter implements Converter
 			if (string == null)
 				return null;
 
-			string = string.trim();
-			if (string.isEmpty())
+			if (string.isBlank())
 				return null;
 
-			return PortugueseText.valueOf(string);
+			return SafeText.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(ex, ex.getMessage());
@@ -62,36 +59,34 @@ public class PortugueseTextConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Texto válido.";
+		return "Use apenas letras, números, espaços, quebras de linha e pontuação simples.";
 	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation(PortugueseText.PATTERN.toString()));
-		return constraints;
+		return List.of(new Pattern.Implementation(SafeText.PATTERN.pattern()));
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : PortugueseText.valueOf(value);
+		return rs.wasNull() ? null : SafeText.valueOf(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : PortugueseText.valueOf(value);
+		return rs.wasNull() ? null : SafeText.valueOf(value);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, ((PortugueseText) value).getValue());
+			ps.setString(fields++, value.toString());
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;

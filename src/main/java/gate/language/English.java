@@ -6,14 +6,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * Provides Portuguese language utility methods.
- */
-class Portuguese implements Language
+class English implements Language
 {
-
 	private static final Pattern SPACE_PATTERN = Pattern.compile(" +");
-	private static final List<String> IGNORE = Arrays.asList("e", "de", "do", "da", "dos", "das");
+	private static final List<String> IGNORE = Arrays.asList("a", "an", "and", "as", "at", "by", "for", "in", "of", "on", "or", "the", "to");
 
 	@Override
 	public String capitalize(String string)
@@ -51,5 +47,4 @@ class Portuguese implements Language
 		builder.setCharAt(0, Character.toUpperCase(builder.charAt(0)));
 		return builder.toString();
 	}
-
 }

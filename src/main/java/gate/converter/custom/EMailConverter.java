@@ -1,9 +1,9 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
+import gate.error.ConversionException;
 import gate.type.EMail;
 
 import java.sql.PreparedStatement;
@@ -20,7 +20,7 @@ public class EMailConverter implements Converter
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation(EMail.REGEX));
+		constraints.add(new Pattern.Implementation(EMail.PATTERN.toString()));
 		return constraints;
 	}
 
@@ -59,7 +59,7 @@ public class EMailConverter implements Converter
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0 ? new EMail(string) : null;
+			return string != null && !string.isBlank() ? new EMail(string) : null;
 		} catch (IllegalArgumentException e)
 		{
 			throw new ConversionException(string.concat(" não é um EMail válido."));

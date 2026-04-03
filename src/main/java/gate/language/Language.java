@@ -10,14 +10,15 @@ public interface Language extends Comparator<String>
 {
 
 	Language PORTUGUESE = new Portuguese();
+	Language ENGLISH = new English();
 
 	/**
 	 * Capitalizes each word a string ignoring connectives.
 	 *
-	 * @param stringToBeCapitalized the string to be capitalized
-	 * @return the capitalized string if the stringToBeCapitalized is not null or null otherwise
+	 * @param string the string to be capitalized
+	 * @return the capitalized string if the string is not null or null otherwise
 	 */
-	String capitalize(String stringToBeCapitalized);
+	String capitalize(String string);
 
 	/**
 	 * Removes replaces all non ASCII characters of the specified string with ASCII characters

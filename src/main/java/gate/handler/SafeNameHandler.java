@@ -1,14 +1,15 @@
 package gate.handler;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
+
 @ApplicationScoped
-public class SafeStringHandler implements Handler
+public class SafeNameHandler implements Handler
 {
 
 	@Override

@@ -1,21 +1,18 @@
 package gate.converter.custom;
 
 import gate.constraint.Constraint;
-import gate.constraint.Pattern;
 import gate.converter.Converter;
 import gate.error.ConversionException;
-import gate.type.br.PortugueseName;
+import gate.type.SafeStyle;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.LinkedList;
 import java.util.List;
 
-public class PortugueseNameConverter implements Converter
+public class SafeStyleConverter implements Converter
 {
-
 	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
@@ -28,7 +25,7 @@ public class PortugueseNameConverter implements Converter
 			if (string.isEmpty())
 				return null;
 
-			return PortugueseName.valueOf(string);
+			return SafeStyle.of(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(ex, ex.getMessage());
@@ -62,36 +59,34 @@ public class PortugueseNameConverter implements Converter
 	@Override
 	public String getDescription()
 	{
-		return "Nome válido.";
+		return "CSS inline seguro.";
 	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
-		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
-		constraints.add(new Pattern.Implementation(PortugueseName.PATTERN.toString()));
-		return constraints;
+		return List.of();
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : PortugueseName.valueOf(value);
+		return rs.wasNull() ? null : SafeStyle.of(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : PortugueseName.valueOf(value);
+		return rs.wasNull() ? null : SafeStyle.of(value);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int fields, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(fields++, ((PortugueseName) value).getValue());
+			ps.setString(fields++, value.toString());
 		else
 			ps.setNull(fields++, Types.VARCHAR);
 		return fields;
