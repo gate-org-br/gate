@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public class SafeName
 {
 	public static final Pattern PATTERN = Pattern
-			.compile("^[\\p{L}\\p{N}]+(?:[ -][\\p{L}\\p{N}]+)*$");
+			.compile("^[\\p{L}\\p{N} ]+(?:[ -][\\p{L}\\p{N} ]+)*$");
 
 	private static final Pattern SPACE_PATTERN = Pattern.compile(" +");
 

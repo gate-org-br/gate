@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @Converter(SafeTextConverter.class)
 public final class SafeText
 {
-	public static final Pattern PATTERN = Pattern.compile("^[\\p{L}\\p{N} .,!?:;()\\-\\n]*$");
+	public static final Pattern PATTERN = Pattern.compile("^[\\p{L}\\p{N}\\s.,$:;?!()-]*$");
 
 	private final String value;
 

@@ -1,26 +1,14 @@
-package gate;
+package gate.i18n;
 
-import gate.annotation.Current;
-import gate.entity.User;
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
-import java.util.Locale;
 
 @WebFilter(value = "/*", asyncSupported = true)
-public class GateContextFilter implements Filter
+public class LocaleFilter implements Filter
 {
-	@Inject
-	GateContext gateContext;
-
-	@Inject
-	@Current
-	Instance<User> userInstance;
-
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException
@@ -28,12 +16,11 @@ public class GateContextFilter implements Filter
 		if (request instanceof HttpServletRequest httpServletRequest)
 			try
 			{
-				gateContext.set(User.class, userInstance.get());
-				gateContext.set(Locale.class, httpServletRequest.getLocale());
+				CurrentLocale.set(httpServletRequest.getLocale());
 				chain.doFilter(request, response);
 			} finally
 			{
-				gateContext.clear();
+				CurrentLocale.clear();
 			}
 	}
 }

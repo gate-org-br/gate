@@ -1,6 +1,6 @@
 package gate.annotation;
 
-import gate.I18N;
+import gate.i18n.I18N;
 import gate.util.Reflection;
 
 import java.lang.annotation.ElementType;

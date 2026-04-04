@@ -55,7 +55,6 @@ public interface ConstructionStrategy
 							.map(RecordComponent::getType)
 							.toArray(Class<?>[]::new);
 					var constructor = type.getDeclaredConstructor(types);
-					constructor.setAccessible(true);
 					return new RecordStrategy(constructor);
 				}
 

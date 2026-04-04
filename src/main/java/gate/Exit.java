@@ -9,6 +9,7 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
+import gate.i18n.I18N;
 import gate.type.ID;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
