@@ -16,13 +16,13 @@ public class HttpExceptionCatcher implements Catcher
 
 	@Override
 	public void catches(HttpServletRequest request,
-						HttpServletResponse response, Throwable exception)
+	                    HttpServletResponse response, Throwable exception)
 	{
 
 		HttpException httpException = (HttpException) exception;
 
 		if (httpException.getStatusCode() == HttpServletResponse.SC_UNAUTHORIZED
-			&& "navigate".equalsIgnoreCase(request.getHeader("Sec-Fetch-Mode")))
+		    && "navigate".equalsIgnoreCase(request.getHeader("Sec-Fetch-Mode")))
 		{
 			try
 			{

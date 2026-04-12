@@ -1,52 +1,27 @@
 package gate.security;
 
+import gate.cache.Cache;
 import gate.util.SystemProperty;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.WeakKeyException;
-import jakarta.enterprise.context.ApplicationScoped;
+
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.InvalidKeyException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.Base64;
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
-@ApplicationScoped
 public class CryptoKeys
 {
-
-	private final SecretKey jwtSigningKey;
-	private final SecretKey stateEncryptionKey;
-
-	public CryptoKeys()
-	{
-		SecretKey master = loadMasterKey();
-		this.jwtSigningKey = deriveHmac(master, "gate-hmac-jwt-signature");
-		this.stateEncryptionKey = deriveAes(master, "gate-aes-state-encryption");
-	}
-
-	public SecretKey jwtSigningKey()
-	{
-		return jwtSigningKey;
-	}
-
-	public SecretKey stateEncryptionKey()
-	{
-		return stateEncryptionKey;
-	}
-
-	private static SecretKey loadMasterKey()
+	private static final Cache<SecretKey> MASTER_KEY = Cache.builder(() ->
 	{
 		String keystoreFile = SystemProperty.get("gate.key-store.file").orElse(null);
 		if (keystoreFile != null)
@@ -67,10 +42,10 @@ public class CryptoKeys
 
 				return (SecretKey) keyStore.getKey(keyAlias, password);
 			} catch (IOException |
-					KeyStoreException |
-					NoSuchAlgorithmException |
-					UnrecoverableKeyException |
-					CertificateException e)
+			         KeyStoreException |
+			         NoSuchAlgorithmException |
+			         UnrecoverableKeyException |
+			         CertificateException e)
 			{
 				throw new RuntimeException("Erro ao carregar keystore", e);
 			}
@@ -98,7 +73,7 @@ public class CryptoKeys
 		}
 
 		return Jwts.SIG.HS256.key().build();
-	}
+	}).build();
 
 	private static byte[] derive(SecretKey master, String info)
 	{
@@ -108,21 +83,14 @@ public class CryptoKeys
 			mac.init(master);
 			return mac.doFinal(info.getBytes(StandardCharsets.UTF_8));
 		} catch (IllegalStateException |
-				InvalidKeyException |
-				NoSuchAlgorithmException e)
+		         InvalidKeyException |
+		         NoSuchAlgorithmException e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
 
-	private static SecretKey deriveHmac(SecretKey master, String info)
-	{
-		return Keys.hmacShaKeyFor(derive(master, info));
-	}
+	public static final Cache<SecretKey> JWS_KEY = Cache.builder(() -> Keys.hmacShaKeyFor(derive(MASTER_KEY.get(), "gate-hmac-jwt-signature"))).build();
 
-	private static SecretKey deriveAes(SecretKey master, String info)
-	{
-		return new SecretKeySpec(Arrays.copyOf(derive(master, info), 32), "AES");
-	}
-
+	public static final Cache<SecretKeySpec> STATE_KEY = Cache.builder(() -> new SecretKeySpec(Arrays.copyOf(derive(MASTER_KEY.get(), "gate-aes-state-encryption"), 32), "AES")).build();
 }

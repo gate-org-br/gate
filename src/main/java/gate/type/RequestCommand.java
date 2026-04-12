@@ -41,15 +41,15 @@ public record RequestCommand(String module, String screen, String action)
 	public boolean matches(RequestCommand command)
 	{
 		if (command.action() != null
-			&& !command.action().equals(action))
+		    && !command.action().equals(action))
 			return false;
 
 		if (command.screen() != null
-			&& !command.screen().equals(screen))
+		    && !command.screen().equals(screen))
 			return false;
 
 		return command.module() == null
-			   || command.module().equals(module);
+		       || command.module().equals(module);
 
 	}
 

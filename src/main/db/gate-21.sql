@@ -1,23 +1,55 @@
-ALTER TABLE `gate`.`Uzer` 
-ADD COLUMN `activity` DATETIME NULL AFTER `details`,
-CHANGE COLUMN `registration` `creation` DATETIME NOT NULL ;
+DROP TABLE IF EXISTS Server;
 
-ALTER TABLE `gate`.`Uzer` 
-DROP COLUMN `details`,
-DROP COLUMN `passwd`,
-DROP COLUMN `userID`;
+CREATE TABLE IF NOT EXISTS `Session`
+(
+	`id`      INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`Uzer$id` INT UNSIGNED NOT NULL,
+	`date`    DATE         NOT NULL,
+	PRIMARY KEY (`id`),
+	KEY `Session$fk$Uzer_idx` (`Uzer$id`),
+	CONSTRAINT `Session$fk$Uzer` FOREIGN KEY (`Uzer$id`) REFERENCES `Uzer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB;
 
-ALTER TABLE `gate`.`Uzer` 
-DROP COLUMN `code`,
-DROP COLUMN `birthdate`,
-DROP COLUMN `sex`,
-DROP COLUMN `CPF`,
-DROP COLUMN `photo`,
-DROP COLUMN `cellPhone`,
-DROP COLUMN `phone`,
-DROP COLUMN `description`,
-DROP INDEX `Uzer$uk$CPF`;
+DROP PROCEDURE IF EXISTS run_migration;
+DELIMITER ;;
+CREATE PROCEDURE run_migration()
+BEGIN
+	DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+		BEGIN
+		END;
 
+	ALTER TABLE gate.Uzer
+		ADD COLUMN `activity` DATETIME NULL;
+	ALTER TABLE gate.Uzer
+		CHANGE COLUMN registration creation DATETIME NOT NULL;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN details;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN passwd;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN userID;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN code;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN birthdate;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN sex;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN CPF;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN photo;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN cellPhone;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN phone;
+	ALTER TABLE gate.Uzer
+		DROP COLUMN description;
+	ALTER TABLE gate.Uzer
+		DROP INDEX Uzer$uk$CPF;
+	ALTER TABLE gate.Uzer
+		CHANGE COLUMN `password` `password` VARCHAR(60) NOT NULL;
+END ;;
+DELIMITER ;
 
-ALTER TABLE `gate`.`Uzer` 
-CHANGE COLUMN `password` `password` VARCHAR(60) NOT NULL ;
+CALL run_migration();
+DROP PROCEDURE IF EXISTS run_migration;

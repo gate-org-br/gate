@@ -3,6 +3,7 @@ package gate;
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.base.Screen;
+import gate.catalog.SessionCatalog;
 import gate.catcher.Catcher;
 import gate.entity.User;
 import gate.error.*;
@@ -13,7 +14,6 @@ import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.i18n.CurrentLocale;
-import gate.security.Credentials;
 import gate.type.RequestCommand;
 import gate.type.TempFile;
 import jakarta.enterprise.event.Event;
@@ -47,6 +47,9 @@ public class Gate extends HttpServlet
 	Logger logger;
 
 	@Inject
+	Calls actionRegistry;
+
+	@Inject
 	Event<AppEvent> event;
 
 	@Any
@@ -65,18 +68,13 @@ public class Gate extends HttpServlet
 	ThreadContext threadContext;
 
 	@Inject
-	Credentials credentials;
-
-	@Inject
 	@Current
 	Instance<User> userInstance;
 
 	@Inject
-	Calls actionRegistry;
-
-	@Inject
 	@SuppressWarnings("unused")
 	HeartbeatRegistry heartbeatRegistry;
+
 
 	static
 	{
@@ -123,9 +121,9 @@ public class Gate extends HttpServlet
 				user = authenticator.authenticate(request, response);
 				if (user != null)
 				{
+					var session = SessionCatalog.create(user);
+					response.setSession(session);
 					event.fireAsync(new LoginEvent(user));
-					var token = Credentials.SubjectToken.create(user.getId());
-					response.createSubjectCookie(credentials.fromToken(token));
 
 					if (actionRegistry.getMainAction() != null
 					    && command.equals(RequestCommand.DEFAULT))

@@ -1,110 +1,179 @@
 package gate.security;
 
-import gate.cache.Cache;
-import gate.converter.Converter;
+import gate.entity.Auth;
+import gate.entity.Role;
+import gate.entity.User;
 import gate.error.HierarchyException;
 import gate.error.InvalidUsernamePasswordException;
 import gate.error.UnauthorizedException;
-import gate.lang.json.JsonElement;
+import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.type.ID;
-import gate.util.SystemProperty;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.SignatureException;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import javax.crypto.SecretKey;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-@ApplicationScoped
-public class Credentials
+public final class Credentials
 {
+	private static final SecretKey SECRET = CryptoKeys.JWS_KEY.get();
+	private static final SessionPolicy POLICY = SessionPolicy.CURRENT;
 
-	private final SecretKey secret;
-	private static final Cache<Duration> IDLE_TIMEOUT = Cache.builder(()
-					-> SystemProperty.get("gate.auth.session.idle_timeout")
-					.map(e -> Converter.getConverter(Duration.class)
-							.ofString(Duration.class, e))
-					.map(e -> (Duration) e)
-					.orElse(Duration.ofHours(1)))
-			.build();
+	private final LocalDateTime iat;
+	private final LocalDateTime exp;
+	private final ID sub;
+	private final ID sid;
+	private final User usr;
 
-	private static final Cache<Duration> TIMEOUT = Cache.builder(()
-					-> SystemProperty.get("gate.auth.session.timeout")
-					.map(e -> Converter.getConverter(Duration.class)
-							.ofString(Duration.class, e))
-					.map(e -> (Duration) e)
-					.orElse(Duration.ofHours(24)))
-			.build();
-
-	@Inject
-	public Credentials(CryptoKeys cryptoKeys)
+	private Credentials(LocalDateTime iat, LocalDateTime exp, ID sub, ID sid, User usr)
 	{
-		this.secret = cryptoKeys.jwtSigningKey();
+		if (iat == null
+		    || exp == null
+		    || sub == null
+		    || usr != null && (usr.getId() == null || !sub.equals(usr.getId())))
+			throw new UnauthorizedException("Attempt to create credentials with invalid session");
+
+		this.iat = iat;
+		this.exp = exp;
+		this.sub = sub;
+		this.sid = sid;
+		this.usr = usr;
 	}
 
-	public String create(JsonObject claims)
+
+	public ID sub() {return sub;}
+
+	public boolean revocable() {return sid != null;}
+
+	public boolean stateless() {return usr != null;}
+
+	public ID sid() {return sid;}
+
+	public User usr() {return usr;}
+
+	@Override public String toString()
 	{
 		return Jwts.builder()
-				.claims(claims.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().toString())))
-				.issuedAt(Date.from(Instant.now()))
-				.expiration(Date.from(Instant.now().plus(IDLE_TIMEOUT.get())))
-				.signWith(secret)
+				.subject(sub.toString())
+				.issuedAt(Date.from(iat.toInstant(ZoneOffset.UTC)))
+				.expiration(Date.from(exp.toInstant(ZoneOffset.UTC)))
+				.claim("sid", sid != null ? sid.toString() : null)
+				.claim("usr", usr != null
+						? new JsonObject()
+						  .setObject("id", usr.getId())
+						  .setString("name", usr.getName())
+						  .setString("username", usr.getUsername())
+						  .setString("email", usr.getEmail())
+						  .set("auths", usr.computedAuthStream()
+										.map(e -> new JsonObject()
+												  .setObject("id", e.getId())
+												  .setString("module", e.getModule())
+												  .setString("screen", e.getScreen())
+												  .setString("action", e.getAction())
+												  .setObject("scope", e.getScope())
+												  .setObject("access", e.getAccess()))
+										.collect(Collectors.toCollection(JsonArray::new)))
+						  .set("role", usr.getRole().parentStream()
+									   .map(e -> new JsonObject()
+												 .setObject("id", e.getId())
+												 .setString("name", e.getName())
+												 .setString("rolename", e.getRolename())
+												 .setObject("email", e.getEmail()))
+									   .collect(Collectors.collectingAndThen(Collectors.toList(), nodes ->
+									   {
+										   for (int i = 0; i < nodes.size() - 1; i++)
+											   nodes.get(i).set("role", nodes.get(i + 1));
+										   return nodes.get(0);
+									   }))).toObject()
+						: null)
+				.signWith(SECRET)
 				.compact();
 	}
 
-	public JsonObject parse(String token) throws UnauthorizedException
+	public Credentials refresh()
 	{
-		return getPayload(token)
-				.entrySet()
-				.stream()
-				.collect(JsonObject::new, (c, e) -> c.put(e.getKey(),
-								JsonElement.of(e.getValue())),
-						JsonObject::putAll);
+		return new Credentials(iat, LocalDateTime.now(ZoneOffset.UTC)
+				.plusSeconds(POLICY.idleTimeout().getSeconds()), sub, sid, usr);
 	}
 
-	public String fromToken(SubjectToken subject)
+	public static Credentials create(ID sub, ID sid, User user)
 	{
-		return Jwts.builder()
-				.subject(subject.id.toString())
-				.issuedAt(Date.from(subject.iat.toInstant(ZoneOffset.UTC)))
-				.expiration(Date.from(subject.exp.toInstant(ZoneOffset.UTC)))
-				.signWith(secret)
-				.compact();
+		var iat = LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
+		var exp = iat.plusSeconds(POLICY.idleTimeout().getSeconds());
+		return new Credentials(iat, exp, sub, sid, user);
 	}
 
-	public SubjectToken toToken(String token)
+	@SuppressWarnings("rawtypes") public static Credentials parse(String token)
 			throws InvalidUsernamePasswordException,
-				   HierarchyException, UnauthorizedException
+			       HierarchyException, UnauthorizedException
 	{
-		var payload = getPayload(token);
+		var claims = getClaims(token);
+		var iat = LocalDateTime.ofInstant(claims.getIssuedAt().toInstant(), ZoneOffset.UTC);
+		var exp = LocalDateTime.ofInstant(claims.getExpiration().toInstant(), ZoneOffset.UTC);
 
-		var iat = LocalDateTime.ofInstant(payload.getIssuedAt().toInstant(), ZoneOffset.UTC);
-		var exp = LocalDateTime.ofInstant(payload.getExpiration().toInstant(), ZoneOffset.UTC);
-
-		if (iat.plus(TIMEOUT.get()).isBefore(LocalDateTime.now(ZoneOffset.UTC)))
+		if (iat.plus(POLICY.timeout()).isBefore(LocalDateTime.now(ZoneOffset.UTC)))
 			throw new UnauthorizedException("Attempt to authenticate with expired token");
 
-		return new SubjectToken(iat, exp, ID.valueOf(payload.getSubject()));
+		var sub = ID.valueOf(claims.getSubject());
+		var sid = claims.get("sid") instanceof String string ? ID.valueOf(string) : null;
+
+		var usr = claims.get("usr") instanceof Map map
+				? new User()
+				  .setId(ID.valueOf((String) map.get("id")))
+				  .setName((String) map.get("name"))
+				  .setUsername((String) map.get("username"))
+				  .setEmail((String) map.get("email"))
+				  .setAuths(map.containsKey("auths")
+							? ((List<?>) map.get("auths"))
+							  .stream()
+							  .filter(e -> e instanceof Map)
+							  .map(e -> (Map) e)
+							  .map(e -> new Auth()
+										.setId(e.get("id") instanceof String string ? ID.valueOf(string) : null)
+										.setScope(e.get("scope") instanceof String string ? Auth.Scope.valueOf(string) : null)
+										.setAccess(e.get("access") instanceof String string ? Auth.Access.valueOf(string) : null)
+										.setModule((String) e.get("module"))
+										.setScreen((String) e.get("screen"))
+										.setAction((String) e.get("action")))
+							  .toList()
+							: null)
+				  .setRole(Stream.iterate((Map) map.get("role"),
+						  Objects::nonNull,
+						  r -> (Map) r.get("role"))
+						   .map(r -> new Role()
+									 .setId(r.get("id") instanceof String string ? ID.valueOf(string) : null)
+									 .setName((String) r.get("name"))
+									 .setRolename((String) r.get("rolename"))
+									 .setEmail((String) r.get("email")))
+						   .collect(Collectors.collectingAndThen(Collectors.toList(), nodes ->
+						   {
+							   for (int i = 0; i < nodes.size() - 1; i++)
+								   nodes.get(i).setRole(nodes.get(i + 1));
+							   return nodes.isEmpty() ? null : nodes.get(0);
+						   })))
+				: null;
+
+		return new Credentials(iat, exp, sub, sid, usr);
 	}
 
-	private Claims getPayload(String token)
+	private static Claims getClaims(String token)
 	{
 		try
 		{
 			return Jwts.parser()
-					.verifyWith(secret)
+					.verifyWith(SECRET)
 					.build()
 					.parseSignedClaims(token)
 					.getPayload();
@@ -119,26 +188,4 @@ public class Credentials
 			throw new UnauthorizedException("Attempt to authenticate with invalid token");
 		}
 	}
-
-	public String refresh(String token)
-	{
-		return fromToken(toToken(token).refresh());
-	}
-
-	public record SubjectToken(LocalDateTime iat, LocalDateTime exp, ID id)
-	{
-
-		public SubjectToken refresh()
-		{
-			return new SubjectToken(iat, LocalDateTime.now(ZoneOffset.UTC)
-					.plusSeconds(IDLE_TIMEOUT.get().getSeconds()), id);
-		}
-
-		public static SubjectToken create(ID id)
-		{
-			var iat = LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.SECONDS);
-			return new SubjectToken(iat, iat.plusSeconds(IDLE_TIMEOUT.get().getSeconds()), id);
-		}
-	}
-
 }

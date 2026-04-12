@@ -12,7 +12,7 @@ abstract class Base
 	/**
 	 * Returns information about the current user.
 	 *
-	 * @return an User object with information about the current user
+	 * @return an Users object with information about the current user
 	 */
 	public User getUser()
 	{

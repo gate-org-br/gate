@@ -1,6 +1,6 @@
 package gate.authenticator;
 
-import gate.GateControl;
+import gate.catalog.UserCatalog;
 import gate.entity.User;
 import gate.error.AuthenticatorException;
 import gate.error.InvalidUsernamePasswordException;
@@ -9,21 +9,17 @@ import gate.http.ScreenServletRequest;
 import gate.security.hash.BCrypt;
 import gate.security.hash.MD5;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Hashtable;
-import javax.naming.AuthenticationException;
-import javax.naming.CommunicationException;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+
+import javax.naming.*;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import java.util.Hashtable;
 
 public class LDAPAuthenticator implements Authenticator
 {
 
-	private final GateControl control;
 
 	private final String server;
 	private final String clientUsername;
@@ -32,10 +28,8 @@ public class LDAPAuthenticator implements Authenticator
 	private final String rootContext;
 	private final boolean databaseFallback;
 
-	public LDAPAuthenticator(GateControl control,
-			AuthConfig config)
+	public LDAPAuthenticator(AuthConfig config)
 	{
-		this.control = control;
 		this.server = config.getProperty("ldap.server").orElseThrow(() -> new AuthenticatorException("Missing ldap.server"));
 		this.securityProtocol = config.getProperty("ldap.security_protocol").orElse(null);
 		this.clientUsername = config.getProperty("ldap.client_username").orElse(null);
@@ -77,7 +71,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	private String getUniqueID(String username, String password,
-			BasicAuthorization authorization) throws NamingException
+	                           BasicAuthorization authorization) throws NamingException
 	{
 		DirContext serverContext = getDirContext(username, password);
 		try
@@ -87,9 +81,9 @@ public class LDAPAuthenticator implements Authenticator
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
 			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
 					new Object[]
-					{
-						authorization.username(), authorization.username(), authorization.username()
-					}, controls);
+							{
+									authorization.username(), authorization.username(), authorization.username()
+							}, controls);
 
 			return enumeration.hasMore() ? enumeration.next().getNameInNamespace() : null;
 		} finally
@@ -100,11 +94,11 @@ public class LDAPAuthenticator implements Authenticator
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
-			HttpServletResponse response)
+	                         HttpServletResponse response)
 	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
 
-		User user = control.select(authorization.username());
+		User user = UserCatalog.select(authorization.username());
 
 		try
 		{
@@ -121,7 +115,7 @@ public class LDAPAuthenticator implements Authenticator
 						if (!MD5.of(user.getPassword())
 								.verify(authorization.password()))
 							throw new InvalidUsernamePasswordException();
-						control.update(user, BCrypt.digest(authorization.password()));
+						UserCatalog.update(user, gate.entity.User::getPassword, BCrypt.digest(authorization.password()));
 					} else if (!BCrypt.of(user.getPassword())
 							.verify(authorization.password()))
 						throw new InvalidUsernamePasswordException();

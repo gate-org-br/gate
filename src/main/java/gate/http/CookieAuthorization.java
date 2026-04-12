@@ -10,10 +10,13 @@ public class CookieAuthorization implements Authorization
 		this.token = token;
 	}
 
+	@Override
 	public String token()
 	{
 		return token;
 	}
+
+	@Override public Type type() {return Type.COOKIE;}
 
 	@Override
 	public String toString()

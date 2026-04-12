@@ -242,12 +242,7 @@ public class Role implements Serializable, Hierarchy<Role>
 	}
 
 	@NullSafe
-	public User getManager()
-	{
-		if (manager == null)
-			manager = new User();
-		return manager;
-	}
+	public User getManager() {return manager == null ? new User() : manager;}
 
 	public Role setManager(User manager)
 	{

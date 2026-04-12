@@ -6,14 +6,15 @@ import gate.type.Attributes;
 import gate.util.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class THProcessor extends TagModelProcessor
@@ -32,12 +33,12 @@ public class THProcessor extends TagModelProcessor
 	{
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.filter(e -> !"value".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"ordenate".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"format".equals(e.getAttributeCompleteName()))
-			.filter(e -> !"empty".equals(e.getAttributeCompleteName()))
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.filter(e -> !"value".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"ordenate".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"format".equals(e.getAttributeCompleteName()))
+				.filter(e -> !"empty".equals(e.getAttributeCompleteName()))
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+						e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		if (element instanceof IStandaloneElementTag)
 			standalone(context, model, handler, element, attributes);

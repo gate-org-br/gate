@@ -38,8 +38,8 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 
 	@Override
 	public void process(ITemplateContext context,
-						IProcessableElementTag element,
-						IElementTagStructureHandler handler)
+	                    IProcessableElementTag element,
+	                    IElementTagStructureHandler handler)
 	{
 		String module = element.getAttributeValue("g:module");
 		String screen = element.getAttributeValue("g:screen");
@@ -84,7 +84,7 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 		if (!call.accessRule().allows(user))
 		{
 			if (element.getElementCompleteName().equalsIgnoreCase("a")
-				|| element.getElementCompleteName().equalsIgnoreCase("button"))
+			    || element.getElementCompleteName().equalsIgnoreCase("button"))
 				handler.removeElement();
 			return;
 		}
@@ -149,8 +149,8 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 		}
 
 		if (element instanceof IStandaloneElementTag
-			&& (element.getElementCompleteName().equalsIgnoreCase("a")
-				|| element.getElementCompleteName().equalsIgnoreCase("button")))
+		    && (element.getElementCompleteName().equalsIgnoreCase("a")
+		        || element.getElementCompleteName().equalsIgnoreCase("button")))
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unnamed");
 

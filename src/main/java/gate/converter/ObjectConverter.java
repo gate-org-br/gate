@@ -3,11 +3,7 @@ package gate.converter;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.io.Encoder;
-import gate.lang.json.JsonAdapter;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
+import gate.lang.json.*;
 import gate.lang.property.Attribute;
 import gate.lang.property.ConstructionStrategy;
 import gate.lang.property.FieldAttribute;
@@ -156,7 +152,8 @@ public class ObjectConverter implements Converter
 		if (jsonAdapter != null)
 		{
 			JsonElement json = jsonAdapter.toJson(object);
-			Converter.getConverter(JsonElement.class).toJson(stack, writer, JsonElement.class, json);
+			Converter.getConverter(JsonElement.class)
+					.toJson(stack, writer, JsonElement.class, json);
 			return;
 		}
 

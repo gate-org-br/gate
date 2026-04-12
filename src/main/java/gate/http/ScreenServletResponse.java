@@ -35,7 +35,7 @@ public class ScreenServletResponse extends HttpServletResponseWrapper
 		addHeader("Set-Cookie", cookie.toString());
 	}
 
-	public void createSubjectCookie(String value)
+	public void setSession(String value)
 	{
 		createCookie(SUBJECT_COOKIE, PATH, SAME_SITE, MAX_AGE, value);
 	}
@@ -45,7 +45,7 @@ public class ScreenServletResponse extends HttpServletResponseWrapper
 		createCookie(name, path, sameSite, 0, "");
 	}
 
-	public void deleteSubjectCookie()
+	public void revokeSession()
 	{
 		deleteCookie(SUBJECT_COOKIE, PATH, SAME_SITE);
 	}

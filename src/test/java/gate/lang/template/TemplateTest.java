@@ -1,6 +1,10 @@
 package gate.lang.template;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import gate.entity.Role;
+import gate.entity.User;
+import gate.error.TemplateException;
+import gate.lang.json.JsonObject;
+import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,12 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-
-import gate.entity.Role;
-import gate.entity.User;
-import gate.error.TemplateException;
-import gate.lang.json.JsonObject;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TemplateTest
 {
@@ -67,8 +66,8 @@ public final class TemplateTest
 	@Test
 	public void nestedIteration() throws TemplateException, IOException
 	{
-		String expected = getFile("nestedIteration/document.txt");
-		Template template = Template.compile(getFile("nestedIteration/template.txt"));
+		String expected = getFile("/gate/lang/template/nestedIteration/document.txt");
+		Template template = Template.compile(getFile("/gate/lang/template/nestedIteration/template.txt"));
 		String result = template.evaluate(roles);
 		assertEquals(expected, result);
 	}

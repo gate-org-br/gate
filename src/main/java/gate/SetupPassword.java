@@ -1,10 +1,5 @@
 package gate;
 
-import java.io.Serial;
-
-import java.io.IOException;
-import java.io.Writer;
-
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.error.AuthenticationException;
@@ -19,6 +14,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.io.Serial;
+import java.io.Writer;
+
 @MultipartConfig
 @WebServlet("/SetupPassword")
 public class SetupPassword extends HttpServlet
@@ -31,7 +30,7 @@ public class SetupPassword extends HttpServlet
 	@Inject
 	private PasswordControl control;
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

@@ -1,13 +1,13 @@
 package gate.producer;
 
-import gate.GateControl;
 import gate.annotation.Current;
+import gate.catalog.SessionCatalog;
+import gate.catalog.UserCatalog;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.HierarchyException;
 import gate.error.UnauthorizedException;
-import gate.http.BearerAuthorization;
-import gate.http.CookieAuthorization;
+import gate.http.Authorization;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
 import jakarta.enterprise.context.RequestScoped;
@@ -18,13 +18,11 @@ import jakarta.servlet.http.HttpServletRequest;
 @RequestScoped
 public class UserProducer
 {
-
 	@Current
 	@Produces
 	@RequestScoped
 	@Named(value = "user")
-	public User getUser(GateControl control, Credentials credentials, HttpServletRequest httpServletRequest)
-			throws HierarchyException
+	public User getUser(HttpServletRequest httpServletRequest) throws HierarchyException
 	{
 		if (httpServletRequest == null)
 			return new User();
@@ -37,13 +35,18 @@ public class UserProducer
 			ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 
 			var auth = request.getAuthorization();
-			if (auth instanceof BearerAuthorization bearer)
-				return getUser(control, credentials, httpServletRequest, bearer.token());
+			if (auth.type() != Authorization.Type.BEARER
+			    && auth.type() != Authorization.Type.COOKIE)
+				return new User();
 
-			if (auth instanceof CookieAuthorization cookie)
-				return getUser(control, credentials, httpServletRequest, cookie.token());
+			var credentials = Credentials.parse(auth.token());
+			if (credentials.revocable() && !SessionCatalog.exists(credentials))
+				throw new UnauthorizedException("Attempt to authenticate with invalid credentials");
 
-			return new User();
+			User user = credentials.stateless() ? credentials.usr() : UserCatalog.select(credentials.sub());
+
+			httpServletRequest.setAttribute(User.class.getName(), user);
+			return user;
 		} catch (AuthenticationException | UnauthorizedException ex)
 		{
 			throw ex;
@@ -51,16 +54,5 @@ public class UserProducer
 		{
 			return new User();
 		}
-	}
-
-	private User getUser(GateControl control, Credentials credentials,
-	                     HttpServletRequest httpServletRequest, String token)
-	{
-		var subject = credentials.toToken(token);
-		User user = control.select(subject.id());
-		if (user.getActivity() != null && subject.iat().isBefore(user.getActivity()))
-			throw new UnauthorizedException("Attempt to authenticate with invalid token");
-		httpServletRequest.setAttribute(User.class.getName(), user);
-		return user;
 	}
 }

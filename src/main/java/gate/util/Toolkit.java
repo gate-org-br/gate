@@ -207,18 +207,4 @@ public class Toolkit
 		string.add("</ul>");
 		return string.toString();
 	}
-
-	public static String unquote(String string)
-	{
-		if (string == null)
-			return null;
-
-		string = string.trim();
-
-		if (string.length() >= 2
-			&& ((string.startsWith("\"") && string.endsWith("\""))
-				|| (string.startsWith("'") && string.endsWith("'"))))
-			return string.substring(1, string.length() - 1);
-		return string.trim();
-	}
 }

@@ -12,6 +12,7 @@ import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+
 import java.util.List;
 
 @ApplicationScoped
@@ -25,7 +26,7 @@ public class RoleProducer
 	@RequestScoped
 	@Named(value = "roles")
 	public List<Role> getRoles()
-		throws AppException
+			throws AppException
 	{
 		return control.search();
 	}
@@ -51,21 +52,21 @@ public class RoleProducer
 				{
 
 					return Select.expression("Role.id").as("id")
-						.expression("Role.active")
-						.expression("Role.master")
-						.expression("Role.Role$id").as("role.id")
-						.expression("Role.rolename")
-						.expression("Role.name")
-						.expression("Role.email")
-						.expression("Role.description")
-						.expression("Manager.id").as("manager.id")
-						.expression("Manager.name").as("manager.name")
-						.from("Role")
-						.leftJoin("Uzer").as("Manager").on(Condition.of("Role.Manager$id").isEq("Manager.id"))
-						.orderBy("Role.name")
-						.build()
-						.connect(link)
-						.fetchEntityList(Role.class);
+							.expression("Role.active")
+							.expression("Role.master")
+							.expression("Role.Role$id").as("role.id")
+							.expression("Role.rolename")
+							.expression("Role.name")
+							.expression("Role.email")
+							.expression("Role.description")
+							.expression("Manager.id").as("manager.id")
+							.expression("Manager.name").as("manager.name")
+							.from("Role")
+							.leftJoin("Uzer").as("Manager").on(Condition.of("Role.Manager$id").isEq("Manager.id"))
+							.orderBy("Role.name")
+							.build()
+							.connect(link)
+							.fetchEntityList(Role.class);
 				}
 			}
 		}

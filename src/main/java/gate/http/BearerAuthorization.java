@@ -19,17 +19,20 @@ public class BearerAuthorization implements Authorization
 	private BearerAuthorization(String token)
 	{
 		if (token == null || token.trim().isEmpty())
-			throw new IllegalArgumentException("Token cannot be null or empty");
+			throw new IllegalArgumentException("Creadentials cannot be null or empty");
 		this.token = token;
 	}
 
 	/**
 	 * @return the bearer token
 	 */
+	@Override
 	public String token()
 	{
 		return token;
 	}
+
+	@Override public Type type() {return Type.BEARER;}
 
 	/**
 	 * Creates a Bearer Authorization header string.
@@ -69,7 +72,7 @@ public class BearerAuthorization implements Authorization
 	public boolean equals(Object o)
 	{
 		return o instanceof BearerAuthorization bearerAuthorization
-			   && Objects.equals(token, bearerAuthorization.token);
+		       && Objects.equals(token, bearerAuthorization.token);
 	}
 
 	@Override

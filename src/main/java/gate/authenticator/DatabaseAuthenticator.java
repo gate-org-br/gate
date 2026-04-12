@@ -1,6 +1,6 @@
 package gate.authenticator;
 
-import gate.GateControl;
+import gate.catalog.UserCatalog;
 import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
@@ -13,14 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class DatabaseAuthenticator implements Authenticator
 {
-
-	private final GateControl control;
-
-	public DatabaseAuthenticator(GateControl control, AuthConfig config)
-	{
-		this.control = control;
-	}
-
 	@Override
 	public String provider(ScreenServletRequest request, HttpServletResponse response)
 	{
@@ -35,20 +27,20 @@ public class DatabaseAuthenticator implements Authenticator
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
-			HttpServletResponse response)
+	                         HttpServletResponse response)
 	{
 		var authorization = (BasicAuthorization) request.getAuthorization();
 		if (authorization == null)
 			throw new BadRequestException("Missing user credentials");
 
-		User user = control.select(authorization.username());
+		User user = UserCatalog.select(authorization.username());
 
 		if (user.getPassword().length() == 32)
 		{
 			if (!MD5.of(user.getPassword())
 					.verify(authorization.password()))
 				throw new InvalidUsernamePasswordException();
-			control.update(user, BCrypt.digest(authorization.password()));
+			UserCatalog.update(user, gate.entity.User::getPassword, BCrypt.digest(authorization.password()));
 
 		} else if (!BCrypt.of(user.getPassword())
 				.verify(authorization.password()))

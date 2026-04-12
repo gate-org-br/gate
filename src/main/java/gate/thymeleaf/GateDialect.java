@@ -4,10 +4,11 @@ import gate.thymeleaf.processors.Processor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.thymeleaf.dialect.IProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class GateDialect implements IProcessorDialect

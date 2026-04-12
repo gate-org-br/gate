@@ -5,18 +5,13 @@ import gate.annotation.Handler;
 import gate.converter.custom.TempFileConverter;
 import gate.handler.TempFileHandler;
 import jakarta.servlet.http.Part;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.LoggerFactory;
 
 /**
  * A temporary file to be removed after processing.
@@ -88,7 +83,7 @@ public class TempFile implements AutoCloseable
 	 *
 	 * @return an input stream to read the temporary file data
 	 * @throws java.io.IOException if an IOException occurs when trying to
-	 * open the stream
+	 *                             open the stream
 	 */
 	public InputStream getInputStream() throws IOException
 	{
@@ -105,7 +100,7 @@ public class TempFile implements AutoCloseable
 	 *
 	 * @return an output stream to write data into the temporary file.
 	 * @throws java.io.IOException if an IOException occurs when trying to
-	 * open the stream
+	 *                             open the stream
 	 */
 	public OutputStream getOutputStream() throws IOException
 	{
@@ -121,7 +116,7 @@ public class TempFile implements AutoCloseable
 	 *
 	 * @return a byte array containing the file bytes
 	 * @throws java.io.IOException if an IOException occurs when trying to
-	 * read the bytes
+	 *                             read the bytes
 	 */
 	public byte[] getBytes() throws IOException
 	{
@@ -157,7 +152,6 @@ public class TempFile implements AutoCloseable
 	 * Applies a name to the temporary file.
 	 *
 	 * @param name the name to be applied to the temporary file
-	 *
 	 * @return a NamedTempFile describing this temporary file and the given
 	 * name
 	 */
@@ -241,16 +235,15 @@ public class TempFile implements AutoCloseable
 	 * Creates a new temporary file with the contents of the specified Part.
 	 *
 	 * @param part the Part object from where to get the temporary file data
-	 *
 	 * @return the temporary file created
 	 */
 	public static TempFile of(Part part)
 	{
 		TempFile tempFile = TempFile.empty()
-			.named(part.getSubmittedFileName());
+				.named(part.getSubmittedFileName());
 
 		try (InputStream inputStream = part.getInputStream();
-			OutputStream outputStream = tempFile.getOutputStream())
+		     OutputStream outputStream = tempFile.getOutputStream())
 		{
 			inputStream.transferTo(outputStream);
 			return tempFile;
@@ -264,7 +257,6 @@ public class TempFile implements AutoCloseable
 	 * Creates a new temporary file with the contents of a byte array.
 	 *
 	 * @param bytes a byte array with the temporary file data
-	 *
 	 * @return the temporary file created
 	 */
 	public static TempFile of(byte[] bytes)
@@ -287,8 +279,7 @@ public class TempFile implements AutoCloseable
 	 * InputStream.
 	 *
 	 * @param inputStream the InputStream object from where to get the
-	 * temporary file data
-	 *
+	 *                    temporary file data
 	 * @return the temporary file created
 	 */
 	public static TempFile of(InputStream inputStream)

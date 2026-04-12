@@ -266,6 +266,16 @@
 					</tr>
 				</tbody>
 			</table>
+			<p>
+				OIDC supports three credential entry points:
+				authorization code flow via <code>code</code>/<code>state</code>,
+				bearer token validation,
+				and resource owner password credentials via HTTP Basic authorization.
+			</p>
+			<p>
+				For authorization code flow, Gate generates and validates an encrypted/signed state payload
+				containing the PKCE verifier and nonce.
+			</p>
 		</g-callout>
 	</div>
 
@@ -274,6 +284,11 @@
 		<g-callout>
 			<p>
 				These parameters are global and apply regardless of authenticator type.
+			</p>
+			<p>
+				Gate always issues a signed session token. Depending on configuration, the token may also embed
+				the authenticated user data (<strong>stateless token</strong>) and/or require a backing row in
+				<code>gate.Session</code> for revocation checks (<strong>revocable</strong>).
 			</p>
 			<p>
 				Duration format is <strong>not milliseconds</strong>. Use Gate duration strings:
@@ -305,8 +320,30 @@
 						<td>Maximum absolute session duration from token issue time.</td>
 						<td><code>"gate.auth.session.timeout": "10h"</code></td>
 					</tr>
+					<tr>
+						<td><code>gate.auth.session.stateless-token</code></td>
+						<td>No</td>
+						<td><code>false</code></td>
+						<td>When <code>true</code>, embeds the authenticated user in the token and avoids a user lookup on each request.</td>
+						<td><code>"gate.auth.session.stateless-token": "true"</code></td>
+					</tr>
+					<tr>
+						<td><code>gate.auth.session.revocable</code></td>
+						<td>No</td>
+						<td><code>false</code></td>
+						<td>When <code>true</code>, stores a session row in <code>gate.Session</code> and rejects tokens whose session was revoked.</td>
+						<td><code>"gate.auth.session.revocable": "true"</code></td>
+					</tr>
 				</tbody>
 			</table>
+			<p>
+				Session refresh extends the idle expiration while preserving the original issue time,
+				so <code>gate.auth.session.timeout</code> remains the absolute upper bound.
+			</p>
+			<p>
+				Logout revokes the current session token. When sessions are not revocable, logout still updates
+				user activity and removes the client-side session token, but there is no server-side token blacklist.
+			</p>
 		</g-callout>
 	</div>
 
@@ -395,6 +432,8 @@
 # ------------------------------
 "gate.auth.session.idle_timeout": "45m"
 "gate.auth.session.timeout": "10h"
+"gate.auth.session.stateless-token": "false"
+"gate.auth.session.revocable": "true"
 
 # ------------------------------
 # Secret key strategy (inline Base64)

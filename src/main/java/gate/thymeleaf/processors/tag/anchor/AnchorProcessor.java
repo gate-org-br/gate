@@ -131,5 +131,5 @@ public abstract class AnchorProcessor extends TagModelProcessor
 	}
 
 	protected abstract void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
-									IProcessableElementTag element, User user, Call call, Attributes attributes, Parameters parameters);
+	                                IProcessableElementTag element, User user, Call call, Attributes attributes, Parameters parameters);
 }

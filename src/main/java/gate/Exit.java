@@ -1,7 +1,7 @@
 package gate;
 
 import gate.annotation.Current;
-import gate.authenticator.Authenticator;
+import gate.catalog.SessionCatalog;
 import gate.entity.User;
 import gate.event.AppEvent;
 import gate.event.LogoffEvent;
@@ -9,20 +9,13 @@ import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
-import gate.i18n.I18N;
-import gate.type.ID;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 /**
  * Terminates authentication sessions.
@@ -45,10 +38,6 @@ import java.time.ZoneOffset;
  */
 public class Exit extends HttpServlet
 {
-
-	@Inject
-	GateControl control;
-
 	@Inject
 	Event<AppEvent> event;
 
@@ -60,60 +49,23 @@ public class Exit extends HttpServlet
 	@Current
 	Instance<User> userInstance;
 
-	@Inject
-	@Current
-	Authenticator authenticator;
-
 	private static final String HTML = "/views/Exit.html";
 
 	@Override
-	public void service(HttpServletRequest httpServletRequest,
-	                    HttpServletResponse httpServletResponse)
-			throws ServletException, IOException
+	public void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
 	{
 		httpServletResponse.addHeader("Vary", "X-G-Fragment");
 		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 		ScreenServletResponse response = new ScreenServletResponse(httpServletResponse);
 
 		User user = userInstance.get();
-		if (user == null || user.getId() == null)
+		if (user != null && user.getId() != null)
 		{
-			handlers.select(HTMLCommandHandler.class).get().handle(request, response, HTML);
-			return;
-		}
-
-		ID subject = (ID) request.getParameter(ID.class, "user");
-		if (subject == null)
-		{
+			response.revokeSession();
+			SessionCatalog.revoke(request.getAuthorization().token());
 			event.fire(new LogoffEvent(user));
-			response.deleteSubjectCookie();
-			handlers.select(HTMLCommandHandler.class).get().handle(request, response, HTML);
-			return;
-		}
-
-		if (user.getId().equals(subject))
-		{
-			event.fire(new LogoffEvent(user));
-			response.deleteSubjectCookie();
-			control.update(user, LocalDateTime.now(ZoneOffset.UTC));
-
-			String logoutUri = authenticator.logoutUri(request);
-			if (logoutUri != null)
-				response.sendRedirect(logoutUri);
-			else
-				handlers.select(HTMLCommandHandler.class).get()
-						.handle(request, response, HTML);
-			return;
-		}
-
-		if (!user.isSuperUser())
-		{
-			response.sendError(HttpServletResponse.SC_FORBIDDEN,
-					I18N.get("auth.logout.other.forbidden"));
-			return;
-		}
-
-		control.update(new User().setId(subject), LocalDateTime.now(ZoneOffset.UTC));
-		response.send(I18N.get("auth.session.revoked.other"));
+		} else
+			handlers.select(HTMLCommandHandler.class)
+					.get().handle(request, response, HTML);
 	}
 }

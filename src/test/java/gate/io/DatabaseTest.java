@@ -1,9 +1,11 @@
 package gate.io;
 
-import java.nio.file.Path;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import java.nio.file.Path;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DatabaseTest
 {
@@ -14,7 +16,7 @@ public class DatabaseTest
 	@Test
 	public void testInsert()
 	{
-		Database<String> database = Database.of(String.class, tempDir.resolve("Database"));
+		Database<String> database = Database.of(String.class, tempDir.resolve("Gate"));
 		database.insert("table1", "table1.string1");
 		database.insert("table1", "table1.string2");
 
@@ -31,7 +33,7 @@ public class DatabaseTest
 	@Test
 	public void testDelete()
 	{
-		Database<String> database = Database.of(String.class, tempDir.resolve("Database"));
+		Database<String> database = Database.of(String.class, tempDir.resolve("Gate"));
 		database.insert("table1", "table1.string1");
 		database.insert("table1", "table1.string2");
 		database.insert("table2", "table2.string1");
@@ -49,7 +51,7 @@ public class DatabaseTest
 	@Test
 	public void testSearch()
 	{
-		Database<String> database = Database.of(String.class, tempDir.resolve("Database"));
+		Database<String> database = Database.of(String.class, tempDir.resolve("Gate"));
 		database.insert("table1", "table1.string1");
 		database.insert("table1", "table1.string2");
 		database.insert("table2", "table2.string1");

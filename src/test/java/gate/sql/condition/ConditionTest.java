@@ -4,10 +4,12 @@ import gate.entity.User;
 import gate.sql.select.Select;
 import gate.sql.statement.Query;
 import gate.type.PropertyReference;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.Test;
 
 public class ConditionTest
 {
@@ -55,10 +57,10 @@ public class ConditionTest
 	public void testOfConditionWrappersAndFromString()
 	{
 		ConstantCondition constant = Condition.of("x").isEq("y");
-			CompiledCondition compiled = Condition.of("n").eq(10);
+		CompiledCondition compiled = Condition.of("n").eq(10);
 
-			assertEquals("(x = y)", Condition.of(constant).toString());
-			assertEquals("(n = ?)", Condition.of(compiled).toString());
+		assertEquals("(x = y)", Condition.of(constant).toString());
+		assertEquals("(n = ?)", Condition.of(compiled).toString());
 		assertEquals(List.of(10), Condition.of(compiled).getParameters().toList());
 		assertEquals("custom condition", Condition.from("custom condition").toString());
 	}
@@ -66,14 +68,14 @@ public class ConditionTest
 	@Test
 	public void testFromClassExistsWithSubquery()
 	{
-		Query.Constant subquery = Select.expression("id").from("User").build();
+		Query.Constant subquery = Select.expression("id").from("Users").build();
 
 		Condition condition = Condition.from(gate.entity.User.class)
 				.expression("role_id")
 				.eq(gate.entity.User::getRole)
 				.and().exists(subquery);
 
-		assertEquals("role_id = ? and exists (select id from User)", condition.toString());
+		assertEquals("role_id = ? and exists (select id from Users)", condition.toString());
 		assertEquals(1, condition.getParameters().count());
 	}
 

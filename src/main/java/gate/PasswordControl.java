@@ -1,17 +1,12 @@
 package gate;
 
 import gate.entity.User;
-import gate.error.BadRequestException;
-import gate.error.ConstraintViolationException;
-import gate.error.InvalidCredentialsException;
-import gate.error.InvalidUsernamePasswordException;
-import gate.error.NotFoundException;
+import gate.error.*;
+import gate.security.hash.BCrypt;
 import gate.sql.Link;
 import gate.sql.condition.Condition;
 import gate.sql.select.Select;
 import gate.sql.update.Update;
-import gate.type.ID;
-import gate.security.hash.BCrypt;
 import jakarta.enterprise.context.Dependent;
 
 @Dependent
@@ -21,7 +16,7 @@ public class PasswordControl extends gate.base.Control
 	public User select(String username) throws InvalidUsernamePasswordException
 	{
 		try (Link link = Link.of("Gate");
-				PasswordDao dao = new PasswordDao(link))
+		     PasswordDao dao = new PasswordDao(link))
 		{
 			return dao.select(username);
 		}
@@ -31,7 +26,7 @@ public class PasswordControl extends gate.base.Control
 			throws BadRequestException, NotFoundException, ConstraintViolationException, InvalidCredentialsException
 	{
 		try (Link link = Link.of("Gate");
-				PasswordDao dao = new PasswordDao(link))
+		     PasswordDao dao = new PasswordDao(link))
 		{
 			if (password == null || password.isBlank())
 				throw new BadRequestException("Sua senha tem que ter no mínimo 8 caracteres");

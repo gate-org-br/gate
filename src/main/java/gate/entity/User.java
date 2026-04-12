@@ -17,15 +17,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A User on the organization structure.
+ * A Users on the organization structure.
  * <p>
- * A User can have a Role and a list valueOf authorizations
+ * A Users can have a Role and a list valueOf authorizations
  */
+@Name
 @Entity
 @Icon("2004")
 @Table("Uzer")
 @Schema("gate")
-@Name
 public class User implements Serializable
 {
 
@@ -68,13 +68,13 @@ public class User implements Serializable
 	@Description
 	private Role role;
 
-	@Required
 	@Name
+	@Required
 	@Description
 	private LocalDateTime creation;
 
-	@Required
 	@Name
+	@Required
 	@Description
 	private LocalDateTime activity;
 

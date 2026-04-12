@@ -21,7 +21,7 @@ public class ObjectConverterTest
 	{
 		User user = new User();
 		user.setId(ID.valueOf(1));
-		user.setName("User 1");
+		user.setName("Users 1");
 
 		Converter converter = Converter.getConverter(Object.class);
 
@@ -29,7 +29,7 @@ public class ObjectConverterTest
 		user = (User) converter.ofString(User.class, string);
 
 		assertEquals(ID.valueOf(1), user.getId());
-		assertEquals("User 1", user.getName());
+		assertEquals("Users 1", user.getName());
 	}
 
 	@Test
@@ -37,7 +37,7 @@ public class ObjectConverterTest
 	{
 		User user = new User();
 		user.setId(ID.valueOf(1));
-		user.setName("User 1");
+		user.setName("Users 1");
 
 		Converter converter = Converter.getConverter(Object.class);
 
@@ -45,7 +45,7 @@ public class ObjectConverterTest
 		user = (User) converter.ofString(User.class, string);
 
 		assertEquals(ID.valueOf(1), user.getId());
-		assertEquals("User 1", user.getName());
+		assertEquals("Users 1", user.getName());
 
 	}
 
