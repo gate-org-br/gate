@@ -17,6 +17,7 @@ const documentationGate = path.resolve(__dirname, "docs/gate");
 const sourceIconsDir = path.resolve(__dirname, "src/main/icon");
 const resourcesIconDir = path.join(resources, "icon");
 const shouldMinify = process.argv.includes("--minify");
+const fontTimestamp = 0;
 
 async function exists(file)
 {
@@ -31,6 +32,13 @@ async function exists(file)
 
 		throw error;
 	}
+}
+
+async function sortedGlob(pattern)
+{
+	const files = await glob(pattern);
+
+	return files.sort((a, b) => a.localeCompare(b));
 }
 
 async function clean()
@@ -182,7 +190,7 @@ async function compileLess()
 
 async function createIconList()
 {
-	const files = await glob(`${resourcesIconDir}/*.svg`);
+	const files = await sortedGlob(`${resourcesIconDir}/*.svg`);
 	const icons = files.map(f => path.basename(f, ".svg"));
 
 	await fs.writeFile(
@@ -193,7 +201,7 @@ async function createIconList()
 
 async function createIconData()
 {
-	const files = await glob(`${resourcesIconDir}/*.svg`);
+	const files = await sortedGlob(`${resourcesIconDir}/*.svg`);
 	let content = "let icons = new Map();\n";
 
 	for (const file of files)
@@ -235,6 +243,9 @@ async function createIconFont()
 		log: false,
 		svgicons2svgfont: {
 			normalize: true
+		},
+		svg2ttf: {
+			ts: fontTimestamp
 		},
 		getIconUnicode: (name, unicode, startUnicode) =>
 		{
