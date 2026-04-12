@@ -7,13 +7,17 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Method;
 
 /**
- * Override action name before authorization.
+ * Replaces the authorization coordinates resolved from package, screen, and action conventions.
+ *
+ * <p>The annotation may be declared on a package, type, or method. Resolution precedence is
+ * method, then type, then package.
+ *
+ * <p>When the annotation is present, it replaces the derived authorization mapping as a whole.
+ * Blank attributes are converted to {@code null}; they do not fall back to the original
+ * {@code module}, {@code screen}, or {@code action} values.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(
-		{
-				ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE
-		})
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE})
 public @interface Authorization
 {
 
@@ -23,9 +27,16 @@ public @interface Authorization
 
 	String action() default "";
 
-	public static class Extractor
+	class Extractor
 	{
 
+		/**
+		 * Resolves the authorization mapping for the given method.
+		 *
+		 * <p>If an {@link Authorization} annotation is found on the method, its declaring type, or
+		 * the declaring package, the extracted value replaces the original mapping. Otherwise, the
+		 * provided {@code module}, {@code screen}, and {@code action} values are returned unchanged.
+		 */
 		public static Value extract(Method method, String module, String screen, String action)
 		{
 			if (method.isAnnotationPresent(Authorization.class))
@@ -39,44 +50,41 @@ public @interface Authorization
 			if (pack.isAnnotationPresent(Authorization.class))
 				return new Value(pack.getAnnotation(Authorization.class));
 
+			if (pack.isAnnotationPresent(Module.class))
+				module = pack.getAnnotation(Module.class).value();
+
+			if (type.isAnnotationPresent(Screen.class))
+				screen = type.getAnnotation(Screen.class).value();
+
+			if (method.isAnnotationPresent(Action.class))
+				action = method.getAnnotation(Action.class).value();
+
 			return new Value(module, screen, action);
 		}
 	}
 
-	public static class Value
+	record Value(String module, String screen, String action)
 	{
-
-		private final String module;
-		private final String screen;
-		private final String action;
-
-		public Value(String module, String screen, String action)
+		public Value
 		{
-			this.module = module;
-			this.screen = screen;
-			this.action = action;
+			if (module != null && module.isBlank())
+				module = null;
+			if (screen != null && screen.isBlank())
+				screen = null;
+			if (action != null && action.isBlank())
+				action = null;
 		}
 
-		private Value(Authorization annotation)
+		/**
+		 * Creates a value from an {@link Authorization} annotation.
+		 *
+		 * <p>Blank annotation attributes are normalized to {@code null}.
+		 */
+		public Value(Authorization annotation)
 		{
-			this.module = annotation.module().isBlank() ? null : annotation.module();
-			this.screen = annotation.screen().isBlank() ? null : annotation.screen();
-			this.action = annotation.action().isBlank() ? null : annotation.action();
-		}
-
-		public String module()
-		{
-			return module;
-		}
-
-		public String screen()
-		{
-			return screen;
-		}
-
-		public String action()
-		{
-			return action;
+			this(annotation.module(),
+					annotation.screen(),
+					annotation.action());
 		}
 	}
 }
