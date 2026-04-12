@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -149,6 +150,26 @@ public class Link implements AutoCloseable
 	public Connection getConnection()
 	{
 		return connection;
+	}
+
+	/**
+	 * Returns the JDBC database product name associated with this link.
+	 *
+	 * <p>The returned value is normalized to uppercase so it can be used safely in database-specific comparisons and
+	 * switch expressions.
+	 *
+	 * @return the uppercase JDBC database product name for the current connection
+	 */
+	public String getDatabase()
+	{
+		try
+		{
+			return connection.getMetaData()
+					.getDatabaseProductName().toUpperCase(Locale.ROOT);
+		} catch (SQLException e)
+		{
+			throw new DatabaseException(e);
+		}
 	}
 
 	/**
@@ -421,7 +442,7 @@ public class Link implements AutoCloseable
 
 	public Query.Connected from(String query, String... args)
 	{
-		return Query.of(Formatter.format(query, (Object[]) args)).connect(this);
+		return Query.of(Formatter.sql(query, (Object[]) args)).connect(this);
 	}
 
 	public Query.Connected from(URL resource, String... args)
@@ -455,7 +476,7 @@ public class Link implements AutoCloseable
 	 */
 	public Query.Compiled.Connected from(String query, CompiledCondition... conditions)
 	{
-		return Query.of(Formatter.format(query, (Object[]) conditions)).parameters(
+		return Query.of(Formatter.sql(query, (Object[]) conditions)).parameters(
 						Stream.of(conditions).flatMap(Clause::getParameters).collect(Collectors.toList()))
 				.connect(this);
 	}

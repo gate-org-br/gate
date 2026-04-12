@@ -34,7 +34,8 @@ public class EntityHelper
 	{
 		check(type);
 		return type.isAnnotationPresent(Schema.class)
-				? type.getAnnotation(Schema.class).value() + "." + getTableName(type)
-				: getTableName(type);
+				? Formatter.identifier(type.getAnnotation(Schema.class).value()) + "."
+				  + Formatter.identifier(getTableName(type))
+				: Formatter.identifier(getTableName(type));
 	}
 }

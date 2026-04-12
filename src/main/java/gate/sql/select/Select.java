@@ -1,7 +1,8 @@
 package gate.sql.select;
 
 import gate.io.StringReader;
-import gate.sql.*;
+import gate.sql.Clause;
+import gate.sql.Formatter;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.Condition;
 import gate.sql.statement.Query;
@@ -84,7 +85,7 @@ public class Select implements SelectClause
 			@Override
 			public String toString()
 			{
-				return Formatter.format(sql, (Object[]) args);
+				return Formatter.sql(sql, (Object[]) args);
 			}
 
 			@Override
@@ -125,7 +126,7 @@ public class Select implements SelectClause
 			@Override
 			public String toString()
 			{
-				return Formatter.format(sql, (Object[]) conditions);
+				return Formatter.sql(sql, (Object[]) conditions);
 			}
 
 			@Override

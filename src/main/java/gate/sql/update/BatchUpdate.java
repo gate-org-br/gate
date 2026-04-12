@@ -2,6 +2,7 @@ package gate.sql.update;
 
 import gate.converter.Converter;
 import gate.sql.ColumnReference;
+import gate.sql.Formatter;
 import gate.sql.condition.ConstantCondition;
 import gate.sql.condition.ExtractorCondition;
 import gate.sql.statement.Sentence;
@@ -30,7 +31,7 @@ public class BatchUpdate<T> implements Update, Sentence.Extractor.Compiled.Build
 
 	public BatchUpdate<T> set(String column, Function<T, ?> extractor)
 	{
-		columns.add(column + " = ?");
+		columns.add(Formatter.identifier(column) + " = ?");
 		extractors.add(Objects.requireNonNull(extractor));
 		return this;
 	}
@@ -40,6 +41,7 @@ public class BatchUpdate<T> implements Update, Sentence.Extractor.Compiled.Build
 		extractors.add(Objects.requireNonNull(extractor));
 		Converter.getConverter(Objects.requireNonNull(type))
 				.getColumns(Objects.requireNonNull(column))
+				.map(Formatter::identifier)
 				.map(name -> name + " = ?")
 				.forEach(columns::add);
 		return this;
@@ -50,6 +52,7 @@ public class BatchUpdate<T> implements Update, Sentence.Extractor.Compiled.Build
 		var column = ColumnReference.of(Objects.requireNonNull(property));
 		Converter.getConverter(property.metadata().method().getReturnType())
 				.getColumns(column.name())
+				.map(Formatter::identifier)
 				.map(name -> name + " = ?")
 				.forEach(columns::add);
 		extractors.add(value -> column.extractor().apply(property.apply(value)));
@@ -65,6 +68,7 @@ public class BatchUpdate<T> implements Update, Sentence.Extractor.Compiled.Build
 		ColumnReference column = ColumnReference.of((PropertyReference) property);
 		Converter.getConverter(property.metadata().method().getReturnType())
 				.getColumns(column.name())
+				.map(Formatter::identifier)
 				.map(name -> name + " = ?")
 				.forEach(columns::add);
 		extractors.add(value -> column.extractor().apply(extractor.apply(value)));

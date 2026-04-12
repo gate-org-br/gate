@@ -1,5 +1,6 @@
 package gate.sql.delete;
 
+import gate.sql.Formatter;
 import gate.sql.SQLBuilder;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.ConstantCondition;
@@ -19,7 +20,7 @@ public class TableDelete implements Delete, Sentence.Builder
 
 	TableDelete(String name)
 	{
-		table = name;
+		table = Formatter.identifier(name);
 	}
 
 	/**

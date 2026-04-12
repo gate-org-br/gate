@@ -1,6 +1,7 @@
 package gate.sql.update;
 
 import gate.io.StringReader;
+import gate.sql.Formatter;
 
 import java.net.URL;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface Update
 	 */
 	static TableUpdate table(String name)
 	{
-		return new TableUpdate("update " + name);
+		return new TableUpdate("update " + Formatter.identifier(name));
 	}
 
 	/**

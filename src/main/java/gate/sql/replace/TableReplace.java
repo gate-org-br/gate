@@ -1,6 +1,7 @@
 package gate.sql.replace;
 
 import gate.converter.Converter;
+import gate.sql.Formatter;
 import gate.sql.statement.Sentence;
 
 import java.util.ArrayList;
@@ -22,12 +23,12 @@ public class TableReplace implements Replace, Sentence.Compiled.Builder
 
 	TableReplace(String table)
 	{
-		this.table = Objects.requireNonNull(table);
+		this.table = Formatter.identifier(Objects.requireNonNull(table));
 	}
 
 	public TableReplace set(String column, Object value)
 	{
-		columns.add(Objects.requireNonNull(column));
+		columns.add(Formatter.identifier(Objects.requireNonNull(column)));
 		parameters.add("?");
 		values.add(value);
 		return this;
@@ -38,6 +39,7 @@ public class TableReplace implements Replace, Sentence.Compiled.Builder
 		values.add(value);
 		Converter.getConverter(Objects.requireNonNull(type))
 				.getColumns(Objects.requireNonNull(column))
+				.map(Formatter::identifier)
 				.peek(columns::add)
 				.map(e -> "?")
 				.forEach(parameters::add);

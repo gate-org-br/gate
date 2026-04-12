@@ -3,6 +3,7 @@ package gate.sql.update;
 import gate.converter.Converter;
 import gate.sql.ColumnReference;
 import gate.sql.EntityHelper;
+import gate.sql.Formatter;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
@@ -97,7 +98,7 @@ public class ClassUpdate<T> implements Update
 			if (value != null)
 				return set((Class<Object>) value.getClass(), column, value);
 
-			columns.add(column + " = ?");
+			columns.add(Formatter.identifier(column) + " = ?");
 			values.add(null);
 			return this;
 		}
@@ -107,6 +108,7 @@ public class ClassUpdate<T> implements Update
 			values.add(value);
 			Converter.getConverter(type)
 					.getColumns(column)
+					.map(Formatter::identifier)
 					.map(name -> name + " = ?")
 					.forEach(columns::add);
 			return this;
@@ -117,6 +119,7 @@ public class ClassUpdate<T> implements Update
 			var column = ColumnReference.of(property);
 			Converter.getConverter(property.metadata().method().getReturnType())
 					.getColumns(column.name())
+					.map(Formatter::identifier)
 					.map(name -> name + " = ?")
 					.forEach(columns::add);
 			@SuppressWarnings({"rawtypes", "unchecked"})
@@ -133,6 +136,7 @@ public class ClassUpdate<T> implements Update
 				var column = ColumnReference.of(Objects.requireNonNull(property));
 				Converter.getConverter(property.metadata().method().getReturnType())
 						.getColumns(column.name())
+						.map(Formatter::identifier)
 						.map(name -> name + " = ?")
 						.forEach(columns::add);
 				values.add(column.extractor().apply(property.apply(object)));

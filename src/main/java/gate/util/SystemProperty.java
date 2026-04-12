@@ -1,11 +1,11 @@
 package gate.util;
 
-import java.util.Optional;
 import org.eclipse.microprofile.config.ConfigProvider;
+
+import java.util.Optional;
 
 public class SystemProperty
 {
-
 	public static Optional<String> get(String property)
 	{
 		String value = System.getProperty(property);
@@ -16,13 +16,7 @@ public class SystemProperty
 		if (value != null)
 			return Optional.of(value);
 
-		try
-		{
-			return ConfigProvider.getConfig()
-					.getOptionalValue(property, String.class);
-		} catch (Throwable ex)
-		{
-			return Optional.empty();
-		}
+		return ConfigProvider.getConfig()
+				.getOptionalValue(property, String.class);
 	}
 }

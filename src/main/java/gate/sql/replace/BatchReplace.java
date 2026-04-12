@@ -2,6 +2,7 @@ package gate.sql.replace;
 
 import gate.converter.Converter;
 import gate.sql.ColumnReference;
+import gate.sql.Formatter;
 import gate.sql.statement.Sentence;
 import gate.type.PropertyReference;
 
@@ -25,13 +26,13 @@ public class BatchReplace<T> implements Replace, Sentence.Extractor.Compiled.Bui
 
 	BatchReplace(String table, Class<T> type)
 	{
-		this.table = Objects.requireNonNull(table);
+		this.table = Formatter.identifier(Objects.requireNonNull(table));
 		this.type = Objects.requireNonNull(type);
 	}
 
 	public BatchReplace<T> set(String column, Function<T, ?> extractor)
 	{
-		columns.add(Objects.requireNonNull(column));
+		columns.add(Formatter.identifier(Objects.requireNonNull(column)));
 		parameters.add("?");
 		extractors.add(Objects.requireNonNull(extractor));
 		return this;
@@ -42,6 +43,7 @@ public class BatchReplace<T> implements Replace, Sentence.Extractor.Compiled.Bui
 		extractors.add(Objects.requireNonNull(extractor));
 		Converter.getConverter(Objects.requireNonNull(type))
 				.getColumns(Objects.requireNonNull(column))
+				.map(Formatter::identifier)
 				.peek(columns::add)
 				.map(e -> "?")
 				.forEach(parameters::add);
@@ -53,6 +55,7 @@ public class BatchReplace<T> implements Replace, Sentence.Extractor.Compiled.Bui
 		var column = ColumnReference.of(Objects.requireNonNull(property));
 		Converter.getConverter(property.metadata().method().getReturnType())
 				.getColumns(column.name())
+				.map(Formatter::identifier)
 				.peek(columns::add)
 				.map(e -> "?")
 				.forEach(parameters::add);
@@ -68,6 +71,7 @@ public class BatchReplace<T> implements Replace, Sentence.Extractor.Compiled.Bui
 		ColumnReference column = ColumnReference.of((PropertyReference) property);
 		Converter.getConverter(property.metadata().method().getReturnType())
 				.getColumns(column.name())
+				.map(Formatter::identifier)
 				.peek(columns::add)
 				.map(e -> "?")
 				.forEach(parameters::add);

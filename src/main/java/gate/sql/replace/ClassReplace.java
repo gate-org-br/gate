@@ -3,6 +3,7 @@ package gate.sql.replace;
 import gate.converter.Converter;
 import gate.sql.ColumnReference;
 import gate.sql.EntityHelper;
+import gate.sql.Formatter;
 import gate.sql.statement.Sentence;
 import gate.type.PropertyReference;
 
@@ -41,7 +42,7 @@ public class ClassReplace<T> implements Replace, Sentence.Compiled.Builder
 
 	public ClassReplace<T> set(String column, Object value)
 	{
-		columns.add(Objects.requireNonNull(column));
+		columns.add(Formatter.identifier(Objects.requireNonNull(column)));
 		parameters.add("?");
 		values.add(value);
 		return this;
@@ -52,6 +53,7 @@ public class ClassReplace<T> implements Replace, Sentence.Compiled.Builder
 		values.add(value);
 		Converter.getConverter(Objects.requireNonNull(type))
 				.getColumns(Objects.requireNonNull(column))
+				.map(Formatter::identifier)
 				.peek(columns::add)
 				.map(e -> "?")
 				.forEach(parameters::add);
@@ -66,6 +68,7 @@ public class ClassReplace<T> implements Replace, Sentence.Compiled.Builder
 			var column = ColumnReference.of(Objects.requireNonNull(property));
 			Converter.getConverter(property.metadata().method().getReturnType())
 					.getColumns(column.name())
+					.map(Formatter::identifier)
 					.peek(columns::add)
 					.map(e -> "?")
 					.forEach(parameters::add);
@@ -79,6 +82,7 @@ public class ClassReplace<T> implements Replace, Sentence.Compiled.Builder
 		var column = ColumnReference.of(Objects.requireNonNull(property));
 		Converter.getConverter(property.metadata().method().getReturnType())
 				.getColumns(column.name())
+				.map(Formatter::identifier)
 				.peek(columns::add)
 				.map(e -> "?")
 				.forEach(parameters::add);

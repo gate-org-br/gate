@@ -357,23 +357,23 @@ public class ObjectUpdate<T> implements Update
 		 * @param <R>      property type
 		 * @return compiled builder with the added column/value pair
 		 */
-			public <R> Compiled set(PropertyReference<T, R> property)
-			{
-				return compiled().set(property);
-			}
+		public <R> Compiled set(PropertyReference<T, R> property)
+		{
+			return compiled().set(property);
+		}
 
-			/**
-			 * Adds a new column/value pair if previous specified condition was true,
-			 * computing the value from the bound object.
-			 *
-			 * @param property  property reference used to resolve the target column
-			 * @param extractor function used to compute the bound value from the source object
-			 * @return compiled builder with the added column/value pair
-			 */
-			public Compiled set(PropertyReference<T, ?> property, Function<T, ?> extractor)
-			{
-				return compiled().set(property, extractor);
-			}
+		/**
+		 * Adds a new column/value pair if previous specified condition was true,
+		 * computing the value from the bound object.
+		 *
+		 * @param property  property reference used to resolve the target column
+		 * @param extractor function used to compute the bound value from the source object
+		 * @return compiled builder with the added column/value pair
+		 */
+		public Compiled set(PropertyReference<T, ?> property, Function<T, ?> extractor)
+		{
+			return compiled().set(property, extractor);
+		}
 
 		/**
 		 * Adds new column/value pairs if previous specified condition was true.
@@ -411,23 +411,23 @@ public class ObjectUpdate<T> implements Update
 		 * @return an empty compiled builder
 		 */
 		@Override
-			public <R> Compiled set(PropertyReference<T, R> property)
-			{
-				return compiled();
-			}
+		public <R> Compiled set(PropertyReference<T, R> property)
+		{
+			return compiled();
+		}
 
-			/**
-			 * Ignores the specified computed column/value pair and returns an empty compiled builder.
-			 *
-			 * @param property  property reference used to resolve the target column
-			 * @param extractor function that would compute the bound value
-			 * @return an empty compiled builder
-			 */
-			@Override
-			public Compiled set(PropertyReference<T, ?> property, Function<T, ?> extractor)
-			{
-				return compiled();
-			}
+		/**
+		 * Ignores the specified computed column/value pair and returns an empty compiled builder.
+		 *
+		 * @param property  property reference used to resolve the target column
+		 * @param extractor function that would compute the bound value
+		 * @return an empty compiled builder
+		 */
+		@Override
+		public Compiled set(PropertyReference<T, ?> property, Function<T, ?> extractor)
+		{
+			return compiled();
+		}
 
 		/**
 		 * Ignores the specified column/value pairs and returns an empty compiled builder.
