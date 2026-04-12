@@ -1,82 +1,66 @@
 package gate.messaging;
 
 import gate.annotation.Current;
+import gate.catalog.MailCatalog;
 import gate.entity.App;
 import gate.entity.Mail;
-import gate.entity.Server;
 import gate.error.AppException;
-import gate.type.mime.Mime;
-import gate.type.mime.MimeDataFile;
-import gate.type.mime.MimeList;
 import gate.type.mime.MimeMail;
-import gate.type.mime.MimeText;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.mail.MessagingException;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Transport;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeBodyPart;
-import jakarta.mail.internet.MimeMessage;
-import jakarta.mail.internet.MimeMultipart;
 import jakarta.servlet.ServletContextListener;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Properties;
 
-import org.slf4j.Logger;
-
+/**
+ * Facade for Gate mail messaging.
+ *
+ * <p>This component exposes the public messaging API of the framework. It supports two delivery modes:
+ * queued delivery via {@link #post(String, String, MimeMail)} and immediate delivery via
+ * {@link #send(String, String, MimeMail)}. Incoming mailboxes configured in the application are also polled through
+ * {@link #dispatch()} and converted into synchronous CDI {@link MailEvent} notifications.
+ *
+ * <p>The framework does not schedule mail processing automatically. Applications are expected to invoke
+ * {@link #dispatch()} at the time and frequency that best fit their execution model.
+ */
 @ApplicationScoped
 public class Messenger implements ServletContextListener
 {
-
+	private static final Duration DEFAULT_EXPIRATION = Duration.ofDays(1);
+	
 	@Inject
 	@Current
-	private App app;
+	App app;
 
 	@Inject
-	MailControl control;
+	Outbox outbox;
 
 	@Inject
-	private Logger logger;
+	Inboxes inboxes;
 
+	/**
+	 * Processes both outgoing and incoming mail flows.
+	 *
+	 * <p>For the outgoing flow, pending queued messages are sent using the configured outbox. For the incoming flow,
+	 * every configured inbox is scanned and each received message is converted into a synchronous {@link MailEvent}.
+	 */
 	public void dispatch()
 	{
-		if (control.isEnabled())
-		{
-			try
-			{
-				control.expire(app);
-				for (Mail mail : control.search(app))
-				{
-					try
-					{
-						send(mail.getSender(), mail.getReceiver(), mail.getMessage());
-						control.delete(mail);
-					} catch (RuntimeException ex)
-					{
-						logger.warn(ex.getMessage(), ex);
-						mail.setAttempts(mail.getAttempts() + 1);
-						control.update(mail);
-					}
-				}
-			} catch (RuntimeException ex)
-			{
-				logger.error(ex.getMessage(), ex);
-			}
-		}
+		outbox.dispatch();
+		inboxes.dispatch();
 	}
 
-	public boolean isEnabled()
-	{
-		return control.isEnabled();
-	}
-
-	public void post(String sender,
-			String receiver,
-			MimeMail<?> message)
-			throws MessageException
+	/**
+	 * Queues a message for later delivery.
+	 *
+	 * @param sender   the sender address to persist with the queued message
+	 * @param receiver the recipient address of the queued message
+	 * @param message  the message to be queued
+	 * @throws MessageException if the sender, receiver or message is missing, or if the queued message cannot be
+	 *                          persisted
+	 */
+	public void post(String sender, String receiver, MimeMail<?> message) throws MessageException
 	{
 		try
 		{
@@ -94,129 +78,52 @@ public class Messenger implements ServletContextListener
 			mail.setMessage(message);
 			mail.setReceiver(receiver);
 			mail.setDate(LocalDateTime.now());
-			mail.setExpiration(mail.getDate().plusDays(1));
-			control.insert(mail);
+			mail.setExpiration(mail.getDate().plus(outbox.getConfig().expiration().orElse(DEFAULT_EXPIRATION)));
+			MailCatalog.insert(mail);
 		} catch (AppException ex)
 		{
 			throw new MessageException(ex.getMessage());
 		}
 	}
 
+	/**
+	 * Queues a message for later delivery using the configured default sender.
+	 *
+	 * @param receiver the recipient address of the queued message
+	 * @param mail     the message to be queued
+	 * @throws MessageException if no default sender is configured or if the message cannot be queued
+	 */
 	public void post(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		Server server = control.server();
-		if (server != null)
-			post(server.getUsername(), receiver, mail);
+		String sender = outbox.getConfig().username()
+				.orElseThrow(() -> new MessageException("Tentativa de enviar mensagem sem remetente padrão configurado."));
+		post(sender, receiver, mail);
 	}
 
-	public List<Mail> search() throws MessageException
+	/**
+	 * Sends a message immediately.
+	 *
+	 * @param sender   the sender address to use when sending the message
+	 * @param receiver the recipient address of the message
+	 * @param mail     the message to be sent
+	 * @throws MessageException if the message cannot be sent
+	 */
+	public void send(String sender, String receiver, MimeMail<?> mail) throws MessageException
 	{
-		return control.search();
+		outbox.send(sender, receiver, mail);
 	}
 
-	private void send(String sender, String receiver, MimeMail<?> mail) throws MessageException
+	/**
+	 * Sends a message immediately using the configured default sender.
+	 *
+	 * @param receiver the recipient address of the message
+	 * @param mail     the message to be sent
+	 * @throws MessageException if no default sender is configured or if the message cannot be sent
+	 */
+	public void send(String receiver, MimeMail<?> mail) throws MessageException
 	{
-		try
-		{
-			Server server = control.server();
-			if (server != null)
-				send(server, sender, receiver, mail);
-		} catch (MessagingException ex)
-		{
-			throw new MessageException("Error trying to send mail message", ex);
-		}
-	}
-
-	public void send(Server server, String sender, String receiver, MimeMail<?> mail) throws MessagingException
-	{
-
-		Properties props = new Properties();
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", server.getPort());
-		props.put("mail.smtp.host", server.getHost());
-		props.put("mail.smtp.socketFactory.port", server.getPort());
-
-		if (server.getTimeout() != null)
-		{
-			props.put("mail.smtp.timeout", server.getTimeout());
-			props.put("mail.smtp.connectiontimeout", server.getTimeout());
-		}
-
-		if (server.getUseTLS())
-			props.put("mail.smtp.starttls.enable", "true");
-
-		if (server.getUseSSL())
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-		jakarta.mail.Session session = jakarta.mail.Session.getInstance(props, new jakarta.mail.Authenticator()
-		{
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication()
-			{
-				return new PasswordAuthentication(server.getUsername(), server.getPassword());
-			}
-		});
-
-		MimeMessage mimeMessage = new MimeMessage(session);
-		mimeMessage.setFrom(sender);
-		mimeMessage.setSubject(mail.getSubject());
-		mimeMessage.setSentDate(new java.util.Date());
-
-		if (mail.getPriority() == MimeMail.Priority.LOW)
-			mimeMessage.setHeader("X-Priority", "5");
-		else if (mail.getPriority() == MimeMail.Priority.HIGH)
-			mimeMessage.setHeader("X-Priority", "1");
-
-		mimeMessage.addRecipient(jakarta.mail.Message.RecipientType.TO, new InternetAddress(receiver));
-
-		if (mail.getContent() instanceof MimeText mimeText)
-		{
-			mimeMessage.setText(mimeText.getText(), mimeText.getCharset(),
-					mimeText.getContentType().getSubtype());
-		} else if (mail.getContent() instanceof MimeDataFile mimeDataFile)
-		{
-			mimeMessage.setDisposition("Attachment");
-			mimeMessage.setFileName(mimeDataFile.getName());
-			mimeMessage.setContent(mimeDataFile.getData(), "application/octet-stream");
-		} else if (mail.getContent() instanceof MimeList mimeList)
-		{
-			mimeMessage.setContent(getMultipart(mimeList));
-		}
-
-		mimeMessage.saveChanges();
-		try (Transport transport = session.getTransport("smtp"))
-		{
-			if (!transport.isConnected())
-				transport.connect();
-			transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
-		}
-
-	}
-
-	private MimeMultipart getMultipart(MimeList data) throws MessagingException
-	{
-		MimeMultipart mimeMultipart = new MimeMultipart();
-		mimeMultipart.setSubType(data.getContentType().getType());
-
-		for (Mime mime : data)
-		{
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			if (mime instanceof MimeText mimeText)
-			{
-				mimeBodyPart.setText(mimeText.getText(), mimeText.getCharset(), mimeText.getContentType().getSubtype());
-			} else if (mime instanceof MimeDataFile mimeDataFile)
-			{
-				mimeBodyPart.setDisposition("Attachment");
-				mimeBodyPart.setFileName(mimeDataFile.getName());
-				mimeBodyPart.setContent(mimeDataFile.getData(), "application/octet-stream");
-			} else if (mime instanceof MimeList mimeList)
-			{
-				mimeBodyPart.setContent(getMultipart(mimeList));
-			}
-
-			mimeMultipart.addBodyPart(mimeBodyPart);
-		}
-
-		return mimeMultipart;
+		String sender = outbox.getConfig().username()
+				.orElseThrow(() -> new MessageException("Tentativa de enviar mensagem sem remetente padrão configurado."));
+		send(sender, receiver, mail);
 	}
 }
