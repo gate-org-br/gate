@@ -49,9 +49,24 @@ public class JsonNull implements JsonElement, JsonScalar
 		return "null";
 	}
 
+	/**
+	 * Converts this JSON null to the specified Java type.
+	 *
+	 * @param <T>  the target Java type
+	 * @param type the target Java type
+	 * @return always {@code null}
+	 */
 	@Override
 	public <T> T toObject(Class<T> type) {return null;}
 
+	/**
+	 * Converts this JSON null to the specified parameterized Java type.
+	 *
+	 * @param <T>         the target Java type
+	 * @param type        the target raw Java type
+	 * @param elementType ignored for JSON null
+	 * @return always {@code null}
+	 */
 	@Override
 	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return null;}
 
@@ -60,6 +75,13 @@ public class JsonNull implements JsonElement, JsonScalar
 	{
 		return null;
 	}
+
+	/**
+	 * Returns the natural Java representation of JSON null.
+	 *
+	 * @return always {@code null}
+	 */
+	@Override public Object toObject() {return null;}
 
 	/**
 	 * Parses a JSON formatted string into a JsonNull object.
@@ -80,6 +102,11 @@ public class JsonNull implements JsonElement, JsonScalar
 	}
 
 	public static JsonNull format()
+	{
+		return INSTANCE;
+	}
+
+	public static JsonNull of()
 	{
 		return INSTANCE;
 	}

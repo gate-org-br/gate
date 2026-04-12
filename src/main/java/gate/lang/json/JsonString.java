@@ -66,6 +66,17 @@ public class JsonString implements JsonElement, JsonScalar
 	}
 
 	@Override
+	/**
+	 * Converts this JSON string to the specified Java type.
+	 * <p>
+	 * When the target type is {@link String}, the wrapped value is returned
+	 * directly. Otherwise the string is converted using the Gate converter
+	 * infrastructure.
+	 *
+	 * @param <T>  the target Java type
+	 * @param type the target Java type
+	 * @return the converted Java value
+	 */
 	public <T> T toObject(Class<T> type)
 	{
 		return type == String.class ? type.cast(value) : gate.converter.Converter.fromString(type, value);
@@ -73,10 +84,27 @@ public class JsonString implements JsonElement, JsonScalar
 
 	@Override
 	@SuppressWarnings("unchecked")
+	/**
+	 * Converts this JSON string to the specified parameterized Java type.
+	 * <p>
+	 * For scalar strings, this behaves the same as {@link #toObject(Class)}.
+	 *
+	 * @param <T>         the target Java type
+	 * @param type        the target raw Java type
+	 * @param elementType ignored for scalar strings
+	 * @return the converted Java value
+	 */
 	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);
 	}
+
+	/**
+	 * Returns the natural Java representation of this JSON string.
+	 *
+	 * @return the wrapped {@link String} value
+	 */
+	@Override public String toObject() {return value;}
 
 	/**
 	 * Parses a JSON formatted string into a JsonString objecZt.

@@ -114,10 +114,61 @@ public interface JsonElement extends Serializable
 		}
 	}
 
+	/**
+	 * Resolves a single child path segment from this JSON element.
+	 * <p>
+	 * The default behavior is non-throwing and returns {@link JsonNull#INSTANCE}
+	 * when the segment cannot be resolved.
+	 * <p>
+	 * Concrete implementations may interpret the segment according to their
+	 * structure, for example object property names or array indices encoded as
+	 * strings.
+	 *
+	 * @param name the path segment to resolve
+	 * @return the resolved child element, or {@link JsonNull#INSTANCE} when the
+	 * segment cannot be resolved
+	 */
+	default JsonElement path(String name) {return JsonNull.INSTANCE;}
+
+	/**
+	 * Converts this JSON element to an instance of the specified Java type.
+	 * <p>
+	 * This overload is intended for typed materialization, such as converting
+	 * a JSON object into a domain object or a scalar JSON value into a specific
+	 * boxed Java type.
+	 *
+	 * @param <T>  the target Java type
+	 * @param type the target Java type
+	 * @return the converted Java object
+	 */
 	<T> T toObject(Class<T> type);
 
+	/**
+	 * Converts this JSON element to a parameterized Java type.
+	 * <p>
+	 * This overload is primarily used for collection-like structures where the
+	 * raw type and the element type must both be provided.
+	 *
+	 * @param <T>         the target Java type
+	 * @param type        the target raw Java type
+	 * @param elementType the generic element type associated with {@code type}
+	 * @return the converted Java object
+	 */
 	<T> T toObject(java.lang.reflect.Type type,
 	               java.lang.reflect.Type elementType);
+
+	/**
+	 * Converts this JSON element to its natural Java representation.
+	 * <p>
+	 * Implementations should return the closest Java structural equivalent of
+	 * the JSON value:
+	 * strings as {@link String}, numbers as {@link Number}, booleans as
+	 * {@link Boolean}, arrays as {@link java.util.List}, objects as
+	 * {@link java.util.Map}, and {@code null} for JSON null.
+	 *
+	 * @return the natural Java representation of this JSON element
+	 */
+	Object toObject();
 
 	/**
 	 * Creates a {@link JsonElement} representation for the specified object.

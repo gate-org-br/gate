@@ -43,11 +43,11 @@ public class JsonArrayTest
 	@Test
 	public void testFormatFunctionFunction()
 	{
-		List<User> users = Arrays.asList(new User().setId(ID.valueOf(1)).setName("User 1"),
-				new User().setId(ID.valueOf(2)).setName("User 2"),
-				new User().setId(ID.valueOf(3)).setName("User 3"));
+		List<User> users = Arrays.asList(new User().setId(ID.valueOf(1)).setName("Users 1"),
+				new User().setId(ID.valueOf(2)).setName("Users 2"),
+				new User().setId(ID.valueOf(3)).setName("Users 3"));
 
-		String expected = "[{\"label\":\"User 1\",\"value\":\"0000000001\"},{\"label\":\"User 2\",\"value\":\"0000000002\"},{\"label\":\"User 3\",\"value\":\"0000000003\"}]";
+		String expected = "[{\"label\":\"Users 1\",\"value\":\"0000000001\"},{\"label\":\"Users 2\",\"value\":\"0000000002\"},{\"label\":\"Users 3\",\"value\":\"0000000003\"}]";
 		String result = JsonArray.format(users, User::getName, User::getId).toString();
 		assertEquals(expected, result);
 	}

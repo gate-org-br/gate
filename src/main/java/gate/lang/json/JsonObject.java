@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Represents a JSON object as a java Map.
@@ -819,12 +820,22 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 			return object;
 		} catch (NoSuchMethodException | NoSuchFieldException | InstantiationException
-				 | IllegalAccessException | InvocationTargetException | SecurityException ex)
+		         | IllegalAccessException | InvocationTargetException | SecurityException ex)
 		{
 			throw new ConversionException(ex.getMessage());
 		}
 	}
 
+	/**
+	 * Converts this JSON object to the specified parameterized Java type.
+	 * <p>
+	 * For JSON objects, this behaves the same as {@link #toObject(Class)}.
+	 *
+	 * @param <T>         the target Java type
+	 * @param type        the target raw Java type
+	 * @param elementType ignored for object conversion
+	 * @return the converted Java object
+	 */
 	@Override
 	@SuppressWarnings("unchecked")
 	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
@@ -905,6 +916,22 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	}
 
 	/**
+	 * Converts this JSON object to a {@link Map} preserving its JSON structure
+	 * with natural Java values.
+	 * <p>
+	 * Keys are preserved as strings and each nested {@link JsonElement} is
+	 * recursively converted through {@link JsonElement#toObject()}.
+	 *
+	 * @return a map containing the natural Java representation of this object
+	 */
+	@Override
+	public Map<String, Object> toObject()
+	{
+		return entrySet().stream().collect(Collectors.toMap(Entry::getKey,
+				e -> e.getValue().toObject()));
+	}
+
+	/**
 	 * Creates a JsonObject with label and value properties from the given
 	 * object.
 	 *
@@ -930,7 +957,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * @param value function to extract the value
 	 * @return a JsonObject with label and value properties
 	 */
-	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonObject projectToJson(T obj, Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
 				JsonElement.of(value.apply(obj)));
@@ -948,12 +975,26 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 *                   JsonObject
 	 * @return a JsonObject with label, value, and properties
 	 */
-	public static <T> JsonObject of(T obj, Function<T, String> label, Function<T, Object> value,
-									Function<T, JsonObject> properties)
+	public static <T> JsonObject projectToJson(T obj, Function<T, String> label, Function<T, Object> value,
+	                                           Function<T, JsonObject> properties)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj)))
 				.set("value", JsonElement.of(value.apply(obj)))
 				.set("properties", properties.apply(obj));
+	}
+
+	/**
+	 * Creates a JsonObject from a Java map by converting each value to a
+	 * {@link JsonElement}.
+	 *
+	 * @param map the Java map to convert
+	 * @return a JsonObject containing the converted entries
+	 */
+	public static JsonObject of(Map<String, ?> map)
+	{
+		JsonObject result = new JsonObject();
+		map.forEach((key, value) -> result.set(key, JsonElement.of(value)));
+		return result;
 	}
 
 	/**
@@ -984,6 +1025,15 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 
 		return result;
 	}
+
+	/**
+	 * Resolves an object property by name.
+	 *
+	 * @param name the property name to resolve
+	 * @return the property value, or {@link JsonNull#INSTANCE} when the
+	 * property does not exist
+	 */
+	@Override public JsonElement path(String name) {return name != null ? values.getOrDefault(name, JsonNull.INSTANCE) : null;}
 
 	/**
 	 * Parses a JSON string into a JsonObject. This is an alias for

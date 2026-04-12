@@ -143,6 +143,17 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	/**
+	 * Returns the natural Java representation of this JSON array.
+	 * <p>
+	 * Each element is recursively converted through
+	 * {@link JsonElement#toObject()}.
+	 *
+	 * @return a {@link List} containing the natural Java representation of
+	 * each JSON element
+	 */
+	@Override public List<Object> toObject() {return stream().map(JsonElement::toObject).toList();}
+
+	/**
 	 * Parses a JSON formatted string into a JsonArray object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonArray
@@ -185,6 +196,28 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	public int size()
 	{
 		return values.size();
+	}
+
+	/**
+	 * Resolves an array element by index, where the index is provided as a
+	 * string.
+	 * <p>
+	 * If the specified segment is not a valid integer, is negative, or points
+	 * outside the array bounds, this method returns {@link JsonNull#INSTANCE}.
+	 *
+	 * @param name the array index encoded as a string
+	 * @return the resolved array element, or {@link JsonNull#INSTANCE} when the
+	 * index is invalid or out of bounds
+	 */
+	@Override
+	public JsonElement path(String name)
+	{
+		if (name == null
+		    || name.isEmpty()
+		    || !name.chars().allMatch(Character::isDigit))
+			return JsonNull.INSTANCE;
+		int index = Integer.parseInt(name);
+		return index >= 0 && index < size() ? get(index) : JsonNull.INSTANCE;
 	}
 
 	@Override
@@ -545,6 +578,12 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	/**
+	 * Resolves an array element by index, where the index is provided as a
+	 * string.
+	 * <p>
+	 * If the specified segment is not a valid non-negative integer or points
+	 * outside the array bounds, this method returns {@link JsonNull#INSTANCE}.
+	 * /**
 	 * Gets a JsonElement at the specified index.
 	 *
 	 * @param index the index
@@ -619,9 +658,9 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @return a JsonArray containing JsonObjects with label and value
 	 * properties
 	 */
-	public static <T> JsonArray of(List<T> objects, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonArray projectToJson(List<T> objects, Function<T, String> label, Function<T, Object> value)
 	{
-		return objects.stream().map(e -> JsonObject.of(e, label, value))
+		return objects.stream().map(e -> JsonObject.projectToJson(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
@@ -638,10 +677,10 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @return a JsonArray containing JsonObjects with label, value, and
 	 * properties
 	 */
-	public static <T> JsonArray of(List<T> objects, Function<T, String> label, Function<T, Object> value,
-	                               Function<T, JsonObject> properties)
+	public static <T> JsonArray projectToJson(List<T> objects, Function<T, String> label, Function<T, Object> value,
+	                                          Function<T, JsonObject> properties)
 	{
-		return objects.stream().map(e -> JsonObject.of(e, label, value, properties))
+		return objects.stream().map(e -> JsonObject.projectToJson(e, label, value, properties))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 

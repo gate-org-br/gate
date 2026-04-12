@@ -80,6 +80,13 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	}
 
 	@Override
+	/**
+	 * Converts this JSON number to the specified Java numeric type.
+	 *
+	 * @param <T>  the target Java type
+	 * @param type the target Java type
+	 * @return the numeric value converted to the requested type
+	 */
 	public <T> T toObject(Class<T> type)
 	{
 		if (type == Short.class)
@@ -97,6 +104,13 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return type.cast(value);
 	}
 
+	/**
+	 * Returns the natural Java representation of this JSON number.
+	 *
+	 * @return the wrapped {@link BigDecimal} value
+	 */
+	@Override public BigDecimal toObject() {return value;}
+
 	@Override
 	public Object getScalarValue()
 	{
@@ -105,6 +119,16 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 
 	@Override
 	@SuppressWarnings("unchecked")
+	/**
+	 * Converts this JSON number to the specified parameterized Java type.
+	 * <p>
+	 * For scalar numbers, this behaves the same as {@link #toObject(Class)}.
+	 *
+	 * @param <T>         the target Java type
+	 * @param type        the target raw Java type
+	 * @param elementType ignored for scalar numbers
+	 * @return the numeric value converted to the requested type
+	 */
 	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return toObject((Class<T>) type);

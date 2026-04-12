@@ -58,10 +58,7 @@ public class JsonBoolean implements JsonElement, JsonScalar
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return value ? 1 : 0;
-	}
+	public int hashCode() {return value ? 1 : 0;}
 
 	@Override
 	public String toString()
@@ -69,7 +66,21 @@ public class JsonBoolean implements JsonElement, JsonScalar
 		return Boolean.toString(value);
 	}
 
+	/**
+	 * Returns the natural Java representation of this JSON boolean.
+	 *
+	 * @return the wrapped {@link Boolean} value
+	 */
+	@Override public Boolean toObject() {return value;}
+
 	@Override
+	/**
+	 * Converts this JSON boolean to the specified Java type.
+	 *
+	 * @param <T>  the target Java type
+	 * @param type the target Java type
+	 * @return the wrapped boolean converted to the requested type
+	 */
 	public <T> T toObject(Class<T> type)
 	{
 		return type.cast(value);
@@ -77,6 +88,16 @@ public class JsonBoolean implements JsonElement, JsonScalar
 
 	@Override
 	@SuppressWarnings("unchecked")
+	/**
+	 * Converts this JSON boolean to the specified parameterized Java type.
+	 * <p>
+	 * For scalar booleans, this behaves the same as {@link #toObject(Class)}.
+	 *
+	 * @param <T>         the target Java type
+	 * @param type        the target raw Java type
+	 * @param elementType ignored for scalar booleans
+	 * @return the wrapped boolean converted to the requested type
+	 */
 	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return (T) (Boolean) value;}
 
 	public static JsonBoolean of(boolean value) {return value ? JsonBoolean.TRUE : JsonBoolean.FALSE;}
@@ -108,4 +129,5 @@ public class JsonBoolean implements JsonElement, JsonScalar
 			throw new ConversionException("the specified JsonElement is not a JsonBoolean");
 		return (JsonBoolean) element;
 	}
+
 }

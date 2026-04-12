@@ -116,13 +116,13 @@ public class JsonElementConverter implements Converter
 		{
 			case NUMBER ->
 			{
-				JsonNumber value = JsonNumber.parse(scanner.getCurrent().toString());
+				JsonNumber value = JsonNumber.of(scanner.getCurrent().toString());
 				scanner.scan();
 				return value;
 			}
 			case STRING ->
 			{
-				JsonString value = JsonString.parse(scanner.getCurrent().toString());
+				JsonString value = JsonString.of(scanner.getCurrent().toString());
 				scanner.scan();
 				return value;
 			}
@@ -195,8 +195,7 @@ public class JsonElementConverter implements Converter
 
 						scanner.scan();
 						Converter converter = Converter.getConverter(JsonElement.class);
-						JsonElement value
-								= (JsonElement) converter.ofJson(scanner, elementType, elementType);
+						JsonElement value = (JsonElement) converter.ofJson(scanner, elementType, elementType);
 						object.put(key, value);
 					} else if (!empty)
 						throw new ConversionException(
