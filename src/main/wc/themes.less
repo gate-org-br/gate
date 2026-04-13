@@ -66,20 +66,24 @@
 
 
 :root {
+	color-scheme: light;
 	.theme-light();
 	--loading: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjEuNSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIxLjU7MzsxLjUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIzOzEuNTszIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjIwIiBjeT0iMTIiIHI9IjEuNSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIxLjU7MzsxLjUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9zdmc+);
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
+		color-scheme: dark;
 		.theme-dark();
 	}
 }
 
 :root:has(g-theme-selector[value="dark"]) {
+	color-scheme: dark;
 	.theme-dark();
 }
 
 :root:has(g-theme-selector[value="light"]) {
+	color-scheme: light;
 	.theme-light();
 }

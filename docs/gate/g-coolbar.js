@@ -158,7 +158,7 @@ div> ::slotted(hr) {
 	display: none;
 	margin: 8px 0;
 	font-size: 2em;
-	color: #0000AA;
+	color: var(--base2, #2A6B9A);
 	flex-basis: 16px;
 	border-radius: 5px;
 	align-items: center;
@@ -175,7 +175,6 @@ div> ::slotted(hr) {
 import './g-context-menu.js';
 import loading from './loading.js';
 import WindowListenerHTMLElement from './window-listener-html-element.js';
-const POSITIONS = ["southwest", "southeast", "northwest", "northeast"];
 
 const sheet = new CSSStyleSheet();
 sheet.replaceSync(`g-coolbar *[slot='more'] g-icon { order: -1 }`);
@@ -214,7 +213,6 @@ export default class GCoolbar extends WindowListenerHTMLElement
 	{
 		super.connectedCallback();
 		loading(this.parentNode);
-		this.setAttribute("size", this.children.length);
 	}
 
 	#update()

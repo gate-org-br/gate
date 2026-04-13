@@ -1,131 +1,132 @@
-<g-callout class="fill">
-	<h1>Routing</h1>
+<h1>Routing</h1>
+<p>
+	Gate routes web requests from Java structure. Package, screen class and
+	<code>call...</code> methods form the request identity handled by the framework.
+</p>
+
+<h2>Overview</h2>
+<p>
+	The Screen Model is the backend convention that gives Gate its routing structure.
+	Instead of declaring routes in a separate registry, Gate projects the structure of the Java application
+	into web entry points. A request is resolved from the package of the screen, the screen class itself
+	and the selected <code>call...</code> method.
+</p>
+
+<p>
+	This means the route model is not an extra layer on top of the codebase. It is the codebase.
+	When a developer creates a new screen class, names it according to the framework convention and exposes
+	one or more <code>call...</code> methods, Gate can derive the corresponding <code>MODULE</code>,
+	<code>SCREEN</code> and <code>ACTION</code> identifiers directly from that structure.
+</p>
+
+<p>
+	The convention is intentionally compact:
+</p>
+
+<ul>
+	<li>Package name becomes <code>MODULE</code>.</li>
+	<li>A class ending with <code>Screen</code> becomes a routable <code>SCREEN</code>.</li>
+	<li><code>call()</code> is the main action of the screen.</li>
+	<li><code>callSelect()</code> becomes <code>ACTION=Select</code>.</li>
+	<li><code>@AllowMethod</code> restricts which HTTP verbs may execute a resolved action.</li>
+	<li>Only CDI-discovered screen beans are registered.</li>
+</ul>
+
+<p>
+	Here are concrete examples of how a request maps to Java code:
+</p>
+
+<table>
+	<thead>
+	<tr>
+		<th>Request URL</th>
+		<th>Resolved method</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><code>/Gate?MODULE=linq.modulos.gerencia&SCREEN=Area</code></td>
+		<td><code>linq.modulos.gerencia.AreaScreen.call()</code></td>
+	</tr>
+	<tr>
+		<td><code>/Gate?MODULE=linq.modulos.gerencia&SCREEN=Area&ACTION=Select</code></td>
+		<td><code>linq.modulos.gerencia.AreaScreen.callSelect()</code></td>
+	</tr>
+	<tr>
+		<td><code>/Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador.Fila</code></td>
+		<td><code>linq.modulos.callCenter.OperadorScreen.FilaScreen.call()</code></td>
+	</tr>
+	<tr>
+		<td><code>/Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador.Fila&ACTION=Insert</code></td>
+		<td><code>linq.modulos.callCenter.OperadorScreen.FilaScreen.callInsert()</code></td>
+	</tr>
+	</tbody>
+</table>
+
+<p>
+	In practice, the developer mental model is: create a screen bean, keep the <code>Screen</code> suffix,
+	expose <code>call...</code> methods, and delegate business rules to controls. Gate uses that structure
+	to build the effective application model at bootstrap time.
+</p>
+
+<g-message>
 	<p>
-		Gate routes web requests from Java structure. Package, screen class and
-		<code>call...</code> methods form the request identity handled by the framework.
+		A screen is exposed only if CDI discovers it and Gate receives it as a <code>Screen</code> bean.
+		For Quarkus applications this usually means the class must be a CDI bean, commonly annotated with
+		<code>@Dependent</code>.
 	</p>
-</g-callout>
+</g-message>
 
-<g-tab-control>
-	<a href="#">Overview</a>
-	<div>
-		<p>
-			The Screen Model is the backend convention that gives Gate its routing structure.
-			Instead of declaring routes in a separate registry, Gate projects the structure of the Java application
-			into web entry points. A request is resolved from the package of the screen, the screen class itself
-			and the selected <code>call...</code> method.
-		</p>
-		<p>
-			This means the route model is not an extra layer on top of the codebase. It is the codebase.
-			When a developer creates a new screen class, names it according to the framework convention and exposes
-			one or more <code>call...</code> methods, Gate can derive the corresponding <code>MODULE</code>,
-			<code>SCREEN</code> and <code>ACTION</code> identifiers directly from that structure.
-		</p>
-		<p>
-			The convention is intentionally compact:
-		</p>
-		<ul>
-			<li>Package name becomes <code>MODULE</code>.</li>
-			<li>A class ending with <code>Screen</code> becomes a routable <code>SCREEN</code>.</li>
-			<li><code>call()</code> is the main action of the screen.</li>
-			<li><code>callSelect()</code> becomes <code>ACTION=Select</code>.</li>
-			<li><code>@AllowMethod</code> restricts which HTTP verbs may execute a resolved action.</li>
-			<li>Only CDI-discovered screen beans are registered.</li>
-		</ul>
-		<p>
-			Here are concrete examples of how a request maps to Java code:
-		</p>
-		<table>
-			<thead>
-			<tr>
-				<th>Request URL</th>
-				<th>Resolved method</th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr>
-				<td><code>/Gate?MODULE=linq.modulos.gerencia&SCREEN=Area</code></td>
-				<td><code>linq.modulos.gerencia.AreaScreen.call()</code></td>
-			</tr>
-			<tr>
-				<td><code>/Gate?MODULE=linq.modulos.gerencia&SCREEN=Area&ACTION=Select</code></td>
-				<td><code>linq.modulos.gerencia.AreaScreen.callSelect()</code></td>
-			</tr>
-			<tr>
-				<td><code>/Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador.Fila</code></td>
-				<td><code>linq.modulos.callCenter.OperadorScreen.FilaScreen.call()</code></td>
-			</tr>
-			<tr>
-				<td><code>/Gate?MODULE=linq.modulos.callCenter&SCREEN=Operador.Fila&ACTION=Insert</code></td>
-				<td><code>linq.modulos.callCenter.OperadorScreen.FilaScreen.callInsert()</code></td>
-			</tr>
-			</tbody>
-		</table>
-		<p>
-			In practice, the developer mental model is: create a screen bean, keep the <code>Screen</code> suffix,
-			expose <code>call...</code> methods, and delegate business rules to controls. Gate uses that structure
-			to build the effective application model at bootstrap time.
-		</p>
+<g-message>
+	<p>
+		During bootstrap, Gate collects discovered screens, builds the application structure and persists
+		the effective model in the <code>App</code> table. That stored structure represents what was actually
+		registered at runtime.
+	</p>
+</g-message>
 
-		<g-callout class="warning">
-			<p>
-				A screen is exposed only if CDI discovers it and Gate receives it as a <code>Screen</code> bean.
-				For Quarkus applications this usually means the class must be a CDI bean, commonly annotated with
-				<code>@Dependent</code>.
-			</p>
-			<p>
-				During bootstrap, Gate collects discovered screens, builds the application structure and persists
-				the effective model in the <code>App</code> table. That stored structure represents what was actually registered at runtime.
-			</p>
-		</g-callout>
-	</div>
+<h2>Nested Screens</h2>
+<p>
+	When a screen is declared inside another screen class, Gate treats it as a nested route.
+	The nested structure is projected with dot notation.
+</p>
 
-	<a href="#">Nested Screens</a>
-	<div>
-		<p>
-			When a screen is declared inside another screen class, Gate treats it as a nested route.
-			The nested structure is projected with dot notation.
-		</p>
-		<table>
-			<thead>
-			<tr>
-				<th>Java element</th>
-				<th>Resolved value</th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr>
-				<td><code>OperadorScreen.FilaScreen</code></td>
-				<td><code>SCREEN=Operador.Fila</code></td>
-			</tr>
-			<tr>
-				<td><code>CallCenterScreen.UsuarioScreen.PermissaoScreen</code></td>
-				<td><code>SCREEN=CallCenter.Usuario.Permissao</code></td>
-			</tr>
-			</tbody>
-		</table>
-		<p>
-			Nested screens are useful when a flow is structurally dependent on another screen and should remain
-			grouped in the same Java type hierarchy.
-		</p>
-	</div>
+<table>
+	<thead>
+	<tr>
+		<th>Java element</th>
+		<th>Resolved value</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><code>OperadorScreen.FilaScreen</code></td>
+		<td><code>SCREEN=Operador.Fila</code></td>
+	</tr>
+	<tr>
+		<td><code>CallCenterScreen.UsuarioScreen.PermissaoScreen</code></td>
+		<td><code>SCREEN=CallCenter.Usuario.Permissao</code></td>
+	</tr>
+	</tbody>
+</table>
 
-	<a href="#">HTTP Methods</a>
-	<div>
-		<p>
-			Gate does not use HTTP verbs to choose the action. Routing is still based on
-			<code>MODULE</code>, <code>SCREEN</code> and <code>ACTION</code>. HTTP verbs only restrict which requests
-			are allowed to execute a resolved action.
-		</p>
-		<g-callout>
-		<pre><code>import gate.annotation.AllowMethod;
+<p>
+	Nested screens are useful when a flow is structurally dependent on another screen and should remain
+	grouped in the same Java type hierarchy.
+</p>
+
+<h2>HTTP Methods</h2>
+<p>
+	Gate does not use HTTP verbs to choose the action. Routing is still based on
+	<code>MODULE</code>, <code>SCREEN</code> and <code>ACTION</code>. HTTP verbs only restrict which requests
+	are allowed to execute a resolved action.
+</p>
+
+<pre><code>import gate.annotation.AllowMethod;
 
 @AllowMethod(AllowMethod.HttpMethod.GET)
 public Object callSelect() { ... }
 
 @AllowMethod(AllowMethod.HttpMethod.POST)
 public Object callInsert() { ... }
-		</code></pre>
-		</g-callout>
-	</div>
-</g-tab-control>
+</code></pre>

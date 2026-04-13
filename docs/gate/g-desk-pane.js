@@ -233,7 +233,7 @@ customElements.define('g-desk-pane', class extends HTMLElement
 					|| e.tagName === "BUTTON"
 					|| e.tagName === "G-DESK-PANE"
 					|| e.tagName === "G-DESK-PANE-RESET"
-					|| e.classList.contains(".g-command"));
+					|| e.classList.contains("g-command"));
 	}
 
 	connectedCallback()

@@ -1,253 +1,217 @@
-<g-callout class="fill">
-	<h1>Access Control</h1>
+<h1>Access Control</h1>
+<p>
+	Gate has its own authorization model.
+	Instead of relying on a flat list of permissions attached directly to the user, Gate computes
+	effective access from multiple sources.
+	Some accesses are shared by an entire area of the organization, others belong to a function,
+	others come from the user's position in the role hierarchy, and others are granted directly to one user.
+	This makes it possible to move users across logical blocks of the organization without adjusting permissions
+	one user at a time.
+	It also keeps authorization data out of the application code.
+</p>
+
+<h2>Overview</h2>
+<p>
+	Gate stores authorization data in its own database instead of hard-coding access rules in the application.
+	Most routes use the default authorization mode, <code>Security.Type.AUTHORIZATION</code>.
+	In this mode, Gate resolves the request to <code>module</code>, <code>screen</code> and <code>action</code>,
+	then computes whether the current user has effective access to that location.
+</p>
+
+<h2>Auth</h2>
+<p>
+	An <code>Auth</code> is one access rule.
+	It says whether something is granted or blocked, and to which part of the application that rule applies.
+</p>
+
+<ul>
+	<li><code>Access</code>: <code>GRANT</code> or <code>BLOCK</code>.</li>
+	<li><code>Scope</code>: <code>PUBLIC</code> or <code>PRIVATE</code>.</li>
+</ul>
+
+<p>
+	<code>GRANT</code> means the auth gives access.
+	<code>BLOCK</code> means the auth denies access.
+	<code>PUBLIC</code> and <code>PRIVATE</code> control inheritance in the role hierarchy.
+	A private auth stays on the role that owns it.
+	A public auth may be inherited through parent roles.
+</p>
+
+<p>
+	Each auth also has route fields: <code>module</code>, <code>screen</code> and <code>action</code>.
+	These fields define what the rule applies to.
+</p>
+
+<ul>
+	<li>If only <code>module</code> is filled, the auth applies to the whole module.</li>
+	<li>If <code>module</code> and <code>screen</code> are filled, it applies to the whole screen.</li>
+	<li>If all three are filled, it applies to one specific action.</li>
+	<li>It may also use partial combinations such as module plus action.</li>
+</ul>
+
+<h2>Authorization Sources</h2>
+<p>
+	A <code>Role</code> is the user's place in the organizational structure.
+	Roles are hierarchical and may carry their own auths and funcs.
+	A <code>Func</code> is a named group of auths that can be attached to users and roles.
+	Together, these concepts allow access to be organized by shared responsibility instead of duplicating
+	permissions user by user.
+</p>
+
+<p>
+	A <code>User</code> may therefore receive authorization data from several sources:
+</p>
+
+<ul>
+	<li>The user's own direct auths.</li>
+	<li>The auths of the funcs attached directly to the user.</li>
+	<li>The auths of the user's role.</li>
+	<li>The auths of the funcs attached to the user's role.</li>
+	<li>Public auths inherited through the role hierarchy.</li>
+</ul>
+
+<g-callout>
 	<p>
-		Gate has its own authorization model.
-		It is more than a simple list of permissions on the user.
-		Access may come from direct user entries, named function groups and the user's role in the role hierarchy.
+		The user's effective access is computed, not stored in one flat list.
 	</p>
 </g-callout>
 
-<g-tab-control>
-	<a href="#">Overview</a>
-	<div>
-		<p>
-			The first idea to understand is this: Gate stores authorization data in its own database and uses that
-			data when a route is executed.
-		</p>
+<h2>Decision Flow</h2>
+<p>
+	When a route is executed in the default authorization mode, Gate follows this logic:
+</p>
 
-		<p>
-			Most routes use the default behavior.
-			If you do not declare any special security annotation, Gate uses
-			<code>Security.Type.AUTHORIZATION</code>.
-			In this mode, once the framework resolves the route, it checks whether the current user has access to it.
-		</p>
+<ol>
+	<li>Resolve the request to module, screen and action.</li>
+	<li>Compute the user's effective auths from user, funcs and role.</li>
+	<li>If any matching auth blocks the route, deny access.</li>
+	<li>If nothing blocks and at least one matching auth grants the route, allow access.</li>
+	<li>If there is no matching grant, deny access.</li>
+</ol>
 
-		<p>
-			That check is based on the authorization structure associated with the user.
-			To understand the result, you need to understand four concepts:
-			<code>Auth</code>, <code>Role</code>, <code>Func</code> and <code>User</code>.
-		</p>
-	</div>
+<h2>Security Annotations</h2>
+<p>
+	Gate supports both a general annotation and shortcut annotations.
+</p>
 
-	<a href="#">Auth</a>
-	<div>
-		<p>
-			An <code>Auth</code> is one access rule.
-			It says whether something is granted or blocked, and to which part of the application that rule applies.
-		</p>
+<table>
+	<thead>
+	<tr>
+		<th>Annotation</th>
+		<th>Meaning</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td><code>@Security(Security.Type.NONE)</code></td>
+		<td>The route is open to everyone</td>
+	</tr>
+	<tr>
+		<td><code>@Security(Security.Type.AUTHENTICATION)</code></td>
+		<td>The route requires an authenticated user</td>
+	</tr>
+	<tr>
+		<td><code>@Security(Security.Type.AUTHORIZATION)</code></td>
+		<td>The route uses the normal authorization model</td>
+	</tr>
+	<tr>
+		<td><code>@Security(Security.Type.SPECIFIC_AUTHORIZATION)</code></td>
+		<td>The route uses the overridden target defined by <code>@Authorization</code></td>
+	</tr>
+	<tr>
+		<td><code>@Security(Security.Type.SUPERUSER)</code></td>
+		<td>The route requires a superuser</td>
+	</tr>
+	<tr>
+		<td><code>@Security(Security.Type.BLOCK)</code></td>
+		<td>The route is blocked for everyone</td>
+	</tr>
+	<tr>
+		<td><code>@Public</code></td>
+		<td>Shortcut for <code>Security.Type.NONE</code></td>
+	</tr>
+	<tr>
+		<td><code>@Superuser</code></td>
+		<td>Shortcut for <code>Security.Type.SUPERUSER</code></td>
+	</tr>
+	<tr>
+		<td><code>@Disabled</code></td>
+		<td>Shortcut for <code>Security.Type.BLOCK</code></td>
+	</tr>
+	</tbody>
+</table>
 
-		<p>
-			Every auth has two main characteristics:
-		</p>
+<p>
+	These annotations may be declared on the package, on the screen class or on the action method.
+	Method declarations override class declarations, and class declarations override package declarations.
+</p>
 
-		<ul>
-			<li><code>Access</code>: <code>GRANT</code> or <code>BLOCK</code>.</li>
-			<li><code>Scope</code>: <code>PUBLIC</code> or <code>PRIVATE</code>.</li>
-		</ul>
+<g-message>
+	<p>
+		Only one access type may be declared at the same level.
+		For example, declaring <code>@Public</code> together with <code>@Disabled</code> on the same method is invalid.
+		The same is true for mixing a shortcut annotation with <code>@Security(...)</code> on the same element.
+	</p>
+</g-message>
 
-		<p>
-			<code>GRANT</code> means the auth gives access.
-			<code>BLOCK</code> means the auth denies access.
-		</p>
+<h2>Authorization Location Override</h2>
+<p>
+	<code>@Authorization</code> is different from the other access annotations.
+	It does not define the security type of the route.
+	Instead, it changes which module, screen or action Gate should use during the authorization check.
+</p>
 
-		<p>
-			<code>PUBLIC</code> and <code>PRIVATE</code> do not mean "public route" and "private route".
-			They control how the auth behaves in the role hierarchy.
-			A private auth stays on the role that owns it.
-			A public auth may be inherited through parent roles.
-		</p>
+<p>
+	This is useful when one route should be authorized as if it were another route.
+	The executed action remains the same, but the permission check uses the overridden target.
+</p>
 
-		<p>
-			An auth also has route fields:
-			<code>module</code>, <code>screen</code> and <code>action</code>.
-			These fields define what the rule applies to.
-		</p>
+<p>
+	Gate also supports partial overrides through shortcut annotations:
+</p>
 
-		<ul>
-			<li>If only <code>module</code> is filled, the auth applies to the whole module.</li>
-			<li>If <code>module</code> and <code>screen</code> are filled, it applies to the whole screen.</li>
-			<li>If all three are filled, it applies to one specific action.</li>
-			<li>It may also use partial combinations such as module plus action.</li>
-		</ul>
+<ul>
+	<li><code>@Module</code> overrides the authorization module.</li>
+	<li><code>@Screen</code> overrides the authorization screen.</li>
+	<li><code>@Action</code> overrides the authorization action.</li>
+</ul>
 
-		<p>
-			So an auth does not always need to identify a single action.
-			It can define access at a broader level.
-		</p>
-	</div>
+<p>
+	These annotations change only their own coordinate.
+	They are resolved incrementally, starting from the default route location derived from package,
+	screen class and action method.
+	This means the authorization location of the class may be changed at the package level, refined at the
+	class level and changed again for one specific method.
+</p>
 
-	<a href="#">Role</a>
-	<div>
-		<p>
-			A <code>Role</code> is the user's place in the organizational structure.
-			Roles are hierarchical: a role may have a parent role, and Gate uses that hierarchy when computing access.
-		</p>
+<ul>
+	<li><code>@Module</code> on package, class and method.</li>
+	<li><code>@Screen</code> on class and method.</li>
+	<li><code>@Action</code> on method.</li>
+</ul>
 
-		<p>
-			A role may have its own auths and its own funcs.
-			This means a role is not only a label such as "manager" or "operator".
-			It is also a source of authorization data.
-		</p>
+<g-message>
+	<p>
+		<code>@Authorization</code> replaces the whole authorization location.
+		Blank values become <code>null</code>; they do not fall back to the route's original
+		<code>module</code>, <code>screen</code> or <code>action</code>.
+	</p>
+</g-message>
 
-		<p>
-			The public/private distinction matters here:
-			role auths with scope <code>PUBLIC</code> may flow through the role hierarchy.
-			Role auths with scope <code>PRIVATE</code> remain local to the role that owns them.
-		</p>
-	</div>
+<g-message>
+	<p>
+		If <code>@Authorization</code> is present, it takes precedence over <code>@Module</code>,
+		<code>@Screen</code> and <code>@Action</code>.
+		Otherwise, Gate applies the partial overrides in the natural order package, class and method.
+	</p>
+</g-message>
 
-	<a href="#">Func</a>
-	<div>
-		<p>
-			A <code>Func</code> is a named group of auths.
-		</p>
+<h2>Responses</h2>
+<p>
+	When access is denied, Gate distinguishes between missing identity and missing authorization.
+</p>
 
-		<p>
-			In practical terms, a function lets you give a reusable name to a set of accesses.
-			Instead of attaching the same auths one by one to many users or roles, you can attach a func and
-			inherit its auths as a group.
-		</p>
-
-		<p>
-			A func may be attached to users and to roles.
-			This makes funcs a reuse mechanism inside the authorization model.
-		</p>
-	</div>
-
-	<a href="#">User</a>
-	<div>
-		<p>
-			A <code>User</code> may receive authorization data from more than one place.
-		</p>
-
-		<ul>
-			<li>The user's own direct auths.</li>
-			<li>The auths of the funcs attached directly to the user.</li>
-			<li>The auths of the user's role.</li>
-			<li>The auths of the funcs attached to the user's role.</li>
-			<li>Public auths inherited through the role hierarchy.</li>
-		</ul>
-
-		<p>
-			So the user's effective access is computed, not stored in one flat list.
-			Gate combines those sources to decide whether the route is allowed.
-		</p>
-	</div>
-
-	<a href="#">How Gate Decides</a>
-	<div>
-		<p>
-			When a route is executed in the default authorization mode, Gate follows this logic:
-		</p>
-
-		<ol>
-			<li>Resolve the request to module, screen and action.</li>
-			<li>Compute the user's effective auths from user, funcs and role.</li>
-			<li>If any matching auth blocks the route, deny access.</li>
-			<li>If nothing blocks and at least one matching auth grants the route, allow access.</li>
-			<li>If there is no matching grant, deny access.</li>
-		</ol>
-
-		<p>
-			This is why the model is more sophisticated than it first appears.
-			The answer does not come only from one permission directly attached to the user.
-			It may come from any of the sources above.
-		</p>
-	</div>
-
-	<a href="#">Authorization Types</a>
-	<div>
-		<p>
-			Gate supports both a general annotation and shortcut annotations.
-		</p>
-
-		<table>
-			<thead>
-			<tr>
-				<th>Annotation</th>
-				<th>Meaning</th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr>
-				<td><code>@Security(Security.Type.NONE)</code></td>
-				<td>The route is open to everyone</td>
-			</tr>
-			<tr>
-				<td><code>@Security(Security.Type.AUTHENTICATION)</code></td>
-				<td>The route requires an authenticated user</td>
-			</tr>
-			<tr>
-				<td><code>@Security(Security.Type.AUTHORIZATION)</code></td>
-				<td>The route uses the normal authorization model</td>
-			</tr>
-			<tr>
-				<td><code>@Security(Security.Type.SPECIFIC_AUTHORIZATION)</code></td>
-				<td>The route uses the overridden target defined by <code>@Authorization</code></td>
-			</tr>
-			<tr>
-				<td><code>@Security(Security.Type.SUPERUSER)</code></td>
-				<td>The route requires a superuser</td>
-			</tr>
-			<tr>
-				<td><code>@Security(Security.Type.BLOCK)</code></td>
-				<td>The route is blocked for everyone</td>
-			</tr>
-			<tr>
-				<td><code>@Public</code></td>
-				<td>Shortcut for <code>Security.Type.NONE</code></td>
-			</tr>
-			<tr>
-				<td><code>@Superuser</code></td>
-				<td>Shortcut for <code>Security.Type.SUPERUSER</code></td>
-			</tr>
-			<tr>
-				<td><code>@Disabled</code></td>
-				<td>Shortcut for <code>Security.Type.BLOCK</code></td>
-			</tr>
-			</tbody>
-		</table>
-
-		<p>
-			These annotations may be declared on the package, on the screen class or on the action method.
-			Method declarations override class declarations, and class declarations override package declarations.
-		</p>
-
-		<p>
-			Only one access type may be declared at the same level.
-			For example, declaring <code>@Public</code> together with <code>@Disabled</code> on the same method is invalid.
-			The same is true for mixing a shortcut annotation with <code>@Security(...)</code> on the same element.
-		</p>
-	</div>
-
-	<a href="#">Authorization Override</a>
-	<div>
-		<p>
-			<code>@Authorization</code> is different from the other access annotations.
-			It does not define the security type of the route.
-			Instead, it changes which module, screen or action Gate should use during the authorization check.
-		</p>
-
-		<p>
-			This is useful when one route should be authorized as if it were another route.
-			The executed action remains the same, but the permission check uses the overridden target.
-		</p>
-
-		<p>
-			This override may be declared on the package, on the screen class or on the action method, following
-			the same precedence used by the rest of the framework.
-		</p>
-	</div>
-
-	<a href="#">Responses</a>
-	<div>
-		<p>
-			When access is denied, Gate distinguishes between missing identity and missing authorization.
-		</p>
-
-		<ul>
-			<li><code>401 Unauthorized</code> means there is no authenticated user.</li>
-			<li><code>403 Forbidden</code> means the user is authenticated, but the authorization check failed.</li>
-		</ul>
-	</div>
-</g-tab-control>
+<ul>
+	<li><code>401 Unauthorized</code> means there is no authenticated user.</li>
+	<li><code>403 Forbidden</code> means the user is authenticated, but the authorization check failed.</li>
+</ul>

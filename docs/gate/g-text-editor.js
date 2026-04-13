@@ -491,7 +491,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 	get hidden()
 	{
-		return this.hasAtribute("hidden");
+		return this.hasAttribute("hidden");
 	}
 
 	getSelection()
@@ -575,7 +575,7 @@ customElements.define('g-text-editor', class extends HTMLElement
 
 		this.editor.normalize();
 		Array.from(this.editor.querySelectorAll("span, a"))
-				.filter(e => !e.hasAttribute("style") === ""
+				.filter(e => !e.hasAttribute("style")
 							|| e.getAttribute("style") === "")
 				.forEach(e => e.outerHTML = e.innerHTML);
 

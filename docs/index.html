@@ -2,253 +2,253 @@
 
 <html lang="pt-BR">
 
-<head>
-	<meta charset="UTF-8">
-	<title>Gate</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" href="./gate/Gate.css"/>
-	<script type="module" src="./gate/g-html-viewer.js" charset="utf-8"></script>
-	<script type="module" src="./gate/Gate.js" charset="utf-8"></script>
-</head>
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="./gate/Gate.css"/>
+		<script type="module" src="./gate/g-html-viewer.js"></script>
+		<script type="module" src="./gate/Gate.js"></script>
+	</head>
 
-<body data-loading onload="document.body.removeAttribute('data-loading')">
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
 
-<main>
-	<header>
-		<img src="./gate/Gate.svg" alt="Gate logo"/>
-		<label>Gate</label>
-		<label>Version 1.0.0-SNAPSHOT</label>
-	</header>
+		<main>
+			<header>
+				<img src="Logo.svg" alt="Gate logo"/>
+				<label>Gate</label>
+				<label>Version 1.0.0-SNAPSHOT</label>
+			</header>
 
-	<nav>
-		<g-tabbar>
-			<a href="routing.html" target="@inner-html(#content)">
-				Routing
-				<g-icon>&#X3050;</g-icon>
-			</a>
-			<a href="./security/authentication.html" target="@inner-html(#content)">
-				Authentication
-				<g-icon>&#X2080;</g-icon>
-			</a>
-			<a href="./security/access-control.html" target="@inner-html(#content)">
-				Access Control
-				<g-icon>&#X2002;</g-icon>
-			</a>
-			<g-trigger id="sql">
-				<g-icon>&#X2124;</g-icon>
-				SQL
-				<g-drawer>
-					<a href="./sql/overview.html" target="@inner-html(#content)">
-						Overview
-						<g-icon>&#X1024;</g-icon>
+			<nav>
+				<g-tabbar>
+					<a href="routing.html" target="@inner-html(#content)">
+						Routing
+						<g-icon>&#X3050;</g-icon>
 					</a>
-					<hr>
-					<a href="./sql/link.html" target="@inner-html(#content)">Link</a>
-					<a href="./sql/select.html" target="@inner-html(#content)">Select</a>
-					<a href="./sql/condition.html" target="@inner-html(#content)">Condition</a>
-					<a href="./sql/insert.html" target="@inner-html(#content)">Insert</a>
-					<a href="./sql/replace.html" target="@inner-html(#content)">Replace</a>
-					<a href="./sql/update.html" target="@inner-html(#content)">Update</a>
-					<a href="./sql/delete.html" target="@inner-html(#content)">Delete</a>
-					<a href="./sql/fetchers.html" target="@inner-html(#content)">Fetchers</a>
-					<a href="./sql/patterns.html" target="@inner-html(#content)">Production Patterns</a>
-				</g-drawer>
-			</g-trigger>
-			<g-trigger id="targets">
-				Targets
-				<g-icon>&#X1011;</g-icon>
-				<g-drawer>
-					<a href="./target/target.html" target="@inner-html(#content)">
-						Getting Started
-						<g-icon>&#X1024;</g-icon>
+					<a href="./security/authentication.html" target="@inner-html(#content)">
+						Authentication
+						<g-icon>&#X2080;</g-icon>
 					</a>
-					<a href="./target/selectors.html" target="@inner-html(#content)">
-						Selectors
+					<a href="./security/access-control.html" target="@inner-html(#content)">
+						Access Control
+						<g-icon>&#X2002;</g-icon>
 					</a>
-					<hr>
-					<a href="./target/@after-begin.html" target="@inner-html(#content)">@after-begin</a>
-					<a href="./target/@after-end.html" target="@inner-html(#content)">@after-end</a>
-					<a href="./target/@before-begin.html" target="@inner-html(#content)">@before-begin</a>
-					<a href="./target/@before-end.html" target="@inner-html(#content)">@before-end</a>
-					<a href="./target/@cache.html" target="@inner-html(#content)">@cache</a>
-					<a href="./target/@chart/@chart.html" target="@inner-html(#content)">@chart</a>
-					<a href="./target/@dataset.html" target="@inner-html(#content)">@dataset</a>
-					<a href="./target/@debounce.html" target="@inner-html(#content)">@debounce</a>
-					<a href="./target/@dialog/@dialog.html" target="@inner-html(#content)">@dialog</a>
-					<a href="./target/@exec.html" target="@inner-html(#content)">@exec</a>
-					<a href="./target/@fill.html" target="@inner-html(#content)">@fill</a>
-					<a href="./target/@form.html" target="@inner-html(#content)">@form</a>
-					<a href="./target/@inner-html.html" target="@inner-html(#content)">@inner-html</a>
-					<a href="./target/@json-to-html.html" target="@inner-html(#content)">@json-to-html</a>
-					<a href="./target/@map.html" target="@inner-html(#content)">@map</a>
-					<a href="./target/@message.html" target="@inner-html(#content)">@message</a>
-					<a href="./target/@none.html" target="@inner-html(#content)">@none</a>
-					<a href="./target/@once.html" target="@inner-html(#content)">@once</a>
-					<a href="./target/@outer-html.html" target="@inner-html(#content)">@outer-html</a>
-					<a href="./target/@pick.html" target="@inner-html(#content)">@pick</a>
-					<a href="./target/@populate.html" target="@inner-html(#content)">@populate</a>
-					<a href="./target/@progress/@progress.html" target="@inner-html(#content)">@progress</a>
-					<a href="./target/@put.html" target="@inner-html(#content)">@put</a>
-					<a href="./target/@remove.html" target="@inner-html(#content)">@remove</a>
-					<a href="./target/@report.html" target="@inner-html(#content)">@report</a>
-					<a href="./target/@save.html" target="@inner-html(#content)">@save</a>
-					<a href="./target/@search.html" target="@inner-html(#content)">@search</a>
-					<a href="./target/@select.html" target="@inner-html(#content)">@select</a>
-					<a href="./target/@stack/@stack.html" target="@inner-html(#content)">@stack</a>
-					<a href="./target/@template.html" target="@inner-html(#content)">@template</a>
-					<a href="./target/@throttle.html" target="@inner-html(#content)">@throttle</a>
-					<a href="./target/@tooltip/@tooltip.html" target="@inner-html(#content)">@tooltip</a>
-					<a href="./target/@value.html" target="@inner-html(#content)">@value</a>
-				</g-drawer>
-			</g-trigger>
-			<g-trigger id="components">
-				<g-icon>&#X2178;</g-icon>
-				Components
-				<g-drawer>
-					<a href="./component/g-callout.html" target="@inner-html(#content)">
-						g-callout
-						<g-icon>&#x1007;</g-icon>
+					<g-trigger id="sql">
+						<g-icon>&#X2124;</g-icon>
+						SQL
+						<g-drawer>
+							<a href="./sql/overview.html" target="@inner-html(#content)">
+								Overview
+								<g-icon>&#X1024;</g-icon>
+							</a>
+							<hr>
+							<a href="./sql/link.html" target="@inner-html(#content)">Link</a>
+							<a href="./sql/select.html" target="@inner-html(#content)">Select</a>
+							<a href="./sql/condition.html" target="@inner-html(#content)">Condition</a>
+							<a href="./sql/insert.html" target="@inner-html(#content)">Insert</a>
+							<a href="./sql/replace.html" target="@inner-html(#content)">Replace</a>
+							<a href="./sql/update.html" target="@inner-html(#content)">Update</a>
+							<a href="./sql/delete.html" target="@inner-html(#content)">Delete</a>
+							<a href="./sql/fetchers.html" target="@inner-html(#content)">Fetchers</a>
+							<a href="./sql/patterns.html" target="@inner-html(#content)">Production Patterns</a>
+						</g-drawer>
+					</g-trigger>
+					<g-trigger id="targets">
+						Targets
+						<g-icon>&#X1011;</g-icon>
+						<g-drawer>
+							<a href="./target/target.html" target="@inner-html(#content)">
+								Getting Started
+								<g-icon>&#X1024;</g-icon>
+							</a>
+							<a href="./target/selectors.html" target="@inner-html(#content)">
+								Selectors
+							</a>
+							<hr>
+							<a href="./target/@after-begin.html" target="@inner-html(#content)">@after-begin</a>
+							<a href="./target/@after-end.html" target="@inner-html(#content)">@after-end</a>
+							<a href="./target/@before-begin.html" target="@inner-html(#content)">@before-begin</a>
+							<a href="./target/@before-end.html" target="@inner-html(#content)">@before-end</a>
+							<a href="./target/@cache.html" target="@inner-html(#content)">@cache</a>
+							<a href="./target/@chart/@chart.html" target="@inner-html(#content)">@chart</a>
+							<a href="./target/@dataset.html" target="@inner-html(#content)">@dataset</a>
+							<a href="./target/@debounce.html" target="@inner-html(#content)">@debounce</a>
+							<a href="./target/@dialog/@dialog.html" target="@inner-html(#content)">@dialog</a>
+							<a href="./target/@exec.html" target="@inner-html(#content)">@exec</a>
+							<a href="./target/@fill.html" target="@inner-html(#content)">@fill</a>
+							<a href="./target/@form.html" target="@inner-html(#content)">@form</a>
+							<a href="./target/@inner-html.html" target="@inner-html(#content)">@inner-html</a>
+							<a href="./target/@json-to-html.html" target="@inner-html(#content)">@json-to-html</a>
+							<a href="./target/@map.html" target="@inner-html(#content)">@map</a>
+							<a href="./target/@message.html" target="@inner-html(#content)">@message</a>
+							<a href="./target/@none.html" target="@inner-html(#content)">@none</a>
+							<a href="./target/@once.html" target="@inner-html(#content)">@once</a>
+							<a href="./target/@outer-html.html" target="@inner-html(#content)">@outer-html</a>
+							<a href="./target/@pick.html" target="@inner-html(#content)">@pick</a>
+							<a href="./target/@populate.html" target="@inner-html(#content)">@populate</a>
+							<a href="./target/@progress/@progress.html" target="@inner-html(#content)">@progress</a>
+							<a href="./target/@put.html" target="@inner-html(#content)">@put</a>
+							<a href="./target/@remove.html" target="@inner-html(#content)">@remove</a>
+							<a href="./target/@report.html" target="@inner-html(#content)">@report</a>
+							<a href="./target/@save.html" target="@inner-html(#content)">@save</a>
+							<a href="./target/@search.html" target="@inner-html(#content)">@search</a>
+							<a href="./target/@select.html" target="@inner-html(#content)">@select</a>
+							<a href="./target/@stack/@stack.html" target="@inner-html(#content)">@stack</a>
+							<a href="./target/@template.html" target="@inner-html(#content)">@template</a>
+							<a href="./target/@throttle.html" target="@inner-html(#content)">@throttle</a>
+							<a href="./target/@tooltip/@tooltip.html" target="@inner-html(#content)">@tooltip</a>
+							<a href="./target/@value.html" target="@inner-html(#content)">@value</a>
+						</g-drawer>
+					</g-trigger>
+					<g-trigger id="components">
+						<g-icon>&#X2178;</g-icon>
+						Components
+						<g-drawer>
+							<a href="./component/g-callout.html" target="@inner-html(#content)">
+								g-callout
+								<g-icon>&#x1007;</g-icon>
+							</a>
+							<a href="./component/g-card.html" target="@inner-html(#content)">
+								g-card
+								<g-icon>&#x2197;</g-icon>
+							</a>
+							<a href="./component/g-context-menu/g-context-menu.html" target="@inner-html(#content)">
+								g-context-menu
+							</a>
+							<a href="./component/g-coolbar.html" target="@inner-html(#content)">
+								g-coolbar
+							</a>
+							<a href="./component/g-desk-pane.html" target="@inner-html(#content)">
+								g-desk-pane
+								<g-icon>&#x2270;</g-icon>
+							</a>
+							<a href="./component/g-chart/g-chart.html" target="@inner-html(#content)">
+								g-chart
+								<g-icon>&#x2031;</g-icon>
+							</a>
+							<a href="./component/g-dialog.html" target="@inner-html(#content)">
+								g-dialog
+								<g-icon>&#x2256;</g-icon>
+							</a>
+							<a href="./component/form/g-form.html" target="@inner-html(#content)">
+								g-form
+							</a>
+							<a href="./component/form/g-form-editor.html" target="@inner-html(#content)">
+								g-form-editor
+							</a>
+							<a href="./component/form/g-form-view.html" target="@inner-html(#content)">
+								g-form-view
+							</a>
+							<a href="./component/g-message.html" target="@inner-html(#content)">
+								g-message
+								<g-icon>&#x2015;</g-icon>
+							</a>
+							<a href="./component/g-selectn.html" target="@inner-html(#content)">
+								g-selectn
+								<g-icon>&#x3011;</g-icon>
+							</a>
+							<a href="./component/g-tab-control/g-tab-control.html" target="@inner-html(#content)">
+								g-tab-control
+								<g-icon>&#x3055;</g-icon>
+							</a>
+							<a href="./component/g-table.html" target="@inner-html(#content)">
+								g-table
+							</a>
+							<a href="./component/g-text-editor.html" target="@inner-html(#content)">
+								g-text-editor
+								<g-icon>&#x3025;</g-icon>
+							</a>
+							<a href="./component/g-tooltip.html" target="@inner-html(#content)">
+								g-tooltip
+							</a>
+							<a href="./component/g-tree-grid.html" target="@inner-html(#content)">
+								g-tree-grid
+							</a>
+							<a href="./component/g-tree-list.html" target="@inner-html(#content)">
+								g-tree-list
+							</a>
+							<hr>
+							<a href="./component/g-date-input.html" target="@inner-html(#content)">
+								g-date-picker
+								<g-icon>&#x2003;</g-icon>
+							</a>
+							<a href="./component/g-date-interval-input.html" target="@inner-html(#content)">
+								g-date-interval-picker
+								<g-icon>&#x2003;</g-icon>
+							</a>
+							<a href="./component/g-date-time-input.html" target="@inner-html(#content)">
+								g-date-time-picker
+								<g-icon>&#x2003;</g-icon>
+							</a>
+							<a href="./component/g-date-time-interval-input.html" target="@inner-html(#content)">
+								g-date-time-interval-picker
+								<g-icon>&#x2003;</g-icon>
+							</a>
+							<a href="./component/g-icon-input.html" target="@inner-html(#content)">
+								g-icon-picker
+								<g-icon>&#x2009;</g-icon>
+							</a>
+							<a href="./component/g-month-input.html" target="@inner-html(#content)">
+								g-month-picker
+								<g-icon>&#x2003;</g-icon>
+							</a>
+							<a href="./component/g-month-interval-input.html" target="@inner-html(#content)">
+								g-month-interval-picker
+								<g-icon>&#x2003;</g-icon>
+							</a>
+							<a href="./component/g-time-input.html" target="@inner-html(#content)">
+								g-time-picker
+								<g-icon>&#x2167;</g-icon>
+							</a>
+							<a href="./component/g-time-interval-input.html" target="@inner-html(#content)">
+								g-time-interval-picker
+								<g-icon>&#x2167;</g-icon>
+							</a>
+						</g-drawer>
+					</g-trigger>
+					<hr/>
+					<a id="reload" href="./index.html">
+						Reload
+						<g-icon>&#X2025;</g-icon>
 					</a>
-					<a href="./component/g-card.html" target="@inner-html(#content)">
-						g-card
-						<g-icon>&#x2197;</g-icon>
+					<a href="./login.html">Sair
+						<g-icon>&#X2007;</g-icon>
 					</a>
-					<a href="./component/g-context-menu/g-context-menu.html" target="@inner-html(#content)">
-						g-context-menu
-					</a>
-					<a href="./component/g-coolbar.html" target="@inner-html(#content)">
-						g-coolbar
-					</a>
-					<a href="./component/g-desk-pane.html" target="@inner-html(#content)">
-						g-desk-pane
-						<g-icon>&#x2270;</g-icon>
-					</a>
-					<a href="./component/g-chart/g-chart.html" target="@inner-html(#content)">
-						g-chart
-						<g-icon>&#x2031;</g-icon>
-					</a>
-					<a href="./component/g-dialog.html" target="@inner-html(#content)">
-						g-dialog
-						<g-icon>&#x2256;</g-icon>
-					</a>
-					<a href="./component/form/g-form.html" target="@inner-html(#content)">
-						g-form
-					</a>
-					<a href="./component/form/g-form-editor.html" target="@inner-html(#content)">
-						g-form-editor
-					</a>
-					<a href="./component/form/g-form-view.html" target="@inner-html(#content)">
-						g-form-view
-					</a>
-					<a href="./component/g-message.html" target="@inner-html(#content)">
-						g-message
-						<g-icon>&#x2015;</g-icon>
-					</a>
-					<a href="./component/g-selectn.html" target="@inner-html(#content)">
-						g-selectn
-						<g-icon>&#x3011;</g-icon>
-					</a>
-					<a href="./component/g-tab-control/g-tab-control.html" target="@inner-html(#content)">
-						g-tab-control
-						<g-icon>&#x3055;</g-icon>
-					</a>
-					<a href="./component/g-table.html" target="@inner-html(#content)">
-						g-table
-					</a>
-					<a href="./component/g-text-editor.html" target="@inner-html(#content)">
-						g-text-editor
-						<g-icon>&#x3025;</g-icon>
-					</a>
-					<a href="./component/g-tooltip.html" target="@inner-html(#content)">
-						g-tooltip
-					</a>
-					<a href="./component/g-tree-grid.html" target="@inner-html(#content)">
-						g-tree-grid
-					</a>
-					<a href="./component/g-tree-list.html" target="@inner-html(#content)">
-						g-tree-list
-					</a>
-					<hr>
-					<a href="./component/g-date-input.html" target="@inner-html(#content)">
-						g-date-picker
-						<g-icon>&#x2003;</g-icon>
-					</a>
-					<a href="./component/g-date-interval-input.html" target="@inner-html(#content)">
-						g-date-interval-picker
-						<g-icon>&#x2003;</g-icon>
-					</a>
-					<a href="./component/g-date-time-input.html" target="@inner-html(#content)">
-						g-date-time-picker
-						<g-icon>&#x2003;</g-icon>
-					</a>
-					<a href="./component/g-date-time-interval-input.html" target="@inner-html(#content)">
-						g-date-time-interval-picker
-						<g-icon>&#x2003;</g-icon>
-					</a>
-					<a href="./component/g-icon-input.html" target="@inner-html(#content)">
-						g-icon-picker
-						<g-icon>&#x2009;</g-icon>
-					</a>
-					<a href="./component/g-month-input.html" target="@inner-html(#content)">
-						g-month-picker
-						<g-icon>&#x2003;</g-icon>
-					</a>
-					<a href="./component/g-month-interval-input.html" target="@inner-html(#content)">
-						g-month-interval-picker
-						<g-icon>&#x2003;</g-icon>
-					</a>
-					<a href="./component/g-time-input.html" target="@inner-html(#content)">
-						g-time-picker
-						<g-icon>&#x2167;</g-icon>
-					</a>
-					<a href="./component/g-time-interval-input.html" target="@inner-html(#content)">
-						g-time-interval-picker
-						<g-icon>&#x2167;</g-icon>
-					</a>
-				</g-drawer>
-			</g-trigger>
-			<hr/>
-			<a id="reload" href="./index.html">
-				Reload
-				<g-icon>&#X2025;</g-icon>
-			</a>
-			<a href="./login.html">Sair
-				<g-icon>&#X2007;</g-icon>
-			</a>
-		</g-tabbar>
-	</nav>
+				</g-tabbar>
+			</nav>
 
-	<section id="content">
-		<h1>Gate</h1>
+			<section id="content">
+				<h1>Gate</h1>
 
-		<p>
-			Gate is a full stack application framework that combines screen routing, authentication,
-			authorization, SQL access, HTML targets and web components in a single model.
-			The goal is to keep application structure close to the code: packages define modules,
-			screen classes define routes and call methods define actions.
-		</p>
+				<p>
+					Gate is a full stack application framework that combines screen routing, authentication,
+					authorization, SQL access, HTML targets and web components in a single model.
+					The goal is to keep application structure close to the code: packages define modules,
+					screen classes define routes and call methods define actions.
+				</p>
 
-		<p>
-			This documentation is organized by the main parts of the framework.
-			Start with <b>Routing</b> if you want to understand how screens are discovered and how
-			URLs map to Java classes and methods.
-			Go to <b>Authentication</b> and <b>Access Control</b> to understand how Gate identifies
-			users and protects routes.
-			The <b>Targets</b> and <b>Components</b> sections document the browser-side model, while
-			<b>SQL</b> covers the database API used by applications built on Gate.
-		</p>
+				<p>
+					This documentation is organized by the main parts of the framework.
+					Start with <b>Routing</b> if you want to understand how screens are discovered and how
+					URLs map to Java classes and methods.
+					Go to <b>Authentication</b> and <b>Access Control</b> to understand how Gate identifies
+					users and protects routes.
+					The <b>Targets</b> and <b>Components</b> sections document the browser-side model, while
+					<b>SQL</b> covers the database API used by applications built on Gate.
+				</p>
 
-		<g-callout>
-			If you are new to Gate, the recommended reading order is Routing, Authentication,
-			Access Control and then SQL.
-			After that, read Targets and Components according to the type of screen you are building.
-		</g-callout>
-	</section>
+				<g-callout>
+					If you are new to Gate, the recommended reading order is Routing, Authentication,
+					Access Control and then SQL.
+					After that, read Targets and Components according to the type of screen you are building.
+				</g-callout>
+			</section>
 
-	<footer>
-		<label>Foo</label>
-		<label>Bar</label>
-	</footer>
-</main>
-</body>
+			<footer>
+				<label>Foo</label>
+				<label>Bar</label>
+			</footer>
+		</main>
+	</body>
 </html>

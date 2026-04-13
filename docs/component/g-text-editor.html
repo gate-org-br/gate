@@ -1,25 +1,25 @@
-<g-callout class='fill'>
-	<h1>&lt;g-text-ditor&gt;</h1>
+<g-callout class="fill">
+	<h1>&lt;g-text-editor&gt;</h1>
 	<p>
+		The <code>&lt;g-text-editor&gt;</code> component is a practical rich text editor for forms.
+		It keeps HTML as its value, integrates with form submission through the form-associated custom elements API,
+		and provides the editing features that are commonly needed in business applications without requiring a large editor stack.
+		It supports common inline formatting, undo and redo, embedded attachments pasted from the clipboard, and validation through
+		attributes such as <code>required</code>, <code>maxlength</code> and <code>pattern</code>.
+		In practice it behaves like an expanded <code>&lt;textarea&gt;</code> whose value is the generated HTML content.
+		The goal is to keep the component simple to use as a field, without requiring the application to adopt a large JavaScript editor model.
+		Use it when you need a lightweight editor that fits naturally into the rest of the form model; if the application only
+		needs plain text, a normal <code>&lt;textarea&gt;</code> is still the simpler choice.
 	</p>
 </g-callout>
 
-<g-tab-control>
-	<a href="#">Example 1</a>
-	<div>
-		<g-callout>
-			<p>
-			</p>
-		</g-callout>
-		<g-html-viewer ignore="<a.*/a>">
-			<fieldset>
-				<label>
-					<span style='flex-basis: 400px'>
-						<g-text-editor tabindex='1'>
-						</g-text-editor>
-					</span>
-				</label>
-			</fieldset>
-		</g-html-viewer>
-	</div>
-</g-tab-control>
+<g-html-viewer ignore="<a.*/a>">
+	<fieldset>
+		<label>
+			<span style='flex-basis: 400px'>
+				<g-text-editor name="content" tabindex='1'>
+				</g-text-editor>
+			</span>
+		</label>
+	</fieldset>
+</g-html-viewer>

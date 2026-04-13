@@ -1,43 +1,40 @@
-<g-callout class='fill'>
-	<h1>Authentication</h1>
-	<p>
-		Gate provides an authentication system that validates user identity and establishes application sessions.
-		It supports multiple authentication sources (<code>database</code>, <code>ldap</code>, and <code>oidc</code>), selected by configuration.
-		After successful authentication, Gate issues and refreshes session tokens based on the configured session policy.
-	</p>
-</g-callout>
+<h1>Authentication</h1>
+<p>
+	Gate provides an authentication system that validates user identity and establishes application sessions.
+	It supports multiple authentication sources (<code>database</code>, <code>ldap</code>, and <code>oidc</code>), selected by configuration.
+	After successful authentication, Gate issues and refreshes session tokens based on the configured session policy.
+</p>
 
-<g-tab-control>
-	<a href="#">Contents</a>
-	<div>
-		<g-callout>
-			<p>
-				Gate supports configuring one or more authenticators at the same time.
-				Each authenticator defines one authentication source through <code>*.type</code> and its parameters
-				(<code>database</code>, <code>ldap</code>, or <code>oidc</code>).
-			</p>
-			<p>
-				One authenticator is always the <strong>default</strong>. It is used when no authenticator name is provided in the request.
-				In configuration terms, omitting a name is equivalent to using <code>default</code>.
-				The default authenticator is configured under <code>gate.auth.default.*</code>.
-			</p>
-			<p>
-				If the default authenticator type is not explicitly configured, Gate uses <code>database</code> as the default type.
-				Additional authenticators must be named and configured under <code>gate.auth.&lt;name&gt;.*</code>.
-				At runtime, a named authenticator is selected with <code>?authenticator=&lt;name&gt;</code>.
-			</p>
-			<p>
-				Typical usage:
-			</p>
-			<ul>
-				<li>Configure <code>default</code> for the primary user base.</li>
-				<li>Add one or more named authenticators for alternative identity providers.</li>
-				<li>Use the request parameter <code>authenticator</code> only when selecting a named authenticator.</li>
-			</ul>
-			<p>
-				You can also scope configuration by app context using <code>&lt;context&gt;.auth.*</code>.
-			</p>
-			<pre><code># Default authenticator (used when "authenticator" is not provided)
+<h2>Overview</h2>
+<p>
+	Gate supports configuring one or more authenticators at the same time.
+	Each authenticator defines one authentication source through <code>*.type</code> and its parameters
+	(<code>database</code>, <code>ldap</code>, or <code>oidc</code>).
+</p>
+
+<p>
+	One authenticator is always the <strong>default</strong>. It is used when no authenticator name is provided in the request.
+	In configuration terms, omitting a name is equivalent to using <code>default</code>.
+	The default authenticator is configured under <code>gate.auth.default.*</code>.
+</p>
+
+<p>
+	If the default authenticator type is not explicitly configured, Gate uses <code>database</code> as the default type.
+	Additional authenticators must be named and configured under <code>gate.auth.&lt;name&gt;.*</code>.
+	At runtime, a named authenticator is selected with <code>?authenticator=&lt;name&gt;</code>.
+</p>
+
+<ul>
+	<li>Configure <code>default</code> for the primary user base.</li>
+	<li>Add one or more named authenticators for alternative identity providers.</li>
+	<li>Use the request parameter <code>authenticator</code> only when selecting a named authenticator.</li>
+</ul>
+
+<p>
+	You can also scope configuration by app context using <code>&lt;context&gt;.auth.*</code>.
+</p>
+
+<pre><code># Default authenticator (used when "authenticator" is not provided)
 "gate.auth.default.type": "database"
 
 # Named authenticator "corp" (selected with ?authenticator=corp)
@@ -49,20 +46,19 @@
 # Named authenticator "partners" (selected with ?authenticator=partners)
 "gate.auth.partners.type": "ldap"
 "gate.auth.partners.ldap.server": "ldaps://ldap-partners.example.com:636"</code></pre>
-			<p>
-				If a request references an unknown authenticator name, authentication setup fails. Keep authenticator names stable
-				and consistent between frontend links and backend configuration.
-			</p>
-		</g-callout>
-	</div>
 
-	<a href="#">Database</a>
-	<div>
-		<g-callout>
-			<p>
-				Use <code>database</code> for local username/password authentication against Gate user storage.
-			</p>
-			<table>
+<g-message>
+	<p>
+		If a request references an unknown authenticator name, authentication setup fails. Keep authenticator names
+		stable and consistent between frontend links and backend configuration.
+	</p>
+</g-message>
+
+<h2>Database</h2>
+<p>
+	Use <code>database</code> for local username/password authentication against Gate user storage.
+</p>
+<table>
 				<thead>
 					<tr>
 						<th>Parameter</th>
@@ -82,16 +78,12 @@
 					</tr>
 				</tbody>
 			</table>
-		</g-callout>
-	</div>
 
-	<a href="#">LDAP</a>
-	<div>
-		<g-callout>
-			<p>
-				Use <code>ldap</code> to authenticate users against an LDAP directory.
-			</p>
-			<table>
+<h2>LDAP</h2>
+<p>
+	Use <code>ldap</code> to authenticate users against an LDAP directory.
+</p>
+<table>
 				<thead>
 					<tr>
 						<th>Parameter</th>
@@ -153,16 +145,12 @@
 					</tr>
 				</tbody>
 			</table>
-		</g-callout>
-	</div>
 
-	<a href="#">OIDC</a>
-	<div>
-		<g-callout>
-			<p>
-				Use <code>oidc</code> to authenticate with an OpenID Connect provider.
-			</p>
-			<table>
+<h2>OIDC</h2>
+<p>
+	Use <code>oidc</code> to authenticate with an OpenID Connect provider.
+</p>
+<table>
 				<thead>
 					<tr>
 						<th>Parameter</th>
@@ -266,36 +254,34 @@
 					</tr>
 				</tbody>
 			</table>
-			<p>
-				OIDC supports three credential entry points:
-				authorization code flow via <code>code</code>/<code>state</code>,
-				bearer token validation,
-				and resource owner password credentials via HTTP Basic authorization.
-			</p>
-			<p>
-				For authorization code flow, Gate generates and validates an encrypted/signed state payload
-				containing the PKCE verifier and nonce.
-			</p>
-		</g-callout>
-	</div>
+<p>
+	OIDC supports three credential entry points:
+	authorization code flow via <code>code</code>/<code>state</code>,
+	bearer token validation,
+	and resource owner password credentials via HTTP Basic authorization.
+</p>
+<p>
+	For authorization code flow, Gate generates and validates an encrypted/signed state payload
+	containing the PKCE verifier and nonce.
+</p>
 
-	<a href="#">Session Parameters</a>
-	<div>
-		<g-callout>
-			<p>
-				These parameters are global and apply regardless of authenticator type.
-			</p>
-			<p>
-				Gate always issues a signed session token. Depending on configuration, the token may also embed
-				the authenticated user data (<strong>stateless token</strong>) and/or require a backing row in
-				<code>gate.Session</code> for revocation checks (<strong>revocable</strong>).
-			</p>
-			<p>
-				Duration format is <strong>not milliseconds</strong>. Use Gate duration strings:
-				<code>Nd Nh Nm Ns</code> (for example, <code>1h 30m</code>), <code>HH:MM</code>, or <code>HH:MM:SS</code>.
-				A plain number (for example, <code>30</code>) is interpreted as <strong>minutes</strong>.
-			</p>
-			<table>
+<h2>Session Parameters</h2>
+<p>
+	These parameters are global and apply regardless of authenticator type.
+</p>
+<p>
+	Gate always issues a signed session token. Depending on configuration, the token may also embed
+	the authenticated user data (<strong>stateless token</strong>) and/or require a backing row in
+	<code>gate.Session</code> for revocation checks (<strong>revocable</strong>).
+</p>
+<g-message>
+	<p>
+		Duration format is <strong>not milliseconds</strong>. Use Gate duration strings:
+		<code>Nd Nh Nm Ns</code> (for example, <code>1h 30m</code>), <code>HH:MM</code>, or <code>HH:MM:SS</code>.
+		A plain number (for example, <code>30</code>) is interpreted as <strong>minutes</strong>.
+	</p>
+</g-message>
+<table>
 				<thead>
 					<tr>
 						<th>Parameter</th>
@@ -336,37 +322,35 @@
 					</tr>
 				</tbody>
 			</table>
-			<p>
-				Session refresh extends the idle expiration while preserving the original issue time,
-				so <code>gate.auth.session.timeout</code> remains the absolute upper bound.
-			</p>
-			<p>
-				Logout revokes the current session token. When sessions are not revocable, logout still updates
-				user activity and removes the client-side session token, but there is no server-side token blacklist.
-			</p>
-		</g-callout>
-	</div>
+<p>
+	Session refresh extends the idle expiration while preserving the original issue time,
+	so <code>gate.auth.session.timeout</code> remains the absolute upper bound.
+</p>
+<p>
+	Logout revokes the current session token. When sessions are not revocable, logout still updates
+	user activity and removes the client-side session token, but there is no server-side token blacklist.
+</p>
 
-	<a href="#">Secret Key</a>
-	<div>
-		<g-callout>
-			<p>
-				Gate uses a single <strong>secret key</strong> for authentication security.
-				From this secret key, Gate derives:
-			</p>
-			<ul>
-				<li>the key used to sign and validate session tokens;</li>
-				<li>the key used to encrypt/sign OIDC state data.</li>
-			</ul>
-			<p>
-				<strong>Key source resolution order</strong>:
-				<code>gate.key-store.file</code> first, then <code>gate.secret-key-file</code>, then <code>gate.secret-key</code>.
-			</p>
-			<p>
-				If none of the key parameters is configured, Gate generates a random in-memory key at startup.
-				This is valid behavior, but all active tokens become invalid after application restart.
-			</p>
-			<table>
+<h2>Secret Key</h2>
+<p>
+	Gate uses a single <strong>secret key</strong> for authentication security.
+	From this secret key, Gate derives:
+</p>
+<ul>
+	<li>the key used to sign and validate session tokens;</li>
+	<li>the key used to encrypt/sign OIDC state data.</li>
+</ul>
+<p>
+	<strong>Key source resolution order</strong>:
+	<code>gate.key-store.file</code> first, then <code>gate.secret-key-file</code>, then <code>gate.secret-key</code>.
+</p>
+<g-message>
+	<p>
+		If none of the key parameters is configured, Gate generates a random in-memory key at startup.
+		This is valid behavior, but all active tokens become invalid after application restart.
+	</p>
+</g-message>
+<table>
 				<thead>
 					<tr>
 						<th>Parameter</th>
@@ -414,20 +398,16 @@
 					</tr>
 				</tbody>
 			</table>
-			<p>
-				Choose one strategy for predictability in production: keystore, secret file, or inline Base64 secret.
-			</p>
-		</g-callout>
-	</div>
+<p>
+	Choose one strategy for predictability in production: keystore, secret file, or inline Base64 secret.
+</p>
 
-	<a href="#">Complete Example</a>
-	<div>
-		<g-callout>
-			<p>
-				The following <code>application.yaml</code> shows a multi-authenticator setup with:
-				default database auth, OIDC for corporate SSO, LDAP for partners, and global session/key settings.
-			</p>
-			<pre><code># ------------------------------
+<h2>Complete Example</h2>
+<p>
+	The following <code>application.yaml</code> shows a multi-authenticator setup with:
+	default database auth, OIDC for corporate SSO, LDAP for partners, and global session/key settings.
+</p>
+<pre><code># ------------------------------
 # Global session policy
 # ------------------------------
 "gate.auth.session.idle_timeout": "45m"
@@ -477,6 +457,3 @@
 # "erp.auth.default.oidc.client_id": "erp-client"
 # "erp.auth.default.oidc.provider": "https://idp-erp.example.com/realms/erp"
 # "erp.auth.default.oidc.redirect_uri": "https://erp.example.com/Gate"</code></pre>
-		</g-callout>
-	</div>
-</g-tab-control>

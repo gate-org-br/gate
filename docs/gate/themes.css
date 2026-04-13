@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --text1: #000000;
   --text2: #FFFFFF;
   --main1: #FFFFFF;
@@ -25,55 +26,58 @@
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --text1: #FFFFFF;
+    color-scheme: dark;
+    --text1: #F3F6FA;
     --text2: #000000;
-    --main1: #1a1a1a;
-    --main2: #2a2a2a;
-    --main3: #444444;
-    --base1: #4a7ba7;
-    --base2: #5a8bc4;
-    --base3: #2a3c4a;
-    --acent: #d4c9e0;
-    --r1: #F0A8A8;
-    --r2: #AA2222;
-    --r3: #2D1A1A;
-    --g1: #A8F0C8;
-    --g2: #009E60;
-    --g3: #1A2D22;
-    --y1: #cccc44;
-    --y2: #BFBF66;
-    --y3: #3a3a1a;
-    --b1: #A8D8F0;
-    --b2: #2A6B9A;
-    --b3: #1A2D3D;
-    --hovered: #2a2522;
+    --main1: #11161c;
+    --main2: #1a222c;
+    --main3: #2c3743;
+    --base1: #9fc4eb;
+    --base2: #4e87bc;
+    --base3: #233749;
+    --acent: #cbbfda;
+    --r1: #ffb8b8;
+    --r2: #d15c5c;
+    --r3: #3a2225;
+    --g1: #ace7c5;
+    --g2: #39aa79;
+    --g3: #1c3229;
+    --y1: #e7dd74;
+    --y2: #c1b85b;
+    --y3: #38331a;
+    --b1: #aed7ff;
+    --b2: #5d96c8;
+    --b3: #1d3142;
+    --hovered: #253140;
   }
 }
 :root:has(g-theme-selector[value="dark"]) {
-  --text1: #FFFFFF;
+  color-scheme: dark;
+  --text1: #F3F6FA;
   --text2: #000000;
-  --main1: #1a1a1a;
-  --main2: #2a2a2a;
-  --main3: #444444;
-  --base1: #4a7ba7;
-  --base2: #5a8bc4;
-  --base3: #2a3c4a;
-  --acent: #d4c9e0;
-  --r1: #F0A8A8;
-  --r2: #AA2222;
-  --r3: #2D1A1A;
-  --g1: #A8F0C8;
-  --g2: #009E60;
-  --g3: #1A2D22;
-  --y1: #cccc44;
-  --y2: #BFBF66;
-  --y3: #3a3a1a;
-  --b1: #A8D8F0;
-  --b2: #2A6B9A;
-  --b3: #1A2D3D;
-  --hovered: #2a2522;
+  --main1: #11161c;
+  --main2: #1a222c;
+  --main3: #2c3743;
+  --base1: #9fc4eb;
+  --base2: #4e87bc;
+  --base3: #233749;
+  --acent: #cbbfda;
+  --r1: #ffb8b8;
+  --r2: #d15c5c;
+  --r3: #3a2225;
+  --g1: #ace7c5;
+  --g2: #39aa79;
+  --g3: #1c3229;
+  --y1: #e7dd74;
+  --y2: #c1b85b;
+  --y3: #38331a;
+  --b1: #aed7ff;
+  --b2: #5d96c8;
+  --b3: #1d3142;
+  --hovered: #253140;
 }
 :root:has(g-theme-selector[value="light"]) {
+  color-scheme: light;
   --text1: #000000;
   --text2: #FFFFFF;
   --main1: #FFFFFF;
