@@ -12,6 +12,13 @@ public class PackageScreen
 	{
 	}
 
+	@gate.annotation.Module("method.module")
+	@Screen("MethodScreen")
+	@Action("MethodAction")
+	public void overridden()
+	{
+	}
+
 	public void defaultAction()
 	{
 	}

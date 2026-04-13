@@ -35,6 +35,18 @@ class AuthorizationTest
 	}
 
 	@Test
+	void shouldAllowModuleAndScreenOverridesOnMethod() throws NoSuchMethodException
+	{
+		Method method = PackageScreen.class.getDeclaredMethod("overridden");
+
+		var authorization = Authorization.Extractor.extract(method, "base.module", "base.screen", "base.action");
+
+		assertEquals("method.module", authorization.module());
+		assertEquals("MethodScreen", authorization.screen());
+		assertEquals("MethodAction", authorization.action());
+	}
+
+	@Test
 	void shouldPreferAuthorizationAnnotationOverPartialAnnotations() throws NoSuchMethodException
 	{
 		Method method = PackageScreen.class.getDeclaredMethod("replaced");

@@ -12,9 +12,10 @@ import java.lang.reflect.Method;
  * <p>The annotation may be declared on a package, type, or method. Resolution precedence is
  * method, then type, then package.
  *
- * <p>When the annotation is present, it replaces the derived authorization mapping as a whole.
- * Blank attributes are converted to {@code null}; they do not fall back to the original
- * {@code module}, {@code screen}, or {@code action} values.
+ * <p>When present, this annotation takes precedence over {@link Module}, {@link Screen}, and
+ * {@link Action}, and replaces the derived authorization mapping as a whole. Blank attributes are
+ * converted to {@code null}; they do not fall back to the original {@code module},
+ * {@code screen}, or {@code action} values.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE})
@@ -35,7 +36,9 @@ public @interface Authorization
 		 *
 		 * <p>If an {@link Authorization} annotation is found on the method, its declaring type, or
 		 * the declaring package, the extracted value replaces the original mapping. Otherwise, the
-		 * provided {@code module}, {@code screen}, and {@code action} values are returned unchanged.
+		 * mapping is resolved incrementally from {@link Module}, {@link Screen}, and {@link Action}
+		 * annotations before falling back to the provided {@code module}, {@code screen}, and
+		 * {@code action} values.
 		 */
 		public static Value extract(Method method, String module, String screen, String action)
 		{
@@ -53,9 +56,15 @@ public @interface Authorization
 			if (pack.isAnnotationPresent(Module.class))
 				module = pack.getAnnotation(Module.class).value();
 
+			if (type.isAnnotationPresent(Module.class))
+				module = type.getAnnotation(Module.class).value();
 			if (type.isAnnotationPresent(Screen.class))
 				screen = type.getAnnotation(Screen.class).value();
 
+			if (method.isAnnotationPresent(Module.class))
+				module = method.getAnnotation(Module.class).value();
+			if (method.isAnnotationPresent(Screen.class))
+				screen = method.getAnnotation(Screen.class).value();
 			if (method.isAnnotationPresent(Action.class))
 				action = method.getAnnotation(Action.class).value();
 
