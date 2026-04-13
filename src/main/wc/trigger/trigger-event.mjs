@@ -82,7 +82,8 @@ export default class TriggerEvent extends CustomEvent
 		};
 
 		const el = this.composedPath?.()[0];
-		if (el && el.tagName) {
+		if (el && el.tagName)
+		{
 			const id = el.id ? `#${el.id}` : '';
 			const cls = el.classList?.length ? '.' + [...el.classList].join('.') : '';
 			log.element = `${el.tagName}${id}${cls}`;

@@ -11,7 +11,7 @@ export default class TriggerExtractor
 				.getElementById(element.getAttribute("data-form"));
 		if (["post", "put", "patch"].includes((element.getAttribute("formmethod")
 			|| element.getAttribute("data-method") || "none").toLowerCase()))
-			return element.closest("form");
+			return element.form || element.closest("form");
 	}
 
 	static isSubmit(element)

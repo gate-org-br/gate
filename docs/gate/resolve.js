@@ -28,8 +28,8 @@ function convert(value)
 function coalesce(value, fallback)
 {
 	return value !== null
-		&& value !== undefined
-		&& (typeof value !== 'string' || value.trim() !== '')
+	&& value !== undefined
+	&& (typeof value !== 'string' || value.trim() !== '')
 		? value
 		: (fallback ?? "");
 }
@@ -47,20 +47,20 @@ export default function resolve(trigger, context, action)
 			{
 				case '@value':
 					return convert(coalesce(value(trigger, parameter), fallback));
-				case '@input':
-					return convert(coalesce(prompt(parameter), fallback));
-				case '@prop':
-					return convert(coalesce(property(context, parameter), fallback));
-				case '@attr':
-					return convert(coalesce(context.getAttribute(parameter), fallback));
 				case '@VALUE':
 					return convert(require(value(trigger, parameter)));
+				case '@input':
+					return convert(coalesce(prompt(parameter), fallback));
 				case '@INPUT':
 					return convert(require(prompt(parameter)));
+				case '@prop':
+					return convert(coalesce(property(context, parameter), fallback));
 				case '@PROP':
 					return convert(require(property(context, parameter)));
+				case '@attr':
+					return convert(coalesce(trigger.getAttribute(parameter), fallback));
 				case '@ATTR':
-					return convert(require(context.getAttribute(parameter)));
+					return convert(require(trigger.getAttribute(parameter)));
 			}
 		});
 	} catch (error)
