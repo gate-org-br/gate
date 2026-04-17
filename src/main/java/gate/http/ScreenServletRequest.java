@@ -29,8 +29,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	private final RequestCommand command =
 			new RequestCommand(getParameter("MODULE"),
 					getParameter("SCREEN"),
-					getParameter("ACTION"))
-					.or(RequestCommand.ofPath(getPathInfo()));
+					getParameter("ACTION"));
 
 	private static final Pattern AUTHORIZATION = Pattern.compile("(.*) (.*)");
 
@@ -45,7 +44,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		try
 		{
 			return contentType != null
-				   && contentType.toLowerCase().startsWith("multipart/") ? getParts()
+			       && contentType.toLowerCase().startsWith("multipart/") ? getParts()
 					: Collections.emptyList();
 		} catch (IOException | ServletException e)
 		{
@@ -120,10 +119,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String string = getParameter(name);
 		return string != null ? string
 				: parts().stream()
-				.filter(e -> e.getName().equals(name))
-				.filter(e -> e.getSize() > 0)
-				.findAny()
-				.orElse(null);
+				  .filter(e -> e.getName().equals(name))
+				  .filter(e -> e.getSize() > 0)
+				  .findAny()
+				  .orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -147,7 +146,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public String getBody()
 	{
 		try (BufferedReader reader = this.getReader();
-			 StringWriter string = new StringWriter())
+		     StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -232,4 +231,14 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	}
 
 	public RequestCommand getCommand() {return command;}
+
+	public boolean isStaticRequest()
+	{
+		if (!command.isDefault())
+			return false;
+		var uri = getRequestURI();
+		int slash = uri.lastIndexOf('/');
+		int dot = uri.lastIndexOf('.');
+		return dot != -1 && slash <= dot;
+	}
 }

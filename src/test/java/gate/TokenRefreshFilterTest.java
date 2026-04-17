@@ -4,11 +4,14 @@ import gate.entity.User;
 import gate.http.TestServletSupport;
 import gate.security.Credentials;
 import gate.type.ID;
+import jakarta.enterprise.inject.Instance;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.lang.reflect.Proxy;
+import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TokenRefreshFilterTest
 {
@@ -27,7 +30,7 @@ class TokenRefreshFilterTest
 		var chain = TestServletSupport.chain();
 		request.attributes().put(User.class.getName(), new User().setId(ID.valueOf(1)));
 
-		new TokenRefreshFilter().doFilter(request.request(), response.response(), chain.chain());
+		filter(new User().setId(ID.valueOf(1))).doFilter(request.request(), response.response(), chain.chain());
 
 		assertTrue(chain.wasCalled());
 		assertNotNull(response.header("Set-Cookie"));
@@ -50,30 +53,55 @@ class TokenRefreshFilterTest
 		var chain = TestServletSupport.chain();
 		request.attributes().put(User.class.getName(), new User().setId(ID.valueOf(1)));
 
-		new TokenRefreshFilter().doFilter(request.request(), response.response(), chain.chain());
+		filter(new User().setId(ID.valueOf(1))).doFilter(request.request(), response.response(), chain.chain());
 
 		assertTrue(chain.wasCalled());
 		assertNotNull(response.header("X-Access-Token"));
 	}
 
 	@Test
-	void testRevokesCookieWhenTokenIsInvalid()
-			throws Exception
+	void testIgnoresStaticRequests()
 	{
+		var token = Credentials.create(ID.valueOf(1), null, null).toString();
 		var request = TestServletSupport.request(
 				java.util.Map.of(),
 				java.util.Map.of(),
-				new Cookie[]{new Cookie("subject", "invalid-token")},
+				new Cookie[]{new Cookie("subject", token)},
 				"GET",
-				"/Gate");
+				"/gate/app.js");
 		var response = TestServletSupport.response();
 		var chain = TestServletSupport.chain();
-		request.attributes().put(User.class.getName(), new User().setId(ID.valueOf(1)));
 
-		new TokenRefreshFilter().doFilter(request.request(), response.response(), chain.chain());
+		assertDoesNotThrow(() -> filter(new User().setId(ID.valueOf(1)))
+				.doFilter(request.request(), response.response(), chain.chain()));
 
 		assertTrue(chain.wasCalled());
-		assertNotNull(response.header("Set-Cookie"));
-		assertTrue(response.header("Set-Cookie").contains("Max-Age=0"));
+		assertTrue(response.headers().isEmpty());
+	}
+
+	private static SlidingSessionFilter filter(User user)
+	{
+		var filter = new SlidingSessionFilter();
+		filter.userInstance = instance(user);
+		return filter;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Instance<User> instance(User user)
+	{
+		return (Instance<User>) Proxy.newProxyInstance(
+				TokenRefreshFilterTest.class.getClassLoader(),
+				new Class[]{Instance.class},
+				(proxy, method, args) -> switch (method.getName())
+				{
+					case "get" -> user;
+					case "iterator" -> Stream.of(user).iterator();
+					case "isResolvable" -> true;
+					case "isUnsatisfied", "isAmbiguous" -> false;
+					case "destroy" -> null;
+					case "select" -> proxy;
+					case "handles" -> Stream.empty();
+					default -> throw new UnsupportedOperationException(method.getName());
+				});
 	}
 }

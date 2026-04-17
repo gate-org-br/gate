@@ -2,7 +2,7 @@ package gate.sql;
 
 import gate.converter.Converter;
 import gate.error.ConstraintViolationException;
-import gate.error.DatabaseException;
+import gate.error.SQLExceptionHandler;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
 
@@ -105,7 +105,7 @@ public class Command implements AutoCloseable, Fetchable
 			return ps.executeUpdate();
 		} catch (SQLException e)
 		{
-			DatabaseException.handle(link, e);
+			SQLExceptionHandler.handle(link, e);
 			throw new IllegalStateException("Failed to execute update command", e);
 		}
 	}

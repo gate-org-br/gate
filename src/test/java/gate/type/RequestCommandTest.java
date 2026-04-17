@@ -8,15 +8,15 @@ class RequestCommandTest
 	@Test
 	public void shouldReturnDefault()
 	{
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath(null));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("module"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("///"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("/*"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("/*/"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("/*/*"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("/*/*/"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("/*/*/*"));
-		Assertions.assertEquals(RequestCommand.DEFAULT, RequestCommand.ofPath("/*/*/*/"));
+		Assertions.assertTrue(RequestCommand.ofPath(null).isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("module").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("///").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("/*").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("/*/").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("/*/*").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("/*/*/").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("/*/*/*").isDefault());
+		Assertions.assertTrue(RequestCommand.ofPath("/*/*/*/").isDefault());
 	}
 
 	@Test

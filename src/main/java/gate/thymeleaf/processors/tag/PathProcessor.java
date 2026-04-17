@@ -40,7 +40,7 @@ public class PathProcessor extends TagProcessor
 
 		var request = ((IWebContext) context).getExchange().getRequest();
 
-		if (command.equals(RequestCommand.DEFAULT))
+		if (command.isDefault())
 			command = new RequestCommand(
 					request.getParameterValue("MODULE"),
 					request.getParameterValue("SCREEN"),

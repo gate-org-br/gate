@@ -93,6 +93,20 @@ public final class TestServletSupport
 
 					return switch (name)
 					{
+						case "addCookie" ->
+						{
+							Cookie cookie = (Cookie) args[0];
+							StringBuilder value = new StringBuilder()
+									.append(cookie.getName())
+									.append("=")
+									.append(cookie.getValue());
+							if (cookie.getPath() != null)
+								value.append("; Path=").append(cookie.getPath());
+							value.append("; Max-Age=").append(cookie.getMaxAge());
+							headers.computeIfAbsent("Set-Cookie", key -> new ArrayList<>())
+									.add(value.toString());
+							yield null;
+						}
 						case "addHeader" ->
 						{
 							headers.computeIfAbsent((String) args[0], key -> new ArrayList<>())

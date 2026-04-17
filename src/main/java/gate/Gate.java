@@ -14,7 +14,6 @@ import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.i18n.CurrentLocale;
-import gate.type.RequestCommand;
 import gate.type.TempFile;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
@@ -75,14 +74,14 @@ public class Gate extends HttpServlet
 	@SuppressWarnings("unused")
 	HeartbeatRegistry heartbeatRegistry;
 
-
 	static
 	{
 		Locale.setDefault(new Locale("pt", "BR"));
 	}
 
 	@Override
-	public void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+	public void service(HttpServletRequest httpServletRequest,
+	                    HttpServletResponse httpServletResponse)
 			throws IOException
 	{
 		httpServletResponse.addHeader("Vary", "X-G-Fragment");
@@ -103,7 +102,7 @@ public class Gate extends HttpServlet
 			request.setAttribute("ACTION", command.action());
 			request.setAttribute("METHOD", request.getMethod());
 
-			if (command.equals(RequestCommand.DEFAULT)
+			if (command.isDefault()
 			    && (actionRegistry.getMainAction() == null
 			        || !authenticator.hasCredentials(request)))
 			{
@@ -121,12 +120,11 @@ public class Gate extends HttpServlet
 				user = authenticator.authenticate(request, response);
 				if (user != null)
 				{
-					var session = SessionCatalog.create(user);
-					response.setSession(session);
+						response.createSessionCookie(request, SessionCatalog.create(user));
 					event.fireAsync(new LoginEvent(user));
 
 					if (actionRegistry.getMainAction() != null
-					    && command.equals(RequestCommand.DEFAULT))
+					    && command.isDefault())
 					{
 						response.sendRedirect(actionRegistry.getMainAction()
 								.command().toString());
@@ -158,7 +156,7 @@ public class Gate extends HttpServlet
 			if (call.asynchronous())
 				executeAsync(user, request, response, screen, call.method());
 			else
-				execute(httpServletRequest, response, screen, call.method());
+				execute(request, response, screen, call.method());
 
 		} catch (AuthenticationException ex)
 		{
@@ -166,7 +164,7 @@ public class Gate extends HttpServlet
 			{
 				var type = Catcher.getCatcher(ex.getClass());
 				Catcher catcher = catchers.select(type).get();
-				catcher.catches(httpServletRequest, response, ex);
+				catcher.catches(request, response, ex);
 			} else
 			{
 				httpServletRequest.setAttribute("messages", Collections.singletonList(ex.getMessage()));
@@ -178,11 +176,11 @@ public class Gate extends HttpServlet
 		{
 			var type = Catcher.getCatcher(ex.getClass());
 			Catcher catcher = catchers.select(type).get();
-			catcher.catches(httpServletRequest, response, ex);
+			catcher.catches(request, response, ex);
 		}
 	}
 
-	private void execute(HttpServletRequest request, HttpServletResponse response, Screen screen,
+	private void execute(ScreenServletRequest request, ScreenServletResponse response, Screen screen,
 	                     Method method)
 	{
 		try

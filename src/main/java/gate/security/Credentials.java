@@ -4,7 +4,6 @@ import gate.entity.Auth;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.error.HierarchyException;
-import gate.error.InvalidUsernamePasswordException;
 import gate.error.UnauthorizedException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
@@ -116,8 +115,7 @@ public final class Credentials
 	}
 
 	@SuppressWarnings("rawtypes") public static Credentials parse(String token)
-			throws InvalidUsernamePasswordException,
-			       HierarchyException, UnauthorizedException
+			throws HierarchyException, UnauthorizedException
 	{
 		var claims = getClaims(token);
 		var iat = LocalDateTime.ofInstant(claims.getIssuedAt().toInstant(), ZoneOffset.UTC);

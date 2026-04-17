@@ -12,8 +12,10 @@ public record RequestCommand(String module, String screen, String action)
 		action = action != null && !action.isBlank() && !"*".equals(action) ? action.trim() : null;
 	}
 
-	public static final RequestCommand DEFAULT
-			= new RequestCommand(null, null, null);
+	public boolean isDefault()
+	{
+		return module == null && screen == null && action == null;
+	}
 
 	public RequestCommand with(RequestCommand command)
 	{
@@ -81,11 +83,11 @@ public record RequestCommand(String module, String screen, String action)
 	public static RequestCommand ofPath(String path)
 	{
 		if (path == null || path.isBlank())
-			return RequestCommand.DEFAULT;
+			return new RequestCommand(null, null, null);
 
 		int index = 0;
 		if (path.charAt(index) != '/')
-			return RequestCommand.DEFAULT;
+			return new RequestCommand(null, null, null);
 
 		StringBuilder module = new StringBuilder();
 		for (index++; index < path.length() && path.charAt(index) != '/'; index++)

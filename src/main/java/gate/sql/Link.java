@@ -1,7 +1,7 @@
 package gate.sql;
 
 import gate.error.AppError;
-import gate.error.DatabaseException;
+import gate.error.InternalServerException;
 import gate.io.StringReader;
 import gate.producer.AppProducer;
 import gate.sql.condition.CompiledCondition;
@@ -41,7 +41,7 @@ public class Link implements AutoCloseable
 	 * @param connection the JDBC connection to be associated with the new
 	 *                   Link
 	 */
-	private Link(Connection connection)
+	public Link(Connection connection)
 	{
 		this.connection = connection;
 	}
@@ -73,7 +73,7 @@ public class Link implements AutoCloseable
 			}
 		} catch (SQLException ex)
 		{
-			throw new DatabaseException(ex);
+			throw new InternalServerException(ex);
 		}
 	}
 
@@ -135,10 +135,10 @@ public class Link implements AutoCloseable
 			return Link.of((DataSource) InitialContext.doLookup("java:/comp/env/" + datasource));
 		} catch (SQLException ex)
 		{
-			throw new DatabaseException(ex);
+			throw new InternalServerException(ex);
 		} catch (NamingException e1)
 		{
-			throw new IllegalArgumentException("Data source not found: " + datasource);
+			throw new InternalServerException("Data source not found: " + datasource);
 		}
 	}
 
@@ -166,9 +166,9 @@ public class Link implements AutoCloseable
 		{
 			return connection.getMetaData()
 					.getDatabaseProductName().toUpperCase(Locale.ROOT);
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new DatabaseException(e);
+			throw new InternalServerException(ex);
 		}
 	}
 
