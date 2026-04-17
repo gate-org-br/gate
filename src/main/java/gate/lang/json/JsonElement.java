@@ -3,15 +3,11 @@ package gate.lang.json;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.JsonElementConverter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -103,21 +99,21 @@ public interface JsonElement extends Serializable
 	{
 		Objects.requireNonNull(element);
 		try (StringWriter stringWriter = new StringWriter();
-			 JsonWriter jsonWriter = new JsonWriter(stringWriter);
-			 JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
+		     JsonWriter jsonWriter = new JsonWriter(stringWriter);
+		     JsonFormatter jsonFormatter = new JsonFormatter(jsonWriter))
 		{
 			jsonFormatter.format(element);
 			return stringWriter.toString();
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
 	<T> T toObject(Class<T> type);
 
 	<T> T toObject(java.lang.reflect.Type type,
-				   java.lang.reflect.Type elementType);
+	               java.lang.reflect.Type elementType);
 
 	/**
 	 * Creates a {@link JsonElement} representation for the specified object.

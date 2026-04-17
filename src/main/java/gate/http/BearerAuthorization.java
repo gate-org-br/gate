@@ -26,7 +26,7 @@ public class BearerAuthorization implements Authorization
 	/**
 	 * @return the bearer token
 	 */
-	public String token()
+	@Override public String token()
 	{
 		return token;
 	}
@@ -69,7 +69,7 @@ public class BearerAuthorization implements Authorization
 	public boolean equals(Object o)
 	{
 		return o instanceof BearerAuthorization bearerAuthorization
-			   && Objects.equals(token, bearerAuthorization.token);
+		       && Objects.equals(token, bearerAuthorization.token);
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package gate.lang.dataurl;
 
-import gate.error.AppError;
 import gate.lang.contentType.ContentType;
 
 import java.io.IOException;
@@ -22,9 +21,9 @@ public class DataURL
 	private final String data;
 
 	private DataURL(ContentType contentType,
-			boolean base64,
-			Map<String, String> parameters,
-			String data)
+	                boolean base64,
+	                Map<String, String> parameters,
+	                String data)
 	{
 		Objects.requireNonNull(parameters);
 		this.contentType = contentType;
@@ -34,9 +33,9 @@ public class DataURL
 	}
 
 	public static DataURL of(ContentType contentType,
-			boolean base64,
-			Map<String, String> parameters,
-			String data)
+	                         boolean base64,
+	                         Map<String, String> parameters,
+	                         String data)
 	{
 		return new DataURL(contentType, base64, parameters, data);
 	}
@@ -100,7 +99,7 @@ public class DataURL
 				return parser.parse();
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new UncheckedIOException(ex);
 			}
 		}
 	}

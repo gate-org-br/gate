@@ -1,5 +1,8 @@
 package gate.lang.json;
 
+import gate.error.ConversionException;
+import gate.error.InternalServerException;
+
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.Optional;
@@ -7,9 +10,6 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import gate.error.AppError;
-import gate.error.ConversionException;
 
 /**
  * Reads the JSON elements from a specified source.
@@ -33,9 +33,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 * Reads the JSON elements from a Reader.
 	 *
 	 * @param reader Reader to be read
-	 *
 	 * @throws gate.error.ConversionException if an error occurs while
-	 * trying to parse the input
+	 *                                        trying to parse the input
 	 */
 	public JsonParser(Reader reader) throws ConversionException
 	{
@@ -46,9 +45,8 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 * Reads the JSON elements from a String.
 	 *
 	 * @param string string to be read
-	 *
 	 * @throws gate.error.ConversionException if an error occurs while
-	 * trying to parse the input
+	 *                                        trying to parse the input
 	 */
 	public JsonParser(String string) throws ConversionException
 	{
@@ -72,7 +70,6 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	 *
 	 * @return an Optional describing the JSON object read or an empty
 	 * optional if there are no more JSON objects on the* input stream.
-	 *
 	 * @throws gate.error.ConversionException if any error occurs
 	 */
 	public Optional<JsonElement> parse() throws ConversionException
@@ -90,7 +87,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 			scanner.close();
 		} catch (Exception ex)
 		{
-			throw new AppError(ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -127,20 +124,13 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 	{
 		return switch (scanner.getCurrent().getType())
 		{
-			case NUMBER ->
-				number();
-			case TRUE, FALSE ->
-				bool();
-			case STRING ->
-				string();
-			case OPEN_OBJECT ->
-				object();
-			case NULL ->
-				jsonNull();
-			case OPEN_ARRAY ->
-				array();
-			default ->
-				throw new ConversionException("Expected boolean, number, string, array or object and found " + scanner
+			case NUMBER -> number();
+			case TRUE, FALSE -> bool();
+			case STRING -> string();
+			case OPEN_OBJECT -> object();
+			case NULL -> jsonNull();
+			case OPEN_ARRAY -> array();
+			default -> throw new ConversionException("Expected boolean, number, string, array or object and found " + scanner
 					.getCurrent());
 		};
 	}
@@ -239,30 +229,18 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		@Override
 		public boolean tryAdvance(Consumer<? super JsonElement> action)
 		{
-			try
-			{
-				if (scanner.getCurrent().getType() == JsonToken.Type.EOF)
-					return false;
-				parse().ifPresent(action);
-				return true;
-			} catch (ConversionException ex)
-			{
-				throw new AppError(ex);
-			}
+			if (scanner.getCurrent().getType() == JsonToken.Type.EOF)
+				return false;
+			parse().ifPresent(action);
+			return true;
 		}
 
 		@Override
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-				!= JsonToken.Type.EOF)
-				try
-			{
+			       != JsonToken.Type.EOF)
 				parse().ifPresent(action);
-			} catch (ConversionException ex)
-			{
-				throw new AppError(ex);
-			}
 		}
 
 		@Override
@@ -291,33 +269,21 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public boolean hasNext()
 		{
 			return scanner.getCurrent().getType()
-				!= JsonToken.Type.EOF;
+			       != JsonToken.Type.EOF;
 		}
 
 		@Override
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-				!= JsonToken.Type.EOF)
-				try
-			{
+			       != JsonToken.Type.EOF)
 				parse().ifPresent(action);
-			} catch (ConversionException ex)
-			{
-				throw new AppError(ex);
-			}
 		}
 
 		@Override
 		public JsonElement next()
 		{
-			try
-			{
-				return parse().get();
-			} catch (ConversionException ex)
-			{
-				throw new AppError(ex);
-			}
+			return parse().orElseThrow();
 		}
 	}
 }

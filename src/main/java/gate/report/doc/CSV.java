@@ -2,7 +2,6 @@ package gate.report.doc;
 
 import gate.annotation.Icon;
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.contentType.ContentType;
 import gate.lang.csv.CSVFormatter;
@@ -11,7 +10,7 @@ import gate.util.Toolkit;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 /**
@@ -46,14 +45,11 @@ public class CSV extends Doc
 	@Override
 	public void print(OutputStream os)
 	{
-		try (PrintWriter writer = new PrintWriter(os, true, Charset.forName("UTF-8")))
+		try (PrintWriter writer = new PrintWriter(os, true, StandardCharsets.UTF_8))
 		{
 			for (ReportElement element : getReport().getElements())
 				if (element instanceof Grid)
 					print(writer, (Grid) element, ((Grid) element).getData());
-		} catch (ConversionException e)
-		{
-			throw new AppError(e);
 		}
 	}
 

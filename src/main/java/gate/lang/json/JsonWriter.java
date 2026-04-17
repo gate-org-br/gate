@@ -1,9 +1,9 @@
 package gate.lang.json;
 
-import gate.error.AppError;
 import gate.error.ConversionException;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.util.Objects;
 
@@ -103,9 +103,9 @@ public class JsonWriter implements AutoCloseable
 		try
 		{
 			writer.close();
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 }

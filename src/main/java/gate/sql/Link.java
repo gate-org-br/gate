@@ -1,8 +1,7 @@
 package gate.sql;
 
-import gate.error.AppError;
 import gate.error.ConstraintViolationException;
-import gate.error.DatabaseException;
+import gate.error.InternalServerException;
 import gate.io.StringReader;
 import gate.producer.AppProducer;
 import gate.sql.condition.CompiledCondition;
@@ -78,7 +77,7 @@ public class Link implements AutoCloseable
 			this.connection = datasource.getConnection();
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -98,7 +97,7 @@ public class Link implements AutoCloseable
 			this.connection = DriverManager.getConnection(url, username, password);
 		} catch (SQLException | ClassNotFoundException ex)
 		{
-			throw new AppError(ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -114,7 +113,7 @@ public class Link implements AutoCloseable
 			connection = LinkSource.getNamedDataSource(datasource).getConnection();
 		} catch (SQLException ex)
 		{
-			throw new DatabaseException(ex);
+			throw new InternalServerException(ex);
 		}
 	}
 
@@ -130,9 +129,9 @@ public class Link implements AutoCloseable
 		{
 			return new Command(this,
 					connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS));
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -165,9 +164,9 @@ public class Link implements AutoCloseable
 			if (connection.getAutoCommit())
 				connection.setAutoCommit(false);
 			return this;
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -182,9 +181,9 @@ public class Link implements AutoCloseable
 		try
 		{
 			return !connection.getAutoCommit();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -203,9 +202,9 @@ public class Link implements AutoCloseable
 				connection.setAutoCommit(true);
 			}
 			return this;
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -224,9 +223,9 @@ public class Link implements AutoCloseable
 				connection.setAutoCommit(true);
 			}
 			return this;
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -240,9 +239,9 @@ public class Link implements AutoCloseable
 		try
 		{
 			return connection.isClosed();
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -264,7 +263,7 @@ public class Link implements AutoCloseable
 			}
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -655,7 +654,7 @@ public class Link implements AutoCloseable
 	 * Updates objects of the specified type from the database.
 	 *
 	 * @param type type of the objects to be updated
-	 * @param <T>  type type of the entities to be compiled with the sentence
+	 * @param <T>  type of the entities to be compiled with the sentence
 	 * @return an UpdateOperation object for definition of the properties, update criteria and the
 	 * values to be updated
 	 */

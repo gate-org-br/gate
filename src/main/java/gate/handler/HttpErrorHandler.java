@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.type.HttpError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,7 +13,7 @@ public class HttpErrorHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		try
 		{

@@ -1,6 +1,6 @@
 package gate.sql.fetcher;
 
-import gate.error.AppError;
+import gate.error.InternalServerException;
 import gate.sql.Cursor;
 import gate.type.DataGrid;
 
@@ -30,9 +30,9 @@ public class DataGridFetcher implements Fetcher<DataGrid>
 				dataSet.add(cursor.getColumnValues().toArray());
 
 			return dataSet;
-		} catch (SQLException e)
+		} catch (SQLException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 
 	}

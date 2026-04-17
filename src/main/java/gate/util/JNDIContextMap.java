@@ -1,8 +1,7 @@
 package gate.util;
 
 import gate.converter.Converter;
-import gate.error.AppError;
-import gate.error.ConversionException;
+import gate.error.InternalServerException;
 
 import javax.naming.*;
 import java.util.*;
@@ -30,9 +29,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			{
 				this.context = this.context.createSubcontext(context);
 			}
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -46,9 +45,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			while (list.hasMoreElements())
 				i++;
 			return i;
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 
 	}
@@ -60,9 +59,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 		{
 			NamingEnumeration<NameClassPair> list = context.list("");
 			return list.hasMoreElements();
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -76,9 +75,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 		} catch (NameNotFoundException e)
 		{
 			return false;
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -92,9 +91,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 				if (context.lookup(list.next().getName()).equals(value))
 					return true;
 			return false;
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -112,9 +111,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 		} catch (NameNotFoundException e)
 		{
 			return null;
-		} catch (NamingException | ConversionException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -138,9 +137,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 				context.bind(key, value);
 				return null;
 			}
-		} catch (NamingException | ConversionException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -157,9 +156,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			String string = converter.toString(Object.class, value);
 			value = converter.ofString(Object.class, string);
 			return (T) value;
-		} catch (NamingException | ConversionException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -179,9 +178,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			NamingEnumeration<NameClassPair> list = context.list("");
 			while (list.hasMoreElements())
 				context.unbind(list.next().getName());
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -195,9 +194,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			while (list.hasMoreElements())
 				keys.add(list.next().getName());
 			return keys;
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -211,9 +210,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			while (list.hasMoreElements())
 				values.add(get(list.next().getName()));
 			return values;
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -231,9 +230,9 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			}
 
 			return entries;
-		} catch (NamingException e)
+		} catch (NamingException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 }

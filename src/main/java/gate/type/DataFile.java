@@ -3,7 +3,6 @@ package gate.type;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.DataFileConverter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.DataFileHandler;
 import gate.io.GateInputStream;
@@ -69,9 +68,9 @@ public class DataFile implements Serializable
 		try (GateInputStream<ByteArrayInputStream> g = new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			return g.getLines(charset);
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -85,9 +84,9 @@ public class DataFile implements Serializable
 		try (GateInputStream<ByteArrayInputStream> g = new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			g.getLines(charset, consumer);
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -99,12 +98,12 @@ public class DataFile implements Serializable
 	public List<String> getInflatedLines(String charset)
 	{
 		try (GateInputStream<ByteArrayInputStream> g
-				= new GateInputStream<>(new ByteArrayInputStream(getData())))
+					 = new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			return g.getInflatedLines(charset);
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -118,9 +117,9 @@ public class DataFile implements Serializable
 		try (GateInputStream<ByteArrayInputStream> g = new GateInputStream<>(new ByteArrayInputStream(getData())))
 		{
 			g.getInflatedLines(charset, consumer);
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -133,19 +132,20 @@ public class DataFile implements Serializable
 	{
 		if (name.toLowerCase().endsWith(".zip"))
 			try
-		{
-			ZipEntry entry;
-			try (GateInputStream<ZipInputStream> stream
-					= new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
 			{
-				while ((entry = stream.getInputStream().getNextEntry()) != null)
-					if (!entry.isDirectory())
-						c.accept(new DataFile(stream.getBytes(), entry.getName()));
+				ZipEntry entry;
+				try (GateInputStream<ZipInputStream> stream
+							 = new GateInputStream<>(new ZipInputStream(new ByteArrayInputStream(getData()))))
+				{
+					while ((entry = stream.getInputStream().getNextEntry()) != null)
+						if (!entry.isDirectory())
+							c.accept(new DataFile(stream.getBytes(), entry.getName()));
+				}
+			} catch (IOException ex)
+			{
+				throw new UncheckedIOException(ex);
 			}
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		} else
+		else
 			c.accept(this);
 	}
 
@@ -160,7 +160,7 @@ public class DataFile implements Serializable
 			throws IOException
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(new FileInputStream(file)))
+					 = new BufferedInputStream(new FileInputStream(file)))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{
@@ -176,7 +176,7 @@ public class DataFile implements Serializable
 			throws IOException
 	{
 		try (BufferedInputStream stream
-				= new BufferedInputStream(url.openStream()))
+					 = new BufferedInputStream(url.openStream()))
 		{
 			try (ByteArrayOutputStream bytes = new ByteArrayOutputStream())
 			{

@@ -1,12 +1,12 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.BadRequestExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 
 /**
  * Signals that a data conversion could not be made.
  */
-@Catcher(BadRequestExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class ConversionException extends RuntimeException
 {
 

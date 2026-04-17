@@ -8,7 +8,6 @@ import gate.error.BadRequestException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,21 +15,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.io.Writer;
+import java.time.Instant;
 
 @WebServlet("/Auth")
 public class Auth extends HttpServlet
 {
 
 	@Inject
-	Credentials credentials;
-
-	@Inject
 	@Current
-	@RequestScoped
 	Authenticator authenticator;
 
-	private static final long serialVersionUID = 1L;
+	@Inject Credentials credentials;
+
+	@Serial private static final long serialVersionUID = 1L;
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse response) throws IOException
@@ -40,13 +39,13 @@ public class Auth extends HttpServlet
 
 		try (Writer writer = response.getWriter())
 		{
-
 			try
 			{
 				User user = authenticator.authenticate(new ScreenServletRequest(httpServletRequest), response);
 				if (user == null)
-					throw new BadRequestException("Attempt to login without provinding valid credentials");
-				writer.write(credentials.subject(user));
+					throw new BadRequestException("Attempt to login without providing valid credentials");
+				var subject = new Credentials.Subject(user.getId(), Instant.now());
+				writer.write(credentials.createToken(subject));
 			} catch (AuthenticationException ex)
 			{
 				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

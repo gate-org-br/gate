@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,14 +13,14 @@ public class EnumHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object object) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object object)
 	{
 		Enum<?> value = (Enum<?>) object;
 		String string = value != null ? String.valueOf(value.ordinal()) : "";
 		response.setContentType("text/plain");
 		response.setContentLength(string.length());
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 		} catch (IOException ex)

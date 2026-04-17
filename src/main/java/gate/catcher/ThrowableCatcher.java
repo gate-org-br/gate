@@ -2,11 +2,12 @@ package gate.catcher;
 
 import gate.annotation.Current;
 import gate.entity.User;
+import gate.error.UnauthorizedException;
+import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 
@@ -26,10 +27,24 @@ public class ThrowableCatcher implements Catcher
 	@Inject
 	Logger logger;
 
+	@Inject
+	UnauthorizedExceptionCatcher unauthorizedExceptionCatcher;
+
 	@Override
-	public void catches(HttpServletRequest request,
-		HttpServletResponse response, Throwable exception)
+	public void catches(ScreenServletRequest request,
+	                    ScreenServletResponse response, Throwable exception)
 	{
+
+		if (exception == null)
+			return;
+
+		for (Throwable current = exception; current != null; current = current.getCause())
+			if (current instanceof UnauthorizedException)
+			{
+				unauthorizedExceptionCatcher.catches(request, response, current);
+				return;
+			}
+
 		response.setStatus(500);
 		response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
 

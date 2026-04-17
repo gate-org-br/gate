@@ -1,24 +1,24 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.BadRequestExceptionCatcher;
-import gate.converter.Converter;
+import gate.catcher.HttpExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.io.Serial;
 
 /**
- * Signals that an application level exception of some sort has occurred.
+ * Signals that an application level exception to some sort has occurred.
  * <p>
  * This class is the general class of application level exceptions produced by user actions.
  */
-@Catcher(BadRequestExceptionCatcher.class)
-public class AppException extends RuntimeException
+@Catcher(HttpExceptionCatcher.class)
+public class AppException extends HttpException
 {
 
-	private final List<String> messages;
-	private static final long serialVersionUID = 1L;
+	@Override
+	public int getStatusCode() {return HttpServletResponse.SC_BAD_REQUEST;}
+
+	@Serial private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs an AppException with the specified detail message.
@@ -27,19 +27,7 @@ public class AppException extends RuntimeException
 	 */
 	public AppException(String message)
 	{
-		Objects.requireNonNull(message);
-		this.messages = Collections.singletonList(message);
-	}
-
-	/**
-	 * Constructs an AppException with the specified detail messages.
-	 *
-	 * @param messages The detail messages, which are saved for later retrieval by the getMessages() method
-	 */
-	public AppException(List<String> messages)
-	{
-		Objects.requireNonNull(messages);
-		this.messages = Collections.unmodifiableList(messages);
+		super(message);
 	}
 
 	/**
@@ -51,43 +39,6 @@ public class AppException extends RuntimeException
 	 */
 	public AppException(String message, Throwable cause)
 	{
-		super(cause);
-		Objects.requireNonNull(message);
-		this.messages = Collections.singletonList(message);
-	}
-
-	/**
-	 * Constructs an AppException with the specified cause and detail messages.
-	 *
-	 * @param cause    The cause, which is saved for later retrieval by the getCause() method. A null value is permitted, and indicates that the cause is
-	 *                 nonexistent or unknown.
-	 * @param messages The detail messages, which are saved for later retrieval by the getMessages() method
-	 */
-	public AppException(List<String> messages, Throwable cause)
-	{
-		super(cause);
-		Objects.requireNonNull(messages);
-		this.messages = Collections.unmodifiableList(messages);
-	}
-
-	/**
-	 * Returns the detail messages of this exception as a String.
-	 *
-	 * @return a String containing all detail messages of this exception
-	 */
-	@Override
-	public String getMessage()
-	{
-		return Converter.toText(getMessages());
-	}
-
-	/**
-	 * Returns the detail messages of this exception.
-	 *
-	 * @return a list containing all detail messages of this exception
-	 */
-	public List<String> getMessages()
-	{
-		return messages;
+		super(message, cause);
 	}
 }

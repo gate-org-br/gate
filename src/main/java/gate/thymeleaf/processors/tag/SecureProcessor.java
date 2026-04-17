@@ -4,8 +4,6 @@ import gate.Call;
 import gate.annotation.Current;
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.error.AppError;
-import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
@@ -34,27 +32,21 @@ public class SecureProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+	                    IProcessableElementTag element,
+	                    IElementTagStructureHandler handler)
 	{
-		try
-		{
-			if (Call.of(((IWebContext) context).getExchange(),
-				element.getAttributeValue("module"),
-				element.getAttributeValue("screen"),
-				element.getAttributeValue("action"))
+		if (Call.of(((IWebContext) context).getExchange(),
+						element.getAttributeValue("module"),
+						element.getAttributeValue("screen"),
+						element.getAttributeValue("action"))
 				.checkAccess(user))
-				handler.removeTags();
-			else if (element.hasAttribute("otherwise"))
-			{
-				String otherwise = element.getAttributeValue("otherwise");
-				otherwise = Converter.toText(expression.create().evaluate(otherwise));
-				handler.replaceWith(otherwise, false);
-			} else
-				handler.removeElement();
-		} catch (BadRequestException ex)
+			handler.removeTags();
+		else if (element.hasAttribute("otherwise"))
 		{
-			throw new AppError(ex);
-		}
+			String otherwise = element.getAttributeValue("otherwise");
+			otherwise = Converter.toText(expression.create().evaluate(otherwise));
+			handler.replaceWith(otherwise, false);
+		} else
+			handler.removeElement();
 	}
 }

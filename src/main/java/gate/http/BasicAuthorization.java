@@ -27,6 +27,8 @@ public class BasicAuthorization implements Authorization
 		this.password = password;
 	}
 
+	@Override public String token() {return null;}
+
 	public String username()
 	{
 		return username;
@@ -93,8 +95,8 @@ public class BasicAuthorization implements Authorization
 	public boolean equals(Object o)
 	{
 		return o instanceof BasicAuthorization basicAuthorization
-			   && Objects.equals(username, basicAuthorization.username)
-			   && Objects.equals(password, basicAuthorization.password);
+		       && Objects.equals(username, basicAuthorization.username)
+		       && Objects.equals(password, basicAuthorization.password);
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package gate.converter;
 
 import gate.constraint.Constraint;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
 import gate.lang.csv.CSVParser;
@@ -67,7 +66,7 @@ public class StringMatrixConverter implements Converter
 		if (object == null)
 			return "";
 		try (StringWriter writer = new StringWriter();
-				CSVFormatter formatter = CSVFormatter.of(writer))
+		     CSVFormatter formatter = CSVFormatter.of(writer))
 		{
 			for (String[] values : (String[][]) object)
 				formatter.writeLine(values);
@@ -75,7 +74,7 @@ public class StringMatrixConverter implements Converter
 			return writer.toString();
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -111,7 +110,7 @@ public class StringMatrixConverter implements Converter
 	public Object ofPart(Class<?> type, Part part) throws ConversionException
 	{
 		try (CSVParser reader =
-				CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
+					 CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
 		{
 			return reader.stream().map(e -> e.toArray(new String[0])).toArray(String[][]::new);
 		} catch (IOException ex)

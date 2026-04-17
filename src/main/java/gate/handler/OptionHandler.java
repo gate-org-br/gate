@@ -1,7 +1,6 @@
 package gate.handler;
 
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.lang.property.Entity;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
@@ -21,7 +20,7 @@ public class OptionHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		Objects.requireNonNull(value);
 

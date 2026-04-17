@@ -2,7 +2,7 @@ package gate.type;
 
 import gate.annotation.Converter;
 import gate.converter.custom.MD5Converter;
-import gate.error.AppError;
+import gate.error.InternalServerException;
 
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -45,7 +45,7 @@ public class MD5 implements Serializable
 			return new MD5(hash.toString());
 		} catch (NoSuchAlgorithmException ex)
 		{
-			throw new AppError(ex.getMessage(), ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -59,7 +59,7 @@ public class MD5 implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof MD5
-				&& Objects.equals(((MD5) obj).value, value);
+		       && Objects.equals(((MD5) obj).value, value);
 	}
 
 	@Override

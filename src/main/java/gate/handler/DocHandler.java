@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.report.Doc;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +15,7 @@ public class DocHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		Doc doc = (Doc) value;
 		response.setLocale(Locale.getDefault());

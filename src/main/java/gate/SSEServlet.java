@@ -5,6 +5,7 @@ import gate.catcher.UnauthorizedExceptionCatcher;
 import gate.entity.User;
 import gate.error.UnauthorizedException;
 import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -23,68 +24,68 @@ import java.util.concurrent.TimeUnit;
 @WebServlet(value = "/SSE", asyncSupported = true)
 public class SSEServlet extends HttpServlet
 {
-    @Inject
-    UnauthorizedExceptionCatcher catcher;
+	@Inject
+	UnauthorizedExceptionCatcher catcher;
 
-    @Inject
-    @Current
-    @RequestScoped
-    Instance<User> userInstance;
+	@Inject
+	@Current
+	@RequestScoped
+	Instance<User> userInstance;
 
-    @Inject
-    SSEClients clients;
+	@Inject
+	SSEClients clients;
 
-    @Override
-    protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse response) throws ServletException, IOException
-    {
-        response.addHeader("Cache-Control", "no-cache");
-        ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
-
-        try
-        {
-            User user = userInstance.get();
-            if (user == null || user.getId() == null)
-                throw new UnauthorizedException();
+	@Override
+	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException
+	{
+		httpServletResponse.addHeader("Cache-Control", "no-cache");
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+		ScreenServletResponse response = new ScreenServletResponse(httpServletResponse);
+		try
+		{
+			User user = userInstance.get();
+			if (user == null || user.getId() == null)
+				throw new UnauthorizedException();
 
 			response.setContentLengthLong(-1);
-            response.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/event-stream");
 			response.setHeader("X-Accel-Buffering", "no");
 
-            AsyncContext context = request.startAsync();
-            context.setTimeout(TimeUnit.HOURS.toMillis(1));
+			AsyncContext context = request.startAsync();
+			context.setTimeout(TimeUnit.HOURS.toMillis(1));
 
-            SSEClient client = new SSEClient(user.unwrap(), context);
-            clients.add(client);
+			SSEClient client = new SSEClient(user.unwrap(), context);
+			clients.add(client);
 
-            context.addListener(new AsyncListener()
-            {
-                @Override
-                public void onStartAsync(AsyncEvent event)
-                {
-                }
+			context.addListener(new AsyncListener()
+			{
+				@Override
+				public void onStartAsync(AsyncEvent event)
+				{
+				}
 
-                @Override
-                public void onComplete(AsyncEvent event)
-                {
-                    clients.remove(client);
-                }
+				@Override
+				public void onComplete(AsyncEvent event)
+				{
+					clients.remove(client);
+				}
 
-                @Override
-                public void onError(AsyncEvent event)
-                {
-                    onComplete(event);
-                }
+				@Override
+				public void onError(AsyncEvent event)
+				{
+					onComplete(event);
+				}
 
-                @Override
-                public void onTimeout(AsyncEvent event)
-                {
-                    onComplete(event);
-                }
-            });
-        } catch (UnauthorizedException ex)
-        {
-            catcher.catches(request, response, ex);
-        }
-    }
+				@Override
+				public void onTimeout(AsyncEvent event)
+				{
+					onComplete(event);
+				}
+			});
+		} catch (UnauthorizedException ex)
+		{
+			catcher.catches(request, response, ex);
+		}
+	}
 }

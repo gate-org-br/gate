@@ -1,8 +1,8 @@
 package gate.policonverter;
 
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.error.InternalServerException;
 import jakarta.servlet.http.Part;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,11 +21,12 @@ public class EnumSetPoliconverter implements Policonverter
 			EnumSet<?> objects = (EnumSet<?>) EnumSet.class.getMethod("noneOf", Class.class).invoke(EnumSet.class, type);
 			for (String string : value)
 				EnumSet.class.getMethod("add", Object.class).invoke(objects, Converter.getConverter(type).ofString(type,
-					string));
+						string));
 			return objects;
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ConversionException e)
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+		         ConversionException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -37,11 +38,12 @@ public class EnumSetPoliconverter implements Policonverter
 			EnumSet<?> objects = (EnumSet<?>) EnumSet.class.getMethod("noneOf", Class.class).invoke(EnumSet.class, type);
 			for (Part part : value)
 				EnumSet.class.getMethod("add", Object.class).invoke(objects, Converter.getConverter(type).ofPart(type,
-					part));
+						part));
 			return objects;
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ConversionException e)
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+		         ConversionException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 

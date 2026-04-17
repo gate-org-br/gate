@@ -1,8 +1,6 @@
 package gate.error;
 
-import gate.annotation.Catcher;
-import gate.catcher.ConflictExceptionCatcher;
-
+import java.io.Serial;
 import java.sql.SQLException;
 
 /**
@@ -10,11 +8,10 @@ import java.sql.SQLException;
  *
  * @author davins
  */
-@Catcher(ConflictExceptionCatcher.class)
 public class ConstraintViolationException extends AppException
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	ConstraintViolationException(String message, SQLException cause)
 	{

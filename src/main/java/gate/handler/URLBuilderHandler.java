@@ -1,7 +1,6 @@
 package gate.handler;
 
 import gate.Progress;
-import gate.error.AppError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,23 +12,21 @@ import java.io.UncheckedIOException;
 public class URLBuilderHandler implements Handler
 {
 
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
-    {
-        try
-        {
-            response.sendRedirect(response.encodeRedirectURL(value.toString()));
-        } catch (IOException ex)
-        {
-            throw new UncheckedIOException(ex);
-        }
-    }
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
+	{
+		try
+		{
+			response.sendRedirect(response.encodeRedirectURL(value.toString()));
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
 
-    @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response,
-                       Progress progress, Object value) throws AppError
-    {
-        progress.result("text/plain",
-                null, value.toString());
-    }
+	@Override
+	public void handle(HttpServletRequest request, HttpServletResponse response, Progress progress, Object value)
+	{
+		progress.result("text/plain", null, value.toString());
+	}
 }

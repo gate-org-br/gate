@@ -2,7 +2,6 @@ package gate.http;
 
 import gate.converter.Converter;
 import gate.entity.User;
-import gate.error.AppError;
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
 import gate.lang.property.CollectionAttribute;
@@ -25,6 +24,11 @@ import java.util.stream.Stream;
 
 public class ScreenServletRequest extends HttpServletRequestWrapper
 {
+	private final RequestCommand command = RequestCommand
+			.from(this.getParameter("MODULE"),
+					this.getParameter("SCREEN"),
+					this.getParameter("ACTION"),
+					this.getPathInfo());
 
 	private static final Pattern AUTHORIZATION = Pattern.compile("^(Basic|Bearer) ([^ ]+)$", Pattern.CASE_INSENSITIVE);
 
@@ -39,7 +43,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		try
 		{
 			return contentType != null
-				   && contentType.toLowerCase().startsWith("multipart/") ? getParts()
+			       && contentType.toLowerCase().startsWith("multipart/") ? getParts()
 					: Collections.emptyList();
 		} catch (IOException | ServletException e)
 		{
@@ -63,22 +67,16 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public Object getParameterValues(Class<?> type, Class<?> elementType, String name)
 	{
-		try
-		{
-			String[] strings = getParameterValues(name);
-			if (strings != null)
-				return Policonverter.getPoliconverter(type).getObject(elementType, strings);
+		String[] strings = getParameterValues(name);
+		if (strings != null)
+			return Policonverter.getPoliconverter(type).getObject(elementType, strings);
 
-			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
-				return Policonverter.getPoliconverter(type)
-						.getObject(elementType, parts().stream()
-								.filter(e -> e.getName().equals(name))
-								.toArray(Part[]::new));
-			return null;
-		} catch (ConversionException e)
-		{
-			throw new AppError(e);
-		}
+		if (parts().stream().anyMatch(e -> e.getName().equals(name)))
+			return Policonverter.getPoliconverter(type)
+					.getObject(elementType, parts().stream()
+							.filter(e -> e.getName().equals(name))
+							.toArray(Part[]::new));
+		return null;
 	}
 
 	public Object getParameter(Class<?> type, String name)
@@ -114,10 +112,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String string = getParameter(name);
 		return string != null ? string
 				: parts().stream()
-				.filter(e -> e.getName().equals(name))
-				.filter(e -> e.getSize() > 0)
-				.findAny()
-				.orElse(null);
+				  .filter(e -> e.getName().equals(name))
+				  .filter(e -> e.getSize() > 0)
+				  .findAny()
+				  .orElse(null);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -134,14 +132,14 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			return null;
 		} catch (UnsupportedEncodingException e)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(e);
 		}
 	}
 
 	public String getBody()
 	{
 		try (BufferedReader reader = this.getReader();
-			 StringWriter string = new StringWriter())
+		     StringWriter string = new StringWriter())
 		{
 			for (int c = reader.read(); c != -1; c = reader.read())
 				string.write(c);
@@ -180,7 +178,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			if (username != null || password != null)
 				return BasicAuthorization.from(username, password);
 
-			return getCookieValue("subject")
+			return getCookieValue(ScreenServletResponse.SUBJECT)
 					.filter(e -> !e.isBlank())
 					.filter(e -> e.chars().filter(c -> c == '.').count() == 2)
 					.map(CookieAuthorization::valueOf)
@@ -225,5 +223,19 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 	public User getUser()
 	{
 		return (User) getAttribute(User.class.getName());
+	}
+
+	public RequestCommand getCommand() {return command;}
+
+	public boolean isStaticRequest()
+	{
+		if (command.module() != null
+		    || command.screen() != null
+		    || command.action() != null)
+			return false;
+		var uri = getRequestURI();
+		int slash = uri.lastIndexOf('/');
+		int dot = uri.lastIndexOf('.');
+		return dot != -1 && slash <= dot;
 	}
 }

@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,12 +13,12 @@ public class MimeDataHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		String string = value.toString();
 		response.setContentType("text/plain");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 			writer.flush();

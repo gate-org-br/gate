@@ -1,7 +1,5 @@
 package gate.lang.csv;
 
-import gate.error.AppError;
-
 import java.io.*;
 import java.net.URL;
 import java.util.Iterator;
@@ -79,7 +77,7 @@ public class PSVParser implements Parser
 			{
 				if (line.length() > positions[i + 1])
 					result.add(line.substring(positions[i],
-						positions[i + 1]));
+							positions[i + 1]));
 			} else if (line.length() > positions[i])
 				result.add(line.substring(positions[i]));
 		}
@@ -119,9 +117,9 @@ public class PSVParser implements Parser
 		try
 		{
 			reader.close();
-		} catch (IOException e)
+		} catch (IOException ex)
 		{
-			throw new AppError(e);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -205,13 +203,13 @@ public class PSVParser implements Parser
 	/**
 	 * Parses a PSV string
 	 *
-	 * @param string the string to be parsed
+	 * @param string  the string to be parsed
 	 * @param columns a list with the index of each column
 	 * @return a List with all the columns contained in the specified string
 	 */
 	public static Row parseLine(String string, int... columns)
 	{
-		try ( PSVParser parser = new PSVParser(new BufferedReader(new StringReader(string)), columns))
+		try (PSVParser parser = new PSVParser(new BufferedReader(new StringReader(string)), columns))
 		{
 			return parser.parse();
 		}

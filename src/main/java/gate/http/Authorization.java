@@ -3,7 +3,7 @@ package gate.http;
 public interface Authorization
 {
 
-	public static Authorization valueOf(String string)
+	static Authorization valueOf(String string)
 	{
 		if (string.startsWith("Basic "))
 			return BasicAuthorization.valueOf(string);
@@ -11,4 +11,6 @@ public interface Authorization
 			return BearerAuthorization.valueOf(string);
 		return CookieAuthorization.valueOf(string);
 	}
+
+	String token();
 }

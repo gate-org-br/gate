@@ -1,12 +1,9 @@
 package gate.producer;
 
+import gate.GateControl;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.error.AuthenticationException;
 import gate.error.HierarchyException;
-import gate.error.UnauthorizedException;
-import gate.http.BearerAuthorization;
-import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.security.Credentials;
 import jakarta.enterprise.context.RequestScoped;
@@ -20,39 +17,26 @@ public class UserProducer
 	@Produces
 	@RequestScoped
 	@Named(value = "user")
-	public User getUser(Credentials credentials,
-						HttpServletRequest httpServletRequest) throws HierarchyException
+	public User getUser(GateControl control,
+	                    Credentials credentials,
+	                    HttpServletRequest httpServletRequest)
+			throws HierarchyException
 	{
 		if (httpServletRequest == null)
 			return new User();
-
 		if (httpServletRequest.getAttribute(User.class.getName())
 				instanceof User user)
 			return user;
 
-		try
-		{
-			ScreenServletRequest request =
-					new ScreenServletRequest(httpServletRequest);
-
-			var auth = request.getAuthorization();
-			if (auth instanceof BearerAuthorization bearer)
-			{
-				User user = credentials.subject(bearer.token());
-				request.setAttribute(User.class.getName(), user);
-				return user;
-			} else if (auth instanceof CookieAuthorization cookie)
-			{
-				User user = credentials.subject(cookie.token());
-				request.setAttribute(User.class.getName(), user);
-				return user;
-			} else
-				return new User();
-		} catch (AuthenticationException
-				 | UnauthorizedException ex)
-		{
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+		var auth = request.getAuthorization();
+		if (auth == null)
 			return new User();
-		}
+		var token = auth.token();
+		if (token == null)
+			return new User();
+		User user = control.select(credentials.parseToken(token).id());
+		request.setAttribute(User.class.getName(), user);
+		return user;
 	}
-
 }

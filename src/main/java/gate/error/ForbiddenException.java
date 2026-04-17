@@ -1,17 +1,19 @@
 package gate.error;
 
 import gate.annotation.Catcher;
-import gate.catcher.ForbiddenExceptionCatcher;
+import gate.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.Serial;
 
 /**
  * Signals that the current user has no access to a resource.
  */
-@Catcher(ForbiddenExceptionCatcher.class)
+@Catcher(HttpExceptionCatcher.class)
 public class ForbiddenException extends HttpException
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs a new ForbiddenException.

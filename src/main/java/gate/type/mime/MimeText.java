@@ -3,8 +3,8 @@ package gate.type.mime;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.MimeTextConverter;
-import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.error.InternalServerException;
 import gate.handler.MimeTextHandler;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
@@ -90,7 +90,7 @@ public class MimeText implements Mime
 					URLEncoder.encode(getText(), charset)).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
-			throw new AppError(ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 

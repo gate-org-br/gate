@@ -2,7 +2,7 @@ package gate.sql;
 
 import gate.converter.Converter;
 import gate.error.ConstraintViolationException;
-import gate.error.DatabaseException;
+import gate.error.SQLExceptionHandler;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
 
@@ -105,13 +105,13 @@ public class Command implements AutoCloseable, Fetchable
 			return ps.executeUpdate();
 		} catch (SQLException e)
 		{
-			DatabaseException.handle(link, e);
+			SQLExceptionHandler.handle(link, e);
 			throw new IllegalStateException("Failed to execute update command", e);
 		}
 	}
 
 	public <T> Optional<T> execute(Class<T> type)
-		throws ConstraintViolationException
+			throws ConstraintViolationException
 	{
 		execute();
 		return getGeneratedKey(type);
@@ -131,17 +131,17 @@ public class Command implements AutoCloseable, Fetchable
 	@SuppressWarnings("unchecked")
 	public <T> Optional<T> getGeneratedKey(Class<T> type)
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next()
-				? Optional.of(cursor.getCurrentValue(type))
-				: Optional.empty();
+					? Optional.of(cursor.getCurrentValue(type))
+					: Optional.empty();
 		}
 	}
 
 	public char getGeneratedCharKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentCharValue() : 0;
 		}
@@ -149,7 +149,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public byte getGeneratedByteKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentByteValue() : 0;
 		}
@@ -157,7 +157,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public short getGeneratedShortKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentShortValue() : 0;
 		}
@@ -165,7 +165,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public int getGeneratedIntKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentIntValue() : 0;
 		}
@@ -173,7 +173,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public long getGeneratedLongKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentLongValue() : 0L;
 		}
@@ -181,7 +181,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public float getGeneratedFloatKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentFloatValue() : 0;
 		}
@@ -189,7 +189,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public double getGeneratedDoubleKey()
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			return cursor.next() ? cursor.getCurrentDoubleValue() : 0;
 		}
@@ -197,7 +197,7 @@ public class Command implements AutoCloseable, Fetchable
 
 	public <T> List<T> getGeneratedKeys(Class<T> type)
 	{
-		try ( Cursor cursor = getGeneratedKeys())
+		try (Cursor cursor = getGeneratedKeys())
 		{
 			List<T> keys = new ArrayList<>();
 			while (cursor.next())
@@ -342,7 +342,7 @@ public class Command implements AutoCloseable, Fetchable
 		try
 		{
 			return Converter.getConverter(type)
-				.writeToPreparedStatement(getPreparedStatement(), index, object);
+					.writeToPreparedStatement(getPreparedStatement(), index, object);
 		} catch (SQLException ex)
 		{
 			throw new IllegalStateException("Failed to bind parameter on command", ex);
@@ -382,7 +382,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public <T> T fetch(Fetcher<T> fecher)
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetch(fecher);
 		}
@@ -398,7 +398,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public char fetchChar()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchChar();
 		}
@@ -407,7 +407,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public boolean fetchBoolean()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchBoolean();
 		}
@@ -416,7 +416,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public byte fetchByte()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchByte();
 		}
@@ -425,7 +425,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public short fetchShort()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchShort();
 		}
@@ -434,7 +434,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public int fetchInt()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchInt();
 		}
@@ -443,7 +443,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public long fetchLong()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchLong();
 		}
@@ -452,7 +452,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public float fetchFloat()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchFloat();
 		}
@@ -461,7 +461,7 @@ public class Command implements AutoCloseable, Fetchable
 	@Override
 	public double fetchDouble()
 	{
-		try ( Cursor cursor = getCursor())
+		try (Cursor cursor = getCursor())
 		{
 			return cursor.fetchDouble();
 		}

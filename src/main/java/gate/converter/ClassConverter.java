@@ -1,7 +1,7 @@
 package gate.converter;
 
 import gate.constraint.Constraint;
-import gate.error.AppError;
+import gate.error.InternalServerException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,10 +36,10 @@ public class ClassConverter implements Converter
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0 ? Thread.currentThread().getContextClassLoader().loadClass(string) : null;
-		} catch (ClassNotFoundException e)
+			return string != null && !string.trim().isEmpty() ? Thread.currentThread().getContextClassLoader().loadClass(string) : null;
+		} catch (ClassNotFoundException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -68,9 +68,9 @@ public class ClassConverter implements Converter
 		{
 			String value = rs.getString(fields);
 			return rs.wasNull() ? null : Thread.currentThread().getContextClassLoader().loadClass(value);
-		} catch (ClassNotFoundException e)
+		} catch (ClassNotFoundException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 
@@ -81,9 +81,9 @@ public class ClassConverter implements Converter
 		{
 			String value = rs.getString(fields);
 			return rs.wasNull() ? null : Thread.currentThread().getContextClassLoader().loadClass(value);
-		} catch (ClassNotFoundException e)
+		} catch (ClassNotFoundException ex)
 		{
-			throw new AppError(e);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 

@@ -4,7 +4,6 @@ import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.annotation.Icon;
 import gate.converter.EnumStringConverter;
-import gate.error.AppError;
 import gate.handler.DocHandler;
 import gate.lang.contentType.ContentType;
 import gate.report.doc.CSV;
@@ -16,6 +15,7 @@ import gate.type.mime.MimeDataFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 
 /**
  * Generates documents from objects of type {@link gate.report.Report}.
@@ -73,7 +73,7 @@ public abstract class Doc
 			return MimeDataFile.of(getContentType(), os.toByteArray(), getFileName());
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -90,9 +90,8 @@ public abstract class Doc
 	/**
 	 * Creates a new document of the specified type for the specified Report.
 	 *
-	 * @param type type of the document to be created
+	 * @param type   type of the document to be created
 	 * @param report Report from where the document will be generated
-	 *
 	 * @return the new Doc created
 	 */
 	public static Doc create(Type type, Report report)

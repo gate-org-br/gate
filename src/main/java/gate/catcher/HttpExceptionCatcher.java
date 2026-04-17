@@ -1,37 +1,34 @@
 package gate.catcher;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import gate.error.HttpException;
+import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.core.HttpHeaders;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
 
-public abstract class HttpExceptionCatcher implements Catcher
+@ApplicationScoped
+public class HttpExceptionCatcher implements Catcher
 {
 
-    private final int status;
+	@Override
+	public void catches(ScreenServletRequest request,
+	                    ScreenServletResponse response, Throwable exception)
+	{
 
-    public HttpExceptionCatcher(int status)
-    {
-        this.status = status;
-    }
+		response.setStatus(((HttpException) exception).getStatusCode());
+		response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
 
-    @Override
-    public void catches(HttpServletRequest request,
-                        HttpServletResponse response, Throwable exception)
-    {
-        response.setStatus(status);
-        response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
-
-        try (Writer writer = response.getWriter())
-        {
-            writer.write(exception.getMessage());
-            writer.flush();
-        } catch (IOException ex)
-        {
-            throw new UncheckedIOException(ex);
-        }
-    }
+		try (Writer writer = response.getWriter())
+		{
+			writer.write(exception.getMessage());
+			writer.flush();
+		} catch (IOException ex)
+		{
+			throw new UncheckedIOException(ex);
+		}
+	}
 }

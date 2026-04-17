@@ -4,7 +4,6 @@ import gate.annotation.BodyParamExtractor;
 import gate.annotation.CookieParamExtractor;
 import gate.annotation.HeaderParamExtractor;
 import gate.annotation.QueryParamExtractor;
-import gate.error.AppException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import gate.util.Page;
@@ -152,16 +151,6 @@ public abstract class Screen extends Base
 		return messages;
 	}
 
-	public void setMessages(Exception ex)
-	{
-		setMessages(ex.getMessage());
-	}
-
-	public void setMessages(AppException ex)
-	{
-		setMessages(ex.getMessages());
-	}
-
 	public void setMessages(String... messages)
 	{
 		this.messages = List.of(messages);
@@ -224,12 +213,12 @@ public abstract class Screen extends Base
 		try
 		{
 			return Optional.of(Thread.currentThread()
-				.getContextClassLoader()
-				.loadClass(screen != null
-					? module + "." + screen
-					+ "Screen"
-					: module + ".Screen"))
-				.map(e -> (Class<Screen>) e);
+							.getContextClassLoader()
+							.loadClass(screen != null
+									? module + "." + screen
+									  + "Screen"
+									: module + ".Screen"))
+					.map(e -> (Class<Screen>) e);
 		} catch (ClassNotFoundException ex)
 		{
 			return Optional.empty();

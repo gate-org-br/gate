@@ -10,7 +10,7 @@ public class CookieAuthorization implements Authorization
 		this.token = token;
 	}
 
-	public String token()
+	@Override public String token()
 	{
 		return token;
 	}

@@ -1,6 +1,6 @@
 package gate.sql.fetcher;
 
-import gate.error.AppError;
+import gate.error.InternalServerException;
 import gate.lang.property.Property;
 import gate.sql.Cursor;
 
@@ -38,9 +38,9 @@ public class PropertyEntityFetcher<T> implements Fetcher<T>
 			}
 			return null;
 		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException
-				| SecurityException | IllegalArgumentException | InvocationTargetException ex)
+		         | SecurityException | IllegalArgumentException | InvocationTargetException ex)
 		{
-			throw new AppError(ex);
+			throw new InternalServerException(ex.getMessage());
 		}
 	}
 }

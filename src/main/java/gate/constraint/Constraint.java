@@ -1,7 +1,7 @@
 package gate.constraint;
 
-import gate.error.AppError;
 import gate.error.AppException;
+import gate.error.InternalServerException;
 import gate.lang.property.Property;
 
 import java.io.Serializable;
@@ -43,9 +43,9 @@ public @interface Constraint
 				var implementationConstructor = implementationClass.getConstructor(Object.class);
 				return implementationConstructor
 						.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
-			} catch (ReflectiveOperationException e)
+			} catch (ReflectiveOperationException ex)
 			{
-				throw new AppError(e);
+				throw new InternalServerException(ex.getMessage());
 			}
 		}
 

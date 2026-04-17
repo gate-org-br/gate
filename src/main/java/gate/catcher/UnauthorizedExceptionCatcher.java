@@ -1,35 +1,40 @@
 package gate.catcher;
 
+import gate.http.CookieAuthorization;
+import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.inject.Inject;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
 @ApplicationScoped
-public class UnauthorizedExceptionCatcher extends HttpExceptionCatcher
+public class UnauthorizedExceptionCatcher implements Catcher
 {
 
-	public UnauthorizedExceptionCatcher()
-	{
-		super(HttpServletResponse.SC_UNAUTHORIZED);
-	}
+	@Inject
+	HttpExceptionCatcher catcher;
 
 	@Override
-	public void catches(HttpServletRequest request,
-						HttpServletResponse response, Throwable exception)
+	public void catches(ScreenServletRequest request,
+	                    ScreenServletResponse response, Throwable exception)
 	{
+		if (request.getAuthorization() instanceof CookieAuthorization)
+			response.revokeSessionCookie(request);
+
 		if ("navigate".equalsIgnoreCase(request.getHeader("Sec-Fetch-Mode")))
 		{
 			try
 			{
 				response.sendRedirect("Gate");
+				return;
 			} catch (IOException ex)
 			{
 				throw new UncheckedIOException(ex);
 			}
-		} else
-			super.catches(request, response, exception);
+		}
+
+		catcher.catches(request, response, exception);
 	}
 }

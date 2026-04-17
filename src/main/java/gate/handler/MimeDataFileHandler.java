@@ -1,6 +1,5 @@
 package gate.handler;
 
-import gate.error.AppError;
 import gate.type.mime.MimeDataFile;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +14,7 @@ public class MimeDataFileHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		MimeDataFile mimeDataFile = (MimeDataFile) value;
 
@@ -24,10 +23,10 @@ public class MimeDataFileHandler implements Handler
 		response.setContentType(mimeDataFile.getContentType().toString());
 
 		response.setHeader("Content-Disposition",
-			String.format("attachment; filename=\"%s\"",
-				mimeDataFile.getName()));
+				String.format("attachment; filename=\"%s\"",
+						mimeDataFile.getName()));
 
-		try ( OutputStream os = response.getOutputStream())
+		try (OutputStream os = response.getOutputStream())
 		{
 			os.write(mimeDataFile.getData());
 			os.flush();

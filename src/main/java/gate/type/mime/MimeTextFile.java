@@ -3,7 +3,6 @@ package gate.type.mime;
 import gate.annotation.Converter;
 import gate.annotation.Handler;
 import gate.converter.custom.MimeTextFileConverter;
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.handler.MimeTextFileHandler;
 import gate.lang.contentType.ContentType;
@@ -29,9 +28,9 @@ public class MimeTextFile extends MimeText implements MimeFile
 	private final String name;
 
 	private MimeTextFile(ContentType contentType,
-			String charset,
-			String text,
-			String name)
+	                     String charset,
+	                     String text,
+	                     String name)
 	{
 		super(contentType, charset, text);
 
@@ -40,17 +39,17 @@ public class MimeTextFile extends MimeText implements MimeFile
 	}
 
 	public static MimeTextFile of(ContentType contentType,
-			String charset,
-			String text,
-			String name)
+	                              String charset,
+	                              String text,
+	                              String name)
 	{
 		return new MimeTextFile(contentType, charset, text, name);
 	}
 
 	public static MimeTextFile of(ContentType contentType,
-			String charset,
-			byte[] data,
-			String name)
+	                              String charset,
+	                              byte[] data,
+	                              String name)
 	{
 		return of(contentType, charset, new String(data,
 				Charset.forName(charset)), name);
@@ -76,7 +75,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 	public static MimeTextFile of(File file)
 	{
 		try (BufferedReader reader
-				= new BufferedReader(new FileReader(file)))
+					 = new BufferedReader(new FileReader(file)))
 		{
 			try (StringWriter string = new StringWriter())
 			{
@@ -87,7 +86,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 			}
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 
@@ -104,7 +103,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 					URLEncoder.encode(getText(), getCharset())).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
-			throw new AppError(ex);
+			throw new UncheckedIOException(ex);
 		}
 	}
 

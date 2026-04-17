@@ -190,23 +190,6 @@ public class Toolkit
 		return result.toString();
 	}
 
-	public static List<String> parsePath(String path)
-	{
-		int index = 0;
-		List<String> result = new ArrayList<>();
-
-		while (index < path.length() && path.charAt(index) == '/')
-		{
-			index++;
-			StringBuilder builder = new StringBuilder();
-			for (; index < path.length() && path.charAt(index) != '/'; index++)
-				builder.append(path.charAt(index));
-			var string = builder.toString().trim();
-			result.add(!string.isEmpty() && !"*".equals(string) ? string : null);
-		}
-
-		return result;
-	}
 
 	public static String format(Throwable exception)
 	{
@@ -218,7 +201,7 @@ public class Toolkit
 			string.add(Toolkit.escapeHTML(error.getMessage()));
 			string.add("<ul>");
 			Stream.of(error.getStackTrace()).map(StackTraceElement::toString)
-				.map(Toolkit::escapeHTML).forEach(e -> string.add("<li>").add(e).add("</li>"));
+					.map(Toolkit::escapeHTML).forEach(e -> string.add("<li>").add(e).add("</li>"));
 			string.add("</ul>");
 			string.add("</li>");
 		}
@@ -234,8 +217,8 @@ public class Toolkit
 		string = string.trim();
 
 		if (string.length() >= 2
-			&& ((string.startsWith("\"") && string.endsWith("\""))
-			|| (string.startsWith("'") && string.endsWith("'"))))
+		    && ((string.startsWith("\"") && string.endsWith("\""))
+		        || (string.startsWith("'") && string.endsWith("'"))))
 			string = string.substring(1, string.length() - 1);
 
 		return string.trim();
