@@ -122,17 +122,17 @@ public class Result implements Serializable
 
 	public static Result success(String message, Object data)
 	{
-		return new Result(Type.SUCCESS, message, JsonElement.of(data));
+		return new Result(Type.SUCCESS, message, JsonElement.encode(data));
 	}
 
 	public static Result warning(String message, Object data)
 	{
-		return new Result(Type.WARNING, message, JsonElement.of(data));
+		return new Result(Type.WARNING, message, JsonElement.encode(data));
 	}
 
 	public static Result error(String message, Object data)
 	{
-		return new Result(Type.ERROR, message, JsonElement.of(data));
+		return new Result(Type.ERROR, message, JsonElement.encode(data));
 	}
 
 	@Override

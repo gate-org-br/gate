@@ -42,7 +42,7 @@ public class TableProcessor extends TagModelProcessor
 		{
 			var otherwise = attributes.remove("otherwise");
 			otherwise = expression.create().evaluate((String) otherwise);
-			otherwise = Converter.toText(otherwise);
+			otherwise = Converter.render(otherwise);
 			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
 			replaceWith(context, model, handler, otherwise.toString());
 		} else

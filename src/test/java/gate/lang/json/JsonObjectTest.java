@@ -39,7 +39,7 @@ public class JsonObjectTest
 
 			object.put("list", array);
 
-			String json = JsonObject.format(object);
+			String json = JsonElement.stringify(object);
 
 			Object result = JsonObject.parse(json);
 
@@ -89,7 +89,7 @@ public class JsonObjectTest
 						.setString("id", "2")
 						.setString("name", "Role 2"))
 				.set("auths", JsonArray.of(new JsonObject().setString("id", "3")));
-		User user = object.toObject(User.class);
+		User user = object.decode(User.class);
 
 		assertEquals("Users 1", user.getName());
 		assertEquals(ID.valueOf(1), user.getId());

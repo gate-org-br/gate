@@ -127,7 +127,7 @@ public class DOC extends Doc
 
 		XWPFRun XWPFRun = XWPFParagraph.createRun();
 		XWPFRun.setBold(true);
-		XWPFRun.setText(Converter.toText(field.getName()));
+		XWPFRun.setText(Converter.render(field.getName()));
 	}
 
 	private void printFieldValue(XWPFTableCell XWPFTableCell, Field field)
@@ -139,7 +139,7 @@ public class DOC extends Doc
 		XWPFParagraph.setAlignment(ParagraphAlignment.LEFT);
 
 		XWPFRun XWPFRun = XWPFParagraph.createRun();
-		XWPFRun.setText(Converter.toText(field.getValue()));
+		XWPFRun.setText(Converter.render(field.getValue()));
 	}
 
 	private void printHeader(XWPFHeader XWPFHeader, Header header)
@@ -151,7 +151,7 @@ public class DOC extends Doc
 		XWPFRun.setBold(header.style().getFontWeight() == Style.FontWeight.BOLD);
 		XWPFRun.setFontSize(header.style().getFontSize());
 		XWPFRun.setColor(header.style().getColor().toString().substring(1));
-		XWPFRun.setText(Converter.toText(header.getValue()));
+		XWPFRun.setText(Converter.render(header.getValue()));
 	}
 
 	private void printFooter(XWPFFooter XWPFFooter, Footer footer)
@@ -164,7 +164,7 @@ public class DOC extends Doc
 		XWPFRun.setBold(footer.style().getFontWeight() == Style.FontWeight.BOLD);
 		XWPFRun.setFontSize(footer.style().getFontSize());
 		XWPFRun.setColor(footer.style().getColor().toString().substring(1));
-		XWPFRun.setText(Converter.toText(footer.getValue()));
+		XWPFRun.setText(Converter.render(footer.getValue()));
 	}
 
 	private void printParagraph(XWPFDocument XWPFDocument, Paragraph paragraph)
@@ -176,7 +176,7 @@ public class DOC extends Doc
 		XWPFRun.setBold(paragraph.style().getFontWeight() == Style.FontWeight.BOLD);
 		XWPFRun.setFontSize(paragraph.style().getFontSize());
 		XWPFRun.setColor(paragraph.style().getColor().toString().substring(1));
-		XWPFRun.setText(Converter.toText(paragraph.getValue()));
+		XWPFRun.setText(Converter.render(paragraph.getValue()));
 	}
 
 	private void printGrid(XWPFDocument XWPFDocument, Grid<Object> grid)
@@ -223,7 +223,7 @@ public class DOC extends Doc
 		XWPFRun XWPFRun = XWPFParagraph.createRun();
 		XWPFRun.setBold(true);
 		XWPFRun.setColor("FFFFFF");
-		XWPFRun.setText(Converter.toText(caption));
+		XWPFRun.setText(Converter.render(caption));
 
 		CTTcPr CTTcPr = getCTTcPr(XWPFTableCell);
 		CTTcPr.addNewShd().setFill(CAPTION_BACKGROUND_COLOR);
@@ -277,7 +277,7 @@ public class DOC extends Doc
 
 		XWPFRun XWPFRun = XWPFParagraph.createRun();
 		XWPFRun.setBold(true);
-		XWPFRun.setText(Converter.toText(value));
+		XWPFRun.setText(Converter.render(value));
 	}
 
 	private void printRow(XWPFTableRow XWPFTableRow, Grid<Object> grid, Object value)
@@ -307,7 +307,7 @@ public class DOC extends Doc
 		XWPFRun.setBold(style.getFontWeight() == Style.FontWeight.BOLD);
 		XWPFRun.setFontSize(style.getFontSize());
 		XWPFRun.setColor(style.getColor().toString().substring(1));
-		XWPFRun.setText(Converter.toText(value));
+		XWPFRun.setText(Converter.render(value));
 	}
 
 	public ParagraphAlignment getParagraphAlignment(TextAlign align)

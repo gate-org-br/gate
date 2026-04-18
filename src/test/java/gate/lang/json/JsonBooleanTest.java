@@ -24,15 +24,15 @@ public class JsonBooleanTest
 	@Test
 	public void testFormatSymmetry()
 	{
-		assertEquals(JsonBoolean.of(true), JsonBoolean.format(true));
-		assertEquals(JsonBoolean.of(Boolean.FALSE), JsonBoolean.format(Boolean.FALSE));
+		assertEquals(JsonBoolean.of(true), JsonBoolean.render(true));
+		assertEquals(JsonBoolean.of(Boolean.FALSE), JsonBoolean.render(Boolean.FALSE));
 	}
 
 	@Test
 	public void testJsonElementFormatProducesBooleanElement()
 	{
-		assertEquals(JsonBoolean.TRUE, JsonElement.format(Boolean.TRUE));
-		assertEquals(JsonBoolean.FALSE, JsonElement.format(Boolean.FALSE));
+		assertEquals(JsonBoolean.TRUE, JsonElement.render(Boolean.TRUE));
+		assertEquals(JsonBoolean.FALSE, JsonElement.render(Boolean.FALSE));
 	}
 
 }

@@ -83,7 +83,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	@Override
 	public String toString()
 	{
-		return JsonObject.format(this);
+		return JsonElement.stringify(this);
 	}
 
 	/**
@@ -794,7 +794,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 *                             errors
 	 */
 	@Override
-	public <T> T toObject(Class<T> type)
+	public <T> T decode(Class<T> type)
 	{
 		var jsonAdapter = JsonAdapter.of(type);
 		if (jsonAdapter != null)
@@ -813,7 +813,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 					Field field = Reflection.findField(type, entry.getKey())
 							.orElseThrow(() -> new NoSuchFieldException("No such field %s found on type %s".formatted(entry.getKey(), type.getName())));
 					field.setAccessible(true);
-					field.set(object, entry.getValue().toObject(field.getType(),
+					field.set(object, entry.getValue().decode(field.getType(),
 							Reflection.getElementType(field.getGenericType())));
 				}
 			}
@@ -829,7 +829,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	/**
 	 * Converts this JSON object to the specified parameterized Java type.
 	 * <p>
-	 * For JSON objects, this behaves the same as {@link #toObject(Class)}.
+	 * For JSON objects, this behaves the same as {@link #decode(Class)}.
 	 *
 	 * @param <T>         the target Java type
 	 * @param type        the target raw Java type
@@ -838,9 +838,9 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
-		return toObject((Class<T>) type);
+		return decode((Class<T>) type);
 	}
 
 	@Override
@@ -920,15 +920,15 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * with natural Java values.
 	 * <p>
 	 * Keys are preserved as strings and each nested {@link JsonElement} is
-	 * recursively converted through {@link JsonElement#toObject()}.
+	 * recursively converted through {@link JsonElement#unwrap()}.
 	 *
 	 * @return a map containing the natural Java representation of this object
 	 */
 	@Override
-	public Map<String, Object> toObject()
+	public Map<String, Object> unwrap()
 	{
 		return entrySet().stream().collect(Collectors.toMap(Entry::getKey,
-				e -> e.getValue().toObject()));
+				e -> e.getValue().unwrap()));
 	}
 
 	/**
@@ -941,10 +941,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * @param value function to extract the value
 	 * @return a JsonObject with label and value properties
 	 */
-	public static <T> JsonObject format(T obj, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonObject render(T obj, Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
-				JsonElement.of(value.apply(obj)));
+				JsonElement.encode(value.apply(obj)));
 	}
 
 	/**
@@ -957,10 +957,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * @param value function to extract the value
 	 * @return a JsonObject with label and value properties
 	 */
-	public static <T> JsonObject projectToJson(T obj, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonObject entries(T obj, Function<T, String> label, Function<T, Object> value)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
-				JsonElement.of(value.apply(obj)));
+				JsonElement.encode(value.apply(obj)));
 	}
 
 	/**
@@ -975,11 +975,11 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 *                   JsonObject
 	 * @return a JsonObject with label, value, and properties
 	 */
-	public static <T> JsonObject projectToJson(T obj, Function<T, String> label, Function<T, Object> value,
-	                                           Function<T, JsonObject> properties)
+	public static <T> JsonObject entries(T obj, Function<T, String> label, Function<T, Object> value,
+	                                     Function<T, JsonObject> properties)
 	{
 		return new JsonObject().set("label", JsonString.of(label.apply(obj)))
-				.set("value", JsonElement.of(value.apply(obj)))
+				.set("value", JsonElement.encode(value.apply(obj)))
 				.set("properties", properties.apply(obj));
 	}
 
@@ -990,10 +990,10 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * @param map the Java map to convert
 	 * @return a JsonObject containing the converted entries
 	 */
-	public static JsonObject of(Map<String, ?> map)
+	public static JsonObject wrap(Map<String, ?> map)
 	{
 		JsonObject result = new JsonObject();
-		map.forEach((key, value) -> result.set(key, JsonElement.of(value)));
+		map.forEach((key, value) -> result.set(key, JsonElement.wrap(value)));
 		return result;
 	}
 
@@ -1009,7 +1009,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * @return a JsonObject with all named non-null properties of the
 	 * specified object
 	 */
-	public static JsonObject format(Object obj)
+	public static JsonObject render(Object obj)
 	{
 		JsonObject result = new JsonObject();
 		Property.getProperties(obj.getClass()).forEach((property) ->
@@ -1019,7 +1019,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 			{
 				Object value = property.getValue(obj);
 				if (value != null)
-					result.setString(name, gate.converter.Converter.toText(value));
+					result.setString(name, gate.converter.Converter.render(value));
 			}
 		});
 
@@ -1034,6 +1034,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * property does not exist
 	 */
 	@Override public JsonElement path(String name) {return name != null ? values.getOrDefault(name, JsonNull.INSTANCE) : null;}
+
+	@Override public JsonElement path(int index) {return JsonNull.INSTANCE;}
 
 	/**
 	 * Parses a JSON string into a JsonObject. This is an alias for

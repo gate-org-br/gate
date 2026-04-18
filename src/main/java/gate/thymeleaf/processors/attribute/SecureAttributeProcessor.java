@@ -60,7 +60,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			if (element.hasAttribute("g:otherwise"))
 			{
 				String otherwise = element.getAttributeValue("g:otherwise");
-				otherwise = Converter.toText(
+				otherwise = Converter.render(
 					expression.create().evaluate(otherwise));
 				handler.replaceWith(otherwise, false);
 			} else

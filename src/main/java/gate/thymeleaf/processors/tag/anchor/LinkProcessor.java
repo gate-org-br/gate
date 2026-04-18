@@ -142,6 +142,6 @@ public class LinkProcessor extends AnchorProcessor
         if (otherwise == null)
             return Optional.empty();
 
-        return Optional.of(Converter.toText(otherwise));
+        return Optional.of(Converter.render(otherwise));
     }
 }

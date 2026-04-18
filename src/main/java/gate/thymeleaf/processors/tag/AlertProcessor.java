@@ -46,7 +46,7 @@ public class AlertProcessor extends TagProcessor
 
 			string.add("<script>");
 			string.add("window.addEventListener('load',function(){");
-			messages.stream().map(Converter::toText).map(e -> e.replace('\'', '"'))
+			messages.stream().map(Converter::render).map(e -> e.replace('\'', '"'))
 					.map(e -> "alert('" + e + "');").forEach(string::add);
 			string.add("let href = window.location.href;");
 			string.add("href = href.replace(/messages=[a-zA-Z0-9+\\/=%]*&/, '');");

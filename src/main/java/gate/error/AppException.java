@@ -83,7 +83,7 @@ public class AppException extends BadRequestException
 	@Override
 	public String getMessage()
 	{
-		return Converter.toText(getMessages());
+		return Converter.render(getMessages());
 	}
 
 	/**

@@ -33,7 +33,7 @@ public class JsonArrayTest
 			array.add(JsonString.of("string"));
 			array.add(JsonNumber.of(20));
 
-			assertEquals(array, JsonArray.parse(JsonArray.format(array)));
+			assertEquals(array, JsonArray.parse(JsonElement.stringify(array)));
 		} catch (ConversionException ex)
 		{
 			fail(ex.getMessage());
@@ -48,14 +48,14 @@ public class JsonArrayTest
 				new User().setId(ID.valueOf(3)).setName("Users 3"));
 
 		String expected = "[{\"label\":\"Users 1\",\"value\":\"0000000001\"},{\"label\":\"Users 2\",\"value\":\"0000000002\"},{\"label\":\"Users 3\",\"value\":\"0000000003\"}]";
-		String result = JsonArray.format(users, User::getName, User::getId).toString();
+		String result = JsonArray.render(users, User::getName, User::getId).toString();
 		assertEquals(expected, result);
 	}
 
 	@Test
 	public void testOfPreservesJsonElements()
 	{
-		JsonArray array = JsonArray.of(List.of(JsonBoolean.TRUE, JsonString.of("value")));
+		JsonArray array = JsonArray.wrap(List.of(JsonBoolean.TRUE, JsonString.of("value")));
 
 		assertEquals(JsonBoolean.TRUE, array.get(0));
 		assertEquals(JsonString.of("value"), array.get(1));
@@ -64,9 +64,20 @@ public class JsonArrayTest
 	@Test
 	public void testFormatPreservesFormattedBooleans()
 	{
-		JsonArray array = JsonArray.format(List.of(true, false));
+		JsonArray array = JsonArray.render(List.of(true, false));
 
 		assertEquals(JsonBoolean.TRUE, array.get(0));
 		assertEquals(JsonBoolean.FALSE, array.get(1));
+	}
+
+	@Test
+	public void testInsertIsFluent()
+	{
+		JsonArray array = new JsonArray()
+				.insert(JsonString.of("second"))
+				.insert(0, JsonString.of("first"));
+
+		assertEquals(JsonString.of("first"), array.get(0));
+		assertEquals(JsonString.of("second"), array.get(1));
 	}
 }

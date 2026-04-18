@@ -48,7 +48,7 @@ public class JsonElementConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		if (object != null)
 			return object.toString();
@@ -56,10 +56,10 @@ public class JsonElementConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
 		if (object != null)
-			return String.format(format, toText(type, object));
+			return String.format(format, render(type, object));
 		return "";
 	}
 

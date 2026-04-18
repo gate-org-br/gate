@@ -59,13 +59,13 @@ public class BigDecimalConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
 	}

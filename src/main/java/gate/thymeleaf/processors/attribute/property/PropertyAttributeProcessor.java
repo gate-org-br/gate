@@ -47,9 +47,9 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 		{
 			Object value = property.getValue(screen);
 			if (value == null && element.hasAttribute("g:empty"))
-				handler.setBody(Converter.toText(expression.evaluate(element.getAttributeValue("g:empty"))), false);
+				handler.setBody(Converter.render(expression.evaluate(element.getAttributeValue("g:empty"))), false);
 			else
-				handler.setBody(property.getConverter().toText(property.getRawType(), value), false);
+				handler.setBody(property.getConverter().render(property.getRawType(), value), false);
 		} else
 			handler.setBody("", false);
 	}

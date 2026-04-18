@@ -71,7 +71,7 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 					Object optionLabel = labels.apply(option);
 					Object optionValue = values.apply(option);
 
-					optionLabel = Converter.toText(optionLabel);
+					optionLabel = Converter.render(optionLabel);
 					optionValue = Converter.toString(optionValue);
 					String string = String.format("<option data-value='%s'>%s</option>", optionValue, optionLabel);
 					model.add(context.getModelFactory().createText(string));

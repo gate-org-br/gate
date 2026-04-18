@@ -66,14 +66,14 @@ public class CSV extends Doc
 		CSVFormatter formatter = CSVFormatter.of(writer);
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
-			formatter.writeLine(grid.getColumns().stream().map(Column::getHead).map(Converter::toText)
+			formatter.writeLine(grid.getColumns().stream().map(Column::getHead).map(Converter::render)
 					.collect(Collectors.toList()));
 
 		for (Object obj : Toolkit.iterable(data))
 			if (obj != null)
 			{
 
-				formatter.writeLine(grid.getColumns().stream().map(e -> Converter.toText(e.getBody().apply(obj)))
+				formatter.writeLine(grid.getColumns().stream().map(e -> Converter.render(e.getBody().apply(obj)))
 						.collect(Collectors.toList()));
 
 				if (grid.getChildren() != null)
@@ -82,7 +82,7 @@ public class CSV extends Doc
 			}
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
-			formatter.writeLine(grid.getColumns().stream().map(Column::getFoot).map(Converter::toText)
+			formatter.writeLine(grid.getColumns().stream().map(Column::getFoot).map(Converter::render)
 					.collect(Collectors.toList()));
 	}
 }

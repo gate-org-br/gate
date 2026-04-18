@@ -120,7 +120,7 @@ public class XLS extends Doc
 
 			sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 1));
 
-			cell.setCellValue(new XSSFRichTextString(Converter.toText(form.getCaption())));
+			cell.setCellValue(new XSSFRichTextString(Converter.render(form.getCaption())));
 		}
 
 		for (Field e : form.getFields().stream().filter(Objects::nonNull)
@@ -144,7 +144,7 @@ public class XLS extends Doc
 			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			((XSSFCellStyle) label.getCellStyle()).setFillForegroundColor(getXLSColor(Color.WHITE));
 			((XSSFCellStyle) label.getCellStyle()).getFont().setBold(true);
-			label.setCellValue(new XSSFRichTextString(Converter.toText(e.getName() + ":")));
+			label.setCellValue(new XSSFRichTextString(Converter.render(e.getName() + ":")));
 
 			SXSSFCell value = row.createCell((short) 1);
 			value.setCellStyle(workbook.createCellStyle());
@@ -170,7 +170,7 @@ public class XLS extends Doc
 				value.setCellType(CellType.BOOLEAN);
 				value.setCellValue(((Boolean) e.getValue()));
 			} else
-				value.setCellValue(new XSSFRichTextString(Converter.toText(e.getValue())));
+				value.setCellValue(new XSSFRichTextString(Converter.render(e.getValue())));
 		}
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);
@@ -200,7 +200,7 @@ public class XLS extends Doc
 
 			sheet.addMergedRegion(new CellRangeAddress(index, index, 0, grid.getColumns().size() - 1));
 
-			cell.setCellValue(new XSSFRichTextString(Converter.toText(grid.getCaption())));
+			cell.setCellValue(new XSSFRichTextString(Converter.render(grid.getCaption())));
 		}
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
@@ -234,7 +234,7 @@ public class XLS extends Doc
 						break;
 				}
 
-				cell.setCellValue(new XSSFRichTextString(Converter.toText(col.getHead())));
+				cell.setCellValue(new XSSFRichTextString(Converter.render(col.getHead())));
 			}
 		}
 
@@ -271,7 +271,7 @@ public class XLS extends Doc
 						break;
 				}
 
-				cell.setCellValue(new XSSFRichTextString(Converter.toText(col.getFoot())));
+				cell.setCellValue(new XSSFRichTextString(Converter.render(col.getFoot())));
 			}
 		}
 
@@ -308,9 +308,9 @@ public class XLS extends Doc
 					cell.setCellType(CellType.BOOLEAN);
 					cell.setCellValue((Boolean) value);
 				} else if (j == 0 && level > 0)
-					cell.setCellValue(new XSSFRichTextString("        ".repeat(level) + Converter.toText(value)));
+					cell.setCellValue(new XSSFRichTextString("        ".repeat(level) + Converter.render(value)));
 				else
-					cell.setCellValue(new XSSFRichTextString(Converter.toText(value)));
+					cell.setCellValue(new XSSFRichTextString(Converter.render(value)));
 			}
 
 			if (grid.getChildren() != null)
@@ -397,7 +397,7 @@ public class XLS extends Doc
 				value.setCellType(CellType.BOOLEAN);
 				value.setCellValue(bool);
 			} else
-				value.setCellValue(new XSSFRichTextString(Converter.toText(object)));
+				value.setCellValue(new XSSFRichTextString(Converter.render(object)));
 		}
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);
@@ -439,7 +439,7 @@ public class XLS extends Doc
 				value.setCellType(CellType.BOOLEAN);
 				value.setCellValue(bool);
 			} else
-				value.setCellValue(new XSSFRichTextString(Converter.toText(element)));
+				value.setCellValue(new XSSFRichTextString(Converter.render(element)));
 		}
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);

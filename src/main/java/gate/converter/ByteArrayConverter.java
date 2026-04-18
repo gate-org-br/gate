@@ -79,13 +79,13 @@ public class ByteArrayConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		return toString(type, object);
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
 		return String.format(format, toString(type, object));
 	}

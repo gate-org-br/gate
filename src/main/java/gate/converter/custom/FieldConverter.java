@@ -19,14 +19,14 @@ public class FieldConverter extends ObjectConverter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		if (object == null)
 			return "";
 
 		Field field = (Field) object;
 
-		String value = Converter.toText(field.getValue());
+		String value = Converter.render(field.getValue());
 
 		if (field.getSize() != null)
 		{
@@ -46,9 +46,9 @@ public class FieldConverter extends ObjectConverter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
-		return toText(type, object);
+		return render(type, object);
 	}
 
 	@Override

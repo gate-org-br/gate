@@ -64,7 +64,7 @@ public class TextProcessor extends PropertyProcessor
 
 			for (Object option : Toolkit.iterable(options))
 			{
-				var label = property.getConverter().toText(property.getRawType(), labels.apply(option));
+				var label = property.getConverter().render(property.getRawType(), labels.apply(option));
 				var value = property.getConverter().toString(property.getRawType(), values.apply(option));
 				string.add(String.format("<option data-value='%s'>%s</option>", value, label));
 			}

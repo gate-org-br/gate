@@ -50,7 +50,7 @@ public class ExitProcessor extends TagModelProcessor
 			{
 				var name = attributes.remove("name");
 				name = expression.create().evaluate((String) name);
-				body.add(Converter.toText(name));
+				body.add(Converter.render(name));
 			}
 
 			if (attributes.containsKey("icon"))

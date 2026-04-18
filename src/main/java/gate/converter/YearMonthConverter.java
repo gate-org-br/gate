@@ -47,13 +47,13 @@ public class YearMonthConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		return object != null ? FORMATER.format((YearMonth) object) : "";
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? DateTimeFormatter.ofPattern(format).format((YearMonth) object) : "";
 	}

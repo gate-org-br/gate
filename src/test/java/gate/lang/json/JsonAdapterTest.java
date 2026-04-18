@@ -16,14 +16,14 @@ public class JsonAdapterTest
 	{
 		Assertions.assertEquals(
 				new JsonObject().setString("value", "annotated"),
-				JsonElement.of(new AnnotatedType("ignored")));
+				JsonElement.encode(new AnnotatedType("ignored")));
 	}
 
 	@Test
 	public void shouldAdaptJsonObjectToObjectUsingAnnotation()
 	{
 		AnnotatedType value = new JsonObject().setString("value", "annotated")
-				.toObject(AnnotatedType.class);
+				.decode(AnnotatedType.class);
 
 		Assertions.assertEquals("annotated", value.getValue());
 	}
@@ -35,7 +35,7 @@ public class JsonAdapterTest
 		json.add(new JsonObject().setString("value", "first"));
 		json.add(new JsonObject().setString("value", "second"));
 
-		List<AnnotatedType> values = json.toObject(List.class, AnnotatedType.class);
+		List<AnnotatedType> values = json.decode(List.class, AnnotatedType.class);
 
 		Assertions.assertEquals(2, values.size());
 		Assertions.assertEquals("first", values.get(0).getValue());
@@ -47,7 +47,7 @@ public class JsonAdapterTest
 	{
 		Assertions.assertEquals(
 				new JsonObject().setString("value", "interface"),
-				JsonElement.of(new InterfaceImplementation("ignored")));
+				JsonElement.encode(new InterfaceImplementation("ignored")));
 	}
 
 	@Test
@@ -57,7 +57,7 @@ public class JsonAdapterTest
 
 		Assertions.assertEquals(
 				new JsonObject().setString("value", "registered"),
-				JsonElement.of(new RegisteredType("annotated")));
+				JsonElement.encode(new RegisteredType("annotated")));
 	}
 
 	@Test
@@ -69,7 +69,7 @@ public class JsonAdapterTest
 	@Test
 	public void shouldRepresentNullAsJsonNull() throws ConversionException
 	{
-		Assertions.assertEquals(JsonNull.INSTANCE, JsonElement.of(null));
+		Assertions.assertEquals(JsonNull.INSTANCE, JsonElement.encode(null));
 	}
 
 	@JsonAdapter(AnnotatedTypeAdapter.class)

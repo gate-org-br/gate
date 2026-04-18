@@ -63,7 +63,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 
 		body.add(extract(element, handler, "g:empty")
 				.map(expression::evaluate)
-				.map(Converter::toText)
+				.map(Converter::render)
 				.orElse("<option></option>"));
 
 		Function<Object, Object> groups
@@ -78,7 +78,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 					.entrySet()
 					.forEach(group ->
 					{
-						body.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
+						body.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
 						print(0, body, group.getValue(), labels, values, children, value);
 						body.add("</optgroup>");
 					});
@@ -103,7 +103,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-			           + Converter.toText(labels.apply(object)) + "</option>");
+			           + Converter.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

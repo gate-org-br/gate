@@ -118,7 +118,7 @@ public class PDF extends Doc
 
 	private Element printHeader(Header header)
 	{
-		String string = Converter.toText(header.getValue());
+		String string = Converter.render(header.getValue());
 		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(header.style()));
 		element.setAlignment(getAlignment(header.style()));
 		return element;
@@ -126,7 +126,7 @@ public class PDF extends Doc
 
 	private Element printParagraph(Paragraph paragraph)
 	{
-		String string = Converter.toText(paragraph.getValue());
+		String string = Converter.render(paragraph.getValue());
 		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(paragraph.style()));
 		element.setAlignment(getAlignment(paragraph.style()));
 		return element;
@@ -134,7 +134,7 @@ public class PDF extends Doc
 
 	private Element printFooter(Footer footer)
 	{
-		String string = Converter.toText(footer.getValue());
+		String string = Converter.render(footer.getValue());
 		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(footer.style()));
 		element.setAlignment(getAlignment(footer.style()));
 		return element;
@@ -197,7 +197,7 @@ public class PDF extends Doc
 			table.addCell(label);
 
 			PdfPCell value = new PdfPCell(
-					new com.lowagie.text.Paragraph(Converter.toText(field.getValue()), FIELD_FONT));
+					new com.lowagie.text.Paragraph(Converter.render(field.getValue()), FIELD_FONT));
 			value.setPadding(2);
 			value.setMinimumHeight(field.getHeight());
 			value.setBorder(0);
@@ -280,7 +280,7 @@ public class PDF extends Doc
 
 	private PdfPCell createBodyCell(Object value, Style style, int index, int level)
 	{
-		String string = Converter.toText(value);
+		String string = Converter.render(value);
 
 		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(string, getFont(style)));
 		cell.setMinimumHeight(16);
@@ -360,14 +360,14 @@ public class PDF extends Doc
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null))
 			{
 				grid.getColumns().stream().limit(size)
-						.forEach(e -> table.addCell(createHeadCell(Converter.toText(e.getHead()), e.style())));
+						.forEach(e -> table.addCell(createHeadCell(Converter.render(e.getHead()), e.style())));
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
 
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getFoot() != null))
 			{
 				grid.getColumns().stream().limit(size)
-						.forEach(e -> table.addCell(createFootCell(Converter.toText(e.getFoot()), e.style())));
+						.forEach(e -> table.addCell(createFootCell(Converter.render(e.getFoot()), e.style())));
 				table.setFooterRows(1);
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
@@ -521,7 +521,7 @@ public class PDF extends Doc
 				propertyCell.setPaddingRight(10f);
 				propertyCell.setBackgroundColor(lightGray);
 
-				PdfPCell valueCell = new PdfPCell(new Phrase(Converter.toText(entry.getValue()), valueFont));
+				PdfPCell valueCell = new PdfPCell(new Phrase(Converter.render(entry.getValue()), valueFont));
 				valueCell.setHorizontalAlignment(Element.ALIGN_LEFT);
 				valueCell.setBorder(Rectangle.NO_BORDER);
 				valueCell.setBackgroundColor(lightGray);

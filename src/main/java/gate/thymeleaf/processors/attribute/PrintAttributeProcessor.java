@@ -28,9 +28,9 @@ public class PrintAttributeProcessor extends AttributeProcessor
 		var format = extract(element, handler, "g:format").orElse(null);
 		var empty = extract(element, handler, "g:empty").orElse(null);
 
-		value = Converter.toText(expression.evaluate(value), format);
+		value = Converter.render(expression.evaluate(value), format);
 		if (value.isBlank() && empty != null)
-			value = Converter.toText(expression.evaluate(empty));
+			value = Converter.render(expression.evaluate(empty));
 		value = HtmlEscape.escapeHtml4Xml(value);
 		value = value.replaceAll("\\n", "<br/>");
 		handler.setBody(value, false);

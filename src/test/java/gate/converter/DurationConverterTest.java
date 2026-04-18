@@ -88,8 +88,8 @@ public class DurationConverterTest
 	@Test
 	public void testFormatHHMM() throws ConversionException
 	{
-		assertEquals("01:15", CONVERTER.toText(Duration.class, Duration.ofMinutes(75), "hh:mm"));
+		assertEquals("01:15", CONVERTER.render(Duration.class, Duration.ofMinutes(75), "hh:mm"));
 
-		assertEquals("00:01:15:00", CONVERTER.toText(Duration.class, Duration.ofMinutes(75), "dd:hh:mm:ss"));
+		assertEquals("00:01:15:00", CONVERTER.render(Duration.class, Duration.ofMinutes(75), "dd:hh:mm:ss"));
 	}
 }

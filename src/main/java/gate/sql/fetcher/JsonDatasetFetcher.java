@@ -35,7 +35,7 @@ public class JsonDatasetFetcher implements Fetcher<JsonArray>
 					.collect(Collectors.toCollection(JsonArray::new)));
 
 		while (cursor.next())
-			results.add(cursor.getColumnValues().stream().map(JsonElement::of)
+			results.add(cursor.getColumnValues().stream().map(JsonElement::encode)
 					.collect(Collectors.toCollection(JsonArray::new)));
 
 		return results;

@@ -192,12 +192,12 @@ public class Grid<T> extends ReportElement
 	public static Grid<Object[]> of(String caption, DataGrid dataset)
 	{
 		Grid<Object[]> grid = new Grid<>(dataset).setCaption(caption).add(new Column<Object[]>()
-				.head(dataset.getHead()[0]).body(e -> Converter.toText(e[0])).style(new Style().width(90).left()));
+				.head(dataset.getHead()[0]).body(e -> Converter.render(e[0])).style(new Style().width(90).left()));
 
 		for (int i = 1; i < dataset.getHead().length; i++)
 		{
 			var index = i;
-			grid.add(new Column<Object[]>().head(dataset.getHead()[i]).body(e -> Converter.toText(e[index]))
+			grid.add(new Column<Object[]>().head(dataset.getHead()[i]).body(e -> Converter.render(e[index]))
 					.style(new Style().width(10)));
 		}
 
@@ -247,7 +247,7 @@ public class Grid<T> extends ReportElement
 				return of(new JsonObject().set("columns", columns).set("dataset", dataset));
 			} else if (jsonArray.get(0) instanceof JsonString)
 			{
-				var columns = JsonArray.of(new JsonObject().setString("property", "[0]"));
+				var columns = JsonArray.wrap(new JsonObject().setString("property", "[0]"));
 				return of(new JsonObject().set("columns", columns).set("dataset", jsonArray));
 			}
 		}

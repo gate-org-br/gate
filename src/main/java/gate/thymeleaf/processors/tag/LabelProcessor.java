@@ -69,9 +69,9 @@ public class LabelProcessor extends TagProcessor
 					.or(() -> Optional.ofNullable(property.getMetadata().color()))
 					.ifPresent(e -> attributes.put("style", "color: " + e));
 
-		String string = Converter.toText(value, format);
+		String string = Converter.render(value, format);
 		if (string.isBlank() && empty != null)
-			string = Converter.toText(expression.create().evaluate(empty));
+			string = Converter.render(expression.create().evaluate(empty));
 		string = string.replaceAll("\\n", "<br/>");
 
 		handler.replaceWith("<label " + attributes + ">" + string + "</label>", true);

@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
+import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
@@ -34,7 +35,7 @@ public class JsonObjectHandler implements MessageBodyWriter<JsonObject>, Message
 			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException
 	{
-		var string = JsonObject.format(value);
+		var string = JsonElement.stringify(value);
 		entityStream.write(string.getBytes());
 	}
 

@@ -100,7 +100,7 @@ public class DataGrid extends ArrayList<Object[]>
 
 	public JsonArray toJson()
 	{
-		return JsonArray.format(Stream.concat(Stream.of((Object) head), stream()));
+		return JsonArray.render(Stream.concat(Stream.of((Object) head), stream()));
 	}
 
 	@Override

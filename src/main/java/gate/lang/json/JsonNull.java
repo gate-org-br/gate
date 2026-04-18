@@ -57,7 +57,7 @@ public class JsonNull implements JsonElement, JsonScalar
 	 * @return always {@code null}
 	 */
 	@Override
-	public <T> T toObject(Class<T> type) {return null;}
+	public <T> T decode(Class<T> type) {return null;}
 
 	/**
 	 * Converts this JSON null to the specified parameterized Java type.
@@ -68,7 +68,7 @@ public class JsonNull implements JsonElement, JsonScalar
 	 * @return always {@code null}
 	 */
 	@Override
-	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return null;}
+	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return null;}
 
 	@Override
 	public Object getScalarValue()
@@ -81,7 +81,7 @@ public class JsonNull implements JsonElement, JsonScalar
 	 *
 	 * @return always {@code null}
 	 */
-	@Override public Object toObject() {return null;}
+	@Override public Object unwrap() {return null;}
 
 	/**
 	 * Parses a JSON formatted string into a JsonNull object.
@@ -101,7 +101,7 @@ public class JsonNull implements JsonElement, JsonScalar
 		return (JsonNull) element;
 	}
 
-	public static JsonNull format()
+	public static JsonNull render()
 	{
 		return INSTANCE;
 	}

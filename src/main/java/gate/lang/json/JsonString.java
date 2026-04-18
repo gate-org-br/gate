@@ -77,7 +77,7 @@ public class JsonString implements JsonElement, JsonScalar
 	 * @param type the target Java type
 	 * @return the converted Java value
 	 */
-	public <T> T toObject(Class<T> type)
+	public <T> T decode(Class<T> type)
 	{
 		return type == String.class ? type.cast(value) : gate.converter.Converter.fromString(type, value);
 	}
@@ -87,16 +87,16 @@ public class JsonString implements JsonElement, JsonScalar
 	/**
 	 * Converts this JSON string to the specified parameterized Java type.
 	 * <p>
-	 * For scalar strings, this behaves the same as {@link #toObject(Class)}.
+	 * For scalar strings, this behaves the same as {@link #decode(Class)}.
 	 *
 	 * @param <T>         the target Java type
 	 * @param type        the target raw Java type
 	 * @param elementType ignored for scalar strings
 	 * @return the converted Java value
 	 */
-	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
-		return toObject((Class<T>) type);
+		return decode((Class<T>) type);
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class JsonString implements JsonElement, JsonScalar
 	 *
 	 * @return the wrapped {@link String} value
 	 */
-	@Override public String toObject() {return value;}
+	@Override public String unwrap() {return value;}
 
 	/**
 	 * Parses a JSON formatted string into a JsonString objecZt.
@@ -130,7 +130,7 @@ public class JsonString implements JsonElement, JsonScalar
 		return new JsonString(string);
 	}
 
-	public static JsonString format(String string)
+	public static JsonString render(String string)
 	{
 		return of(string);
 	}

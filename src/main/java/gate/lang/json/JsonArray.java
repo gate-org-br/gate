@@ -8,7 +8,6 @@ import gate.handler.JsonElementHandler;
 import gate.util.Reflection;
 
 import java.io.Serial;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,9 +48,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	/**
 	 * Creates an empty JsonArray.
 	 */
-	public JsonArray()
-	{
-	}
+	public JsonArray() {}
 
 	/**
 	 * Creates a JsonArray with the specified initial elements.
@@ -82,16 +79,13 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	@Override
-	public String toString()
-	{
-		return JsonArray.format(this);
-	}
+	public String toString() {return JsonElement.stringify(this);}
 
 	/**
 	 * Converts this JsonArray to a Java object of the specified type.
 	 * <p>
 	 * This method cannot be used without specifying an element type. Use
-	 * {@link #toObject(java.lang.reflect.Type, java.lang.reflect.Type)}
+	 * {@link #decode(java.lang.reflect.Type, java.lang.reflect.Type)}
 	 * instead.
 	 * </p>
 	 *
@@ -102,10 +96,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 *                                       is required
 	 */
 	@Override
-	public <T> T toObject(Class<T> type)
-	{
-		throw new UnsupportedOperationException("Can't create java object from json array without element type");
-	}
+	public <T> T decode(Class<T> type) {throw new UnsupportedOperationException("Can't create java object from json array without element type");}
 
 	/**
 	 * Converts this JsonArray to a Java collection of the specified type
@@ -123,7 +114,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		Class<T> clazz = (Class<T>) type;
 		Class<?> elementClazz = Reflection.getRawType(elementType);
@@ -136,22 +127,22 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 
 		return clazz.isAssignableFrom(Set.class)
 				? (T) stream()
-					  .map(e -> e.toObject(elementClazz, Reflection.getElementType(elementType)))
+					  .map(e -> e.decode(elementClazz, Reflection.getElementType(elementType)))
 					  .collect(Collectors.toSet())
 				: (T) stream()
-					  .map(e -> e.toObject(elementClazz, Reflection.getElementType(elementType))).toList();
+					  .map(e -> e.decode(elementClazz, Reflection.getElementType(elementType))).toList();
 	}
 
 	/**
 	 * Returns the natural Java representation of this JSON array.
 	 * <p>
 	 * Each element is recursively converted through
-	 * {@link JsonElement#toObject()}.
+	 * {@link JsonElement#unwrap()}.
 	 *
 	 * @return a {@link List} containing the natural Java representation of
 	 * each JSON element
 	 */
-	@Override public List<Object> toObject() {return stream().map(JsonElement::toObject).toList();}
+	@Override public List<Object> unwrap() {return stream().map(JsonElement::unwrap).toList();}
 
 	/**
 	 * Parses a JSON formatted string into a JsonArray object.
@@ -174,49 +165,15 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 		return (JsonArray) element;
 	}
 
-	/**
-	 * Formats the specified JsonArray into a JSON formatted string.
-	 * <p>
-	 * The elements of the specified JsonArray will be formatted recursively
-	 * as their respective elements on JSON notation.
-	 * </p>
-	 *
-	 * @param jsonArray the JsonArray object to be formatted on JSON
-	 *                  notation
-	 * @return a JSON formatted string representing the specified JsonArray
-	 * @throws NullPointerException if the jsonArray parameter is null
-	 */
-	public static String format(JsonArray jsonArray)
-	{
-		Objects.requireNonNull(jsonArray);
-		return JsonElement.stringify(jsonArray);
-	}
-
 	@Override
 	public int size()
 	{
 		return values.size();
 	}
 
-	/**
-	 * Resolves an array element by index, where the index is provided as a
-	 * string.
-	 * <p>
-	 * If the specified segment is not a valid integer, is negative, or points
-	 * outside the array bounds, this method returns {@link JsonNull#INSTANCE}.
-	 *
-	 * @param name the array index encoded as a string
-	 * @return the resolved array element, or {@link JsonNull#INSTANCE} when the
-	 * index is invalid or out of bounds
-	 */
 	@Override
-	public JsonElement path(String name)
+	public JsonElement path(int index)
 	{
-		if (name == null
-		    || name.isEmpty()
-		    || !name.chars().allMatch(Character::isDigit))
-			return JsonNull.INSTANCE;
-		int index = Integer.parseInt(name);
 		return index >= 0 && index < size() ? get(index) : JsonNull.INSTANCE;
 	}
 
@@ -353,214 +310,27 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	/**
-	 * Adds a JsonElement to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
+	 * Inserts a JsonElement at the end of this array and returns this array.
 	 *
-	 * @param value the JsonElement to add, or null for JsonNull
+	 * @param value the JsonElement to insert
 	 * @return this JsonArray for method chaining
 	 */
-	public JsonArray addJsonElement(JsonElement value)
+	public JsonArray insert(JsonElement value)
 	{
-		add(value != null ? value : JsonNull.INSTANCE);
+		add(value);
 		return this;
 	}
 
 	/**
-	 * Adds a String value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
+	 * Inserts a JsonElement at the specified index and returns this array.
 	 *
-	 * @param value the String value to add, or null for JsonNull
+	 * @param index the insertion index
+	 * @param value the JsonElement to insert
 	 * @return this JsonArray for method chaining
 	 */
-	public JsonArray addString(String value)
+	public JsonArray insert(int index, JsonElement value)
 	{
-		add(value != null ? JsonString.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a byte value to this JsonArray.
-	 *
-	 * @param value the byte value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addByte(byte value)
-	{
-		add(JsonNumber.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds a Byte value to this JsonArray. If null, adds JsonNull.INSTANCE.
-	 *
-	 * @param value the Byte value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addByte(Byte value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a short value to this JsonArray.
-	 *
-	 * @param value the short value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addShort(short value)
-	{
-		add(JsonNumber.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds a Short value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
-	 *
-	 * @param value the Short value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addShort(Short value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds an int value to this JsonArray.
-	 *
-	 * @param value the int value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addInt(int value)
-	{
-		add(JsonNumber.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds an Integer value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
-	 *
-	 * @param value the Integer value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addInt(Integer value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a long value to this JsonArray.
-	 *
-	 * @param value the long value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addLong(long value)
-	{
-		add(JsonNumber.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds a Long value to this JsonArray. If null, adds JsonNull.INSTANCE.
-	 *
-	 * @param value the Long value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addLong(Long value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a float value to this JsonArray.
-	 *
-	 * @param value the float value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addFloat(float value)
-	{
-		add(JsonNumber.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds a Float value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
-	 *
-	 * @param value the Float value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addFloat(Float value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a double value to this JsonArray.
-	 *
-	 * @param value the double value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addDouble(double value)
-	{
-		add(JsonNumber.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds a Double value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
-	 *
-	 * @param value the Double value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addDouble(Double value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a BigDecimal value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
-	 *
-	 * @param value the BigDecimal value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addBigDecimal(BigDecimal value)
-	{
-		add(value != null ? JsonNumber.of(value) : JsonNull.INSTANCE);
-		return this;
-	}
-
-	/**
-	 * Adds a boolean value to this JsonArray.
-	 *
-	 * @param value the boolean value to add
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addBoolean(boolean value)
-	{
-		add(JsonBoolean.of(value));
-		return this;
-	}
-
-	/**
-	 * Adds a Boolean value to this JsonArray. If null, adds
-	 * JsonNull.INSTANCE.
-	 *
-	 * @param value the Boolean value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addBoolean(Boolean value)
-	{
-		add(value != null ? JsonBoolean.of(value) : JsonNull.INSTANCE);
+		add(index, value);
 		return this;
 	}
 
@@ -596,31 +366,15 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	}
 
 	/**
-	 * Adds an Object value to this JsonArray by converting it to a String.
-	 * If null, adds JsonNull.INSTANCE.
-	 *
-	 * @param value the Object value to add, or null for JsonNull
-	 * @return this JsonArray for method chaining
-	 */
-	public JsonArray addObject(Object value)
-	{
-		if (value == null)
-			add(JsonNull.INSTANCE);
-		else
-			add(JsonString.of(gate.converter.Converter.toString(value)));
-		return this;
-	}
-
-	/**
 	 * Creates a JsonArray from a Stream of objects by converting each to a
 	 * JsonElement.
 	 *
 	 * @param stream the stream of objects to convert
 	 * @return a JsonArray containing the converted elements
 	 */
-	public static JsonArray of(Stream<?> stream)
+	public static JsonArray wrap(Stream<?> stream)
 	{
-		return stream.map(JsonElement::of).collect(Collectors.toCollection(JsonArray::new));
+		return stream.map(JsonElement::wrap).collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	/**
@@ -630,9 +384,9 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the collection of objects to convert
 	 * @return a JsonArray containing the converted elements
 	 */
-	public static JsonArray of(Collection<?> objects)
+	public static JsonArray wrap(Collection<?> objects)
 	{
-		return JsonArray.of(objects.stream());
+		return JsonArray.wrap(objects.stream());
 	}
 
 	/**
@@ -642,9 +396,9 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the array of objects to convert
 	 * @return a JsonArray containing the converted elements
 	 */
-	public static JsonArray of(Object... objects)
+	public static JsonArray wrap(Object... objects)
 	{
-		return JsonArray.of(Stream.of(objects));
+		return JsonArray.wrap(Stream.of(objects));
 	}
 
 	/**
@@ -658,9 +412,9 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @return a JsonArray containing JsonObjects with label and value
 	 * properties
 	 */
-	public static <T> JsonArray projectToJson(List<T> objects, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonArray entries(List<T> objects, Function<T, String> label, Function<T, Object> value)
 	{
-		return objects.stream().map(e -> JsonObject.projectToJson(e, label, value))
+		return objects.stream().map(e -> JsonObject.entries(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
@@ -677,10 +431,10 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @return a JsonArray containing JsonObjects with label, value, and
 	 * properties
 	 */
-	public static <T> JsonArray projectToJson(List<T> objects, Function<T, String> label, Function<T, Object> value,
-	                                          Function<T, JsonObject> properties)
+	public static <T> JsonArray entries(List<T> objects, Function<T, String> label, Function<T, Object> value,
+	                                    Function<T, JsonObject> properties)
 	{
-		return objects.stream().map(e -> JsonObject.projectToJson(e, label, value, properties))
+		return objects.stream().map(e -> JsonObject.entries(e, label, value, properties))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 
@@ -704,9 +458,9 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param stream the stream of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray format(Stream<?> stream)
+	public static JsonArray render(Stream<?> stream)
 	{
-		return stream.map(JsonElement::format).collect(Collectors.toCollection(JsonArray::new));
+		return stream.map(JsonElement::render).collect(Collectors.toCollection(JsonArray::new));
 	}
 
 	/**
@@ -716,10 +470,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the collection of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray format(Collection<?> objects)
-	{
-		return format(objects.stream());
-	}
+	public static JsonArray render(Collection<?> objects) {return render(objects.stream());}
 
 	/**
 	 * Creates a JsonArray from an array by converting each object to its
@@ -728,10 +479,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the array of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray format(Object... objects)
-	{
-		return format(Stream.of(objects));
-	}
+	public static JsonArray render(Object... objects) {return render(Stream.of(objects));}
 
 	/**
 	 * Creates a JsonArray of formatted JsonObjects with label and value
@@ -743,9 +491,9 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param value   function to extract the value from each object
 	 * @return a JsonArray containing formatted JsonObjects
 	 */
-	public static <T> JsonArray format(List<T> objects, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonArray render(List<T> objects, Function<T, String> label, Function<T, Object> value)
 	{
-		return objects.stream().map(e -> JsonObject.format(e, label, value))
+		return objects.stream().map(e -> JsonObject.render(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));
 	}
 

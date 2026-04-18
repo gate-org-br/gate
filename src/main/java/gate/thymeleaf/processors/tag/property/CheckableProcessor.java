@@ -100,7 +100,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 			string.add(String.format("<input %s/><label style='padding-left: %dpx'>%s</label>",
 				attributes.toString(),
 				depth * 40,
-				Converter.toText(labels.apply(option))));
+				Converter.render(labels.apply(option))));
 
 			if (children != null)
 				print(string, Toolkit.iterable(children.apply(option)),

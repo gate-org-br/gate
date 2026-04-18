@@ -36,6 +36,6 @@ public class JsonStringTest
 	@Test
 	public void testFormatSymmetry()
 	{
-		assertEquals(JsonString.of("String"), JsonString.format("String"));
+		assertEquals(JsonString.of("String"), JsonString.render("String"));
 	}
 }

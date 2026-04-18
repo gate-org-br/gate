@@ -15,7 +15,7 @@ public class ArrayConverter extends ObjectConverter
 {
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		StringBuilder string = new StringBuilder();
 		for (Object obj : ((Object[]) object))
@@ -25,7 +25,7 @@ public class ArrayConverter extends ObjectConverter
 				if (!string.isEmpty())
 					string.append(", ");
 
-				string.append(Converter.toText(obj));
+				string.append(Converter.render(obj));
 			}
 		}
 		return string.toString();

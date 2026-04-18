@@ -191,7 +191,7 @@ public interface Converter
 	 * @param object object to be converted to a string
 	 * @return the specified object as a java string
 	 */
-	String toText(Class<?> type, Object object);
+	String render(Class<?> type, Object object);
 
 	/**
 	 * Converts the specified java object to a string.
@@ -206,7 +206,7 @@ public interface Converter
 	 * @param format a string to be used to format the specified object
 	 * @return the specified object as a java string
 	 */
-	String toText(Class<?> type, Object object, String format);
+	String render(Class<?> type, Object object, String format);
 
 	/**
 	 * Converts the specified part to a java object.
@@ -290,7 +290,7 @@ public interface Converter
 			throws ConversionException
 	{
 		if (object != null)
-			writer.write(JsonToken.Type.STRING, toText(object));
+			writer.write(JsonToken.Type.STRING, render(object));
 	}
 
 	/**
@@ -347,12 +347,12 @@ public interface Converter
 	 * @param object object to be converted to a string
 	 * @return the specified object as a java string
 	 */
-	static String toText(Object object)
+	static String render(Object object)
 	{
 		if (object == null)
 			return "";
 		Class<?> type = object.getClass();
-		return getConverter(type).toText(type, object);
+		return getConverter(type).render(type, object);
 	}
 
 	/**
@@ -365,7 +365,7 @@ public interface Converter
 	 * @param format a string to be used to format the specified object
 	 * @return the specified object as a java string
 	 */
-	static String toText(Object object, String format)
+	static String render(Object object, String format)
 	{
 		if (object == null)
 			return "";
@@ -374,8 +374,8 @@ public interface Converter
 		Converter converter = getConverter(type);
 
 		if (format == null)
-			return converter.toText(type, object);
-		return converter.toText(type, object, format);
+			return converter.render(type, object);
+		return converter.render(type, object, format);
 	}
 
 	/**

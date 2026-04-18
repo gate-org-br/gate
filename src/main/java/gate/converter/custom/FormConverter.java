@@ -41,23 +41,23 @@ public class FormConverter extends CollectionConverter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		if (object instanceof Form)
 		{
 			Form form = (Form) object;
 			if (form.getFields().isEmpty())
 				return "";
-			return form.getFields().stream().map(e -> Converter.toText(e))
+			return form.getFields().stream().map(e -> Converter.render(e))
 					.collect(Collectors.joining("", "<fieldset>", "</fieldset>"));
 		}
 		return "";
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
-		return toText(type, object);
+		return render(type, object);
 	}
 
 	@Override

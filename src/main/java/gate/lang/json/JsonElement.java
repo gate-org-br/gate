@@ -121,14 +121,26 @@ public interface JsonElement extends Serializable
 	 * when the segment cannot be resolved.
 	 * <p>
 	 * Concrete implementations may interpret the segment according to their
-	 * structure, for example object property names or array indices encoded as
-	 * strings.
+	 * structure, for example object property names.
 	 *
 	 * @param name the path segment to resolve
 	 * @return the resolved child element, or {@link JsonNull#INSTANCE} when the
 	 * segment cannot be resolved
 	 */
 	default JsonElement path(String name) {return JsonNull.INSTANCE;}
+
+	/**
+	 * Resolves a single child path segment from this JSON element by array
+	 * index.
+	 * <p>
+	 * The default behavior is non-throwing and returns {@link JsonNull#INSTANCE}
+	 * when the segment cannot be resolved.
+	 *
+	 * @param index the array index to resolve
+	 * @return the resolved child element, or {@link JsonNull#INSTANCE} when the
+	 * index cannot be resolved
+	 */
+	default JsonElement path(int index) {return JsonNull.INSTANCE;}
 
 	/**
 	 * Converts this JSON element to an instance of the specified Java type.
@@ -141,7 +153,7 @@ public interface JsonElement extends Serializable
 	 * @param type the target Java type
 	 * @return the converted Java object
 	 */
-	<T> T toObject(Class<T> type);
+	<T> T decode(Class<T> type);
 
 	/**
 	 * Converts this JSON element to a parameterized Java type.
@@ -154,8 +166,8 @@ public interface JsonElement extends Serializable
 	 * @param elementType the generic element type associated with {@code type}
 	 * @return the converted Java object
 	 */
-	<T> T toObject(java.lang.reflect.Type type,
-	               java.lang.reflect.Type elementType);
+	<T> T decode(java.lang.reflect.Type type,
+	             java.lang.reflect.Type elementType);
 
 	/**
 	 * Converts this JSON element to its natural Java representation.
@@ -168,7 +180,53 @@ public interface JsonElement extends Serializable
 	 *
 	 * @return the natural Java representation of this JSON element
 	 */
-	Object toObject();
+	Object unwrap();
+
+	/**
+	 * Wraps a naturally representable Java value as a {@link JsonElement}.
+	 * <p>
+	 * Accepted inputs are:
+	 * {@code null}, {@link JsonElement}, {@link String}, {@link Number},
+	 * {@link Boolean}, {@link Map}, {@link Collection}, and object arrays.
+	 * <p>
+	 * Any other type is rejected with a {@link ConversionException}.
+	 *
+	 * @param obj the Java value to wrap
+	 * @return the wrapped JsonElement
+	 * @throws ConversionException when the value is not naturally representable
+	 * as JSON
+	 */
+	static JsonElement wrap(Object obj) throws ConversionException
+	{
+		if (obj == null)
+			return JsonNull.INSTANCE;
+		if (obj instanceof JsonElement jsonElement)
+			return jsonElement;
+
+		if (obj instanceof Boolean aBoolean)
+			return JsonBoolean.of(aBoolean);
+		if (obj instanceof Number number)
+			return JsonNumber.of(number);
+		if (obj instanceof String string)
+			return JsonString.of(string);
+		if (obj instanceof Collection<?> collection)
+			return JsonArray.wrap(collection);
+		if (obj instanceof Object[] objects)
+			return JsonArray.wrap(objects);
+		if (obj instanceof Map<?, ?> map)
+		{
+			JsonObject result = new JsonObject();
+			for (Map.Entry<?, ?> entry : map.entrySet())
+			{
+				if (!(entry.getKey() instanceof String key))
+					throw new ConversionException("Can't wrap map with non-string key: %s", entry.getKey());
+				result.set(key, wrap(entry.getValue()));
+			}
+			return result;
+		}
+
+		throw new ConversionException("Can't wrap %s as JsonElement", obj.getClass().getName());
+	}
 
 	/**
 	 * Creates a {@link JsonElement} representation for the specified object.
@@ -190,28 +248,38 @@ public interface JsonElement extends Serializable
 	 * @param obj the object to be converted
 	 * @return a JsonElement representing the specified object
 	 */
-	static JsonElement of(Object obj) throws ConversionException
+	static JsonElement encode(Object obj) throws ConversionException
 	{
 		if (obj == null)
 			return JsonNull.INSTANCE;
 		if (obj instanceof JsonElement jsonElement)
 			return jsonElement;
-
 		if (obj instanceof Boolean aBoolean)
 			return JsonBoolean.of(aBoolean);
 		if (obj instanceof Number number)
 			return JsonNumber.of(number);
 		if (obj instanceof String string)
 			return JsonString.of(string);
+		if (obj instanceof Map<?, ?> map)
+		{
+			JsonObject result = new JsonObject();
+			for (Map.Entry<?, ?> entry : map.entrySet())
+			{
+				if (!(entry.getKey() instanceof String key))
+					throw new ConversionException("Can't encode map with non-string key: %s", entry.getKey());
+				result.set(key, encode(entry.getValue()));
+			}
+			return result;
+		}
 
 		var jsonAdapter = JsonAdapter.of((Class<Object>) obj.getClass());
 		if (jsonAdapter != null)
 			return jsonAdapter.toJson(obj);
 
 		if (obj instanceof Collection<?> collection)
-			return JsonArray.of(collection);
+			return JsonArray.wrap(collection);
 		if (obj instanceof Object[] objects)
-			return JsonArray.of(objects);
+			return JsonArray.wrap(objects);
 
 		for (Constructor<?> constructor
 				: obj.getClass().getDeclaredConstructors())
@@ -228,7 +296,7 @@ public interface JsonElement extends Serializable
 							field.setAccessible(true);
 							Object value = field.get(obj);
 							if (value != null)
-								result.put(field.getName(), JsonElement.of(value));
+								result.put(field.getName(), JsonElement.encode(value));
 						} catch (IllegalAccessException ex)
 						{
 							throw new ConversionException(ex.getMessage());
@@ -253,7 +321,7 @@ public interface JsonElement extends Serializable
 	 * types associated with a {@link JsonAdapter} are adapted through it.
 	 * <p>
 	 * For other object types, this method falls back to a {@link JsonString}
-	 * built from {@link gate.converter.Converter#toText(Object)}.
+	 * built from {@link gate.converter.Converter#render(Object)}.
 	 * <p>
 	 * This method still returns a {@link JsonElement}, but it may favor
 	 * readability over faithful reconstruction of the original object.
@@ -261,7 +329,7 @@ public interface JsonElement extends Serializable
 	 * @param obj the object to be formatted
 	 * @return a human-oriented JsonElement representing the specified object
 	 */
-	static JsonElement format(Object obj)
+	static JsonElement render(Object obj)
 	{
 		if (obj == null)
 			return UNDEFINED;
@@ -270,20 +338,20 @@ public interface JsonElement extends Serializable
 			return jsonElement;
 
 		if (obj instanceof Number number)
-			return JsonNumber.format(number);
+			return JsonNumber.render(number);
 		if (obj instanceof Boolean bool)
-			return JsonBoolean.format(bool);
+			return JsonBoolean.render(bool);
 
 		var jsonAdapter = JsonAdapter.of((Class<Object>) obj.getClass());
 		if (jsonAdapter != null)
 			return jsonAdapter.toJsonText(obj);
 
 		if (obj instanceof Collection<?> collection)
-			return JsonArray.format(collection);
+			return JsonArray.render(collection);
 		if (obj instanceof Object[] objects)
-			return JsonArray.format(objects);
+			return JsonArray.render(objects);
 
-		return JsonString.of(gate.converter.Converter.toText(obj));
+		return JsonString.of(gate.converter.Converter.render(obj));
 	}
 
 	/**

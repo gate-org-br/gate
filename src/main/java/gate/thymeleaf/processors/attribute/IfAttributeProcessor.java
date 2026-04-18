@@ -30,7 +30,7 @@ public class IfAttributeProcessor extends AttributeProcessor
 		} else if (element.hasAttribute("g:otherwise"))
 		{
 			String otherwise = element.getAttributeValue("g:otherwise");
-			otherwise = Converter.toText(expression.create().evaluate(otherwise));
+			otherwise = Converter.render(expression.create().evaluate(otherwise));
 			handler.replaceWith(otherwise, false);
 		} else
 			handler.removeElement();

@@ -25,7 +25,7 @@ public class ChartGenerator
 
 		for (T obj : chart.getDataset())
 		{
-			String categoryName = Converter.toText(chart.getCategory().getValue().apply(obj));
+			String categoryName = Converter.render(chart.getCategory().getValue().apply(obj));
 
 			for (Value<T> value : chart.getValues())
 			{

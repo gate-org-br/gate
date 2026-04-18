@@ -1,6 +1,7 @@
 package gate.rest;
 
 import gate.lang.json.JsonArray;
+import gate.lang.json.JsonElement;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -33,7 +34,7 @@ public class JsonArrayHandler implements MessageBodyWriter<JsonArray>, MessageBo
 	public void writeTo(JsonArray value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 						MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		var string = JsonArray.format(value);
+		var string = JsonElement.stringify(value);
 		entityStream.write(string.getBytes());
 	}
 

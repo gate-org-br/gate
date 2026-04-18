@@ -50,15 +50,15 @@ public class ClassConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		return object != null ? ((Class<?>) object).getName() : "";
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
-		return object != null ? String.format(format, toText(type, object)) : "";
+		return object != null ? String.format(format, render(type, object)) : "";
 	}
 
 	@Override

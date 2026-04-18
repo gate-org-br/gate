@@ -71,7 +71,7 @@ public class SelectProcessor extends PropertyProcessor
 			.filter(e -> e instanceof String)
 			.map(e -> (String) e)
 			.map(expression::evaluate)
-			.map(Converter::toText)
+			.map(Converter::render)
 			.orElse("");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
@@ -89,7 +89,7 @@ public class SelectProcessor extends PropertyProcessor
 				.entrySet()
 				.forEach(group ->
 				{
-					string.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
+					string.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
 					print(0, string, group.getValue(), labels, values, children, value);
 					string.add("</optgroup>");
 				});
@@ -115,7 +115,7 @@ public class SelectProcessor extends PropertyProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-				+ Converter.toText(labels.apply(object)) + "</option>");
+				+ Converter.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

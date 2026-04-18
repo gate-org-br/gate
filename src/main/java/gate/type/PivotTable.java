@@ -104,7 +104,7 @@ public class PivotTable<T> implements Serializable
 
 	public JsonArray toJson()
 	{
-		return JsonArray.of(dataset());
+		return JsonArray.wrap(dataset());
 	}
 
 	public PivotTable<T> inverted()

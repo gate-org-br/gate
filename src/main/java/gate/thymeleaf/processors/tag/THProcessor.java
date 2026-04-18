@@ -52,9 +52,9 @@ public class THProcessor extends TagModelProcessor
 		var request = ((IWebContext) context).getExchange().getRequest();
 
 		var value = expression.create().evaluate(element.getAttributeValue("value"));
-		String string = Converter.toText(value, element.getAttributeValue("format"));
+		String string = Converter.render(value, element.getAttributeValue("format"));
 		if (string.isBlank() && element.hasAttribute("empty"))
-			string = Converter.toText(expression.create().evaluate(element.getAttributeValue("empty")));
+			string = Converter.render(expression.create().evaluate(element.getAttributeValue("empty")));
 		String body = string.replaceAll("\\n", "<br/>");
 
 		model.reset();

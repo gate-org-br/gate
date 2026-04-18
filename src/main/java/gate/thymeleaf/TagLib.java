@@ -82,12 +82,12 @@ public class TagLib
 
 	public static String print(Object object)
 	{
-		return Converter.toText(object);
+		return Converter.render(object);
 	}
 
 	public static String format(Object object, String format)
 	{
-		return Converter.toText(object, format);
+		return Converter.render(object, format);
 	}
 
 	public static Class<?> type(String type)

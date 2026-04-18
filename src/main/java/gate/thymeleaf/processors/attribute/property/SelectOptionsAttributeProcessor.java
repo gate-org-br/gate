@@ -65,7 +65,7 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 				.entrySet()
 				.forEach(group ->
 				{
-					body.add("<optgroup label='" + Converter.toText(group.getKey()) + "'>");
+					body.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
 					print(0, body, group.getValue(), labels, values, children);
 					body.add("</optgroup>");
 				});
@@ -87,7 +87,7 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-				+ Converter.toText(labels.apply(object)) + "</option>");
+				+ Converter.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

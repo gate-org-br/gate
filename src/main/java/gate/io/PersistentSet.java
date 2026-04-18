@@ -260,7 +260,7 @@ public class PersistentSet<T> implements Set<T>
 							line = encryptor.decrypt(line);
 
 						JsonObject entry = JsonObject.parse(line);
-						var value = entry.get("v").toObject(type);
+						var value = entry.get("v").decode(type);
 						switch (entry.getString("a").orElseThrow())
 						{
 							case "+":
@@ -302,7 +302,7 @@ public class PersistentSet<T> implements Set<T>
 			{
 				for (Object value : values)
 				{
-					String line = new JsonObject().setString("a", action).set("v", JsonElement.of(value)).toString();
+					String line = new JsonObject().setString("a", action).set("v", JsonElement.encode(value)).toString();
 
 					if (encryptor != null)
 						line = encryptor.encrypt(line);

@@ -23,7 +23,7 @@ public class JsonArrayFetcher implements Fetcher<JsonArray>
 		{
 			JsonObject result = new JsonObject();
 			metaData.entrySet().forEach(column -> result.put(column.getKey(),
-					JsonElement.of(cursor.getValue(column.getValue(), column.getKey()))));
+					JsonElement.encode(cursor.getValue(column.getValue(), column.getKey()))));
 			results.add(result);
 		}
 		return results;

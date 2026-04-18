@@ -244,8 +244,8 @@ public class Field implements Serializable
 				.setString("description", description).setObject("pattern", Pattern.class, pattern)
 				.setBoolean("readonly", readonly ? true : null).setBoolean("multiple", multiple ? true : null)
 				.setBoolean("required", required ? true : null)
-				.set("value", value != null && !value.isEmpty() ? JsonArray.of(value) : null)
-				.set("options", options != null && !options.isEmpty() ? JsonArray.of(options) : null);
+				.set("value", value != null && !value.isEmpty() ? JsonArray.wrap(value) : null)
+				.set("options", options != null && !options.isEmpty() ? JsonArray.wrap(options) : null);
 	}
 
 	@Override

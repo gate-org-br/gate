@@ -54,7 +54,7 @@ public class Expression implements Evaluable
 	{
 		try
 		{
-			writer.write(Converter.toText(evaluate(context, parameters)));
+			writer.write(Converter.render(evaluate(context, parameters)));
 		} catch (IOException ex)
 		{
 			throw new ExpressionException("Error trying to evaluate expression", ex.getMessage());

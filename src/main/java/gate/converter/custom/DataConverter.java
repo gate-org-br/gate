@@ -53,7 +53,7 @@ public class DataConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		if (object == null)
 			return "";
@@ -61,7 +61,7 @@ public class DataConverter implements Converter
 	}
 
 	@Override
-	public String toText(Class<?> type, Object object, String format)
+	public String render(Class<?> type, Object object, String format)
 	{
 		if (object == null)
 			return "";

@@ -87,7 +87,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * @param type the target Java type
 	 * @return the numeric value converted to the requested type
 	 */
-	public <T> T toObject(Class<T> type)
+	public <T> T decode(Class<T> type)
 	{
 		if (type == Short.class)
 			return type.cast(value.shortValue());
@@ -109,7 +109,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 *
 	 * @return the wrapped {@link BigDecimal} value
 	 */
-	@Override public BigDecimal toObject() {return value;}
+	@Override public BigDecimal unwrap() {return value;}
 
 	@Override
 	public Object getScalarValue()
@@ -122,16 +122,16 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	/**
 	 * Converts this JSON number to the specified parameterized Java type.
 	 * <p>
-	 * For scalar numbers, this behaves the same as {@link #toObject(Class)}.
+	 * For scalar numbers, this behaves the same as {@link #decode(Class)}.
 	 *
 	 * @param <T>         the target Java type
 	 * @param type        the target raw Java type
 	 * @param elementType ignored for scalar numbers
 	 * @return the numeric value converted to the requested type
 	 */
-	public <T> T toObject(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
-		return toObject((Class<T>) type);
+		return decode((Class<T>) type);
 	}
 
 	/**
@@ -164,7 +164,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(long value)
+	public static JsonNumber render(long value)
 	{
 		return of(value);
 	}
@@ -180,7 +180,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(double value)
+	public static JsonNumber render(double value)
 	{
 		return of(value);
 	}
@@ -197,7 +197,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(new BigDecimal(value));
 	}
 
-	public static JsonNumber format(String value)
+	public static JsonNumber render(String value)
 	{
 		return of(value);
 	}
@@ -214,7 +214,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(Byte value)
+	public static JsonNumber render(Byte value)
 	{
 		return of(value);
 	}
@@ -231,7 +231,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(Short value)
+	public static JsonNumber render(Short value)
 	{
 		return of(value);
 	}
@@ -248,7 +248,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(Integer value)
+	public static JsonNumber render(Integer value)
 	{
 		return of(value);
 	}
@@ -265,7 +265,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(Long value)
+	public static JsonNumber render(Long value)
 	{
 		return of(value);
 	}
@@ -282,7 +282,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(Float value)
+	public static JsonNumber render(Float value)
 	{
 		return of(value);
 	}
@@ -299,7 +299,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
-	public static JsonNumber format(Double value)
+	public static JsonNumber render(Double value)
 	{
 		return of(value);
 	}
@@ -316,7 +316,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(value);
 	}
 
-	public static JsonNumber format(BigDecimal value)
+	public static JsonNumber render(BigDecimal value)
 	{
 		return of(value);
 	}
@@ -333,7 +333,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(value.getValue());
 	}
 
-	public static JsonNumber format(Percentage value)
+	public static JsonNumber render(Percentage value)
 	{
 		return of(value);
 	}
@@ -350,7 +350,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return new JsonNumber(value.getValue());
 	}
 
-	public static JsonNumber format(Money value)
+	public static JsonNumber render(Money value)
 	{
 		return of(value);
 	}
@@ -367,7 +367,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return JsonNumber.of(value.toString());
 	}
 
-	public static JsonNumber format(Number value) {return of(value);}
+	public static JsonNumber render(Number value) {return of(value);}
 
 	@Override
 	public boolean equals(Object obj)

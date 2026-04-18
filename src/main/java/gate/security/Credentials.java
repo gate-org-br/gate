@@ -95,7 +95,7 @@ public final class Credentials
 										   for (int i = 0; i < nodes.size() - 1; i++)
 											   nodes.get(i).set("role", nodes.get(i + 1));
 										   return nodes.get(0);
-									   }))).toObject()
+									   }))).unwrap()
 						: null)
 				.signWith(SECRET)
 				.compact();

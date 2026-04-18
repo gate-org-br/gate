@@ -52,7 +52,7 @@ public class SecureProcessor extends TagProcessor
 			} else if (element.hasAttribute("otherwise"))
 			{
 				String otherwise = element.getAttributeValue("otherwise");
-				otherwise = Converter.toText(expression.create().evaluate(otherwise));
+				otherwise = Converter.render(expression.create().evaluate(otherwise));
 				handler.replaceWith(otherwise, false);
 			} else
 				handler.removeElement();

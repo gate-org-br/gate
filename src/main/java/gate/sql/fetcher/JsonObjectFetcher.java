@@ -27,7 +27,7 @@ public class JsonObjectFetcher implements Fetcher<Optional<JsonObject>>
 
 		JsonObject result = new JsonObject();
 		cursor.getMetaData().entrySet().forEach(column -> result.put(column.getKey(),
-				JsonElement.of(cursor.getValue(column.getValue(), column.getKey()))));
+				JsonElement.encode(cursor.getValue(column.getValue(), column.getKey()))));
 		return Optional.of(result);
 	}
 }

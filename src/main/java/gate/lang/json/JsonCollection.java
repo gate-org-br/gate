@@ -12,7 +12,7 @@ public interface JsonCollection extends JsonElement
 
 	/**
 	 * Retrieves a nested property value from the JSON structure using a property path.
-	 *
+	 * <p>
 	 * The path can use dot notation for object properties and bracket notation for array indices or quoted property
 	 * names.
 	 *
@@ -29,9 +29,9 @@ public interface JsonCollection extends JsonElement
 	 * @param property the property path to access
 	 * @return an Optional containing the JsonElement if found, or empty if the property doesn't exist
 	 * @throws IllegalArgumentException if the property path syntax is invalid or if attempting to access an array index
-	 * on a non-array element, access an object property on a non-object element or use invalid property path syntax
+	 *                                  on a non-array element, access an object property on a non-object element or use invalid property path syntax
 	 */
-	public default Optional<JsonElement> getProperty(String property)
+	default Optional<JsonElement> getProperty(String property)
 	{
 		Pattern pattern = Pattern.compile("(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)|(?:\\[)(\\d+|([\"'])((?:(?!\\3).)*?)\\3)(?:\\])|(.+)");
 		Matcher matcher = pattern.matcher(property);
