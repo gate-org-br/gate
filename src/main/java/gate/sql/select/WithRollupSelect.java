@@ -5,7 +5,7 @@ import gate.sql.condition.ConstantCondition;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class WithRollupSelect implements Clause, Orderable, Limitable
+public abstract class WithRollupSelect implements Clause, Orderable, Limitable, ForUpdateable
 {
 
 	private final Clause clause;
@@ -27,6 +27,7 @@ public abstract class WithRollupSelect implements Clause, Orderable, Limitable
 		Refinable.Compiled,
 		Orderable.Constant,
 		Limitable.Constant,
+		ForUpdateable.Constant,
 		Query.Constant.Builder
 	{
 
@@ -60,6 +61,7 @@ public abstract class WithRollupSelect implements Clause, Orderable, Limitable
 		Refinable.Generic,
 		Orderable.Generic,
 		Limitable.Generic,
+		ForUpdateable.Generic,
 		Query.Builder
 	{
 
@@ -93,6 +95,7 @@ public abstract class WithRollupSelect implements Clause, Orderable, Limitable
 		Refinable.Compiled,
 		Orderable.Compiled,
 		Limitable.Compiled,
+		ForUpdateable.Compiled,
 		Query.Compiled.Builder
 	{
 

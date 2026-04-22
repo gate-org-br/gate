@@ -11,19 +11,32 @@ export default function registerEventSource(listener)
 	let hostname = location.hostname;
 	let port = location.port ? ':' + location.port : '';
 	let pathname = location.pathname.replace(/\/Gate.*/, "") + "/AppEvents";
+	let url = protocol + hostname + port + pathname;
 
-	var url = protocol + hostname + port + pathname;
-
-	connection = new WebSocket(url);
-
-	connection.onmessage = event =>
+	function connect()
 	{
-		event = JSON.parse(event.data);
-		listener.dispatchEvent(new CustomEvent(event.type, {detail: event.detail, composed: true}));
-	};
+		connection = new WebSocket(url);
+		
+		connection.onmessage = event =>
+		{
+			event = JSON.parse(event.data);
+			listener.dispatchEvent(new CustomEvent(event.type, {detail: event.detail, composed: true}));
+		};
+		
+		connection.onopen = () =>
+		{
+			console.log("listening to app events");
+			listener.dispatchEvent(new CustomEvent('Connected', {composed: true}));
+		}
+		
+		connection.onclose = () =>
+		{
+			listener.dispatchEvent(new CustomEvent('Disconnected', {composed: true}));
+			connect();
+		};
+	}
 
-	connection.onopen = () => console.log("listening to app events");
-	connection.onclose = () => connection = new WebSocket(url);
+	connect();
 }
 
 customElements.define('g-event-source', class extends HTMLElement
@@ -38,8 +51,8 @@ customElements.define('g-event-source', class extends HTMLElement
 	connectedCallback()
 	{
 		registerEventSource(this.hasAttribute("target")
-			? document.getElementById(this.getAttribute("target"))
-			: window);
+				? document.getElementById(this.getAttribute("target"))
+				: window);
 	}
 });
 

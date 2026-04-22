@@ -4,11 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="12bf9456-c49f-41c4-912f-e2eb07d650c6" name="Changes" comment="Implement record support and remove checked exceptions" />
+    <list default="true" id="12bf9456-c49f-41c4-912f-e2eb07d650c6" name="Changes" comment="Implement record support and remove checked exceptions">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/FilteredSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/FilteredSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/GroupedSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/GroupedSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/LimitedSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/LimitedSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/OrderedSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/OrderedSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/RefinedSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/RefinedSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/SelectedSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/SelectedSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/SortedSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/SortedSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gate/sql/select/WithRollupSelect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gate/sql/select/WithRollupSelect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/gate/sql/select/SelectTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/gate/sql/select/SelectTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="1988" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -48,10 +63,14 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/gate-org-br/gate.git&quot;,
-    &quot;accountId&quot;: &quot;241c3085-31e7-480f-870c-3988847adf71&quot;
+    &quot;url&quot;: &quot;https://davins@github.com/gate-org-br/gate.git&quot;,
+    &quot;accountId&quot;: &quot;cbc4e6d9-dfee-4d25-9620-dd7ae50edc0e&quot;
   }
 }</component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 1
 }</component>
@@ -60,40 +79,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Mapper.executor": "Run",
-    "JUnit.All in gate (1).executor": "Run",
-    "JUnit.All in gate.executor": "Run",
-    "JUnit.MapperTest.executor": "Run",
-    "JUnit.MapperTest.test1.executor": "Run",
-    "JUnit.MapperTest.test2.executor": "Run",
-    "JUnit.MapperTest.test3.executor": "Run",
-    "JUnit.MapperTest.test4.executor": "Run",
-    "JUnit.ObjectGraphMapperTest.executor": "Run",
-    "JUnit.ObjectGraphMapperTest.test3.executor": "Debug",
-    "JUnit.ObjectGraphMapperTest.test4.executor": "Run",
-    "JUnit.ObjectGraphMapperTest.test5.executor": "Debug",
-    "JUnit.ObjectGraphMapperTest.testCollection.executor": "Run",
-    "JUnit.ObjectGraphMapperTest.testList.executor": "Debug",
-    "JUnit.PropertyGraphTest.executor": "Run",
-    "JUnit.StorageTest.executor": "Debug",
-    "JUnit.StorageTest.testSomeMethod.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
-    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "master",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "/home/davins/Projects/gate",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Mapper.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.All in gate (1).executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.All in gate.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.test1.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.test2.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.test3.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.MapperTest.test4.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ObjectGraphMapperTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ObjectGraphMapperTest.test3.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ObjectGraphMapperTest.test4.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ObjectGraphMapperTest.test5.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.ObjectGraphMapperTest.testCollection.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ObjectGraphMapperTest.testList.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.PropertyGraphTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SelectTest.testCompiledForUpdateOfAfterLimit.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.StorageTest.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.StorageTest.testSomeMethod.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;suport/13.x.x&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/davins/Projects/gate-support-13.X.X&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/main/java/gate" />
@@ -109,8 +138,16 @@
       <recent name="gate.lang.property" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.PropertyGraphTest">
+  <component name="RunManager" selected="JUnit.SelectTest.testCompiledForUpdateOfAfterLimit">
     <configuration name="All in gate (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="gate" />
+      <option name="PACKAGE_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="All in gate" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gate" />
       <option name="PACKAGE_NAME" value="" />
       <option name="TEST_OBJECT" value="package" />
@@ -133,22 +170,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PropertyGraphTest.test5" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="gate" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="gate.lang.property.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="gate.lang.property" />
-      <option name="MAIN_CLASS_NAME" value="gate.lang.property.PropertyGraphTest" />
-      <option name="METHOD_NAME" value="test5" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="PropertyGraphTest.testCollection" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gate" />
       <extension name="coverage">
@@ -165,17 +186,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="PropertyGraphTest.testList" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="SelectTest.testCompiledForUpdateOfAfterLimit" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="gate" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="gate.lang.property.*" />
+          <option name="PATTERN" value="gate.sql.select.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="PACKAGE_NAME" value="gate.lang.property" />
-      <option name="MAIN_CLASS_NAME" value="gate.lang.property.PropertyGraphTest" />
-      <option name="METHOD_NAME" value="testList" />
+      <option name="PACKAGE_NAME" value="gate.sql.select" />
+      <option name="MAIN_CLASS_NAME" value="gate.sql.select.SelectTest" />
+      <option name="METHOD_NAME" value="testCompiledForUpdateOfAfterLimit" />
       <option name="TEST_OBJECT" value="method" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -183,11 +204,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.SelectTest.testCompiledForUpdateOfAfterLimit" />
+        <item itemvalue="JUnit.All in gate" />
         <item itemvalue="JUnit.PropertyGraphTest" />
         <item itemvalue="JUnit.All in gate (1)" />
         <item itemvalue="JUnit.PropertyGraphTest.testCollection" />
-        <item itemvalue="JUnit.PropertyGraphTest.testList" />
-        <item itemvalue="JUnit.PropertyGraphTest.test5" />
       </list>
     </recent_temporary>
   </component>
@@ -213,6 +234,9 @@
       <workItem from="1729624373756" duration="34999000" />
       <workItem from="1729791499658" duration="1462000" />
       <workItem from="1729947595546" duration="774000" />
+      <workItem from="1775709351163" duration="765000" />
+      <workItem from="1775711351367" duration="266000" />
+      <workItem from="1775771656899" duration="21000" />
     </task>
     <task id="LOCAL-00001" summary="Improve API">
       <option name="closed" value="true" />
@@ -250,6 +274,15 @@
     <option name="LAST_COMMIT_MESSAGE" value="Implement record support and remove checked exceptions" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/gate/sql/select/SelectTest.java</url>
+          <line>75</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="JUnit">
         <watch expression="attribute.getRawType()" language="JAVA" />

@@ -4,7 +4,7 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class SelectedSelect implements Clause, Groupable, Orderable, Limitable
+public abstract class SelectedSelect implements Clause, Groupable, Orderable, Limitable, ForUpdateable
 {
 
 	private final Clause clause;
@@ -26,6 +26,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 			Groupable.Constant,
 			Orderable.Constant,
 			Limitable.Constant,
+			ForUpdateable.Constant,
 			Unitable.Constant,
 			Aliasable,
 			Query.Constant.Builder
@@ -62,6 +63,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 			Groupable.Generic,
 			Orderable.Generic,
 			Limitable.Generic,
+			ForUpdateable.Generic,
 			Unitable.Generic,
 			Aliasable,
 			Query.Builder
@@ -98,6 +100,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 			Groupable.Compiled,
 			Orderable.Compiled,
 			Limitable.Compiled,
+			ForUpdateable.Compiled,
 			Unitable.Compiled,
 			Aliasable,
 			Query.Compiled.Builder
@@ -143,6 +146,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 				Groupable.Constant,
 				Orderable.Constant,
 				Limitable.Constant,
+				ForUpdateable.Constant,
 				Unitable.Constant,
 				Query.Constant.Builder
 		{
@@ -165,6 +169,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 				Groupable.Generic,
 				Orderable.Generic,
 				Limitable.Generic,
+				ForUpdateable.Generic,
 				Unitable.Generic,
 				Query.Builder
 		{
@@ -187,6 +192,7 @@ public abstract class SelectedSelect implements Clause, Groupable, Orderable, Li
 				Groupable.Compiled,
 				Orderable.Compiled,
 				Limitable.Compiled,
+				ForUpdateable.Compiled,
 				Unitable.Compiled,
 				Query.Compiled.Builder
 		{

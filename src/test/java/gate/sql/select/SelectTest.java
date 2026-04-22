@@ -44,6 +44,50 @@ public class SelectTest
 	}
 
 	@Test
+	public void testForUpdate()
+	{
+		Query.Constant query = Select
+			.expression("id")
+			.from("Uzer")
+			.forUpdate()
+			.build();
+
+		assertEquals("select id from Uzer for update", query.toString());
+		assertEquals(query.getParameters(), Collections.emptyList());
+	}
+
+	@Test
+	public void testForUpdateOf()
+	{
+		Query.Constant query = Select
+			.expression("id")
+			.from("Uzer u")
+			.forUpdate()
+			.of("u")
+			.build();
+
+		assertEquals("select id from Uzer u for update of u", query.toString());
+		assertEquals(query.getParameters(), Collections.emptyList());
+	}
+
+	@Test
+	public void testCompiledForUpdateOfAfterLimit()
+	{
+		Query.Compiled query = Select
+			.expression("id")
+			.from("Uzer u")
+			.where(Condition.of("u.id").eq(1))
+			.orderBy("u.id")
+			.limit(10)
+			.forUpdate()
+			.of("u", "Role")
+			.build();
+
+		assertEquals("select id from Uzer u where u.id = ? order by u.id limit 10 for update of u, Role", query.toString());
+		assertEquals(query.getParameters(), Arrays.asList((Object) 1));
+	}
+
+	@Test
 	public void testFromConstantSubquery()
 	{
 		Query.Constant query = Select

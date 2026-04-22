@@ -8,7 +8,8 @@ public abstract class FilteredSelect implements
 	Clause,
 	Groupable,
 	Orderable,
-	Limitable
+	Limitable,
+	ForUpdateable
 {
 
 	private final Clause clause;
@@ -28,6 +29,7 @@ public abstract class FilteredSelect implements
 		Groupable.Constant,
 		Orderable.Constant,
 		Limitable.Constant,
+		ForUpdateable.Constant,
 		Unitable.Constant,
 		Query.Constant.Builder
 	{
@@ -48,6 +50,7 @@ public abstract class FilteredSelect implements
 		Groupable.Generic,
 		Orderable.Generic,
 		Limitable.Generic,
+		ForUpdateable.Generic,
 		Unitable.Generic,
 		Query.Builder
 	{
@@ -68,6 +71,7 @@ public abstract class FilteredSelect implements
 		Groupable.Compiled,
 		Orderable.Compiled,
 		Limitable.Compiled,
+		ForUpdateable.Compiled,
 		Unitable.Compiled,
 		Query.Compiled.Builder
 	{

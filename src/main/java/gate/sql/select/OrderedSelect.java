@@ -4,7 +4,7 @@ import gate.sql.Clause;
 import gate.sql.statement.Query;
 import java.util.stream.Collectors;
 
-public abstract class OrderedSelect implements Clause, Limitable, Sortable
+public abstract class OrderedSelect implements Clause, Limitable, Sortable, ForUpdateable
 {
 
 	private final Clause clause;
@@ -26,6 +26,7 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 			Orderable.Constant,
 			Sortable.Constant,
 			Limitable.Constant,
+			ForUpdateable.Constant,
 			Query.Constant.Builder
 	{
 
@@ -58,7 +59,9 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 	public abstract static class Generic extends OrderedSelect implements
 			Orderable.Generic,
 			Sortable.Generic,
-			Limitable.Generic, Query.Builder
+			ForUpdateable.Generic,
+			Limitable.Generic,
+			Query.Builder
 	{
 
 		public Generic(Clause clause)
@@ -90,6 +93,7 @@ public abstract class OrderedSelect implements Clause, Limitable, Sortable
 			Orderable.Compiled,
 			Sortable.Compiled,
 			Limitable.Compiled,
+			ForUpdateable.Compiled,
 			Query.Compiled.Builder
 	{
 

@@ -5,7 +5,7 @@ import gate.sql.statement.Query;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-public abstract class RefinedSelect implements Clause, Orderable, Limitable
+public abstract class RefinedSelect implements Clause, Orderable, Limitable, ForUpdateable
 {
 
 	private final Clause clause;
@@ -24,6 +24,7 @@ public abstract class RefinedSelect implements Clause, Orderable, Limitable
 	public abstract static class Constant extends RefinedSelect implements
 			Orderable.Constant,
 			Limitable.Constant,
+			ForUpdateable.Constant,
 			Query.Compiled.Builder
 	{
 
@@ -43,6 +44,7 @@ public abstract class RefinedSelect implements Clause, Orderable, Limitable
 	public abstract static class Generic extends RefinedSelect implements
 			Orderable.Constant,
 			Limitable.Constant,
+			ForUpdateable.Constant,
 			Query.Builder
 	{
 
@@ -62,6 +64,7 @@ public abstract class RefinedSelect implements Clause, Orderable, Limitable
 	public abstract static class Compiled extends RefinedSelect implements
 			Orderable.Compiled,
 			Limitable.Compiled,
+			ForUpdateable.Compiled,
 			Query.Compiled.Builder
 	{
 
