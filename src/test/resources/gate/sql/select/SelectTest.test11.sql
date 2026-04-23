@@ -1,1 +1,0 @@
-select name from Person where id = ?

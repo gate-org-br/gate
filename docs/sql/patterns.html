@@ -24,7 +24,7 @@ List&lt;User&gt; users = Select
 	.where(condition)
 	.orderBy("User.name")
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchEntityList(User.class);</code></pre>
 			</g-message>
 		</g-callout>
@@ -59,7 +59,7 @@ List&lt;User&gt; users = Select
 				<pre><code>if (Delete.from("Organization")
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute() == 0)
 	throw new NotFoundException();</code></pre>
 			</g-message>
@@ -77,7 +77,7 @@ List&lt;User&gt; users = Select
 				<pre><code>Insert.into("Organization")
 	.set("name", value.getName())
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchGeneratedKey(ID.class)
 	.ifPresent(value::setId);</code></pre>
 			</g-message>

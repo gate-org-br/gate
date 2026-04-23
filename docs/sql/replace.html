@@ -17,7 +17,7 @@
 	.set("theme", value.getTheme())
 	.set("language", value.getLanguage())
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -35,7 +35,7 @@
 	.set(UserPreference::getTheme, value.getTheme())
 	.set(UserPreference::getLanguage, value.getLanguage())
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -58,7 +58,7 @@
 		UserPreference::getTheme,
 		UserPreference::getLanguage))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -74,7 +74,7 @@
 	.set("name", Department::getName)
 	.set("active", Department::getActive)
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute(values);</code></pre>
 			</g-message>
 		</g-callout>
@@ -108,7 +108,7 @@
 	.when(value.getTheme() != null).set("theme", value::getTheme)
 	.when(value.getLanguage() != null).set("language", value::getLanguage)
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>

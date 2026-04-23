@@ -12,7 +12,7 @@
 		<g-callout>
 			<p>Use <code>from(...)</code> when you want to execute a query.</p>
 			<g-message class='fill'>
-				<pre><code>try (Link link = Link.of("datasourcename"))
+				<pre><code>try (Link link = linkSource.get())
 {
 	Optional&lt;Integer&gt; total = link
 		.from("select count(*) from Person where name like ?")
@@ -31,7 +31,7 @@
 				<code>from(...)</code> or <code>prepare(...)</code>.
 			</p>
 			<g-message class='fill'>
-				<pre><code>try (Link link = Link.of("datasourcename"))
+				<pre><code>try (Link link = linkSource.get())
 {
 	List&lt;User&gt; users = link
 		.from(getClass().getResource("UserDao/search(User).sql"))
@@ -47,7 +47,7 @@
 		<g-callout>
 			<p>Use <code>prepare(...)</code> for commands such as insert, update, and delete.</p>
 			<g-message class='fill'>
-				<pre><code>try (Link link = Link.of("datasourcename"))
+				<pre><code>try (Link link = linkSource.get())
 {
 	int rows = link
 		.prepare("update User set active = ? where id = ?")
@@ -67,7 +67,7 @@
 			</p>
 			<g-message class='fill'>
 				<pre><code>
-try (Link link = Link.of("datasourcename"))
+try (Link link = linkSource.get())
 {
 	link.beginTran();
 		link.prepare("insert into Audit (message) values (?)")
@@ -93,7 +93,11 @@ try (Link link = Link.of("datasourcename"))
 				<tbody>
 					<tr>
 						<td><code>of(...)</code></td>
-						<td>Open a link from a datasource name, datasource, or JDBC connection</td>
+						<td>Open a link from a datasource or JDBC connection</td>
+					</tr>
+					<tr>
+						<td><code>LinkSource#get()</code></td>
+						<td>Open an application-managed link, such as the default CDI/JNDI datasource link</td>
 					</tr>
 					<tr>
 						<td><code>from(...)</code></td>

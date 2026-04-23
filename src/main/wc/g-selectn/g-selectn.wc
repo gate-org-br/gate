@@ -1,4 +1,0 @@
-<template>
-	<input type="checkbox">
-	<slot></slot>
-</template>

@@ -18,7 +18,7 @@
 	.set("ContactCenter$id", value.getContactCenter().getId())
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -35,7 +35,7 @@
 	.when(value.getIcon() != null).set("icon", value.getIcon())
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -72,7 +72,7 @@
 	.when(value.getUpdatedAt() != null).set(LocalDateTime.class, "updatedAt", value::getUpdatedAt)
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -92,7 +92,7 @@
 	.where(Condition.from(Ticket.class)
 		.expression("id").eq(Ticket::getId))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute(tickets);</code></pre>
 			</g-message>
 		</g-callout>
@@ -117,7 +117,7 @@
 		Category::getDescription))
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -135,7 +135,7 @@
 	.set("host", value.getHost())
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute() == 0)
 	throw new NotFoundException();</code></pre>
 			</g-message>

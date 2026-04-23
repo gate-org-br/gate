@@ -17,7 +17,7 @@
 	.set("name", value.getName())
 	.set("host", value.getHost())
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchGeneratedKey(ID.class)
 	.ifPresent(value::setId);</code></pre>
 			</g-message>
@@ -37,7 +37,7 @@ Insert
 	.set("taxId", value.getTaxId())
 	.set("ContactCenter$id", value.getContactCenter().getId())
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();
 				</code></pre>
 			</g-message>
@@ -54,7 +54,7 @@ Insert
 	.set("name", Department::getName)
 	.set("active", Department::getActive)
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchGeneratedKey(values, ID.class, Department::setId);</code></pre>
 			</g-message>
 		</g-callout>
@@ -73,7 +73,7 @@ Insert
 	.set(User::getUsername, value.getUsername())
 	.set(User::getActive, value.getActive())
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchGeneratedKey(ID.class)
 	.ifPresent(value::setId);</code></pre>
 			</g-message>
@@ -98,7 +98,7 @@ Insert
 		User::getUsername,
 		User::getActive))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchGeneratedKey(ID.class)
 	.ifPresent(value::setId);</code></pre>
 			</g-message>
@@ -136,7 +136,7 @@ Insert
 	.when(file.getContent() != null).set("content", file::getContent)
 	.when(file.getSize() != null).set(Long.class, "size", file::getSize)
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>

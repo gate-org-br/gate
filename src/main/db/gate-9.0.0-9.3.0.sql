@@ -1,2 +1,0 @@
-ALTER TABLE `gate`.`Uzer`
-CHANGE COLUMN `name` `name` VARCHAR(128) NOT NULL ;

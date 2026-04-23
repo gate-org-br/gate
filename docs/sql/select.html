@@ -20,7 +20,7 @@
 	.where(getCondition(filter))
 	.orderBy("Call.createdAt desc")
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchMapList();</code></pre>
 			</g-message>
 		</g-callout>
@@ -38,7 +38,7 @@
 	.where(Condition.of("User.active").eq(true))
 	.orderBy("User.name")
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchEntityList(User.class);</code></pre>
 			</g-message>
 		</g-callout>
@@ -59,7 +59,7 @@
 	.join("User").on(Condition.of("UserAccount.id").isEq("User.id"))
 	.where(Condition.of("UserAccount.active").eq(true))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchEntityList(User.class);</code></pre>
 			</g-message>
 		</g-callout>
@@ -80,7 +80,7 @@
 	.where(Condition.of(User::getActive).eq(true))
 	.orderBy("name")
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchEntityList(User.class);</code></pre>
 			</g-message>
 		</g-callout>
@@ -100,7 +100,7 @@
 	.sort(order)
 	.paginate(pageSize, pageIndx)
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchMapPage(pageSize, pageIndx);</code></pre>
 			</g-message>
 		</g-callout>

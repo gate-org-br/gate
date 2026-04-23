@@ -1,7 +1,0 @@
-:host {
-	gap: 8px;
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	justify-content: flex-start;
-}

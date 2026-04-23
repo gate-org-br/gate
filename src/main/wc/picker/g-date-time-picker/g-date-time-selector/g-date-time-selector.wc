@@ -1,6 +1,0 @@
-<template>
-	<g-date-selector id='date'>
-	</g-date-selector>
-	<g-time-selector id='time'>
-	</g-time-selector>
-</template>

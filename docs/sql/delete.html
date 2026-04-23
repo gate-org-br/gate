@@ -15,7 +15,7 @@
 				<pre><code>Delete.from("Attachment")
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>
@@ -29,7 +29,7 @@
 				<pre><code>if (Delete.from("Organization")
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute() == 0)
 	throw new NotFoundException();</code></pre>
 			</g-message>
@@ -49,7 +49,7 @@
 			.from("Category")
 			.where(Condition.of("Category.id").eq(category.getId()))))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute();</code></pre>
 			</g-message>
 		</g-callout>

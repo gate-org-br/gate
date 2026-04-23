@@ -1,4 +1,0 @@
-<template>
-	<section>
-	</section>
-</template>

@@ -25,7 +25,7 @@
 		.and("User.active").eq(filter.getActive()))
 	.orderBy("User.name")
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.fetchEntityList(User.class);</code></pre>
 			</g-message>
 		</g-callout>
@@ -44,7 +44,7 @@
 	.set("host", value.getHost())
 	.where(Condition.of("id").eq(value.getId()))
 	.build()
-	.connect(getLink())
+	.connect(linkSource.get())
 	.execute() == 0)
 	throw new NotFoundException();</code></pre>
 			</g-message>

@@ -1,8 +1,0 @@
-<template>
-	<div id="html-pane">
-		<slot></slot>
-	</div>
-	<div id="code-pane">
-		<pre><code></code></pre>
-	</div>
-</template>
