@@ -1,0 +1,14 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	gap: 12px;
+	height: 100%;
+	display: flex;
+	overflow: auto;
+	position: relative;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: flex-start;
+}

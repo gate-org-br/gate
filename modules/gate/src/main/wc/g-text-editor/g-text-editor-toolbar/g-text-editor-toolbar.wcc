@@ -1,0 +1,79 @@
+/* global customElements */
+import './g-icon.js';
+
+customElements.define('g-text-editor-toolbar', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.tabindex = 1;
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		let editor = this.editor;
+
+		Array.from(this.shadowRoot.querySelectorAll("button > input")).forEach(e => e.parentNode.addEventListener("click", () => e.click()));
+
+		this.shadowRoot.getElementById("formatFontName").addEventListener("change", e => editor.formatFontName(e.target.value));
+		this.shadowRoot.getElementById("formatFontSize").addEventListener("change", e => editor.formatFontSize(e.target.value));
+
+		this.shadowRoot.getElementById("formatBold").addEventListener("click", () => editor.formatBold());
+		this.shadowRoot.getElementById("formatItalic").addEventListener("click", () => editor.formatItalic());
+
+		this.shadowRoot.getElementById("formatUnderline").addEventListener("click", () => editor.formatUnderline());
+		this.shadowRoot.getElementById("formatStrikeThrough").addEventListener("click", () => editor.formatStrikeThrough());
+
+		this.shadowRoot.getElementById("formatFontColor").addEventListener("change", e => editor.formatFontColor(e.target.value));
+		this.shadowRoot.getElementById("formatBackColor").addEventListener("change", e => editor.formatBackColor(e.target.value));
+
+		this.shadowRoot.getElementById("formatRemove").addEventListener("click", () => editor.formatRemove());
+
+		this.shadowRoot.getElementById("undo").addEventListener("click", () => editor.undo());
+		this.shadowRoot.getElementById("redo").addEventListener("click", () => editor.redo());
+
+		this.shadowRoot.getElementById("attach").addEventListener("click", () =>
+		{
+			let blob = document.createElement("input");
+			blob.setAttribute("type", "file");
+
+			blob.addEventListener("change", () =>
+			{
+				let file = blob.files[0];
+				let reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onloadend = () => editor.attach(file.type, file.name, reader.result);
+			});
+
+			blob.click();
+		});
+
+		Array.from(this.shadowRoot.querySelectorAll("select")).forEach(e => e.addEventListener("change", () => e.value = ""));
+		Array.from(this.shadowRoot.querySelectorAll("input[type='color']")).forEach(e => e.addEventListener("change", () => e.value = "#CCCCCC"));
+	}
+
+	separator()
+	{
+		this.shadowRoot.appendChild(document.createElement("span"));
+		return this;
+	}
+
+	spacer()
+	{
+		this.shadowRoot.appendChild(document.createElement("div"));
+		return this;
+	}
+
+	command(icon, title, action)
+	{
+		let button = this.appendChild(document.createElement("button"));
+		button.title = title;
+		button.innerHTML = `&#X${icon}`;
+		button.addEventListener("click", action);
+		return this;
+	}
+
+	get editor()
+	{
+		return this.getRootNode().host;
+	}
+});

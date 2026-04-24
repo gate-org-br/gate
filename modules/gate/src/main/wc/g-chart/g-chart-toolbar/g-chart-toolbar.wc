@@ -1,0 +1,29 @@
+<template>
+	<a id='pie' href="#" title='Pizza'>
+		&#x2031;
+	</a>
+	<a id='doughnut' href="#" title='Donut'>
+		&#x2245;
+	</a>
+	<a id='line' href="#" title='Linha'>
+		&#x2032;
+	</a>
+	<a id='column' href="#" title='Coluna'>
+		&#x2033;
+	</a>
+	<a id='bar' href="#" title='Barra'>
+		&#x2246;
+	</a>
+	<a id='area' href="#" title='Área'>
+		&#x2244;
+	</a>
+	<a id='radar' href="#" title='Radar'>
+		&#x2160;
+	</a>
+	<a id='polar' href="#" title='Polar'>
+		&#x2247;
+	</a>
+	<a id='reverse'  href="#" title='Inverter dataset'>
+		&#x2025;
+	</a>
+</template>

@@ -1,0 +1,10 @@
+<template>
+	<header>
+		<slot name="head">
+		</slot>
+	</header>
+	<section>
+		<slot name="body">
+		</slot>
+	</section>
+</template>

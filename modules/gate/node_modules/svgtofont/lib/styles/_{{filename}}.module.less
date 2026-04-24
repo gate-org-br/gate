@@ -1,0 +1,16 @@
+@font-face {
+{{fontFamily}}
+}
+
+{% if nameAsUnicode %}.{{prefix}}{% else %}[class^="{{prefix}}-"], [class*=" {{prefix}}-"]{% endif %} {
+  font-family: '{{fontname}}' !important;{{fontSize}}
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+{% if not nameAsUnicode %}
+:global {
+{{cssString}}
+}
+{% endif %}

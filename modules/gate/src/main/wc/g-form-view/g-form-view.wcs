@@ -1,0 +1,24 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+fieldset {
+	padding: 0;
+	border: none;
+}
+
+span.multiple
+{
+	padding: 4px;
+	text-indent: 0;
+	line-height: 24px;
+	white-space: pre-wrap;
+	flex-basis: fit-content;
+}

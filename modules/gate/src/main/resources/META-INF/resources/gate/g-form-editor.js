@@ -1,0 +1,143 @@
+let template = document.createElement("template");
+template.innerHTML = `
+	<g-form></g-form><g-coolbar><a class='primary' id='new' href='#'>
+			Novo campo<g-icon>&#X1002;</g-icon></a></g-coolbar><g-grid>
+		Nenhum campo cadastrado
+	</g-grid>
+<style data-element="g-form-editor">* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	gap: 8px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+
+}</style>`;
+/* global customElements */
+
+import './g-form.js';
+import './g-grid.js';
+import './g-field-editor.js';
+import GFieldEditorDialog from './g-field-editor-dialog.js';
+
+function format(value)
+{
+	return [value.name, value.mask, [1, 2, 4, 8][value.size] || "", !!value.multiple,
+		!!value.required, value.maxlength, value.pattern, value.description,
+		value.options, value.value];
+}
+
+customElements.define('g-form-editor', class extends HTMLElement
+{
+	#value;
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.innerHTML = template.innerHTML;
+
+		this.#value = [];
+		let grid = this.shadowRoot.querySelector("g-grid");
+		grid.movable = true;
+		grid.caption = "CAMPOS";
+		grid.draggable = true;
+
+		grid.styles = ["text-align: left",
+			"text-align: left",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 80px",
+			"text-align: center; width: 160px",
+			"text-align: center; width: 160px",
+			"text-align: center; width: 160px",
+			"text-align: center; width: 160px"];
+
+		grid.header = ["Nome", "Máscara", "Colunas", "Múltiplo", "Requerido",
+			"Tamanho Máximo", "Expressão Regular", "Descrição", "Opções", "Valor"];
+
+		let form = this.shadowRoot.querySelector("g-form");
+
+		grid.addEventListener("select", event =>
+		{
+			GFieldEditorDialog.edit(event.detail.value, "Campo").then(value =>
+			{
+				let index = event.detail.index;
+				if (value)
+				{
+					this.#value[index] = value;
+					form.set(index, value);
+					grid.set(index, format(value), value);
+
+				} else
+				{
+					this.#value.splice(index, 1);
+					form.remove(index);
+					grid.remove(index);
+				}
+				this.dispatchEvent(new CustomEvent("change"));
+			});
+		});
+
+		grid.addEventListener("move", event =>
+			form.move(event.detail.source, event.detail.target));
+
+		this.shadowRoot.getElementById("new").addEventListener("click", () =>
+		{
+			GFieldEditorDialog.edit(null, "Novo campo").then(value =>
+			{
+				this.#value.push(value);
+				form.add(value);
+				grid.add(format(value), value);
+				this.dispatchEvent(new CustomEvent("change"));
+			});
+		});
+
+	}
+
+	get name()
+	{
+		return this.getAttribute("name");
+	}
+
+	set name(name)
+	{
+		this.setAttribute("name", name);
+	}
+
+	set value(value)
+	{
+		value = Array.from(value);
+		this.#value = value || [];
+		let form = this.shadowRoot.querySelector("g-form");
+		form.value = value;
+
+		let grid = this.shadowRoot.querySelector("g-grid");
+		value.forEach(value => grid.add(format(value), value));
+		this.dispatchEvent(new CustomEvent("change"));
+	}
+
+	get value()
+	{
+		return this.shadowRoot.querySelector("g-form").value;
+	}
+
+	connectedCallback()
+	{
+		let form = this.closest("form");
+		if (form)
+			form.addEventListener("formdata", event => event.formData.set(this.name, JSON.stringify(this.value)));
+	}
+
+	attributeChangedCallback()
+	{
+		this.value = JSON.parse(this.getAttribute("value"));
+	}
+
+	static get observedAttributes()
+	{
+		return ['value'];
+	}
+});

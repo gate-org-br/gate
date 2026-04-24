@@ -1,0 +1,60 @@
+package gate.type;
+
+import gate.converter.Converter;
+import gate.error.AppException;
+import gate.lang.property.Property;
+
+import java.io.Serial;
+import java.util.HashSet;
+import java.util.Set;
+
+public class TextModel extends Model
+{
+
+	@Serial private static final long serialVersionUID = 1L;
+
+	public TextModel(DataFile attachment)
+	{
+		super(attachment);
+	}
+
+	private Set<String> getPropertyNames(String string)
+	{
+		int indx1 = 0;
+		Set<String> properties = new HashSet<>();
+		while (true)
+		{
+			indx1 = string.indexOf("${", indx1);
+			if (indx1 == -1)
+				break;
+			int indx2 = string.indexOf("}", indx1);
+			if (indx2 == -1)
+				break;
+
+			properties.add(string.substring(indx1 + 2, indx2));
+			indx1 = indx2 + 1;
+		}
+		return properties;
+	}
+
+	@Override
+	public DataFile newDocument(Object entity) throws AppException
+	{
+		try
+		{
+			String string = new String(getAttachment().getData());
+			for (String name : getPropertyNames(string))
+			{
+				Property property = Property.getProperty(entity.getClass(), name);
+				Class<?> type = property.getRawType();
+				String value =
+						Converter.getConverter(type).toString(type, property.getValue(entity));
+				string = string.replace(String.format("${%s}", name), value);
+			}
+			return DataFile.of(string.getBytes(), getAttachment().getName());
+		} catch (IllegalArgumentException e)
+		{
+			throw new AppException(e.getMessage());
+		}
+	}
+}

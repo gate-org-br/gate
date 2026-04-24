@@ -1,0 +1,15 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+fieldset {
+	padding: 0;
+	border: none;
+}

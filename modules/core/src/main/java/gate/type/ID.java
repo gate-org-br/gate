@@ -1,0 +1,66 @@
+package gate.type;
+
+import java.io.Serial;
+
+import java.io.Serializable;
+
+public class ID implements Serializable, Comparable<ID>
+{
+
+
+	@Serial
+	private static final long serialVersionUID = 1L;
+
+	private final int value;
+
+	private ID(int value)
+	{
+		if (value < 0)
+			throw new IllegalArgumentException("value");
+		this.value = value;
+	}
+
+	private ID(String string)
+	{
+		this(Integer.parseInt(string));
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof ID && value == ((ID) obj).getValue();
+	}
+
+	public int getValue()
+	{
+		return value;
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return value;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("%010d", value);
+	}
+
+	@Override
+	public int compareTo(ID id)
+	{
+		return this.value - id.value;
+	}
+
+	public static ID valueOf(int value)
+	{
+		return new ID(value);
+	}
+
+	public static ID valueOf(String value)
+	{
+		return new ID(value);
+	}
+}

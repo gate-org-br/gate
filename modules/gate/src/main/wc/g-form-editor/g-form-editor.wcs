@@ -1,0 +1,11 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	gap: 8px;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+
+}

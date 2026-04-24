@@ -1,0 +1,20 @@
+<template>
+	<dialog>
+		<header>
+			Selecione uma data e uma hora
+			<a id='cancel' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<g-date-time-selector>
+			</g-date-time-selector>
+		</section>
+		<footer>
+			<button id='commit'>
+			</button>
+		</footer>
+	</dialog>
+</template>

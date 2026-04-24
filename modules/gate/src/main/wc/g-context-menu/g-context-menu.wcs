@@ -1,0 +1,94 @@
+* {
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+:host {
+	margin: 0;
+	border: none;
+	padding: 10px;
+	z-index: 1000;
+	overflow: auto;
+	font-size: 14px;
+	max-width: 50vw;
+	max-height: 50vh;
+	min-width: 220px;
+	width: fit-content;
+	border-radius: 10px;
+	color: var(--text1, #000000);
+	background-color: var(--main2, white);
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+:host(:popover-open) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+a,
+label,
+button,
+::slotted(a),
+::slotted(button),
+::slotted(.g-command),
+::slotted(g-trigger) {
+	gap: 12px;
+	border: none;
+	display: flex;
+	color: inherit;
+	cursor: pointer;
+	flex-basis: 16px;
+	border-radius: 4px;
+	font-size: inherit;
+	padding: 10px 16px;
+	align-items: center;
+	white-space: nowrap;
+	text-decoration: none;
+	transition: all 0.2s ease;
+	background-color: transparent;
+	justify-content: flex-start;
+	transition: background-color 0.2s ease, padding 0.2s ease;
+}
+
+a:hover,
+label:hover,
+button:hover,
+::slotted(a:hover),
+::slotted(button:hover),
+::slotted(.g-command:hover),
+::slotted(g-trigger:hover) {
+	background-color: var(--hovered, #FFFACD);
+	padding-left: 20px;
+}
+
+a:focus,
+label:focus,
+button:focus,
+::slotted(a:focus),
+::slotted(g-trigger:focus),
+::slotted(button:focus),
+::slotted(.g-command:focus) {
+	outline: none;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+a[data-icon]::before,
+label[data-icon]::before,
+button[data-icon]::before,
+::slotted(a[data-icon])::before,
+::slotted(g-trigger[data-icon])::before,
+::slotted(button[data-icon])::before,
+::slotted(.g-command[data-icon])::before {
+	font-family: gate;
+	content: attr(data-icon);
+}
+
+label::after,
+::slotted(g-trigger)::after {
+	color: #888;
+	font-size: 12px;
+	content: '\\3017';
+	font-family: gate;
+	margin-left: auto;
+}

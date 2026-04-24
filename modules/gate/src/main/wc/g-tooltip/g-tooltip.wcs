@@ -1,0 +1,112 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*) {
+	margin: 0;
+	padding: 10px;
+	font-size: 16px;
+	max-width: 50vw;
+	max-height: 50vh;
+	z-index: 1000000;
+	border-radius: 6px;
+	overflow: visible !important;
+	color: var(--main1, #FFFFFF);
+	background-color: var(--text1, #000000);
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+}
+
+:host(:popover-open) {
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+}
+
+div {
+	height: auto;
+	overflow: auto;
+	width: max-content;
+}
+
+svg {
+	width: 16px;
+	height: 16px;
+	display: none;
+	position: absolute;
+	pointer-events: none;
+	fill: var(--text1, #000000);
+	filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.25));
+}
+
+#north {
+	top: 100%;
+	left: calc(50% - 8px);
+}
+
+#south {
+	top: -16px;
+	left: calc(50% - 8px);
+}
+
+#west {
+	left: 100%;
+	top: calc(50% - 8px);
+}
+
+#east {
+	left: -16px;
+	top: calc(50% - 8px);
+}
+
+#northwest {
+	top: 3px;
+	left: 100%;
+}
+
+#northeast {
+	top: 3px;
+	left: -12px;
+}
+
+#southwest {
+	bottom: 3px;
+	left: 100%;
+}
+
+#southeast {
+	bottom: 3px;
+	left: -16px;
+}
+
+:host([arrow="north"]) #north {
+	display: block;
+}
+
+:host([arrow="south"]) #south {
+	display: block;
+}
+
+:host([arrow="east"]) #east {
+	display: block;
+}
+
+:host([arrow="west"]) #west {
+	display: block;
+}
+
+:host([arrow="northeast"]) #northeast {
+	display: block;
+}
+
+:host([arrow="northwest"]) #northwest {
+	display: block;
+}
+
+:host([arrow="southeast"]) #southeast {
+	display: block;
+}
+
+:host([arrow="southwest"]) #southwest {
+	display: block;
+}

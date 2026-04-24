@@ -1,0 +1,12 @@
+:host(*)
+{
+	display:flex;
+	align-items: stretch;
+	align-content: stretch;
+	justify-content: center;
+}
+
+g-calendar
+{
+	flex-grow: 1;
+}

@@ -1,0 +1,14 @@
+<template>
+	<label id='title'>
+		Conectando ao servidor
+	</label>
+	<progress>
+	</progress>
+	<g-digital-clock value="0">
+	</g-digital-clock>
+	<label id='counter'>
+		...
+	</label>
+	<g-logger title="Clique para gerar CSV">
+	</g-logger>
+</template>

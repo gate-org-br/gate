@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html>
+	<head>
+		<title>GateDialectTest</title>
+	</head>
+	<body>
+		<fieldset>
+			<label>
+				Text:
+				<span>
+					<input type="text" g:property="name"/>
+				</span>
+			</label>
+			<label>
+				Textarea:
+				<span>
+					<textarea g:property="name"/>
+				</span>
+			</label>
+			<label>
+				Select Enum:
+				<span>
+					<select g:property="sex"/>
+				</span>
+			</label>
+			<label>
+				Select Boolean:
+				<span>
+					<select g:property="alive"/>
+				</span>
+			</label>
+			<label>
+				Select boolean:
+				<span>
+					<select g:property="dead"/>
+				</span>
+			</label>
+			<label>
+				Select Options:
+				<span>
+					<select g:property="name" options="${screen.options}"/>
+				</span>
+			</label>
+		</fieldset>
+	</body>
+</html>

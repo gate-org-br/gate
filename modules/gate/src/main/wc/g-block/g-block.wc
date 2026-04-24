@@ -1,0 +1,14 @@
+<template>
+	<dialog>
+		<header>
+		</header>
+		<section>
+			<g-progress>
+			</g-progress>
+		</section>
+		<footer>
+			<g-digital-clock value="0">
+			</g-digital-clock>
+		</footer>
+	</dialog>
+</template>

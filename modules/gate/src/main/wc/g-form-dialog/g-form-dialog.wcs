@@ -1,0 +1,19 @@
+dialog
+{
+	width: 100%;
+	max-height: 100%;
+	height: fit-content;
+}
+
+@media only screen and (min-width: 640px)
+{
+	dialog {
+		border-radius: 3px;
+		width: calc(100% - 80px);
+		max-height: calc(100% - 80px);
+	}
+}
+
+g-form {
+	flex-grow: 1;
+}

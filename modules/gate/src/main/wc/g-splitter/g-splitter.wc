@@ -1,0 +1,11 @@
+<template>
+	<div id='panel1'>
+		<slot name="L"></slot>
+	</div>
+	<button id='handle' 
+		title='Mostrar ambos os paineis'>
+	</button>
+	<div id='panel2'>
+		<slot name="R"></slot>
+	</div>
+</template>

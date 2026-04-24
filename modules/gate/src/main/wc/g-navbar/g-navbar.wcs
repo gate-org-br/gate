@@ -1,0 +1,39 @@
+:host(*) {
+	width: auto;
+	padding: 8px;
+	display: flex;
+	cursor: pointer;
+	font-size: 12px;
+	color: var(--main);
+	border-radius: 5px;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--main2, #F0F0F0);
+}
+
+label {
+	display: flex;
+	color: inherit;
+	cursor: inherit;
+	font-size: inherit;
+	align-items: center;
+	justify-content: center;
+}
+
+a {
+	width: 20px;
+	display: flex;
+	color: inherit;
+	cursor: inherit;
+	font-size: inherit;
+	font-family: 'gate';
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+}
+
+a[navbar-disabled="true"] {
+	opacity: 0.2;
+	cursor: not-allowed;
+	pointer-events: none;
+}

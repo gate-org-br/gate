@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "scripts": {
+	"build": "node build.mjs",
+	"build:min": "node build.mjs --minify"
+  },
+  "devDependencies": {
+	"esbuild": "^0.25.12",
+	"glob": "^13.0.3",
+	"less": "^4.5.1",
+	"svgtofont": "^6.5.0"
+  }
+}

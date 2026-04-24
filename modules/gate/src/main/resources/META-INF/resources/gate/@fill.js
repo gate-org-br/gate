@@ -1,0 +1,43 @@
+/* global fetch */
+
+import './trigger.js';
+import DOM from './dom.js';
+import DataURL from './data-url.js';
+import RequestBuilder from './request-builder.js';
+import ResponseHandler from './response-handler.js';
+
+window.addEventListener("@fill", function (event)
+{
+	let path = event.composedPath();
+	let trigger = path[0] || event.target;
+	let {method, action, form, parameters, signal} = event.detail;
+
+	if (!parameters || !parameters.length)
+		parameters = [trigger.parentNode.querySelector("input[type='hidden']"),
+			trigger.parentNode.querySelector("input[type='text']")];
+	else
+		parameters = parameters
+			.map(e => e !== "_" ? DOM.navigate(trigger, e)
+					.orElseThrow(`Invalid selector: ${e}`) : null);
+
+	fetch(RequestBuilder.build(method, action, form), {signal})
+		.then(ResponseHandler.json)
+		.then(result =>
+		{
+			if (Array.isArray(result))
+			{
+				for (let i = 0; i < parameters.length; i++)
+					if (parameters[i])
+						parameters[i].value = result[i] ?? "";
+			} else if (result && typeof result === 'object')
+			{
+				const keys = Object.keys(result);
+				for (let i = 0; i < parameters.length; i++)
+					if (parameters[i])
+						parameters[i].value = result[keys[i]] ?? "";
+			}
+
+			event.success(path, DataURL.ofJSON(result));
+		})
+		.catch(error => event.failure(path, error));
+});

@@ -1,0 +1,70 @@
+:host(*) {
+	display: grid;
+	font-size: 16px;
+	min-width: 240px;
+	grid-auto-rows: 1fr;
+	grid-template-columns: repeat(7, auto);
+	background-color: var(--main3, #DDDDDD);
+}
+
+:host(*):hover {
+	border-color: var(--hovered, #FFFACD);
+}
+
+label {
+	display: flex;
+	font-size: inherit;
+	align-items: center;
+	font-weight: bolder;
+	justify-content: center;
+}
+
+a {
+
+	display: flex;
+	font-size: inherit;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+	color: var(--text1, #000000);
+	background-color: var(--main1, #FFFFFF);
+}
+
+a.current {
+	font-weight: bold;
+	text-decoration: underline
+}
+
+a.disabled {
+	color: #AAAAAA;
+}
+
+a.selected {
+	background-color: var(--acent);
+}
+
+a:hover {
+	background-color: var(--hovered, #FFFACD)
+}
+
+span {
+	padding: 4px;
+	display: flex;
+	font-size: inherit;
+	font-weight: bolder;
+	grid-column: span 7;
+	align-items: center;
+	align-content: space-around;
+	justify-content: space-around;
+}
+
+button {
+	border: none;
+	display: flex;
+	cursor: pointer;
+	font-size: inherit;
+	align-items: center;
+	font-weight: bolder;
+	justify-content: center;
+	background-color: transparent;
+}

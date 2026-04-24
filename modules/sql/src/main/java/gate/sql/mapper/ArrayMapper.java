@@ -1,0 +1,24 @@
+package gate.sql.mapper;
+
+import gate.sql.Cursor;
+
+/**
+ * Extracts each row from a Cursor as stream of arrays.
+ */
+public class ArrayMapper implements Mapper<Object[]>
+{
+
+	/**
+	 * Extract each row of the specified cursor as stream of arrays.
+	 *
+	 * @param cursor the cursor from where to extract the values
+	 * @return each row of the specified cursor as stream of arrays
+	 */
+	@Override
+	public Object[] apply(Cursor cursor)
+	{
+		return cursor.getColumnTypes().stream()
+				.map(cursor::getCurrentValue)
+				.toArray();
+	}
+}

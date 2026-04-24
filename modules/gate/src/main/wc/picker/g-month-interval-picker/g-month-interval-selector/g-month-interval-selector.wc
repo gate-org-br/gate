@@ -1,0 +1,6 @@
+<template>
+	<g-month-selector id='min'>
+	</g-month-selector>
+	<g-month-selector id='max'>
+	</g-month-selector>
+</template>

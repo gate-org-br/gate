@@ -1,0 +1,6 @@
+<template>
+	<g-date-selector id='min'>
+	</g-date-selector>
+	<g-date-selector id='max'>
+	</g-date-selector>
+</template>

@@ -1,0 +1,15 @@
+dialog
+{
+	height: 440px;
+	min-width: 320px;
+	max-width: 600px;
+	width: calc(100% - 40px);
+}
+
+dialog > section {
+	align-items: stretch;
+}
+
+g-date-selector {
+	flex-grow: 1;
+}

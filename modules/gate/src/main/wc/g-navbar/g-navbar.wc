@@ -1,0 +1,8 @@
+<template>
+	<a id='first' href='#'>&#x2277;</a>
+	<a id='prev' >&#x2273;</a>
+	<label id='label'>
+	</label>
+	<a id='next' >&#x2275;</a>
+	<a id='last' href='#'>&#x2279;</a>
+</template>
