@@ -1,5 +1,7 @@
 package gate.converter;
 
+import gate.registrar.Registrar;
+
 import java.util.Map;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Map;
  * To register a custom converter, create an implementation of this interface
  * and declare it in {@code META-INF/services/gate.converter.ConverterRegistrar}.
  */
-public interface ConverterRegistrar
+public interface ConverterRegistrar extends Registrar<Converter>
 {
 
 	/**

@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Length;
@@ -8,20 +9,9 @@ import gate.security.hash.BCrypt;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("BCrypt Hash")
 public class BCryptConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "BCrypt Hash";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

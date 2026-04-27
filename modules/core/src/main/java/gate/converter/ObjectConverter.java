@@ -20,18 +20,6 @@ public class ObjectConverter implements Converter
 	}
 
 	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{

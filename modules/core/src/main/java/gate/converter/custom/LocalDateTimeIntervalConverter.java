@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -12,22 +13,11 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de intervalo de data/hora devem ser preenchidos no formato DD/MM/YYYY HH:MM - DD/MM/YYYY HH:MM")
 public class LocalDateTimeIntervalConverter implements Converter
 {
 
 	private static final List<String> SUFIXES = Arrays.asList("min", "max");
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de intervalo de data/hora devem ser preenchidos no formato DD/MM/YYYY HH:MM - DD/MM/YYYY HH:MM";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##/##/#### ##:## - ##/##/#### ##:##";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -52,7 +42,7 @@ public class LocalDateTimeIntervalConverter implements Converter
 			return LocalDateTimeInterval.of(string);
 		} catch (ParseException ex)
 		{
-			throw new ConversionException(ex, getDescription());
+			throw new ConversionException(ex, gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

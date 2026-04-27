@@ -31,7 +31,7 @@ public class UserCatalog
 
 	public User select(ID id)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     UserDao dao = new UserDao(link);
 		     RoleCatalog.RoleDao roleDao = new RoleCatalog.RoleDao(link))
 		{
@@ -55,7 +55,7 @@ public class UserCatalog
 		if (Toolkit.isEmpty(username) || username.length() > 64)
 			throw new InvalidUsernamePasswordException();
 
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     RoleCatalog.RoleDao roleDao = new RoleCatalog.RoleDao(link);
 		     UserDao dao = new UserDao(link))
 		{
@@ -78,7 +78,7 @@ public class UserCatalog
 	                   PropertyReference<User, Object> property,
 	                   Object value)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     UserDao dao = new UserDao(link))
 		{
 			dao.update(user, property, value);

@@ -21,7 +21,7 @@ public class PasswordControl extends gate.base.Control
 
 	public User select(String username) throws InvalidUsernamePasswordException
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     PasswordDao dao = new PasswordDao(link))
 		{
 			return dao.select(username);
@@ -31,7 +31,7 @@ public class PasswordControl extends gate.base.Control
 	public void update(User user, String password)
 			throws BadRequestException, NotFoundException, ConstraintViolationException, InvalidCredentialsException
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     PasswordDao dao = new PasswordDao(link))
 		{
 			if (password == null || password.isBlank())

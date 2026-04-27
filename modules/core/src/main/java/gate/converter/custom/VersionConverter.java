@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Pattern;
@@ -8,23 +9,12 @@ import gate.type.Version;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Número de versão padrão maven")
 public class VersionConverter implements Converter
 {
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= Collections.singletonList(new Pattern.Implementation(Version.PATTERN.toString()));
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Número de versão padrão maven";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

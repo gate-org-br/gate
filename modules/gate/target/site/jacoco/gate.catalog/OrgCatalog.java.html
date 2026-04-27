@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OrgCatalog.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.catalog</a> &gt; <span class="el_source">OrgCatalog.java</span></div><h1>OrgCatalog.java</h1><pre class="source lang-java linenums">package gate.catalog;
+
+import gate.annotation.Current;
+import gate.annotation.LinkResource;
+import gate.entity.Org;
+import gate.sql.Link;
+import gate.sql.LinkSource;
+import gate.sql.select.Select;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
+
+import java.util.Optional;
+
+@ApplicationScoped
+<span class="nc" id="L18">public class OrgCatalog</span>
+{
+<span class="nc" id="L20">	private static final Org DEFAULT = new Org().setOrgID(&quot;ORG&quot;)</span>
+<span class="nc" id="L21">			.setName(&quot;Organização&quot;);</span>
+
+	@Inject
+	@LinkResource(&quot;Gate&quot;)
+	LinkSource linkSource;
+
+	@Current
+	@Produces
+	@Named(&quot;organization&quot;)
+	@RequestScoped
+	public Org select()
+	{
+<span class="nc" id="L33">		return find().orElse(DEFAULT);</span>
+	}
+
+	public Optional&lt;Org&gt; find()
+	{
+<span class="nc" id="L38">		try (Link link = linkSource.getLink();</span>
+<span class="nc" id="L39">		     OrgDao dao = new OrgDao(link))</span>
+		{
+<span class="nc" id="L41">			return dao.select();</span>
+		}
+	}
+
+	static class OrgDao extends gate.base.Dao
+	{
+
+		public OrgDao(Link link)
+		{
+<span class="nc" id="L50">			super(link);</span>
+<span class="nc" id="L51">		}</span>
+
+		public Optional&lt;Org&gt; select()
+		{
+<span class="nc" id="L55">			return Select.expression(&quot;orgID&quot;)</span>
+<span class="nc" id="L56">					.expression(&quot;name&quot;)</span>
+<span class="nc" id="L57">					.expression(&quot;description&quot;)</span>
+<span class="nc" id="L58">					.expression(&quot;sun__min&quot;)</span>
+<span class="nc" id="L59">					.expression(&quot;sun__max&quot;)</span>
+<span class="nc" id="L60">					.expression(&quot;mon__min&quot;)</span>
+<span class="nc" id="L61">					.expression(&quot;mon__max&quot;)</span>
+<span class="nc" id="L62">					.expression(&quot;tue__min&quot;)</span>
+<span class="nc" id="L63">					.expression(&quot;tue__max&quot;)</span>
+<span class="nc" id="L64">					.expression(&quot;wed__min&quot;)</span>
+<span class="nc" id="L65">					.expression(&quot;wed__max&quot;)</span>
+<span class="nc" id="L66">					.expression(&quot;thu__min&quot;)</span>
+<span class="nc" id="L67">					.expression(&quot;thu__max&quot;)</span>
+<span class="nc" id="L68">					.expression(&quot;fri__min&quot;)</span>
+<span class="nc" id="L69">					.expression(&quot;fri__max&quot;)</span>
+<span class="nc" id="L70">					.expression(&quot;sat__min&quot;)</span>
+<span class="nc" id="L71">					.expression(&quot;sat__max&quot;)</span>
+<span class="nc" id="L72">					.from(&quot;Org&quot;)</span>
+<span class="nc" id="L73">					.build()</span>
+<span class="nc" id="L74">					.connect(getLink())</span>
+<span class="nc" id="L75">					.fetchEntity(Org.class);</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

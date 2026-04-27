@@ -2,16 +2,14 @@ package gate.sql.columnMapper;
 
 import gate.annotation.Entity;
 import gate.error.ConversionException;
+import gate.registrar.Registry;
 
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
@@ -85,43 +83,38 @@ public interface ColumnMapper
 	 */
 	static ColumnMapper getColumnMapper(Class<?> type)
 	{
-		return Instances.COLUMN_MAPPERS.computeIfAbsent(type, e ->
-		{
-			try
-			{
-				for (Class<?> clazz = e; clazz != null; clazz = clazz.getSuperclass())
-					if (Instances.COLUMN_MAPPERS.containsKey(clazz))
-						return Instances.COLUMN_MAPPERS.get(clazz);
-					else if (clazz.isAnnotationPresent(gate.sql.annotation.ColumnMapper.class))
-						return clazz.getAnnotation(gate.sql.annotation.ColumnMapper.class).value()
-								.getDeclaredConstructor().newInstance();
-					else if (clazz.isAnnotationPresent(Entity.class))
-						return new EntityColumnMapper();
-					else if (Stream.of(clazz.getInterfaces()).filter(iter -> Instances.COLUMN_MAPPERS.containsKey(iter)
-					                                                         || iter.isAnnotationPresent(gate.sql.annotation.ColumnMapper.class)).count() == 1)
-						for (Class<?> inter : clazz.getInterfaces())
-							if (Instances.COLUMN_MAPPERS.containsKey(inter))
-								return Instances.COLUMN_MAPPERS.get(inter);
-							else if (inter.isAnnotationPresent(gate.sql.annotation.ColumnMapper.class))
-								return inter.getAnnotation(gate.sql.annotation.ColumnMapper.class).value()
-										.getDeclaredConstructor().newInstance();
-			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-			         | InvocationTargetException ex)
-			{
-				org.slf4j.LoggerFactory.getLogger(ColumnMapper.class).error(ex.getMessage(), ex);
-			}
-
-			return Instances.COLUMN_MAPPERS.get(Object.class);
-		});
+		return Instances.REGISTRY.get(type);
 	}
 
 	class Instances
 	{
+		private static final Registry<ColumnMapper> REGISTRY = Registry
+				.create(ColumnMapperRegistrar.class,
+						type ->
+						{
+							try
+							{
+								if (type.isAnnotationPresent(gate.sql.annotation.ColumnMapper.class))
+									return type.getAnnotation(gate.sql.annotation.ColumnMapper.class).value()
+											.getDeclaredConstructor().newInstance();
+								if (type.isAnnotationPresent(Entity.class))
+									return new EntityColumnMapper();
+								return null;
+							} catch (ReflectiveOperationException ex)
+							{
+								throw new RuntimeException(ex);
+							}
+						},
+						type ->
+						{
+							for (var method : type.getDeclaredMethods())
+								if ("valueOf".equals(method.getName())
+								    && method.getParameterCount() == 1
+								    && method.getParameterTypes()[0] == String.class
+								    && Modifier.isStatic(method.getModifiers()))
+									return new DefaultColumnMapper(method);
 
-		private static final Map<Class<?>, ColumnMapper> COLUMN_MAPPERS = new ConcurrentHashMap<>()
-		{{
-			ServiceLoader.load(ColumnMapperRegistrar.class)
-					.forEach(registrar -> registrar.register(this));
-		}};
+							return type.isRecord() ? new RecordColumnMapper() : new ObjectColumnMapper();
+						});
 	}
 }

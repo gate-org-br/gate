@@ -3,5 +3,5 @@ package gate.sql;
 @FunctionalInterface
 public interface LinkSource
 {
-	Link get();
+	Link getLink();
 }

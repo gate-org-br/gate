@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -11,6 +12,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Arrays;
 import java.util.List;
 
+@Description("Campos de hora devem ser preenchidos no formato HH:MM:SS")
 public class LocalTimeConverter implements Converter
 {
 
@@ -20,18 +22,6 @@ public class LocalTimeConverter implements Converter
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= Arrays.asList(new Maxlength.Implementation(8),
 			new Pattern.Implementation("^[0-9]{2}[:][0-9]{2}$"));
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de hora devem ser preenchidos no formato HH:MM:SS";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##:##";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -75,7 +65,7 @@ public class LocalTimeConverter implements Converter
 			throw new ConversionException(ex,
 				"%s não é uma hora válida.%n%s.",
 				ex.getParsedString(),
-				getDescription());
+				gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

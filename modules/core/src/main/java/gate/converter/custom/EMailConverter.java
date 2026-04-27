@@ -1,5 +1,7 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
+
 import gate.constraint.Constraint;
 import gate.constraint.Pattern;
 import gate.converter.Converter;
@@ -9,6 +11,7 @@ import gate.type.EMail;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de EMAILS devem conter endereços de E-Mail válidos")
 public class EMailConverter implements Converter
 {
 
@@ -21,22 +24,13 @@ public class EMailConverter implements Converter
 	}
 
 	@Override
-	public String getMask() {return null;}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de EMAILS devem conter endereços de E-Mail válidos";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object)
+	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
 
 	@Override
-	public String toString(Class<?> type, Object object)
+	public String render(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
@@ -52,7 +46,7 @@ public class EMailConverter implements Converter
 	{
 		try
 		{
-			return string != null && !string.isBlank() ? new EMail(string) : null;
+			return string != null && !string.isBlank() ? EMail.valueOf(string) : null;
 		} catch (IllegalArgumentException e)
 		{
 			throw new ConversionException(string.concat(" não é um EMail válido."));

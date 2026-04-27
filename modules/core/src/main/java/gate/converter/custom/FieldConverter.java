@@ -1,19 +1,15 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
 import gate.converter.Converter;
 import gate.converter.ObjectConverter;
 import gate.error.ConversionException;
 import gate.type.Field;
 
 
+@Description("Campos do tipo Field devem estar no formado JSON.")
 public class FieldConverter extends ObjectConverter
 {
-	@Override
-	public String getDescription()
-	{
-		return "Campos do tipo Field devem estar no formado JSON.";
-	}
-
 	@Override
 	public String render(Class<?> type, Object object)
 	{

@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Pattern;
@@ -10,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Campos de intervalo de datas devem ser preenchidos no formato MIN - MAX or NUM")
 public class RangeConverter implements Converter
 {
 
@@ -17,18 +19,6 @@ public class RangeConverter implements Converter
 		= Arrays.asList("min", "max");
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= Collections.singletonList(new Pattern.Implementation("^ *([0-9]+) *([-] *([0-9]+))? *$"));
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de intervalo de datas devem ser preenchidos no formato MIN - MAX or NUM";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -51,7 +41,7 @@ public class RangeConverter implements Converter
 			return Range.of(string);
 		} catch (ParseException e)
 		{
-			throw new ConversionException(getDescription());
+			throw new ConversionException(gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

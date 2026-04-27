@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 
+@Description("Campos de mês/ano devem ser preenchidos no formato MM/YYYY")
 public class YearMonthConverter implements Converter
 {
 
@@ -20,21 +22,9 @@ public class YearMonthConverter implements Converter
 			new Pattern.Implementation("^(0[123456789]|10|11|12)[/][0-9]{4}$"));
 
 	@Override
-	public String getMask()
-	{
-		return "##/####";
-	}
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return CONSTRAINTS;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de mês/ano devem ser preenchidos no formato MM/YYYY";
 	}
 
 	@Override
@@ -70,7 +60,7 @@ public class YearMonthConverter implements Converter
 			return YearMonth.parse(string, FORMATER);
 		} catch (DateTimeParseException ex)
 		{
-			throw new ConversionException(ex, "%s não é uma mês/ano válido.%n%s.", ex.getParsedString(), getDescription());
+			throw new ConversionException(ex, "%s não é uma mês/ano válido.%n%s.", ex.getParsedString(), gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

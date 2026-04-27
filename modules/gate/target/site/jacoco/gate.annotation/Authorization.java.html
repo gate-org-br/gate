@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Authorization.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.annotation</a> &gt; <span class="el_source">Authorization.java</span></div><h1>Authorization.java</h1><pre class="source lang-java linenums">package gate.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.lang.reflect.Method;
+
+/**
+ * Replaces the authorization coordinates resolved from package, screen, and action conventions.
+ *
+ * &lt;p&gt;The annotation may be declared on a package, type, or method. Resolution precedence is
+ * method, then type, then package.
+ *
+ * &lt;p&gt;When present, this annotation takes precedence over {@link Module}, {@link Screen}, and
+ * {@link Action}, and replaces the derived authorization mapping as a whole. Blank attributes are
+ * converted to {@code null}; they do not fall back to the original {@code module},
+ * {@code screen}, or {@code action} values.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PACKAGE})
+public @interface Authorization
+{
+
+	String module() default &quot;&quot;;
+
+	String screen() default &quot;&quot;;
+
+	String action() default &quot;&quot;;
+
+<span class="nc" id="L31">	class Extractor</span>
+	{
+
+		/**
+		 * Resolves the authorization mapping for the given method.
+		 *
+		 * &lt;p&gt;If an {@link Authorization} annotation is found on the method, its declaring type, or
+		 * the declaring package, the extracted value replaces the original mapping. Otherwise, the
+		 * mapping is resolved incrementally from {@link Module}, {@link Screen}, and {@link Action}
+		 * annotations before falling back to the provided {@code module}, {@code screen}, and
+		 * {@code action} values.
+		 */
+		public static Value extract(Method method, String module, String screen, String action)
+		{
+<span class="fc bfc" id="L45" title="All 2 branches covered.">			if (method.isAnnotationPresent(Authorization.class))</span>
+<span class="fc" id="L46">				return new Value(method.getAnnotation(Authorization.class));</span>
+
+<span class="fc" id="L48">			Class&lt;?&gt; type = method.getDeclaringClass();</span>
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">			if (type.isAnnotationPresent(Authorization.class))</span>
+<span class="nc" id="L50">				return new Value(type.getAnnotation(Authorization.class));</span>
+
+<span class="fc" id="L52">			Package pack = type.getPackage();</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">			if (pack.isAnnotationPresent(Authorization.class))</span>
+<span class="nc" id="L54">				return new Value(pack.getAnnotation(Authorization.class));</span>
+
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			if (pack.isAnnotationPresent(Module.class))</span>
+<span class="fc" id="L57">				module = pack.getAnnotation(Module.class).value();</span>
+
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">			if (type.isAnnotationPresent(Module.class))</span>
+<span class="nc" id="L60">				module = type.getAnnotation(Module.class).value();</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">			if (type.isAnnotationPresent(Screen.class))</span>
+<span class="fc" id="L62">				screen = type.getAnnotation(Screen.class).value();</span>
+
+<span class="fc bfc" id="L64" title="All 2 branches covered.">			if (method.isAnnotationPresent(Module.class))</span>
+<span class="fc" id="L65">				module = method.getAnnotation(Module.class).value();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">			if (method.isAnnotationPresent(Screen.class))</span>
+<span class="fc" id="L67">				screen = method.getAnnotation(Screen.class).value();</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">			if (method.isAnnotationPresent(Action.class))</span>
+<span class="fc" id="L69">				action = method.getAnnotation(Action.class).value();</span>
+
+<span class="fc" id="L71">			return new Value(module, screen, action);</span>
+		}
+	}
+
+	record Value(String module, String screen, String action)
+	{
+<span class="fc" id="L77">		public Value</span>
+<span class="fc" id="L78">		{</span>
+<span class="pc bpc" id="L79" title="1 of 4 branches missed.">			if (module != null &amp;&amp; module.isBlank())</span>
+<span class="fc" id="L80">				module = null;</span>
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">			if (screen != null &amp;&amp; screen.isBlank())</span>
+<span class="fc" id="L82">				screen = null;</span>
+<span class="pc bpc" id="L83" title="1 of 4 branches missed.">			if (action != null &amp;&amp; action.isBlank())</span>
+<span class="nc" id="L84">				action = null;</span>
+<span class="fc" id="L85">		}</span>
+
+		/**
+		 * Creates a value from an {@link Authorization} annotation.
+		 *
+		 * &lt;p&gt;Blank annotation attributes are normalized to {@code null}.
+		 */
+		public Value(Authorization annotation)
+		{
+<span class="fc" id="L94">			this(annotation.module(),</span>
+<span class="fc" id="L95">					annotation.screen(),</span>
+<span class="fc" id="L96">					annotation.action());</span>
+<span class="fc" id="L97">		}</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

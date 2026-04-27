@@ -1,5 +1,7 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
+
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
@@ -10,6 +12,7 @@ import gate.type.br.CNPJ;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de CNPJ devem ser preenchidos no formato 99.999.999/9999-99")
 public class CNPJConverter implements Converter
 {
 
@@ -20,18 +23,6 @@ public class CNPJConverter implements Converter
 		constraints.add(new Maxlength.Implementation(18));
 		constraints.add(new Pattern.Implementation(CNPJ.FORMATTED.toString()));
 		return constraints;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##.###.###/####-##";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de CNPJ devem ser preenchidos no formato 99.999.999/9999-99";
 	}
 
 	@Override
@@ -64,7 +55,7 @@ public class CNPJConverter implements Converter
 
 		try
 		{
-			return CNPJ.of(string);
+			return CNPJ.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(string + " não é um CNPJ válido.");

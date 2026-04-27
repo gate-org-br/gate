@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import java.util.List;
 
@@ -7,6 +8,7 @@ import gate.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.expression.Expression;
 
+@Description("Valid expression")
 public class ExpressionConverter implements Converter
 {
 
@@ -14,18 +16,6 @@ public class ExpressionConverter implements Converter
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return List.of();
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Valid expression";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
+
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.constraint.Maxlength;
@@ -10,6 +12,7 @@ import gate.type.MACAddress;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de endereço MAC devem ser preenchidos no formato HHHH.HHHH.HHHH")
 public class MACAddressConverter implements Converter
 {
 
@@ -20,18 +23,6 @@ public class MACAddressConverter implements Converter
 		constraints.add(new Maxlength.Implementation(15));
 		constraints.add(new Pattern.Implementation("^[0-9a-fA-F]{4}[.][0-9a-fA-F]{4}[.][0-9a-fA-F]{4}$"));
 		return constraints;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "****.****.****";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de endereço MAC devem ser preenchidos no formato HHHH.HHHH.HHHH";
 	}
 
 	@Override
@@ -62,7 +53,7 @@ public class MACAddressConverter implements Converter
 			{
 				try
 				{
-					return new MACAddress(string);
+					return MACAddress.valueOf(string);
 				} catch (Exception e)
 				{
 					throw new ConversionException(string.concat(" não é um endereço MAC válido."));

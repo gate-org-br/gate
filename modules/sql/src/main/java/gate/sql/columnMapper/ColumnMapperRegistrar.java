@@ -1,5 +1,7 @@
 package gate.sql.columnMapper;
 
+import gate.registrar.Registrar;
+
 import java.util.Map;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Map;
  * <p>
  * Implementations are discovered automatically via {@link java.util.ServiceLoader}.
  */
-public interface ColumnMapperRegistrar
+public interface ColumnMapperRegistrar extends Registrar<ColumnMapper>
 {
 
 	/**
@@ -15,5 +17,6 @@ public interface ColumnMapperRegistrar
 	 *
 	 * @param registry map of java types to their associated column mappers
 	 */
+	@Override
 	void register(Map<Class<?>, ColumnMapper> registry);
 }

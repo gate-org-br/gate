@@ -9,7 +9,7 @@ public class EMailTest
 	@Test
 	public void shouldNormalizeEmail()
 	{
-		assertEquals("user.name+tag@example.com", new EMail("  User.Name+Tag@Example.COM ").toString());
+		assertEquals("user.name+tag@example.com", EMail.valueOf("  User.Name+Tag@Example.COM ").toString());
 	}
 
 	@Test
@@ -33,8 +33,8 @@ public class EMailTest
 	@Test
 	public void shouldRejectUnsafeOrInvalidConstruction()
 	{
-		assertThrows(IllegalArgumentException.class, () -> new EMail("a@b"));
-		assertThrows(IllegalArgumentException.class, () -> new EMail("\"user\"@example.com"));
-		assertThrows(IllegalArgumentException.class, () -> new EMail("user@<script>"));
+		assertThrows(IllegalArgumentException.class, () -> EMail.valueOf("a@b"));
+		assertThrows(IllegalArgumentException.class, () -> EMail.valueOf("\"user\"@example.com"));
+		assertThrows(IllegalArgumentException.class, () -> EMail.valueOf("user@<script>"));
 	}
 }

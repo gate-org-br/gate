@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Description("Campos de data devem ser preenchidos no formato DD/MM/YYYY")
 public class LocalDateConverter implements Converter
 {
 
@@ -26,18 +28,6 @@ public class LocalDateConverter implements Converter
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= Arrays.asList(new Maxlength.Implementation(10),
 			new gate.constraint.Pattern.Implementation("^(?:\\d{8}|\\d{2}\\/\\d{2}\\/\\d{4}|\\d{4}-\\d{2}-\\d{2})$"));
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de data devem ser preenchidos no formato DD/MM/YYYY";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##/##/####";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -94,7 +84,7 @@ public class LocalDateConverter implements Converter
 			throw new ConversionException(ex,
 				"%s não é uma data válida.%n%s.",
 				ex.getParsedString(),
-				getDescription());
+				gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

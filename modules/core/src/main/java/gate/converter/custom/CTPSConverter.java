@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -10,20 +11,9 @@ import gate.type.br.CTPS;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de CTPS devem ser preenchidos no formato NNNNN SSSSS-UF")
 public class CTPSConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return "##### #####-__";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de CTPS devem ser preenchidos no formato NNNNN SSSSS-UF";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

@@ -1,7 +1,5 @@
 package gate.type.br;
 
-import gate.converter.custom.CPFConverter;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.regex.Pattern;
@@ -451,16 +449,16 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 			return -1;
 
 		return (long) d0 * 10_000_000_000L
-			   + (long) d1 * 1_000_000_000L
-			   + d2 * 100_000_000
-			   + d3 * 10_000_000
-			   + d4 * 1_000_000
-			   + d5 * 100_000
-			   + d6 * 10_000
-			   + d7 * 1_000
-			   + d8 * 100
-			   + d9 * 10
-			   + d10;
+		       + (long) d1 * 1_000_000_000L
+		       + d2 * 100_000_000
+		       + d3 * 10_000_000
+		       + d4 * 1_000_000
+		       + d5 * 100_000
+		       + d6 * 10_000
+		       + d7 * 1_000
+		       + d8 * 100
+		       + d9 * 10
+		       + d10;
 	}
 
 	/**
@@ -470,7 +468,7 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 	 * @return the created CPF
 	 * @throws IllegalArgumentException if the value is not a valid CPF
 	 */
-	public static CPF of(long value)
+	public static CPF valueOf(long value)
 	{
 		return new CPF(value);
 	}
@@ -482,7 +480,7 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 	 * @return the created CPF
 	 * @throws IllegalArgumentException if the input is invalid
 	 */
-	public static CPF of(String value)
+	public static CPF valueOf(String value)
 	{
 		long parsed = toLong(value);
 		if (parsed < 0)

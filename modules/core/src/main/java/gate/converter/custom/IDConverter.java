@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -9,6 +10,7 @@ import gate.type.ID;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de ID devem ser preenchidos com números inteiros positivos.")
 public class IDConverter implements Converter
 {
 
@@ -47,18 +49,6 @@ public class IDConverter implements Converter
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de ID devem ser preenchidos com números inteiros positivos.";
 	}
 
 	@Override

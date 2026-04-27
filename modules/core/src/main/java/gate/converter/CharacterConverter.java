@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -6,6 +7,7 @@ import gate.constraint.Maxlength;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de CARACTERE devem ser preenchidos com um único caractere.")
 public class CharacterConverter implements Converter
 {
 
@@ -16,18 +18,6 @@ public class CharacterConverter implements Converter
 		constraints.add(new Maxlength.Implementation(1));
 		return constraints;
 
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de CARACTERE devem ser preenchidos com um único caractere.";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
 	}
 
 	@Override

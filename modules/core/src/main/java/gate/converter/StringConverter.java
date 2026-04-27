@@ -15,18 +15,6 @@ public class StringConverter implements Converter
 {
 
 	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();

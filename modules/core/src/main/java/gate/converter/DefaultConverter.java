@@ -29,20 +29,14 @@ public class DefaultConverter implements Converter
 	}
 
 	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
+		if (string == null)
+			return null;
+		string = string.trim();
+		if (string.isEmpty())
+			return null;
+
 		try
 		{
 			return factoryMethod.invoke(null, string);

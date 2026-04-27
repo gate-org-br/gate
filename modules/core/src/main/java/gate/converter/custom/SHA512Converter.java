@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Length;
@@ -9,20 +10,9 @@ import gate.type.SHA512;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("SHA512 Hash")
 public class SHA512Converter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "SHA512 Hash";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

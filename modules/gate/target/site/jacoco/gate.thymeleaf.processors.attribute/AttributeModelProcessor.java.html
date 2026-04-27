@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AttributeModelProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.attribute</a> &gt; <span class="el_source">AttributeModelProcessor.java</span></div><h1>AttributeModelProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.attribute;
+
+import gate.thymeleaf.Precedence;
+import gate.thymeleaf.processors.Processor;
+import gate.type.Attributes;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.engine.AttributeNames;
+import org.thymeleaf.engine.ElementNames;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.processor.element.IElementModelProcessor;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.processor.element.MatchingAttributeName;
+import org.thymeleaf.processor.element.MatchingElementName;
+import org.thymeleaf.templatemode.TemplateMode;
+
+public abstract class AttributeModelProcessor implements IElementModelProcessor, Processor
+{
+
+	private final MatchingElementName matchingElementName;
+	private final MatchingAttributeName matchingAttributeName;
+
+	public AttributeModelProcessor(String attribute)
+	{
+<span class="nc" id="L24">		this(null, attribute);</span>
+<span class="nc" id="L25">	}</span>
+
+	public AttributeModelProcessor(String element, String attribute)
+<span class="nc" id="L28">	{</span>
+<span class="nc" id="L29">		this.matchingElementName =</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">				element != null ? MatchingElementName.forElementName(TemplateMode.HTML,</span>
+<span class="nc" id="L31">						ElementNames.forName(TemplateMode.HTML, null, element)) : null;</span>
+
+<span class="nc" id="L33">		this.matchingAttributeName = MatchingAttributeName.forAttributeName(TemplateMode.HTML,</span>
+<span class="nc" id="L34">				AttributeNames.forName(TemplateMode.HTML, &quot;g&quot;, attribute));</span>
+<span class="nc" id="L35">	}</span>
+
+	@Override
+	public MatchingElementName getMatchingElementName()
+	{
+<span class="nc" id="L40">		return matchingElementName;</span>
+	}
+
+	@Override
+	public MatchingAttributeName getMatchingAttributeName()
+	{
+<span class="nc" id="L46">		return matchingAttributeName;</span>
+	}
+
+	@Override
+	public TemplateMode getTemplateMode()
+	{
+<span class="nc" id="L52">		return TemplateMode.HTML;</span>
+	}
+
+	@Override
+	public int getPrecedence()
+	{
+<span class="nc" id="L58">		return Precedence.DEFAULT;</span>
+	}
+
+	public void add(ITemplateContext context, IModel model, IElementModelStructureHandler handler,
+			String text)
+	{
+<span class="nc" id="L64">		model.add(context.getModelFactory().createText(text));</span>
+<span class="nc" id="L65">	}</span>
+
+	public void removeTag(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler)
+	{
+<span class="nc" id="L70">		model.remove(0);</span>
+<span class="nc" id="L71">		model.remove(model.size() - 1);</span>
+<span class="nc" id="L72">	}</span>
+
+	public void replaceTag(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler, String tag, Attributes attributes)
+	{
+<span class="nc" id="L77">		model.replace(0, context.getModelFactory().createText(&quot;&lt;&quot; + tag + &quot; &quot; + attributes + &quot;&gt;&quot;));</span>
+<span class="nc" id="L78">		model.replace(model.size() - 1, context.getModelFactory().createText(&quot;&lt;/&quot; + tag + &quot;&gt;&quot;));</span>
+<span class="nc" id="L79">	}</span>
+
+	public void replaceWith(ITemplateContext context, IModel model,
+			IElementModelStructureHandler handler, String text)
+	{
+<span class="nc" id="L84">		model.reset();</span>
+<span class="nc" id="L85">		model.add(context.getModelFactory().createText(text));</span>
+<span class="nc" id="L86">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

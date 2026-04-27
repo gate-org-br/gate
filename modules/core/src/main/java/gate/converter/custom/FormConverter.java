@@ -1,6 +1,6 @@
 package gate.converter.custom;
 
-import gate.constraint.Constraint;
+import gate.annotation.Description;
 import gate.converter.CollectionConverter;
 import gate.converter.Converter;
 import gate.error.ConversionException;
@@ -10,41 +10,20 @@ import gate.lang.json.JsonWriter;
 import gate.type.Form;
 
 import java.lang.reflect.Type;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.List;
 import java.util.stream.Collectors;
 
+@Description("Campos do tipo Form devem estar no formado JSON.")
 public class FormConverter extends CollectionConverter
 {
-
-	@Override
-	public List<Constraint.Implementation<?>> getConstraints()
-	{
-		return Collections.emptyList();
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos do tipo Form devem estar no formado JSON.";
-	}
-
 	@Override
 	public String render(Class<?> type, Object object)
 	{
-		if (object instanceof Form)
+		if (object instanceof Form form)
 		{
-			Form form = (Form) object;
 			if (form.getFields().isEmpty())
 				return "";
-			return form.getFields().stream().map(e -> Converter.render(e))
+			return form.getFields().stream().map(Converter::render)
 					.collect(Collectors.joining("", "<fieldset>", "</fieldset>"));
 		}
 		return "";
@@ -67,7 +46,7 @@ public class FormConverter extends CollectionConverter
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0
+			return string != null && !string.trim().isEmpty()
 					? Form.valueOf(string) : null;
 		} catch (IllegalArgumentException e)
 		{

@@ -1,20 +1,18 @@
 package gate.report;
 
+import gate.annotation.Name;
+import gate.lang.json.JsonArray;
+import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
+import gate.type.mime.MimeData;
+import gate.type.mime.MimeDataFile;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import gate.annotation.Converter;
-import gate.annotation.Name;
-import gate.converter.EnumStringConverter;
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
-import gate.type.mime.MimeData;
-import gate.type.mime.MimeDataFile;
 
 /**
  * Model from where documents of various types can be generated.
@@ -71,7 +69,6 @@ public class Report
 	 * Modifies the name of this report.
 	 *
 	 * @param name the new name of this report
-	 *
 	 * @return this, for chained invocations
 	 */
 	public final Report setName(String name)
@@ -226,11 +223,11 @@ public class Report
 		return this;
 	}
 
-	@Converter(EnumStringConverter.class)
 	public enum Orientation
 	{
 		@Name
-		PORTRAIT, @Name
+		PORTRAIT,
+		@Name
 		LANDSCAPE
 	}
 
@@ -238,9 +235,9 @@ public class Report
 	{
 		var orientation = jsonObject.getString("orientation").map(String::toUpperCase).map(e -> switch (e)
 		{
-		case "PORTRAIT" -> Report.Orientation.PORTRAIT;
-		case "LANDSCAPE" -> Report.Orientation.LANDSCAPE;
-		default -> throw new IllegalArgumentException("Invalid report orientation");
+			case "PORTRAIT" -> Report.Orientation.PORTRAIT;
+			case "LANDSCAPE" -> Report.Orientation.LANDSCAPE;
+			default -> throw new IllegalArgumentException("Invalid report orientation");
 		}).orElse(Report.Orientation.PORTRAIT);
 
 		Report report = new Report(orientation);

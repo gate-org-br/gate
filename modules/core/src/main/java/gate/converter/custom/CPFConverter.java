@@ -1,5 +1,7 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
+
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
@@ -10,20 +12,9 @@ import gate.type.br.CPF;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de CPF devem ser preenchidos no formato 999.999.999-99")
 public class CPFConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return "###.###.###-##";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de CPF devem ser preenchidos no formato 999.999.999-99";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -64,7 +55,7 @@ public class CPFConverter implements Converter
 
 		try
 		{
-			return CPF.of(string);
+			return CPF.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(string.concat(" não é um CPF válido."));

@@ -105,23 +105,23 @@ public class CPFTest
 	}
 
 	@Test
-	public void ofStringCreatesCpfForValidInput()
+	public void valueOfStringCreatesCpfForValidInput()
 	{
-		assertEquals(new CPF(31434388433L), CPF.of("314.343.884-33"));
-		assertEquals(new CPF(31434388433L), CPF.of("31434388433"));
+		assertEquals(new CPF(31434388433L), CPF.valueOf("314.343.884-33"));
+		assertEquals(new CPF(31434388433L), CPF.valueOf("31434388433"));
 	}
 
 	@Test
-	public void ofStringThrowsForInvalidInput()
+	public void valueOfStringThrowsForInvalidInput()
 	{
-		assertThrows(IllegalArgumentException.class, () -> CPF.of("31434388434"));
-		assertThrows(IllegalArgumentException.class, () -> CPF.of((String) null));
+		assertThrows(IllegalArgumentException.class, () -> CPF.valueOf("31434388434"));
+		assertThrows(IllegalArgumentException.class, () -> CPF.valueOf((String) null));
 	}
 
 	@Test
-	public void ofLongAndConstructorRejectInvalidValues()
+	public void valueOfLongAndConstructorRejectInvalidValues()
 	{
-		assertThrows(IllegalArgumentException.class, () -> CPF.of(31434388434L));
+		assertThrows(IllegalArgumentException.class, () -> CPF.valueOf(31434388434L));
 		assertThrows(IllegalArgumentException.class, () -> new CPF(31434388434L));
 	}
 

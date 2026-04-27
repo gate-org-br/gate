@@ -1,5 +1,7 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
+
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.constraint.Maxlength;
@@ -10,20 +12,9 @@ import gate.type.IMEI;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de IMEI devem ser preenchidos no formato 99-999999-999999-9")
 public class IMEIConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return "##-######-######-#";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de IMEI devem ser preenchidos no formato 99-999999-999999-9";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -62,7 +53,7 @@ public class IMEIConverter implements Converter
 			{
 				try
 				{
-					return new IMEI(string);
+					return IMEI.valueOf(string);
 				} catch (Exception e)
 				{
 					throw new ConversionException(String.format("%s não é um IMEI válido.", string));

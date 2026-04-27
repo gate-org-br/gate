@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -10,6 +11,7 @@ import gate.type.br.ProcessNumber;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de número de processo devem estar nos formatos 9999.99.99.999999-9 ou 99.99.99999-9 ou 9999999-99.9999.9.99.9999. Zeros à esquerda são obrigatórios. Caracteres de formatação são opcionais.")
 public class ProcessNumberConverter implements Converter
 {
 
@@ -41,18 +43,6 @@ public class ProcessNumberConverter implements Converter
 	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de número de processo devem estar nos formatos 9999.99.99.999999-9 ou 99.99.99999-9 ou 9999999-99.9999.9.99.9999. Zeros à esquerda são obrigatórios. Caracteres de formatação são opcionais.";
 	}
 
 	@Override

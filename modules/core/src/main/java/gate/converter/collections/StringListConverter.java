@@ -1,5 +1,6 @@
 package gate.converter.collections;
 
+import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.converter.CollectionConverter;
 import gate.type.collections.StringList;
@@ -7,24 +8,13 @@ import gate.type.collections.StringList;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Lista separada por vírgulas")
 public class StringListConverter extends CollectionConverter
 {
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Lista separada por vírgulas";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
 	}
 
 	@Override
@@ -63,12 +53,6 @@ public class StringListConverter extends CollectionConverter
 	public static class SemicolonConverter extends StringListConverter
 	{
 		@Override
-		public String getDescription()
-		{
-			return "Lista separada por ponto e vírgula";
-		}
-
-		@Override
 		public Object ofString(Class<?> type, String string)
 		{
 			return string != null ? new StringList.Semicolon(string) : null;
@@ -77,12 +61,6 @@ public class StringListConverter extends CollectionConverter
 
 	public static class LineBreakConverter extends StringListConverter
 	{
-		@Override
-		public String getDescription()
-		{
-			return "Lista separada por quebra de linha";
-		}
-
 		@Override
 		public Object ofString(Class<?> type, String string)
 		{

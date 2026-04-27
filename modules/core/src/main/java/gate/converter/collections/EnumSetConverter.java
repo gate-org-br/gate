@@ -1,4 +1,5 @@
 package gate.converter.collections;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+@Description("Lista de opções")
 public class EnumSetConverter implements Converter
 {
 
@@ -18,18 +20,6 @@ public class EnumSetConverter implements Converter
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Lista de opções";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
 	}
 
 	@Override

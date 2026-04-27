@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
@@ -6,25 +7,14 @@ import java.time.Year;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
+@Description("Campos de mês/ano devem ser preenchidos no formato YYYY")
 public class YearConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return "####";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return List.of();
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de mês/ano devem ser preenchidos no formato YYYY";
 	}
 
 	@Override
@@ -60,7 +50,7 @@ public class YearConverter implements Converter
 			return Year.parse(string);
 		} catch (DateTimeParseException ex)
 		{
-			throw new ConversionException(ex, "%s não é um ano válido.", ex.getParsedString(), getDescription());
+			throw new ConversionException(ex, "%s não é um ano válido.", ex.getParsedString(), gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

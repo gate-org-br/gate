@@ -111,21 +111,21 @@ public class CNPJTest
 	@Test
 	public void ofStringCreatesCnpjForValidInput()
 	{
-		assertEquals(new CNPJ(69362335000156L), CNPJ.of("69.362.335/0001-56"));
-		assertEquals(new CNPJ(69362335000156L), CNPJ.of("69362335000156"));
+		assertEquals(new CNPJ(69362335000156L), CNPJ.valueOf("69.362.335/0001-56"));
+		assertEquals(new CNPJ(69362335000156L), CNPJ.valueOf("69362335000156"));
 	}
 
 	@Test
 	public void ofStringThrowsForInvalidInput()
 	{
-		assertThrows(IllegalArgumentException.class, () -> CNPJ.of("44733243000198"));
-		assertThrows(IllegalArgumentException.class, () -> CNPJ.of((String) null));
+		assertThrows(IllegalArgumentException.class, () -> CNPJ.valueOf("44733243000198"));
+		assertThrows(IllegalArgumentException.class, () -> CNPJ.valueOf((String) null));
 	}
 
 	@Test
 	public void ofLongAndConstructorRejectInvalidValues()
 	{
-		assertThrows(IllegalArgumentException.class, () -> CNPJ.of(69362335000157L));
+		assertThrows(IllegalArgumentException.class, () -> CNPJ.valueOf(69362335000157L));
 		assertThrows(IllegalArgumentException.class, () -> new CNPJ(69362335000157L));
 	}
 

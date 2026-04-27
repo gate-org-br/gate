@@ -10,11 +10,9 @@ import java.util.Map;
 
 public class SqlColumnMapperRegistrar implements ColumnMapperRegistrar
 {
-
 	@Override
 	public void register(Map<Class<?>, ColumnMapper> registry)
 	{
-		registry.put(Object.class, new DefaultColumnMapper());
 		registry.put(BigDecimal.class, new BigDecimalColumnMapper());
 		registry.put(boolean.class, new BooleanColumnMapper());
 		registry.put(Boolean.class, new BooleanColumnMapper());
@@ -36,14 +34,17 @@ public class SqlColumnMapperRegistrar implements ColumnMapperRegistrar
 		registry.put(LocalTime.class, new LocalTimeColumnMapper());
 		registry.put(long.class, new LongColumnMapper());
 		registry.put(Long.class, new LongColumnMapper());
+		registry.put(Money.class, new MoneyColumnMapper());
 		registry.put(Number.class, new BigDecimalColumnMapper());
+		registry.put(Percentage.class, new PercentageColumnMapper());
 		registry.put(short.class, new ShortColumnMapper());
 		registry.put(Short.class, new ShortColumnMapper());
 		registry.put(String.class, new StringColumnMapper());
+		registry.put(Tax.class, new TaxColumnMapper());
 		registry.put(YearMonth.class, new YearMonthColumnMapper());
 		registry.put(byte[].class, new ByteArrayColumnMapper());
 		registry.put(Year.class, new YearColumnMapper());
-		
+
 		registry.put(YearMonthInterval.class, new YearMonthIntervalColumnMapper());
 		registry.put(LocalDateInterval.class, new LocalDateIntervalColumnMapper());
 		registry.put(LocalDateTimeInterval.class, new LocalDateTimeIntervalColumnMapper());

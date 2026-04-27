@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
@@ -6,20 +7,9 @@ import gate.type.SafeHTML;
 
 import java.util.List;
 
+@Description("HTML")
 public class SafeHTMLConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "HTML";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

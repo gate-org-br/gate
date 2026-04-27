@@ -4,6 +4,8 @@ import gate.annotation.*;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.annotation.Entity;
+import gate.lang.property.metadata.Metadata;
+import gate.lang.property.metadata.SimpleMetadata;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -72,10 +74,20 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 			var code = Code.Extractor.extract(field).orElse(null);
 			var color = Color.Extractor.extract(field).orElse(null);
 			var tooltip = Tooltip.Extractor.extract(field).orElse(null);
-			var description = Description.Extractor.extract(field).orElseGet(converter::getDescription);
-			var mask = Mask.Extractor.extract(field).orElseGet(converter::getMask);
-			var placeholder = Placeholder.Extractor.extract(field).orElseGet(converter::getPlaceholder);
-			this.metadata = new Metadata(name, description, tooltip, placeholder, mask, color, code, icon);
+				var description = Description.Extractor.extract(field).orElse(null);
+				var mask = Mask.Extractor.extract(field).orElse(null);
+				var placeholder = Placeholder.Extractor.extract(field).orElse(null);
+				this.metadata = Metadata.getMetadata(rawType)
+						.merge(SimpleMetadata.builder()
+								.name(name)
+								.description(description)
+								.tooltip(tooltip)
+								.placeholder(placeholder)
+								.mask(mask)
+								.color(color)
+								.code(code)
+								.icon(icon)
+								.build());
 
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
 				 | InvocationTargetException ex)

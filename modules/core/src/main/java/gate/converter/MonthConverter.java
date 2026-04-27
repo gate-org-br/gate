@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Pattern;
@@ -9,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
+@Description("Mês do Ano")
 public class MonthConverter implements Converter {
 
 	@Override
@@ -19,16 +21,6 @@ public class MonthConverter implements Converter {
 	@Override
 	public String render(Class<?> type, Object object, String format) {
 		return object != null ? ((Month) object).getDisplayName(TextStyle.valueOf(format), Locale.getDefault()) : "";
-	}
-
-	@Override
-	public String getMask() {
-		return null;
-	}
-
-	@Override
-	public String getDescription() {
-		return "Mês do Ano";
 	}
 
 	@Override

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GateHandlerRegistrar.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.registrar</a> &gt; <span class="el_source">GateHandlerRegistrar.java</span></div><h1>GateHandlerRegistrar.java</h1><pre class="source lang-java linenums">package gate.registrar;
+
+import gate.command.HTMLCommand;
+import gate.command.HideCommand;
+import gate.command.RedirectCommand;
+import gate.command.ReloadCommand;
+import gate.doc.Doc;
+import gate.handler.*;
+import gate.lang.json.*;
+import gate.report.Report;
+import gate.type.*;
+import gate.type.mime.MimeData;
+import gate.type.mime.MimeDataFile;
+import gate.type.mime.MimeText;
+import gate.type.mime.MimeTextFile;
+import jakarta.ws.rs.core.Response;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.Map;
+
+<span class="nc" id="L23">public class GateHandlerRegistrar implements HandlerRegistrar</span>
+{
+
+	@Override
+	public void register(Map&lt;Class&lt;?&gt;, Class&lt;? extends Handler&gt;&gt; registry)
+	{
+<span class="nc" id="L29">		registry.put(byte[].class, ByteArrayHandler.class);</span>
+<span class="nc" id="L30">		registry.put(String[][].class, StringMatrixHandler.class);</span>
+<span class="nc" id="L31">		registry.put(String.class, StringHandler.class);</span>
+<span class="nc" id="L32">		registry.put(File.class, FileHandler.class);</span>
+<span class="nc" id="L33">		registry.put(Integer.class, IntegerHandler.class);</span>
+<span class="nc" id="L34">		registry.put(Character.class, CharacterHandler.class);</span>
+<span class="nc" id="L35">		registry.put(LocalDateTime.class, ConverterHandler.class);</span>
+<span class="nc" id="L36">		registry.put(Enum.class, EnumHandler.class);</span>
+<span class="nc" id="L37">		registry.put(Path.class, PathHandler.class);</span>
+<span class="nc" id="L38">		registry.put(Response.class, JAXRSResponseHandler.class);</span>
+<span class="nc" id="L39">		registry.put(HideCommand.class, HideCommandHandler.class);</span>
+<span class="nc" id="L40">		registry.put(HTMLCommand.class, HTMLCommandHandler.class);</span>
+<span class="nc" id="L41">		registry.put(RedirectCommand.class, RedirectCommandHandler.class);</span>
+<span class="nc" id="L42">		registry.put(ReloadCommand.class, ReloadCommandHandler.class);</span>
+<span class="nc" id="L43">		registry.put(TempFile.class, TempFileHandler.class);</span>
+<span class="nc" id="L44">		registry.put(SafeStyle.class, SafeStyleHandler.class);</span>
+<span class="nc" id="L45">		registry.put(MimeDataFile.class, MimeDataFileHandler.class);</span>
+<span class="nc" id="L46">		registry.put(MimeTextFile.class, MimeTextFileHandler.class);</span>
+<span class="nc" id="L47">		registry.put(MimeText.class, MimeTextHandler.class);</span>
+<span class="nc" id="L48">		registry.put(MimeData.class, MimeDataHandler.class);</span>
+<span class="nc" id="L49">		registry.put(Form.class, FormHandler.class);</span>
+<span class="nc" id="L50">		registry.put(SafeHTML.class, SafeHTMLHandler.class);</span>
+<span class="nc" id="L51">		registry.put(ID.class, IDHandler.class);</span>
+<span class="nc" id="L52">		registry.put(HttpError.class, HttpErrorHandler.class);</span>
+<span class="nc" id="L53">		registry.put(SafeText.class, SafeTextHandler.class);</span>
+<span class="nc" id="L54">		registry.put(SafeName.class, SafeNameHandler.class);</span>
+<span class="nc" id="L55">		registry.put(Result.class, ResultHandler.class);</span>
+<span class="nc" id="L56">		registry.put(Version.class, VersionHandler.class);</span>
+<span class="nc" id="L57">		registry.put(DataFile.class, DataFileHandler.class);</span>
+<span class="nc" id="L58">		registry.put(PNG.class, PNGHandler.class);</span>
+<span class="nc" id="L59">		registry.put(NamedTempFile.class, NamedTempFileHandler.class);</span>
+<span class="nc" id="L60">		registry.put(JsonElement.class, JsonElementHandler.class);</span>
+<span class="nc" id="L61">		registry.put(JsonArray.class, JsonElementHandler.class);</span>
+<span class="nc" id="L62">		registry.put(JsonBoolean.class, JsonElementHandler.class);</span>
+<span class="nc" id="L63">		registry.put(JsonNull.class, JsonElementHandler.class);</span>
+<span class="nc" id="L64">		registry.put(JsonNumber.class, JsonElementHandler.class);</span>
+<span class="nc" id="L65">		registry.put(JsonObject.class, JsonElementHandler.class);</span>
+<span class="nc" id="L66">		registry.put(JsonScalar.class, JsonElementHandler.class);</span>
+<span class="nc" id="L67">		registry.put(JsonString.class, JsonElementHandler.class);</span>
+<span class="nc" id="L68">		registry.put(Report.class, ReportHandler.class);</span>
+<span class="nc" id="L69">		registry.put(Doc.class, DocHandler.class);</span>
+<span class="nc" id="L70">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

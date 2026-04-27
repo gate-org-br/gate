@@ -1,20 +1,18 @@
 package gate.type;
 
 import java.io.Serial;
-
-import gate.converter.custom.IMEIConverter;
 import java.io.Serializable;
 
 public class IMEI implements Serializable, Comparable<IMEI>
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
 	private final String value;
 
-	public IMEI(String value)
+	private IMEI(String value)
 	{
 		value = value.replaceAll("[^0123456789]", "");
 		if (value.length() != 15)
@@ -40,6 +38,8 @@ public class IMEI implements Serializable, Comparable<IMEI>
 		this.value = value;
 	}
 
+	public static IMEI valueOf(String value) {return new IMEI(value);}
+
 	public String getValue()
 	{
 		return value;
@@ -61,11 +61,11 @@ public class IMEI implements Serializable, Comparable<IMEI>
 	public String toString()
 	{
 		return String.format("%c%c-%c%c%c%c%c%c-%c%c%c%c%c%c-%c", value.charAt(0),
-			value.charAt(1), value.charAt(2), value.charAt(3),
-			value.charAt(4), value.charAt(5), value.charAt(6),
-			value.charAt(7), value.charAt(8), value.charAt(9),
-			value.charAt(10), value.charAt(11), value.charAt(12),
-			value.charAt(13), value.charAt(14));
+				value.charAt(1), value.charAt(2), value.charAt(3),
+				value.charAt(4), value.charAt(5), value.charAt(6),
+				value.charAt(7), value.charAt(8), value.charAt(9),
+				value.charAt(10), value.charAt(11), value.charAt(12),
+				value.charAt(13), value.charAt(14));
 	}
 
 	@Override

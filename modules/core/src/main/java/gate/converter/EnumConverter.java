@@ -3,8 +3,10 @@ package gate.converter;
 import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
+
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class EnumConverter implements Converter
 {
@@ -16,53 +18,29 @@ public class EnumConverter implements Converter
 	}
 
 	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
-		if (string == null)
+		var value = string != null ? string.trim() : null;
+		if (value == null || value.isEmpty())
 			return null;
-		string = string.trim();
-		if (string.isEmpty())
-			return null;
-		if (Character.isDigit(string.charAt(0)))
-			return type.getEnumConstants()[Integer.parseInt(string)];
 
-		for (Object obj : type.getEnumConstants())
-			if (((Enum<?>) obj).name().equals(string))
-				return obj;
-		throw new ConversionException("Invalid enum constant: " + string);
+		var constantes = type.getEnumConstants();
+		if (value.chars().allMatch(Character::isDigit))
+			return constantes[Integer.parseInt(value)];
+
+		return Stream.of(constantes)
+				.map(Enum.class::cast)
+				.filter(e -> e.name().equals(value))
+				.findAny()
+				.orElseThrow(() -> new ConversionException(string + " is not a valid enum value"));
 	}
 
 	@Override
-	public String toString(Class<?> type, Object object)
-	{
-		return object != null ? String.valueOf(((Enum<?>) object).ordinal()) : "";
-	}
+	public String toString(Class<?> type, Object object) {return object instanceof Enum<?> e ? e.name() : "";}
 
 	@Override
-	public String render(Class<?> type, Object object)
-	{
-
-		return object != null
-			? Name.Extractor.extract(object)
-				.orElse(object.toString()) : "";
-	}
+	public String render(Class<?> type, Object object) {return object != null ? Name.Extractor.extract(object).orElse(object.toString()) : "";}
 
 	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, render(type, object)) : "";
-	}
-
+	public String render(Class<?> type, Object object, String format) {return object != null ? String.format(format, render(type, object)) : "";}
 }

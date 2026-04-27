@@ -9,6 +9,7 @@ import moveMechanicalJavaxImportsToJakarta from "./move-mechanical-javax-imports
 import replaceLinkConstructorWithLinkOf from "./replace-link-constructor-with-link-of.mjs";
 import removeLinkSourceInjectionAndReplaceGetLinkUsage from "./remove-linksource-injection-and-replace-getlink-usage.mjs";
 import replaceEjbScheduleWithQuarkusScheduled from "./replace-ejb-schedule-with-quarkus-scheduled.mjs";
+import removeEnumStringConverterAnnotations from "./remove-enumstringconverter-annotations.mjs";
 
 export default [
 	rewriteScreenChildNotation,
@@ -21,5 +22,6 @@ export default [
 	moveMechanicalJavaxImportsToJakarta,
 	replaceLinkConstructorWithLinkOf,
 	removeLinkSourceInjectionAndReplaceGetLinkUsage,
-	replaceEjbScheduleWithQuarkusScheduled
+	replaceEjbScheduleWithQuarkusScheduled,
+	removeEnumStringConverterAnnotations
 ];

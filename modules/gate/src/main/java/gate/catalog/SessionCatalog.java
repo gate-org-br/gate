@@ -25,7 +25,7 @@ public class SessionCatalog
 
 	public boolean exists(Credentials credentials)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     SessionDao dao = new SessionDao(link))
 		{
 			return dao.exists(credentials);
@@ -34,7 +34,7 @@ public class SessionCatalog
 
 	public String create(gate.entity.User user)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     SessionDao dao = new SessionDao(link))
 		{
 			link.beginTran();
@@ -54,7 +54,7 @@ public class SessionCatalog
 	public void revoke(String token)
 	{
 		var credentials = Credentials.parse(token);
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     SessionDao dao = new SessionDao(link))
 		{
 			link.beginTran();

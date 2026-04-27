@@ -4,16 +4,21 @@ import gate.Progress;
 import gate.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.registrar.Registry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
-import java.util.Map;
-import java.util.ServiceLoader;
-import java.util.concurrent.ConcurrentHashMap;
-
 public interface Handler
 {
+	class Instances
+	{
+		private static final Registry<Class<? extends Handler>> HANDLERS = Registry
+				.create(HandlerRegistrar.class,
+						type -> type.isAnnotationPresent(gate.annotation.Handler.class)
+								? type.getAnnotation(gate.annotation.Handler.class).value()
+								: null, type -> SerializableHandler.class);
+	}
 
 	/**
 	 * Gets the handler associated with the specified java class.
@@ -23,24 +28,7 @@ public interface Handler
 	 */
 	static Class<? extends Handler> getHandler(Class<?> type)
 	{
-		for (Class<?> clazz = type;
-		     clazz != null;
-		     clazz = clazz.getSuperclass())
-			if (Instances.HANDLERS.containsKey(clazz))
-				return Instances.HANDLERS.get(clazz);
-			else if (clazz.isAnnotationPresent(gate.annotation.Handler.class))
-				return clazz.getAnnotation(gate.annotation.Handler.class).value();
-
-		for (Class<?> clazz = type;
-		     clazz != null;
-		     clazz = clazz.getSuperclass())
-			for (Class<?> inter : type.getInterfaces())
-				if (Instances.HANDLERS.containsKey(inter))
-					return Instances.HANDLERS.get(inter);
-				else if (inter.isAnnotationPresent(gate.annotation.Handler.class))
-					return inter.getAnnotation(gate.annotation.Handler.class).value();
-
-		return SerializableHandler.class;
+		return Instances.HANDLERS.get(type);
 	}
 
 	void handle(HttpServletRequest request, HttpServletResponse response, Object value);
@@ -69,14 +57,5 @@ public interface Handler
 		{
 			throw new AppError(ex);
 		}
-	}
-
-	class Instances
-	{
-		private static final Map<Class<?>, Class<? extends Handler>> HANDLERS = new ConcurrentHashMap<>()
-		{{
-			ServiceLoader.load(HandlerRegistrar.class)
-					.forEach(registrar -> registrar.register(HANDLERS));
-		}};
 	}
 }

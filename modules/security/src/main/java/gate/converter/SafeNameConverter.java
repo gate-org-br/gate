@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Pattern;
@@ -7,6 +8,7 @@ import gate.type.SafeName;
 
 import java.util.List;
 
+@Description("Use apenas letras, números, espaços ou hífen.")
 public class SafeNameConverter implements Converter
 {
 
@@ -45,18 +47,6 @@ public class SafeNameConverter implements Converter
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Use apenas letras, números, espaços ou hífen.";
 	}
 
 	@Override

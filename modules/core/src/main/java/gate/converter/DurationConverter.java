@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
@@ -14,6 +15,7 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Description("Duração no formato dD hH mM sS onde d, h, m e s são o número de dias, horas, minutos e segundos respectivamente")
 public class DurationConverter implements Converter
 {
 
@@ -21,18 +23,6 @@ public class DurationConverter implements Converter
 	private static final Pattern PATTERN = Pattern.compile("^ *(([0-9]+)[dD])? *(([0-9]+)[hH])? *(([0-9]+)[mM])? *(([0-9]+)[sS])?|([0-9]+) *$");
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS = List.of(new gate.constraint.Pattern.Implementation(PATTERN.toString()));
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Duração no formato dD hH mM sS onde d, h, m e s são o número de dias, horas, minutos e segundos respectivamente";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

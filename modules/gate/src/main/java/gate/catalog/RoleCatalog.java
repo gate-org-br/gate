@@ -26,7 +26,7 @@ public class RoleCatalog
 	@Named("roles")
 	public List<Role> search()
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     RoleDao dao = new RoleDao(link))
 		{
 			return dao.search();

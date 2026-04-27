@@ -1,6 +1,5 @@
 package gate.type;
 
-import gate.converter.custom.MACAddressConverter;
 import java.util.regex.Pattern;
 
 public class MACAddress
@@ -9,7 +8,7 @@ public class MACAddress
 	private final String value;
 	private static final Pattern PATTERN = Pattern.compile("^[0-9a-fA-F]{12}$");
 
-	public MACAddress(String value)
+	private MACAddress(String value)
 	{
 		value = value.replaceAll("[\\-: .]", "");
 		if (!PATTERN.matcher(value).matches())
@@ -17,6 +16,8 @@ public class MACAddress
 
 		this.value = value;
 	}
+
+	public static MACAddress valueOf(String value) {return new MACAddress(value);}
 
 	@Override
 	public String toString()

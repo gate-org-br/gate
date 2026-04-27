@@ -21,18 +21,6 @@ public class AppConverter implements Converter
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
 	public Object ofString(Class<?> type, String string) throws ConversionException
 	{
 		if (string == null)

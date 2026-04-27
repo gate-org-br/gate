@@ -1,22 +1,13 @@
 package gate.sql.columnMapper;
 
 import gate.converter.Converter;
-import gate.error.AppError;
 import gate.error.ConversionException;
-import gate.lang.json.JsonElement;
-import gate.lang.property.Property;
-import gate.annotation.Entity;
-import gate.type.DataFile;
-import gate.type.Range;
 
-import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.time.*;
-import java.util.Arrays;
-import java.util.List;
+import java.util.stream.Stream;
 
 
 public class EnumColumnMapper implements ColumnMapper
@@ -25,24 +16,59 @@ public class EnumColumnMapper implements ColumnMapper
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException
 	{
-		int value = rs.getInt(index);
-		return rs.wasNull() ? null : type.getEnumConstants()[value];
+		String string = rs.getString(index);
+		if (rs.wasNull())
+			return null;
+
+		String value = string.trim();
+		if (value.isEmpty())
+			return null;
+
+		var constantes = type.getEnumConstants();
+
+		if (value.chars().allMatch(Character::isDigit))
+			return constantes[Integer.parseInt(value)];
+
+		return Stream.of(constantes)
+				.map(Enum.class::cast)
+				.filter(e -> e.name().equals(value))
+				.findAny()
+				.orElseThrow(() -> new ConversionException("%s is not a valid %s enum value".formatted(value, type.getName())));
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
-		int value = rs.getInt(fields);
-		return rs.wasNull() ? null : type.getEnumConstants()[value];
+		String string = rs.getString(fields);
+		if (rs.wasNull())
+			return null;
+
+		String value = string.trim();
+		if (value.isEmpty())
+			return null;
+
+		var constantes = type.getEnumConstants();
+
+		if (value.chars().allMatch(Character::isDigit))
+			return constantes[Integer.parseInt(value)];
+
+		return Stream.of(constantes)
+				.map(Enum.class::cast)
+				.filter(e -> e.name().equals(value))
+				.findAny()
+				.orElseThrow(() -> new ConversionException("%s is not a valid %s enum value".formatted(value, type.getName())));
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
-		if (value != null)
-			ps.setInt(index++, ((Enum<?>) value).ordinal());
+		var string = Converter.toString(value);
+		if (string.isEmpty())
+			ps.setNull(index++, Types.NULL);
+		else if (string.chars().allMatch(Character::isDigit))
+			ps.setInt(index++, Integer.parseInt(string));
 		else
-			ps.setNull(index++, Types.INTEGER);
+			ps.setString(index++, string);
 		return index;
 	}
 }

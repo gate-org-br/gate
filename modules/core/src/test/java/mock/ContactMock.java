@@ -1,7 +1,5 @@
 package mock;
 
-import gate.annotation.Converter;
-import gate.converter.EnumStringConverter;
 import gate.annotation.Entity;
 import gate.type.ID;
 
@@ -75,7 +73,6 @@ public class ContactMock
 		return this;
 	}
 
-	@Converter(EnumStringConverter.class)
 	public enum Type
 	{
 		PHONE, EMAIL

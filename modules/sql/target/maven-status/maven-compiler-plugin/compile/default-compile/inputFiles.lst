@@ -52,8 +52,10 @@
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/statement/BasicQuery.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/annotation/Schema.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/ArraySetFetcher.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/TaxColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/condition/LazyConstantPredicate.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/TypedArrayListFetcher.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/ObjectColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/TypedDataGridFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/condition/ExtractorCondition.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/insert/ClassInsert.java
@@ -103,6 +105,7 @@
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/LocalDateColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/condition/ConstantCondition.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/select/WithRollupSelect.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/ColumnReferenceRegistrar.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/TypedArrayFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/TypedObjectFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/replace/Replace.java
@@ -143,6 +146,7 @@
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/ByteArrayColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/select/ProjectedSelect.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/mapper/ObjectMapper.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/PercentageColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/JsonObjectFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/ObjectFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/statement/BasicSentence.java
@@ -164,14 +168,17 @@
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/TypedObjectSetFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/EntitySetFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/mapper/Mapper.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/EnumOrdinalColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/condition/LazyCompiledPredicateMethods.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/YearMonthColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/statement/Sentence.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/Clause.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/MoneyColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/PropertyEntityFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/ArrayListFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/PropertyEntityListFetcher.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/fetcher/TypedArraySetFetcher.java
+/home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/columnMapper/RecordColumnMapper.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/condition/CompiledPredicate.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/select/Lockable.java
 /home/davins/Projects/gate/modules/sql/src/main/java/gate/sql/Link.java

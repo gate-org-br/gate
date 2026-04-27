@@ -22,6 +22,7 @@ gate/thymeleaf/processors/attribute/property/PropertyAttributeProcessor.class
 gate/annotation/AllowMethods.class
 gate/rest/JsonObjectHandler.class
 gate/NameResolver.class
+gate/annotation/Asynchronous.class
 gate/thymeleaf/processors/tag/TemplateProcessor.class
 gate/rest/DataGridHandler.class
 gate/thymeleaf/processors/tag/SecureProcessor.class
@@ -109,6 +110,7 @@ gate/thymeleaf/processors/attribute/IterateAttributeProcessor.class
 gate/thymeleaf/processors/attribute/IconsAttributeProcessor.class
 gate/thymeleaf/processors/tag/SuperUserProcessor.class
 gate/handler/JavaScriptHandler.class
+gate/catcher/Catcher$Instances.class
 gate/thymeleaf/JavaELContext.class
 gate/PasswordControl$PasswordDao.class
 gate/authenticator/LDAPAuthenticator.class
@@ -119,7 +121,6 @@ gate/handler/URLHandler.class
 gate/thymeleaf/processors/tag/property/DateProcessor.class
 gate/rest/ParameterConverterProvider.class
 gate/registrar/GateConverterRegistrar.class
-gate/catcher/Catcher$Registry.class
 gate/handler/MimeDataFileHandler.class
 gate/PasswordDao.class
 gate/error/InternalServerException.class
@@ -151,6 +152,7 @@ gate/rest/exception/ConversionExceptionMapper.class
 gate/thymeleaf/processors/attribute/property/FormControlAttributeProcessor.class
 gate/thymeleaf/processors/tag/property/Select1Processor.class
 gate/thymeleaf/processors/attribute/request/RequestAttributeProcessor.class
+gate/annotation/Authorization.class
 gate/producer/UserProducer.class
 gate/base/Base.class
 gate/rest/exception/ForbidenExceptionMapper.class
@@ -180,6 +182,7 @@ gate/rest/exception/InvalidCredentialsExceptionMapper.class
 gate/handler/TempFileHandler.class
 gate/thymeleaf/processors/TextProcessor.class
 gate/thymeleaf/processors/attribute/ButtonOrdenatorAttributeProcessor.class
+gate/registrar/GateMetadataRegistrar.class
 gate/Calls.class
 gate/annotation/Current.class
 gate/event/LoginEvent.class
@@ -231,6 +234,7 @@ gate/thymeleaf/processors/tag/property/TextEditorProcessor.class
 gate/converter/custom/EntityConverter.class
 gate/command/Command.class
 gate/catalog/SessionCatalog.class
+gate/annotation/Authorization$Extractor.class
 gate/thymeleaf/processors/tag/InsertProcessor.class
 gate/handler/SafeTextHandler.class
 gate/entity/Session.class
@@ -261,6 +265,7 @@ gate/handler/DataFileHandler.class
 gate/messaging/InboxConfig$Account.class
 gate/TempFileListener.class
 gate/thymeleaf/processors/tag/anchor/AnchorProcessor.class
+gate/security/Claims.class
 gate/thymeleaf/processors/attribute/SuperUserAttributeProcessor.class
 gate/Progress$State.class
 gate/handler/ReportHandler.class
@@ -272,7 +277,6 @@ gate/thymeleaf/processors/attribute/property/AbstractPropertyAttributeProcessor.
 gate/rest/exception/UnauthorizedExceptionMapper.class
 gate/handler/SafeStyleHandler.class
 gate/thymeleaf/processors/attribute/EmojiAttributeProcessor.class
-gate/handler/Handler$Instances$1.class
 gate/thymeleaf/processors/tag/TagProcessor.class
 gate/catalog/UserCatalog$UserDao$UzerFetcher.class
 gate/catalog/RoleCatalog.class
@@ -323,6 +327,7 @@ gate/entity/App$Module.class
 gate/catcher/ThrowableCatcher.class
 gate/thymeleaf/processors/tag/StacktraceProcessor.class
 gate/http/ScreenServletRequest.class
+gate/annotation/Authorization$Value.class
 gate/thymeleaf/processors/tag/WithProcessor.class
 gate/rest/MimeDataFileHandler.class
 gate/rest/exception/BadRequestExceptionMapper.class

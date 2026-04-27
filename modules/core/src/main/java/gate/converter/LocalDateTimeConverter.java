@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -10,6 +11,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Description("Campos de data/hora devem ser preenchidos no formato DD/MM/YYYY HH:MM")
 public class LocalDateTimeConverter implements Converter
 {
 
@@ -24,18 +26,6 @@ public class LocalDateTimeConverter implements Converter
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS = List.of(new Maxlength.Implementation(19),
 		new gate.constraint.Pattern.Implementation("^[0-9]{12}|[0-9]{2}\\/[0-9]{2}\\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$"));
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de data/hora devem ser preenchidos no formato DD/MM/YYYY HH:MM";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##/##/#### ##:##";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -92,7 +82,7 @@ public class LocalDateTimeConverter implements Converter
 			throw new ConversionException(ex,
 				"%s não é uma data/hora válida.%n%s.",
 				ex.getParsedString(),
-				getDescription());
+				gate.lang.property.metadata.Metadata.getMetadata(type).description());
 		}
 	}
 

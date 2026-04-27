@@ -1,5 +1,6 @@
 package gate.producer;
 
+import gate.annotation.Current;
 import gate.annotation.LinkResource;
 import gate.entity.App;
 import gate.error.InternalServerException;
@@ -30,7 +31,7 @@ public class LinkSourceProducer
 
 	@Produces
 	@Dependent
-	public LinkSource produceDefault(App app)
+	public LinkSource produceDefault(@Current App app)
 	{
 		return () ->
 		{

@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -10,20 +11,9 @@ import gate.type.br.CEP;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de CEP devem ser preenchidos no formato 99999-999")
 public class CEPConverter implements Converter
 {
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de CEP devem ser preenchidos no formato 99999-999";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return "##.###-###";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

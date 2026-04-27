@@ -20,18 +20,6 @@ public class MoneyConverter implements Converter
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
 	public Number toNumber(Class<?> type, Object object)
 	{
 		return object != null ? ((Money) object).getValue() : null;

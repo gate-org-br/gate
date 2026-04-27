@@ -1,7 +1,7 @@
 package gate.sql;
 
-import gate.sql.annotation.Column;
 import gate.annotation.Entity;
+import gate.sql.annotation.Column;
 import gate.type.PropertyReference;
 import gate.util.Reflection;
 
@@ -10,6 +10,7 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -19,8 +20,11 @@ import java.util.function.Function;
 public record ColumnReference<T, R>(PropertyReference<T, R> property, String name,
                                     Function<R, ?> extractor)
 {
-
-	private static final Map<Class<?>, ColumnReference<?, ?>> CACHE = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, ColumnReference<?, ?>> CACHE = new ConcurrentHashMap<>()
+	{{
+		ServiceLoader.load(ColumnReferenceRegistrar.class)
+				.forEach(registrar -> registrar.register(this));
+	}};
 
 	/**
 	 * Resolves the SQL column name represented by the given property reference.

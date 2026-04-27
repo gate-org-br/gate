@@ -3,6 +3,7 @@ package gate.lang.property;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.PropertyError;
+import gate.lang.property.metadata.Metadata;
 import gate.annotation.Entity;
 import gate.util.Reflection;
 

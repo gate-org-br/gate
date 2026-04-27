@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IterateAttributeProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.attribute</a> &gt; <span class="el_source">IterateAttributeProcessor.java</span></div><h1>IterateAttributeProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.attribute;
+
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.Precedence;
+import gate.thymeleaf.TextEngine;
+import gate.type.Attributes;
+import gate.type.Hierarchy;
+import gate.util.Toolkit;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IAttribute;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.web.IWebExchange;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+@ApplicationScoped
+public class IterateAttributeProcessor extends AttributeModelProcessor
+{
+
+	@Inject
+	TextEngine engine;
+
+	@Inject
+	ELExpressionFactory expression;
+
+	public IterateAttributeProcessor()
+	{
+<span class="nc" id="L37">		super(&quot;iterate&quot;);</span>
+<span class="nc" id="L38">	}</span>
+
+	@Override
+	public void process(ITemplateContext context, IModel model,
+	                    IElementModelStructureHandler handler)
+	{
+<span class="nc" id="L44">		IWebExchange exchange = ((IWebContext) context).getExchange();</span>
+<span class="nc" id="L45">		IProcessableElementTag element = (IProcessableElementTag) model.get(0);</span>
+
+<span class="nc" id="L47">		var source = expression.create().evaluate(element.getAttributeValue(&quot;g:iterate&quot;));</span>
+<span class="nc" id="L48">		var depth = Objects.requireNonNullElse(element.getAttributeValue(&quot;g:depth&quot;), &quot;depth&quot;);</span>
+<span class="nc" id="L49">		var index = Objects.requireNonNullElse(element.getAttributeValue(&quot;g:index&quot;), &quot;index&quot;);</span>
+<span class="nc" id="L50">		var target = Objects.requireNonNullElse(element.getAttributeValue(&quot;g:target&quot;), &quot;target&quot;);</span>
+<span class="nc" id="L51">		var children = Optional.ofNullable(element.getAttributeValue(&quot;g:children&quot;))</span>
+<span class="nc" id="L52">				.map(expression.create()::function).orElse(null);</span>
+
+<span class="nc" id="L54">		Attributes attributes =</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">				Stream.of(element.getAllAttributes()).filter(e -&gt; e.getValue() != null)</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">						.filter(e -&gt; !&quot;g:iterate&quot;.equals(e.getAttributeCompleteName()))</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">						.filter(e -&gt; !&quot;g:depth&quot;.equals(e.getAttributeCompleteName()))</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">						.filter(e -&gt; !&quot;g:index&quot;.equals(e.getAttributeCompleteName()))</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">						.filter(e -&gt; !&quot;g:target&quot;.equals(e.getAttributeCompleteName()))</span>
+<span class="nc bnc" id="L60" title="All 2 branches missed.">						.filter(e -&gt; !&quot;g:children&quot;.equals(e.getAttributeCompleteName()))</span>
+<span class="nc" id="L61">						.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,</span>
+<span class="nc" id="L62">								IAttribute::getValue, (a, b) -&gt; a, Attributes::new));</span>
+<span class="nc" id="L63">		replaceTag(context, model, handler, element.getElementCompleteName(), attributes);</span>
+
+<span class="nc" id="L65">		IModel content = model.cloneModel();</span>
+<span class="nc" id="L66">		model.reset();</span>
+
+<span class="nc bnc" id="L68" title="All 2 branches missed.">		if (exchange.getAttributeValue(index) == null)</span>
+		{
+<span class="nc" id="L70">			exchange.setAttributeValue(index, -1);</span>
+<span class="nc bnc" id="L71" title="All 2 branches missed.">			if (exchange.getAttributeValue(depth) == null)</span>
+			{
+<span class="nc" id="L73">				exchange.setAttributeValue(depth, -1);</span>
+<span class="nc" id="L74">				iterate(context, model, handler, content, exchange, source, target, index, depth,</span>
+						children);
+<span class="nc" id="L76">				exchange.removeAttribute(depth);</span>
+			} else
+<span class="nc" id="L78">				iterate(context, model, handler, content, exchange, source, target, index, depth,</span>
+						children);
+<span class="nc" id="L80">			exchange.removeAttribute(index);</span>
+<span class="nc bnc" id="L81" title="All 2 branches missed.">		} else if (exchange.getAttributeValue(depth) == null)</span>
+		{
+<span class="nc" id="L83">			exchange.setAttributeValue(depth, -1);</span>
+<span class="nc" id="L84">			iterate(context, model, handler, content, exchange, source, target, index, depth,</span>
+					children);
+<span class="nc" id="L86">			exchange.removeAttribute(depth);</span>
+		} else
+<span class="nc" id="L88">			iterate(context, model, handler, content, exchange, source, target, index, depth,</span>
+					children);
+<span class="nc" id="L90">	}</span>
+
+	private void iterate(ITemplateContext context, IModel model,
+	                     IElementModelStructureHandler handler, IModel content, IWebExchange exchange,
+	                     Object source, String target, String index, String depth,
+	                     Function&lt;Object, Object&gt; children)
+	{
+<span class="nc" id="L97">		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) + 1);</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		for (Object value : Toolkit.iterable(source))</span>
+		{
+<span class="nc" id="L100">			exchange.setAttributeValue(index, ((int) exchange.getAttributeValue(index)) + 1);</span>
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			if (target != null)</span>
+<span class="nc" id="L103">				exchange.setAttributeValue(target, value);</span>
+<span class="nc" id="L104">			add(context, model, handler, engine.process(content, context));</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">			if (target != null)</span>
+<span class="nc" id="L106">				exchange.removeAttribute(target);</span>
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">			if (value != null)</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">				if (children != null)</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">					for (Object child : Toolkit.iterable(children.apply(value)))</span>
+<span class="nc" id="L111">						iterate(context, model, handler, content, exchange, child, target, index,</span>
+								depth, children);
+<span class="nc bnc" id="L113" title="All 2 branches missed.">				else if (value instanceof Hierarchy&lt;?&gt; hierarchy)</span>
+<span class="nc" id="L114">					hierarchy.getChildren().forEach(child -&gt; iterate(context, model, handler,</span>
+							content, exchange, child, target, index, depth, null));
+<span class="nc" id="L116">		}</span>
+<span class="nc" id="L117">		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) - 1);</span>
+<span class="nc" id="L118">	}</span>
+
+	@Override
+	public int getPrecedence()
+	{
+<span class="nc" id="L123">		return Precedence.MAX;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

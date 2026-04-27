@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
@@ -6,20 +7,9 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Arquivo")
 public class PathConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Arquivo";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

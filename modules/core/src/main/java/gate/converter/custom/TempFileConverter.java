@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
@@ -6,20 +7,9 @@ import gate.error.ConversionException;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Arquivo temporário")
 public class TempFileConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Arquivo temporário";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

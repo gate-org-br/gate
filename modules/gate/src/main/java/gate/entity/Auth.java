@@ -4,9 +4,7 @@ import gate.annotation.*;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
-import gate.converter.EnumStringConverter;
 import gate.sql.annotation.Column;
-import gate.annotation.Entity;
 import gate.sql.annotation.Schema;
 import gate.type.ID;
 
@@ -196,7 +194,6 @@ public class Auth implements Serializable
 		       && action == null;
 	}
 
-	@Converter(EnumStringConverter.class)
 	public enum Access
 	{
 
@@ -210,7 +207,6 @@ public class Auth implements Serializable
 		BLOCK
 	}
 
-	@Converter(EnumStringConverter.class)
 	public enum Scope
 	{
 		@Icon("2006")

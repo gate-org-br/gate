@@ -1,7 +1,6 @@
 package gate.type;
 
 import gate.annotation.Icon;
-import gate.converter.custom.MoneyConverter;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -62,7 +61,7 @@ public final class Money extends Number implements Comparable<Money>
 	{
 		return new Percentage(money.value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO
 				: getValue().divide(money.getValue(), 4, RoundingMode.HALF_EVEN)
-				.multiply(new BigDecimal(100), new MathContext(2, RoundingMode.HALF_EVEN)));
+				  .multiply(new BigDecimal(100), new MathContext(2, RoundingMode.HALF_EVEN)));
 	}
 
 	public Money add(Tax tax)
@@ -247,7 +246,7 @@ public final class Money extends Number implements Comparable<Money>
 				.reduce(BigDecimal.ZERO, BigDecimal::add));
 	}
 
-	public static Money of(String string)
+	public static Money valueOf(String string)
 	{
 		try
 		{
@@ -258,17 +257,17 @@ public final class Money extends Number implements Comparable<Money>
 		}
 	}
 
-	public static Money of(long value)
+	public static Money valueOf(long value)
 	{
 		return new Money(new BigDecimal(value).setScale(2, RoundingMode.HALF_EVEN));
 	}
 
-	public static Money of(BigDecimal value)
+	public static Money valueOf(BigDecimal value)
 	{
 		return new Money(value);
 	}
 
-	public static Money of(Locale locale, String string)
+	public static Money valueOf(Locale locale, String string)
 	{
 		try
 		{

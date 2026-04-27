@@ -1,24 +1,14 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
+@Description("BLOB")
 public class ByteArrayConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "BLOB";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

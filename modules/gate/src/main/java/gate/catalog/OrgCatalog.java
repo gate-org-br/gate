@@ -35,7 +35,7 @@ public class OrgCatalog
 
 	public Optional<Org> find()
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     OrgDao dao = new OrgDao(link))
 		{
 			return dao.select();

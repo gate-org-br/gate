@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PropertyProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.tag.property</a> &gt; <span class="el_source">PropertyProcessor.java</span></div><h1>PropertyProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.tag.property;
+
+import gate.lang.property.Property;
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.processors.tag.TagProcessor;
+import gate.type.Attributes;
+import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IAttribute;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public abstract class PropertyProcessor extends TagProcessor
+{
+
+	@Inject
+	ELExpressionFactory expressionFactory;
+
+	public PropertyProcessor(String name)
+	{
+<span class="nc" id="L28">		super(name);</span>
+
+<span class="nc" id="L30">	}</span>
+
+	@Override
+	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
+	{
+<span class="nc bnc" id="L35" title="All 2 branches missed.">		if (element.getElementCompleteName().startsWith(&quot;g-&quot;))</span>
+<span class="nc" id="L36">			return;</span>
+
+<span class="nc" id="L38">		var expression = expressionFactory.create();</span>
+
+<span class="nc" id="L40">		var exchange = ((IWebContext) context).getExchange();</span>
+
+<span class="nc" id="L42">		Object screen = Optional.ofNullable(element.getAttributeValue(&quot;context&quot;))</span>
+<span class="nc" id="L43">				.map(expression::evaluate)</span>
+<span class="nc" id="L44">				.orElseGet(() -&gt; exchange.getAttributeValue(&quot;screen&quot;));</span>
+
+<span class="nc" id="L46">		Attributes attributes = Stream.of(element.getAllAttributes())</span>
+<span class="nc" id="L47">				.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,</span>
+<span class="nc" id="L48">						e -&gt; Objects.requireNonNullElse(e.getValue(), &quot;&quot;), (a, b) -&gt; a, Attributes::new));</span>
+
+<span class="nc" id="L50">		var not = Stream.concat(attributes.keySet().stream()</span>
+<span class="nc" id="L51">								.filter(e -&gt; e.startsWith(&quot;not:&quot;))</span>
+<span class="nc" id="L52">								.map(e -&gt; e.substring(4)),</span>
+<span class="nc" id="L53">						attributes.entrySet().stream()</span>
+<span class="nc" id="L54">								.filter(e -&gt; e.getKey().startsWith(&quot;set:&quot;))</span>
+<span class="nc bnc" id="L55" title="All 2 branches missed.">								.filter(e -&gt; !Boolean.TRUE.equals(expression.evaluate((String) e.getValue())))</span>
+<span class="nc" id="L56">								.map(e -&gt; e.getKey().substring(4)))</span>
+<span class="nc" id="L57">				.toList();</span>
+
+<span class="nc" id="L59">		attributes.keySet().removeIf(e -&gt; e.startsWith(&quot;not:&quot;));</span>
+<span class="nc" id="L60">		attributes.keySet().removeIf(e -&gt; e.startsWith(&quot;set:&quot;));</span>
+
+<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (!attributes.containsKey(&quot;property&quot;))</span>
+<span class="nc" id="L63">			throw new TemplateProcessingException(&quot;Missing required attribute property on g:&quot; + getElement());</span>
+
+<span class="nc" id="L65">		var name = (String) attributes.remove(&quot;property&quot;);</span>
+<span class="nc" id="L66">		name = (String) expression.evaluate(name);</span>
+<span class="nc" id="L67">		var property = Property.getProperty(screen.getClass(), name);</span>
+
+<span class="nc" id="L69">		attributes.put(&quot;name&quot;, property.toString());</span>
+
+<span class="nc" id="L71">		property.getConstraints().stream()</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">				.filter(e -&gt; !attributes.containsKey(e.getName()))</span>
+<span class="nc" id="L73">				.forEachOrdered(e -&gt; attributes.put(e.getName(), e.getValue().toString()));</span>
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">		if (!attributes.containsKey(&quot;title&quot;))</span>
+		{
+<span class="nc" id="L77">			String description = property.getMetadata().description();</span>
+<span class="nc bnc" id="L78" title="All 4 branches missed.">			if (description == null || description.isEmpty())</span>
+			{
+<span class="nc" id="L80">				String displayName = property.getMetadata().name();</span>
+<span class="nc bnc" id="L81" title="All 4 branches missed.">				if (displayName != null &amp;&amp; !displayName.isEmpty())</span>
+<span class="nc" id="L82">					attributes.put(&quot;title&quot;, displayName);</span>
+<span class="nc" id="L83">			} else</span>
+<span class="nc" id="L84">				attributes.put(&quot;title&quot;, description);</span>
+		}
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">		if (!attributes.containsKey(&quot;data-tooltip&quot;))</span>
+		{
+<span class="nc" id="L89">			String tooltip = property.getMetadata().tooltip();</span>
+<span class="nc bnc" id="L90" title="All 4 branches missed.">			if (tooltip != null &amp;&amp; !tooltip.isEmpty())</span>
+<span class="nc" id="L91">				attributes.put(&quot;data-tooltip&quot;, tooltip);</span>
+		}
+
+<span class="nc bnc" id="L94" title="All 2 branches missed.">		if (!attributes.containsKey(&quot;placeholder&quot;))</span>
+		{
+<span class="nc" id="L96">			String placeholder = property.getMetadata().placeholder();</span>
+<span class="nc bnc" id="L97" title="All 4 branches missed.">			if (placeholder != null &amp;&amp; !placeholder.isEmpty())</span>
+<span class="nc" id="L98">				attributes.put(&quot;placeholder&quot;, placeholder);</span>
+		}
+
+<span class="nc" id="L101">		attributes.keySet().removeIf(not::contains);</span>
+<span class="nc" id="L102">		process(context, element, handler, screen, property, attributes);</span>
+
+<span class="nc" id="L104">	}</span>
+
+	protected abstract void process(ITemplateContext context, IProcessableElementTag element,
+									IElementTagStructureHandler handler, Object screen, Property property, Attributes attributes);
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

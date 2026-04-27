@@ -107,7 +107,7 @@ public class AppProducer implements Serializable
 
 		public void update(App app) throws ConstraintViolationException
 		{
-			try (Link link = linkSource.get();
+			try (Link link = linkSource.getLink();
 			     AppDao dao = new AppDao(link))
 			{
 				link.beginTran();

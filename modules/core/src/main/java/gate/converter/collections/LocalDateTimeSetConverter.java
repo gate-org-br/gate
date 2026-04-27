@@ -1,5 +1,6 @@
 package gate.converter.collections;
 
+import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.converter.SetConverter;
 import gate.error.ConversionException;
@@ -8,24 +9,13 @@ import gate.type.collections.LocalDateTimeSet;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Lista de datas e horas separada por vírgulas")
 public class LocalDateTimeSetConverter extends SetConverter
 {
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Lista de datas e horas separada por vírgulas";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
 	}
 
 	@Override

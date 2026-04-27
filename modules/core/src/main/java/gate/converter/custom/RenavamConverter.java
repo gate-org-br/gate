@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -10,20 +11,9 @@ import gate.type.br.Renavam;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de Renavam devem ser preenchidos no formato 9999999999-9")
 public class RenavamConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return "##########-#";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de Renavam devem ser preenchidos no formato 9999999999-9";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

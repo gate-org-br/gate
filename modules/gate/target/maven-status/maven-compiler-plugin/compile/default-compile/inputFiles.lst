@@ -76,8 +76,10 @@
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/handler/ResultHandler.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/processors/tag/UseProcessor.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/JavaScriptFileEngine.java
+/home/davins/Projects/gate/modules/gate/src/main/java/gate/annotation/Asynchronous.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/processors/tag/HideProcessor.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/handler/SafeStyleHandler.java
+/home/davins/Projects/gate/modules/gate/src/main/java/gate/registrar/GateMetadataRegistrar.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/processors/attribute/property/AbstractPropertyAttributeProcessor.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/annotation/LinkResource.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/ELExpression.java
@@ -117,6 +119,7 @@
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/command/HTMLCommand.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/producer/LoggerProducer.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/messaging/Outbox.java
+/home/davins/Projects/gate/modules/gate/src/main/java/gate/annotation/Authorization.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/Version.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/PasswordDao.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/processors/attribute/LinkOrdenatorAttributeProcessor.java
@@ -208,6 +211,7 @@
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/processors/attribute/property/TextViewerAttributeProcessor.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/catcher/ConversionExceptionCatcher.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/handler/HttpErrorHandler.java
+/home/davins/Projects/gate/modules/gate/src/main/java/gate/security/Claims.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/rest/AuthorizationInterceptor.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/entity/Mail.java
 /home/davins/Projects/gate/modules/gate/src/main/java/gate/thymeleaf/HTMLFileEngine.java

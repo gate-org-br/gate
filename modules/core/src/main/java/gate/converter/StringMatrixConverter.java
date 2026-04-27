@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.AppError;
@@ -12,20 +13,9 @@ import java.io.StringWriter;
 import java.util.Collections;
 import java.util.List;
 
+@Description("CSV Data")
 public class StringMatrixConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "CSV Data";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

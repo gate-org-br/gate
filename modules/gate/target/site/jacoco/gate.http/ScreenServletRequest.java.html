@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScreenServletRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.http</a> &gt; <span class="el_source">ScreenServletRequest.java</span></div><h1>ScreenServletRequest.java</h1><pre class="source lang-java linenums">package gate.http;
+
+import gate.converter.Converter;
+import gate.entity.User;
+import gate.error.AppError;
+import gate.error.AuthenticationException;
+import gate.error.ConversionException;
+import gate.error.InvalidUsernamePasswordException;
+import gate.handler.Handler;
+import gate.lang.property.CollectionAttribute;
+import gate.lang.property.Property;
+import gate.lang.property.PropertyGraph;
+import gate.policonverter.Policonverter;
+import gate.type.RequestCommand;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.Part;
+
+import java.io.*;
+import java.net.URLDecoder;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ScreenServletRequest extends HttpServletRequestWrapper
+{
+<span class="fc" id="L31">	private final RequestCommand command =</span>
+<span class="fc" id="L32">			new RequestCommand(getParameter(&quot;MODULE&quot;),</span>
+<span class="fc" id="L33">					getParameter(&quot;SCREEN&quot;),</span>
+<span class="fc" id="L34">					getParameter(&quot;ACTION&quot;));</span>
+
+<span class="fc" id="L36">	private static final Pattern AUTHORIZATION = Pattern.compile(&quot;(.*) (.*)&quot;);</span>
+
+	public ScreenServletRequest(HttpServletRequest request)
+	{
+<span class="fc" id="L40">		super(request);</span>
+<span class="fc" id="L41">	}</span>
+
+	public Collection&lt;Part&gt; parts()
+	{
+<span class="nc" id="L45">		String contentType = getContentType();</span>
+		try
+		{
+<span class="nc" id="L48">			return contentType != null</span>
+<span class="nc bnc" id="L49" title="All 4 branches missed.">			       &amp;&amp; contentType.toLowerCase().startsWith(&quot;multipart/&quot;) ? getParts()</span>
+<span class="nc" id="L50">					: Collections.emptyList();</span>
+<span class="nc" id="L51">		} catch (IOException | ServletException e)</span>
+		{
+<span class="nc" id="L53">			throw new RuntimeException(e);</span>
+		}
+	}
+
+	public boolean isSet(String name)
+	{
+<span class="nc bnc" id="L59" title="All 4 branches missed.">		return getParameter(name) != null || parts().stream().anyMatch(e -&gt; e.getName().equals(name));</span>
+	}
+
+	public List&lt;String&gt; getParameterList()
+	{
+<span class="nc" id="L64">		Set&lt;String&gt; parameters = new HashSet&lt;&gt;();</span>
+<span class="nc bnc" id="L65" title="All 2 branches missed.">		for (Enumeration&lt;String&gt; enumeration = getParameterNames(); enumeration.hasMoreElements(); )</span>
+<span class="nc" id="L66">			parameters.add(enumeration.nextElement());</span>
+<span class="nc" id="L67">		parts().stream().map(Part::getName).collect(Collectors.toCollection(() -&gt; parameters));</span>
+<span class="nc" id="L68">		return new ArrayList&lt;&gt;(parameters);</span>
+	}
+
+	public Object getParameterValues(Class&lt;?&gt; type, Class&lt;?&gt; elementType, String name)
+	{
+		try
+		{
+<span class="nc" id="L75">			String[] strings = getParameterValues(name);</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">			if (strings != null)</span>
+<span class="nc" id="L77">				return Policonverter.getPoliconverter(type).getObject(elementType, strings);</span>
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">			if (parts().stream().anyMatch(e -&gt; e.getName().equals(name)))</span>
+			{
+<span class="nc" id="L81">				Object[] objects = parts().stream()</span>
+<span class="nc" id="L82">						.filter(e -&gt; e.getName().equals(name))</span>
+<span class="nc" id="L83">						.map(part -&gt; Handler.fromPart(elementType, part))</span>
+<span class="nc" id="L84">						.toArray();</span>
+<span class="nc" id="L85">				return Policonverter.getPoliconverter(type).toCollection(elementType, objects);</span>
+			}
+<span class="nc" id="L87">			return null;</span>
+<span class="nc" id="L88">		} catch (ConversionException e)</span>
+		{
+<span class="nc" id="L90">			throw new AppError(e);</span>
+		}
+	}
+
+	public Object getParameter(Class&lt;?&gt; type, String name)
+	{
+		try
+		{
+<span class="nc" id="L98">			Object value = getParameterValue(name);</span>
+
+<span class="nc bnc" id="L100" title="All 2 branches missed.">			if (value instanceof String string)</span>
+<span class="nc" id="L101">				return Converter.getConverter(type).ofString(type, string);</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">			if (value instanceof Part part)</span>
+			{
+				try
+				{
+<span class="nc" id="L107">					return Handler.fromPart(type, part);</span>
+				} finally
+				{
+<span class="nc" id="L110">					part.delete();</span>
+				}
+			}
+
+<span class="nc" id="L114">			return null;</span>
+<span class="nc" id="L115">		} catch (IOException ex)</span>
+		{
+<span class="nc" id="L117">			throw new UncheckedIOException(ex);</span>
+		}
+	}
+
+	public Object getParameterValue(String name)
+	{
+<span class="nc" id="L123">		String string = getParameter(name);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">		return string != null ? string</span>
+<span class="nc" id="L125">				: parts().stream()</span>
+<span class="nc" id="L126">				  .filter(e -&gt; e.getName().equals(name))</span>
+<span class="nc bnc" id="L127" title="All 2 branches missed.">				  .filter(e -&gt; e.getSize() &gt; 0)</span>
+<span class="nc" id="L128">				  .findAny()</span>
+<span class="nc" id="L129">				  .orElse(null);</span>
+	}
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public &lt;T&gt; T getParameter(String charset, Class&lt;T&gt; type, String name) throws ConversionException
+	{
+		try
+		{
+<span class="nc" id="L137">			String string = getParameter(name);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">			if (string != null)</span>
+<span class="nc" id="L139">				return (T) Converter.getConverter(type).ofString(type, URLDecoder.decode(getParameter(name), charset));</span>
+<span class="nc bnc" id="L140" title="All 2 branches missed.">			if (parts().stream().anyMatch(e -&gt; e.getName().equals(name)))</span>
+<span class="nc" id="L141">				return Handler.fromPart(type, parts().stream().filter(e -&gt; e.getName().equals(name)).findFirst().orElseThrow());</span>
+<span class="nc" id="L142">			return null;</span>
+<span class="nc" id="L143">		} catch (UnsupportedEncodingException e)</span>
+		{
+<span class="nc" id="L145">			throw new AppError(e);</span>
+		}
+	}
+
+	public String getBody()
+	{
+<span class="nc" id="L151">		try (BufferedReader reader = this.getReader();</span>
+<span class="nc" id="L152">		     StringWriter string = new StringWriter())</span>
+		{
+<span class="nc bnc" id="L154" title="All 2 branches missed.">			for (int c = reader.read(); c != -1; c = reader.read())</span>
+<span class="nc" id="L155">				string.write(c);</span>
+<span class="nc" id="L156">			return string.toString();</span>
+<span class="nc" id="L157">		} catch (IOException ex)</span>
+		{
+<span class="nc" id="L159">			throw new UncheckedIOException(ex);</span>
+		}
+
+	}
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public &lt;T&gt; T getBody(Class&lt;T&gt; type) throws ConversionException
+	{
+<span class="nc" id="L167">		return (T) Converter.getConverter(type).ofString(type, ScreenServletRequest.this.getBody());</span>
+	}
+
+	public Optional&lt;String&gt; getCookieValue(String name)
+	{
+<span class="fc" id="L172">		return Optional.ofNullable(getCookies())</span>
+<span class="fc" id="L173">				.stream()</span>
+<span class="fc" id="L174">				.flatMap(Stream::of)</span>
+<span class="fc" id="L175">				.filter(c -&gt; name.equals(c.getName()))</span>
+<span class="fc" id="L176">				.findFirst()</span>
+<span class="fc" id="L177">				.map(Cookie::getValue)</span>
+<span class="pc bpc" id="L178" title="1 of 2 branches missed.">				.filter(e -&gt; !e.isBlank());</span>
+	}
+
+	public Object getParameter(Property property)
+	{
+<span class="nc bnc" id="L183" title="All 2 branches missed.">		if (property.getLastAttribute() instanceof CollectionAttribute)</span>
+		{
+<span class="nc" id="L185">			var previous = property.getPreviousProperty();</span>
+<span class="nc" id="L186">			return getParameterValues(previous.getRawType(), previous.getElementRawType(), property.toString());</span>
+		}
+<span class="nc" id="L188">		return getParameter(property.getRawType(), property.toString());</span>
+	}
+
+	public Authorization getAuthorization() throws AuthenticationException
+	{
+<span class="fc" id="L193">		String header = getHeader(&quot;Authorization&quot;);</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">		if (header == null)</span>
+		{
+<span class="fc" id="L196">			String username = getParameter(&quot;$username&quot;);</span>
+<span class="fc" id="L197">			String password = getParameter(&quot;$password&quot;);</span>
+<span class="pc bpc" id="L198" title="2 of 4 branches missed.">			if (username != null || password != null)</span>
+			{
+<span class="nc bnc" id="L200" title="All 4 branches missed.">				if (username == null || username.isBlank())</span>
+<span class="nc" id="L201">					throw new InvalidUsernamePasswordException();</span>
+<span class="nc bnc" id="L202" title="All 4 branches missed.">				if (password == null || password.isBlank())</span>
+<span class="nc" id="L203">					throw new InvalidUsernamePasswordException();</span>
+<span class="nc" id="L204">				return BasicAuthorization.from(username, password);</span>
+			}
+
+<span class="fc" id="L207">			return getCookieValue(&quot;subject&quot;)</span>
+<span class="fc" id="L208">					.map(CookieAuthorization::valueOf)</span>
+<span class="fc" id="L209">					.orElse(null);</span>
+		}
+
+<span class="fc" id="L212">		header = header.trim();</span>
+<span class="fc" id="L213">		Matcher authorization = AUTHORIZATION.matcher(header);</span>
+<span class="pc bpc" id="L214" title="1 of 2 branches missed.">		if (!authorization.matches())</span>
+<span class="nc" id="L215">			throw new AuthenticationException(&quot;Invalid authorization header&quot;);</span>
+
+<span class="fc" id="L217">		String type = authorization.group(1);</span>
+<span class="pc bpc" id="L218" title="2 of 3 branches missed.">		return switch (type.toUpperCase())</span>
+		{
+<span class="fc" id="L220">			case &quot;BEARER&quot; -&gt; BearerAuthorization.valueOf(header);</span>
+<span class="nc" id="L221">			case &quot;BASIC&quot; -&gt; BasicAuthorization.valueOf(header);</span>
+<span class="nc" id="L222">			default -&gt; throw new AuthenticationException(&quot;Authorization type not supported: &quot; + type);</span>
+		};
+
+	}
+
+	public &lt;T&gt; PropertyGraph&lt;T&gt; getPropertyGraph(Class&lt;T&gt; type)
+	{
+<span class="nc" id="L229">		return PropertyGraph.of(type, getParameterList().stream().sorted().toList());</span>
+	}
+
+	public void setUser(User user)
+	{
+<span class="nc" id="L234">		setAttribute(User.class.getName(), user);</span>
+<span class="nc" id="L235">	}</span>
+
+	public User getUser()
+	{
+<span class="nc" id="L239">		return (User) getAttribute(User.class.getName());</span>
+	}
+
+<span class="nc" id="L242">	public RequestCommand getCommand() {return command;}</span>
+
+	public boolean isStaticRequest()
+	{
+<span class="pc bpc" id="L246" title="1 of 2 branches missed.">		if (!command.isDefault())</span>
+<span class="nc" id="L247">			return false;</span>
+<span class="fc" id="L248">		var uri = getRequestURI();</span>
+<span class="fc" id="L249">		int slash = uri.lastIndexOf('/');</span>
+<span class="fc" id="L250">		int dot = uri.lastIndexOf('.');</span>
+<span class="pc bpc" id="L251" title="1 of 4 branches missed.">		return dot != -1 &amp;&amp; slash &lt;= dot;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

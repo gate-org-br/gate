@@ -3,6 +3,7 @@ package gate.lang.property;
 import gate.constraint.Constraint;
 import gate.converter.Converter;
 import gate.error.NoSuchPropertyError;
+import gate.lang.property.metadata.Metadata;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

@@ -1,7 +1,6 @@
 package gate.type;
 
 import gate.annotation.Icon;
-import gate.converter.custom.EMailConverter;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,13 +18,15 @@ public class EMail implements Serializable
 	public static final String REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,63}$";
 	public static final Pattern PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*\\.[A-Za-z]{2,63}$");
 
-	public EMail(String value)
+	private EMail(String value)
 	{
 		value = normalize(value);
 		if (!validate(value))
 			throw new IllegalArgumentException("value");
 		this.value = value;
 	}
+
+	public static EMail valueOf(String value) {return new EMail(value);}
 
 	public static boolean validate(String value)
 	{

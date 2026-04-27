@@ -1,5 +1,6 @@
 package gate.converter.collections;
 
+import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.converter.CollectionConverter;
 import gate.type.collections.CharacterList;
@@ -7,24 +8,13 @@ import gate.type.collections.CharacterList;
 import java.util.Collections;
 import java.util.List;
 
+@Description("Lista de caracteres separada por vírgulas")
 public class CharacterListConverter extends CollectionConverter
 {
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Lista de caracteres separada por vírgulas";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
 	}
 
 	@Override

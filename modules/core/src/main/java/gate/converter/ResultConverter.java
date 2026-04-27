@@ -16,18 +16,6 @@ public class ResultConverter implements Converter
 	}
 
 	@Override
-	public String getDescription()
-	{
-		return null;
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
 	public Number toNumber(Class<?> type, Object object)
 	{
 		return (Number) object;

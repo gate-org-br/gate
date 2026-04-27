@@ -29,7 +29,7 @@ public class MailCatalog
 
 	public List<Mail> search(App app, int maxAttempts, Duration retryInterval)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     MailDao dao = new MailDao(link))
 		{
 			return dao.search(app, maxAttempts, retryInterval.toSeconds());
@@ -38,7 +38,7 @@ public class MailCatalog
 
 	public void insert(Mail mail)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     MailDao dao = new MailDao(link))
 		{
 			dao.insert(mail);
@@ -47,7 +47,7 @@ public class MailCatalog
 
 	public void update(Mail mail)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     MailDao dao = new MailDao(link))
 		{
 			dao.update(mail);
@@ -56,7 +56,7 @@ public class MailCatalog
 
 	public void expire(App app, int maxAttempts)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     MailDao dao = new MailDao(link))
 		{
 			dao.expire(app, maxAttempts);
@@ -65,7 +65,7 @@ public class MailCatalog
 
 	public void delete(Mail mail)
 	{
-		try (Link link = linkSource.get();
+		try (Link link = linkSource.getLink();
 		     MailDao dao = new MailDao(link))
 		{
 			dao.delete(mail);

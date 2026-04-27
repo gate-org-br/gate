@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.converter.Converter;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Description("Campos de número de telefone devem ser compostos apenas por dígitos")
 public class PhoneConverter implements Converter
 {
 
@@ -27,18 +29,6 @@ public class PhoneConverter implements Converter
 
 	private static final Pattern ZERO_OP_DDD_FIX = Pattern.compile("^0[1-9]{2}[1-9]{2}[2-9][0-9]{7}$");
 	private static final Pattern ZERO_OP_DDD_MOB = Pattern.compile("^0[1-9]{2}[1-9]{2}9[0-9]{8}$");
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de número de telefone devem ser compostos apenas por dígitos";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

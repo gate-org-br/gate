@@ -1,5 +1,7 @@
 package gate.handler;
 
+import gate.registrar.Registrar;
+
 import java.util.Map;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Map;
  * To register a custom handler, create an implementation of this interface
  * and declare it in {@code META-INF/services/gate.handler.HandlerRegistrar}.
  */
-public interface HandlerRegistrar
+public interface HandlerRegistrar extends Registrar<Class<? extends Handler>>
 {
 
 	/**

@@ -1,5 +1,7 @@
 package gate.converter.custom;
 
+import gate.annotation.Description;
+
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
@@ -10,20 +12,9 @@ import gate.type.br.BrasilianDocument;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("CPF ou CNPJ")
 public class BrasilianDocumentConverter implements Converter
 {
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "CPF ou CNPJ";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -64,7 +55,7 @@ public class BrasilianDocumentConverter implements Converter
 
 		try
 		{
-			return BrasilianDocument.of(string);
+			return BrasilianDocument.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
 			throw new ConversionException(string + " não é um documento válido.");

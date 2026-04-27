@@ -8,17 +8,10 @@ import gate.error.UnauthorizedException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonObject;
 import gate.type.ID;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.SignatureException;
 
-import javax.crypto.SecretKey;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +20,6 @@ import java.util.stream.Stream;
 
 public final class Credentials
 {
-	private static final SecretKey SECRET = CryptoKeys.JWS_KEY.get();
 	private static final SessionPolicy POLICY = SessionPolicy.CURRENT;
 
 	private final LocalDateTime iat;
@@ -64,11 +56,11 @@ public final class Credentials
 
 	@Override public String toString()
 	{
-		return Jwts.builder()
-				.subject(sub.toString())
-				.issuedAt(Date.from(iat.toInstant(ZoneOffset.UTC)))
-				.expiration(Date.from(exp.toInstant(ZoneOffset.UTC)))
-				.claim("sid", sid != null ? sid.toString() : null)
+		return new Claims()
+				.sub(sub.toString())
+				.iat(iat.toInstant(ZoneOffset.UTC))
+				.exp(exp.toInstant(ZoneOffset.UTC))
+				.sid(sid != null ? sid.toString() : null)
 				.claim("usr", usr != null
 						? new JsonObject()
 						  .setObject("id", usr.getId())
@@ -94,16 +86,15 @@ public final class Credentials
 									   {
 										   for (int i = 0; i < nodes.size() - 1; i++)
 											   nodes.get(i).set("role", nodes.get(i + 1));
-										   return nodes.get(0);
+										   return nodes.isEmpty() ? null : nodes.get(0);
 									   }))).unwrap()
-						: null)
-				.signWith(SECRET)
-				.compact();
+						: null).toString();
 	}
 
 	public Credentials refresh()
 	{
 		return new Credentials(iat, LocalDateTime.now(ZoneOffset.UTC)
+				.truncatedTo(ChronoUnit.SECONDS)
 				.plusSeconds(POLICY.idleTimeout().getSeconds()), sub, sid, usr);
 	}
 
@@ -117,15 +108,19 @@ public final class Credentials
 	@SuppressWarnings("rawtypes") public static Credentials parse(String token)
 			throws HierarchyException, UnauthorizedException
 	{
-		var claims = getClaims(token);
-		var iat = LocalDateTime.ofInstant(claims.getIssuedAt().toInstant(), ZoneOffset.UTC);
-		var exp = LocalDateTime.ofInstant(claims.getExpiration().toInstant(), ZoneOffset.UTC);
+		var claims = gate.security.Claims.valueOf(token);
+
+		var iat = claims.iat().map(e -> LocalDateTime.ofInstant(e, ZoneOffset.UTC))
+				.orElseThrow(() -> new UnauthorizedException("Attempt to authenticate with invalid token"));
+		var exp = claims.exp().map(e -> LocalDateTime.ofInstant(e, ZoneOffset.UTC))
+				.orElseThrow(() -> new UnauthorizedException("Attempt to authenticate with invalid token"));
 
 		if (iat.plus(POLICY.timeout()).isBefore(LocalDateTime.now(ZoneOffset.UTC)))
 			throw new UnauthorizedException("Attempt to authenticate with expired token");
 
-		var sub = ID.valueOf(claims.getSubject());
-		var sid = claims.get("sid") instanceof String string ? ID.valueOf(string) : null;
+		var sid = claims.sid().map(ID::valueOf).orElse(null);
+		var sub = claims.sub().map(ID::valueOf)
+				.orElseThrow(() -> new UnauthorizedException("Attempt to authenticate with invalid token"));
 
 		var usr = claims.get("usr") instanceof Map map
 				? new User()
@@ -164,26 +159,5 @@ public final class Credentials
 				: null;
 
 		return new Credentials(iat, exp, sub, sid, usr);
-	}
-
-	private static Claims getClaims(String token)
-	{
-		try
-		{
-			return Jwts.parser()
-					.verifyWith(SECRET)
-					.build()
-					.parseSignedClaims(token)
-					.getPayload();
-		} catch (SignatureException ex)
-		{
-			throw new UnauthorizedException("Attempt to authenticate with invalid signature");
-		} catch (ExpiredJwtException ex)
-		{
-			throw new UnauthorizedException("Attempt to authenticate with expired token");
-		} catch (JwtException | IllegalArgumentException ex)
-		{
-			throw new UnauthorizedException("Attempt to authenticate with invalid token");
-		}
 	}
 }

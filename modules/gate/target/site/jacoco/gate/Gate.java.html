@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Gate.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate</a> &gt; <span class="el_source">Gate.java</span></div><h1>Gate.java</h1><pre class="source lang-java linenums">package gate;
+
+import gate.annotation.Current;
+import gate.authenticator.Authenticator;
+import gate.base.Screen;
+import gate.catalog.SessionCatalog;
+import gate.catcher.Catcher;
+import gate.entity.User;
+import gate.error.*;
+import gate.event.AppEvent;
+import gate.event.LoginEvent;
+import gate.handler.HTMLCommandHandler;
+import gate.handler.Handler;
+import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
+import gate.i18n.CurrentLocale;
+import gate.type.TempFile;
+import jakarta.enterprise.event.Event;
+import jakarta.enterprise.inject.Any;
+import jakarta.enterprise.inject.Instance;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.eclipse.microprofile.context.ThreadContext;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Locale;
+
+@MultipartConfig
+@WebServlet(value = &quot;/Gate/*&quot;, asyncSupported = true)
+<span class="nc" id="L40">public class Gate extends HttpServlet</span>
+{
+
+	static final String HTML = &quot;/views/Gate.html&quot;;
+
+	@Inject
+	Logger logger;
+
+	@Inject
+	Calls actionRegistry;
+
+	@Inject
+	Event&lt;AppEvent&gt; event;
+
+	@Any
+	@Inject
+	Instance&lt;Handler&gt; handlers;
+
+	@Any
+	@Inject
+	Instance&lt;Catcher&gt; catchers;
+
+	@Inject
+	@Current
+	Authenticator authenticator;
+
+	@Inject
+	ThreadContext threadContext;
+
+	@Inject
+	@Current
+	Instance&lt;User&gt; userInstance;
+
+	@Inject
+	SessionCatalog sessionCatalog;
+
+	@Inject
+	@SuppressWarnings(&quot;unused&quot;)
+	HeartbeatRegistry heartbeatRegistry;
+
+	static
+	{
+<span class="nc" id="L82">		Locale.setDefault(new Locale(&quot;pt&quot;, &quot;BR&quot;));</span>
+<span class="nc" id="L83">	}</span>
+
+	@Override
+	public void service(HttpServletRequest httpServletRequest,
+	                    HttpServletResponse httpServletResponse)
+			throws IOException
+	{
+<span class="nc" id="L90">		httpServletResponse.addHeader(&quot;Vary&quot;, &quot;X-G-Fragment&quot;);</span>
+<span class="nc" id="L91">		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);</span>
+<span class="nc" id="L92">		ScreenServletResponse response = new ScreenServletResponse(httpServletResponse);</span>
+
+		try
+		{
+<span class="nc" id="L96">			User user = userInstance.get();</span>
+
+<span class="nc" id="L98">			httpServletRequest.setCharacterEncoding(&quot;UTF-8&quot;);</span>
+<span class="nc" id="L99">			response.setCharacterEncoding(&quot;UTF-8&quot;);</span>
+<span class="nc" id="L100">			response.setLocale(Locale.getDefault());</span>
+
+<span class="nc" id="L102">			var command = request.getCommand();</span>
+<span class="nc" id="L103">			request.setAttribute(&quot;MODULE&quot;, command.module());</span>
+<span class="nc" id="L104">			request.setAttribute(&quot;SCREEN&quot;, command.screen());</span>
+<span class="nc" id="L105">			request.setAttribute(&quot;ACTION&quot;, command.action());</span>
+<span class="nc" id="L106">			request.setAttribute(&quot;METHOD&quot;, request.getMethod());</span>
+
+<span class="nc bnc" id="L108" title="All 2 branches missed.">			if (command.isDefault()</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">			    &amp;&amp; (actionRegistry.getMainAction() == null</span>
+<span class="nc bnc" id="L110" title="All 2 branches missed.">			        || !authenticator.hasCredentials(request)))</span>
+			{
+<span class="nc" id="L112">				String provider = authenticator.provider(request, response);</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">				if (provider != null)</span>
+<span class="nc" id="L114">					response.sendRedirect(provider);</span>
+				else
+<span class="nc" id="L116">					handlers.select(HTMLCommandHandler.class).get().handle(httpServletRequest,</span>
+							response, HTML);
+<span class="nc" id="L118">				return;</span>
+			}
+
+<span class="nc bnc" id="L121" title="All 2 branches missed.">			if (authenticator.hasCredentials(request))</span>
+			{
+<span class="nc" id="L123">				user = authenticator.authenticate(request, response);</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">				if (user != null)</span>
+				{
+<span class="nc" id="L126">					response.createSessionCookie(request, sessionCatalog.create(user));</span>
+<span class="nc" id="L127">					event.fireAsync(new LoginEvent(user));</span>
+
+<span class="nc bnc" id="L129" title="All 2 branches missed.">					if (actionRegistry.getMainAction() != null</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">					    &amp;&amp; command.isDefault())</span>
+					{
+<span class="nc" id="L132">						response.sendRedirect(actionRegistry.getMainAction()</span>
+<span class="nc" id="L133">								.command().toString());</span>
+<span class="nc" id="L134">						return;</span>
+					}
+				}
+<span class="nc" id="L137">				request.setAttribute(User.class.getName(), user);</span>
+			}
+
+<span class="nc" id="L140">			Call call = actionRegistry.get(command)</span>
+<span class="nc" id="L141">					.orElseThrow(() -&gt; new BadRequestException(command));</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">			if (!call.allowsHttpMethod(request.getMethod().toUpperCase()))</span>
+<span class="nc" id="L143">				throw new MethodNotAllowedException();</span>
+
+<span class="nc bnc" id="L145" title="All 2 branches missed.">			if (!call.accessRule().allows(user))</span>
+<span class="nc bnc" id="L146" title="All 4 branches missed.">				if (user != null &amp;&amp; user.getId() != null)</span>
+<span class="nc" id="L147">					throw new ForbiddenException();</span>
+				else
+<span class="nc" id="L149">					throw new UnauthorizedException();</span>
+
+<span class="nc" id="L151">			Screen screen = CDI.current().select(call.screen()).get();</span>
+<span class="nc" id="L152">			request.setAttribute(&quot;screen&quot;, screen);</span>
+<span class="nc" id="L153">			request.setAttribute(&quot;action&quot;, call.method());</span>
+<span class="nc" id="L154">			screen.prepare(request, response);</span>
+
+<span class="nc bnc" id="L156" title="All 2 branches missed.">			if (call.cors())</span>
+<span class="nc" id="L157">				response.enableCors(request.getHeader(&quot;Origin&quot;));</span>
+
+<span class="nc bnc" id="L159" title="All 2 branches missed.">			if (call.asynchronous())</span>
+<span class="nc" id="L160">				executeAsync(user, request, response, screen, call.method());</span>
+			else
+<span class="nc" id="L162">				execute(request, response, screen, call.method());</span>
+
+<span class="nc" id="L164">		} catch (AuthenticationException ex)</span>
+		{
+<span class="nc bnc" id="L166" title="All 2 branches missed.">			if (authenticator.provider(request, response) != null)</span>
+			{
+<span class="nc" id="L168">				var type = Catcher.getCatcher(ex.getClass());</span>
+<span class="nc" id="L169">				Catcher catcher = catchers.select(type).get();</span>
+<span class="nc" id="L170">				catcher.catches(request, response, ex);</span>
+<span class="nc" id="L171">			} else</span>
+			{
+<span class="nc" id="L173">				httpServletRequest.setAttribute(&quot;messages&quot;, Collections.singletonList(ex.getMessage()));</span>
+<span class="nc" id="L174">				httpServletRequest.setAttribute(&quot;exception&quot;, ex);</span>
+<span class="nc" id="L175">				Handler handler = handlers.select(HTMLCommandHandler.class).get();</span>
+<span class="nc" id="L176">				handler.handle(httpServletRequest, response, HTML);</span>
+			}
+<span class="nc" id="L178">		} catch (RuntimeException ex)</span>
+		{
+<span class="nc" id="L180">			var type = Catcher.getCatcher(ex.getClass());</span>
+<span class="nc" id="L181">			Catcher catcher = catchers.select(type).get();</span>
+<span class="nc" id="L182">			catcher.catches(request, response, ex);</span>
+<span class="nc" id="L183">		}</span>
+<span class="nc" id="L184">	}</span>
+
+	private void execute(ScreenServletRequest request, ScreenServletResponse response, Screen screen,
+	                     Method method)
+	{
+		try
+		{
+<span class="nc" id="L191">			Object result = screen.execute(method);</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">			if (result != null)</span>
+			{
+<span class="nc bnc" id="L194" title="All 2 branches missed.">				var type = method.isAnnotationPresent(gate.annotation.Handler.class)</span>
+<span class="nc" id="L195">						? method.getAnnotation(gate.annotation.Handler.class).value()</span>
+<span class="nc" id="L196">						: Handler.getHandler(result.getClass());</span>
+<span class="nc" id="L197">				var handler = handlers.select(type).get();</span>
+<span class="nc" id="L198">				handler.handle(request, response, result);</span>
+			}
+<span class="nc" id="L200">		} catch (Throwable ex)</span>
+		{
+<span class="nc" id="L202">			var type = Catcher.getCatcher(ex.getClass());</span>
+<span class="nc" id="L203">			Catcher catcher = catchers.select(type).get();</span>
+<span class="nc" id="L204">			catcher.catches(request, response, ex);</span>
+<span class="nc" id="L205">		}</span>
+<span class="nc" id="L206">	}</span>
+
+	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
+	                          Screen screen, Method method)
+	{
+<span class="nc" id="L211">		response.setCharacterEncoding(&quot;UTF-8&quot;);</span>
+<span class="nc" id="L212">		response.setContentType(&quot;text/event-stream&quot;);</span>
+<span class="nc" id="L213">		response.setHeader(&quot;Cache-Control&quot;, &quot;no-cache&quot;);</span>
+<span class="nc" id="L214">		response.setHeader(&quot;Connection&quot;, &quot;keep-alive&quot;);</span>
+
+<span class="nc" id="L216">		AsyncContext asyncContext = request.startAsync(request, response);</span>
+<span class="nc" id="L217">		asyncContext.setTimeout(0);</span>
+
+<span class="nc" id="L219">		Runnable contextualTask = threadContext.contextualRunnable(() -&gt;</span>
+		{
+<span class="nc" id="L221">			Progress progress = null;</span>
+<span class="nc" id="L222">			CurrentLocale.set(request.getLocale());</span>
+<span class="nc" id="L223">			try (Writer writer = response.getWriter())</span>
+			{
+<span class="nc" id="L225">				progress = Progress.create(user, writer);</span>
+<span class="nc" id="L226">				heartbeatRegistry.register(progress);</span>
+				try
+				{
+<span class="nc" id="L229">					Object result = screen.execute(method);</span>
+<span class="nc bnc" id="L230" title="All 2 branches missed.">					if (result != null)</span>
+					{
+<span class="nc bnc" id="L232" title="All 2 branches missed.">						var type = method.isAnnotationPresent(gate.annotation.Handler.class)</span>
+<span class="nc" id="L233">								? method.getAnnotation(gate.annotation.Handler.class).value()</span>
+<span class="nc" id="L234">								: Handler.getHandler(result.getClass());</span>
+<span class="nc" id="L235">						var handler = handlers.select(type).get();</span>
+<span class="nc" id="L236">						handler.handle(request, response, progress, result);</span>
+					}
+<span class="nc" id="L238">					progress.close();</span>
+<span class="nc" id="L239">				} catch (AppException ex)</span>
+				{
+<span class="nc" id="L241">					progress.abort(ex.getMessage());</span>
+<span class="nc" id="L242">				} catch (Throwable ex)</span>
+				{
+<span class="nc" id="L244">					progress.abort(ex.getMessage());</span>
+<span class="nc" id="L245">					logger.error(ex.getMessage(), ex);</span>
+<span class="nc" id="L246">				}</span>
+<span class="nc" id="L247">			} catch (IOException ex)</span>
+			{
+<span class="nc" id="L249">				logger.error(ex.getMessage(), ex);</span>
+			} finally
+			{
+<span class="nc bnc" id="L252" title="All 2 branches missed.">				if (progress != null)</span>
+<span class="nc" id="L253">					heartbeatRegistry.unregister(progress);</span>
+<span class="nc" id="L254">				Progress.finish();</span>
+<span class="nc" id="L255">				TempFile.cleanup();</span>
+<span class="nc" id="L256">				CurrentLocale.clear();</span>
+<span class="nc" id="L257">				asyncContext.complete();</span>
+			}
+<span class="nc" id="L259">		});</span>
+
+<span class="nc" id="L261">		asyncContext.start(contextualTask);</span>
+<span class="nc" id="L262">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ELExpression.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf</a> &gt; <span class="el_source">ELExpression.java</span></div><h1>ELExpression.java</h1><pre class="source lang-java linenums">package gate.thymeleaf;
+
+import jakarta.el.ELContext;
+import jakarta.el.ELException;
+import jakarta.el.ExpressionFactory;
+import jakarta.el.LambdaExpression;
+import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Comparator;
+import java.util.List;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public interface ELExpression
+{
+
+	public Object evaluate(String expression);
+
+	public Function&lt;Object, Object&gt; function(String expression);
+
+	public Comparator&lt;Object&gt; comparator(String expression);
+
+	public static class ELExpressionImpl implements ELExpression
+	{
+
+		private final ELContext context;
+		private final ExpressionFactory factory;
+<span class="nc" id="L29">		private static final Pattern VAR = Pattern.compile(&quot;^\\$\\{[^}]+\\}$&quot;);</span>
+<span class="nc" id="L30">		private static final Pattern FUNCTION = Pattern.compile(&quot;^\\$\\{([a-zA-Z][a-zA-Z0-9]*) *-&gt; *(.*)\\}$&quot;);</span>
+<span class="nc" id="L31">		private static final Pattern BI_FUNCTION = Pattern.compile(&quot;^\\$\\{\\(([a-zA-Z][a-zA-Z0-9]*), *([a-zA-Z][a-zA-Z0-9]*)\\)\\ *-&gt; *(.*)}$&quot;);</span>
+
+		public ELExpressionImpl(BeanManager beanManager, HttpServletRequest request)
+<span class="nc" id="L34">		{</span>
+
+<span class="nc" id="L36">			this.factory = ExpressionFactory.newInstance();</span>
+<span class="nc" id="L37">			context = new JavaELContext(factory, beanManager, request);</span>
+
+<span class="nc" id="L39">		}</span>
+
+		@Override
+		public Object evaluate(String expression)
+		{
+<span class="nc bnc" id="L44" title="All 2 branches missed.">			if (expression == null)</span>
+<span class="nc" id="L45">				return null;</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">			if (!expression.contains(&quot;${&quot;))</span>
+<span class="nc" id="L47">				return expression;</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">			if (VAR.matcher(expression).matches())</span>
+<span class="nc" id="L49">				return factory.createValueExpression(context, expression, Object.class).getValue(context);</span>
+
+<span class="nc" id="L51">			StringBuilder result = new StringBuilder();</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">			for (int i = 0; i &lt; expression.length(); i++)</span>
+<span class="nc bnc" id="L53" title="All 2 branches missed.">				if (expression.charAt(i) == '$')</span>
+				{
+<span class="nc" id="L55">					i++;</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">					if (expression.charAt(i) == '{')</span>
+					{
+<span class="nc" id="L58">						StringBuilder token = new StringBuilder(&quot;$&quot;);</span>
+
+						do
+						{
+<span class="nc" id="L62">							token.append(expression.charAt(i++));</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">						} while (i &lt; expression.length()</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">							&amp;&amp; expression.charAt(i) != '}');</span>
+
+<span class="nc" id="L66">						token.append('}');</span>
+
+<span class="nc" id="L68">						var value = factory.createValueExpression(context, token.toString(), Object.class)</span>
+<span class="nc" id="L69">							.getValue(context);</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">						result.append(value != null ? value.toString() : null);</span>
+<span class="nc" id="L71">					} else</span>
+<span class="nc" id="L72">						result.append('$').append(expression.charAt(i));</span>
+				} else
+<span class="nc" id="L74">					result.append(expression.charAt(i));</span>
+<span class="nc" id="L75">			return result.toString();</span>
+		}
+
+		@Override
+		public Function&lt;Object, Object&gt; function(String expression)
+		{
+<span class="nc" id="L81">			Matcher matcher = FUNCTION.matcher(expression);</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">			if (!matcher.matches())</span>
+<span class="nc" id="L83">				throw new ELException(expression + &quot; is not a valid lambda function&quot;);</span>
+
+<span class="nc" id="L85">			var lambda = new LambdaExpression(List.of(matcher.group(1)),</span>
+<span class="nc" id="L86">				factory.createValueExpression(context, &quot;${&quot; + matcher.group(2) + &quot;}&quot;,</span>
+					Object.class));
+
+<span class="nc" id="L89">			return a -&gt; lambda.invoke(context, a);</span>
+		}
+
+		@Override
+		public Comparator&lt;Object&gt; comparator(String expression)
+		{
+<span class="nc" id="L95">			Matcher matcher = BI_FUNCTION.matcher(expression);</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">			if (!matcher.matches())</span>
+<span class="nc" id="L97">				throw new ELException(expression + &quot; is not a valid lambda comparator&quot;);</span>
+
+<span class="nc" id="L99">			var lambda = new LambdaExpression(List.of(matcher.group(1), matcher.group(2)),</span>
+<span class="nc" id="L100">				factory.createValueExpression(context, &quot;${&quot; + matcher.group(3) + &quot;}&quot;,</span>
+					Object.class));
+
+<span class="nc" id="L103">			return (a, b) -&gt; (int) lambda.invoke(context, a, b);</span>
+		}
+
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

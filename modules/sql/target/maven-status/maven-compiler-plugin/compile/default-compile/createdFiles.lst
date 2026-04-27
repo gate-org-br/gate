@@ -3,6 +3,7 @@ gate/sql/select/Select$3.class
 gate/sql/select/Limitable$Compiled.class
 gate/sql/columnMapper/LocalDateTimeIntervalColumnMapper.class
 gate/sql/fetcher/TypedMapListFetcher.class
+gate/sql/ColumnReferenceRegistrar.class
 gate/sql/condition/LazyConstantPredicate$7.class
 gate/sql/select/Joinable.class
 gate/sql/statement/BasicSentence$Compiled.class
@@ -62,6 +63,7 @@ gate/sql/fetcher/TypedObjectFetcher.class
 gate/sql/condition/LazyConstantPredicate$2.class
 gate/sql/columnMapper/ColumnMapper.class
 gate/sql/fetcher/PropertyEntitySetFetcher.class
+gate/sql/columnMapper/TaxColumnMapper.class
 gate/sql/fetcher/PivotTableFetcher.class
 gate/sql/columnMapper/ShortColumnMapper.class
 gate/sql/select/JoinedSelect$Aliased$Constant.class
@@ -77,7 +79,6 @@ gate/sql/fetcher/JsonDatasetFetcher.class
 gate/sql/select/SortedSelect$Compiled.class
 gate/sql/condition/ExtractorPredicate.class
 gate/sql/delete/Delete.class
-gate/sql/columnMapper/ColumnMapper$Instances$1.class
 gate/sql/select/Refinable$Constant$2.class
 gate/sql/select/SelectedSubqueryAlias.class
 gate/sql/select/SelectClause.class
@@ -128,6 +129,7 @@ gate/sql/select/Limitable$Constant$3.class
 gate/sql/columnMapper/YearMonthColumnMapper.class
 gate/sql/condition/CompiledCondition$5.class
 gate/sql/replace/ObjectReplace.class
+gate/sql/columnMapper/RecordColumnMapper.class
 gate/sql/condition/LazyCompiledRelation$10.class
 gate/sql/condition/Condition$8.class
 gate/sql/condition/ExtractorRelation$4.class
@@ -196,11 +198,13 @@ gate/sql/columnMapper/DataFileColumnMapper.class
 gate/sql/condition/CompiledCondition$4.class
 gate/sql/condition/Condition$9.class
 gate/sql/condition/Condition$3.class
+gate/sql/columnMapper/ObjectColumnMapper.class
 gate/sql/columnMapper/LocalTimeColumnMapper.class
 gate/sql/update/TableUpdate.class
 gate/sql/select/JoinedSelect$Aliased.class
 gate/sql/statement/Sentence$Extractor.class
 gate/sql/select/OrderedSelect$Compiled$1.class
+gate/sql/columnMapper/PercentageColumnMapper.class
 gate/sql/condition/CompiledRelation.class
 gate/sql/select/OrderedSelect.class
 gate/sql/condition/ConstantPredicate.class
@@ -215,6 +219,7 @@ gate/sql/select/Orderable$Constant$1.class
 gate/sql/select/GroupedSelect.class
 gate/sql/select/SortedSelect$Constant.class
 gate/sql/columnMapper/CharacterColumnMapper.class
+gate/sql/ColumnReference$1.class
 gate/sql/condition/Condition$7.class
 gate/sql/fetcher/ObjectFetcher.class
 gate/sql/statement/BasicSentence$Connected$Extractor.class
@@ -285,6 +290,7 @@ gate/sql/annotation/ColumnMapper.class
 gate/sql/condition/ExtractorRelationMethods$1.class
 gate/sql/condition/Condition$5.class
 gate/sql/select/Selectable$Constant$3.class
+gate/sql/columnMapper/MoneyColumnMapper.class
 gate/sql/columnMapper/NamedTempFileColumnMapper.class
 gate/sql/condition/LazyCompiledRelation$ConstantQuerySupplier.class
 gate/sql/update/TableUpdate$Compiled.class
@@ -423,6 +429,7 @@ gate/sql/select/Unitable$Constant$1.class
 gate/sql/select/Selectable$Compiled.class
 gate/sql/columnMapper/LongColumnMapper.class
 gate/sql/condition/LazyConstantPredicate$4.class
+gate/sql/columnMapper/EnumOrdinalColumnMapper.class
 gate/sql/condition/CompiledPredicate$8.class
 gate/sql/columnMapper/StringColumnMapper.class
 gate/sql/condition/ConstantRelation.class

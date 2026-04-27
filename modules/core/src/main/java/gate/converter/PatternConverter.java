@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
@@ -8,20 +9,9 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+@Description("Expressão regular.")
 public class PatternConverter implements Converter
 {
-
-	@Override
-	public String getDescription()
-	{
-		return "Expressão regular.";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

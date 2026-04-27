@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConditionProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.tag</a> &gt; <span class="el_source">ConditionProcessor.java</span></div><h1>ConditionProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.tag;
+
+import gate.converter.Converter;
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.Precedence;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.exceptions.TemplateProcessingException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+@ApplicationScoped
+public class ConditionProcessor extends TagProcessor
+{
+
+	@Inject
+	ELExpressionFactory expression;
+
+	public ConditionProcessor()
+	{
+<span class="nc" id="L22">		super(&quot;condition&quot;);</span>
+<span class="nc" id="L23">	}</span>
+
+	@Override
+	public void process(ITemplateContext context, IProcessableElementTag element,
+		IElementTagStructureHandler handler)
+	{
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		if (!element.hasAttribute(&quot;if&quot;))</span>
+<span class="nc" id="L30">			throw new TemplateProcessingException(&quot;Missing required attribute if on g:condition&quot;);</span>
+
+<span class="nc bnc" id="L32" title="All 2 branches missed.">		if ((boolean) expression.create().evaluate(element.getAttributeValue(&quot;if&quot;)))</span>
+<span class="nc" id="L33">			handler.removeTags();</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">		else if (element.hasAttribute(&quot;otherwise&quot;))</span>
+		{
+<span class="nc" id="L36">			String otherwise = element.getAttributeValue(&quot;otherwise&quot;);</span>
+<span class="nc" id="L37">			otherwise = Converter.render(expression.create().evaluate(otherwise));</span>
+<span class="nc" id="L38">			otherwise = &quot;&lt;div class='TEXT'&gt;&lt;h1&gt;&quot; + otherwise + &quot;&lt;/h1&gt;&lt;/div&gt;&quot;;</span>
+<span class="nc" id="L39">			handler.replaceWith(otherwise, false);</span>
+<span class="nc" id="L40">		} else</span>
+<span class="nc" id="L41">			handler.removeElement();</span>
+<span class="nc" id="L42">	}</span>
+
+	@Override
+	public int getPrecedence()
+	{
+<span class="nc" id="L47">		return Precedence.HIGH;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

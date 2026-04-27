@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
@@ -6,6 +7,7 @@ import gate.type.SafeStyle;
 
 import java.util.List;
 
+@Description("CSS inline seguro.")
 public class SafeStyleConverter implements Converter
 {
 	@Override
@@ -43,18 +45,6 @@ public class SafeStyleConverter implements Converter
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "CSS inline seguro.";
 	}
 
 	@Override

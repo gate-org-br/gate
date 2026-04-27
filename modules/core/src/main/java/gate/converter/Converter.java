@@ -6,51 +6,24 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonScanner;
 import gate.lang.json.JsonToken;
 import gate.lang.json.JsonWriter;
+import gate.registrar.Registry;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Stream;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
 
 /**
  * Adapts a java class to be used by the gate framework.
  */
 public interface Converter
 {
-
-	/**
-	 * Gets a string to be used as a mask for the converter java type.
-	 *
-	 * @return the mask for the converter java type or null if there is no mask defined for it
-	 */
-	String getMask();
-
-	/**
-	 * Gets a description for the converter java type.
-	 *
-	 * @return a description for the converter java type or null if there is no description defined
-	 * for it
-	 */
-	String getDescription();
-
-	/**
-	 * Gets a placeholder for the converter java type.
-	 *
-	 * @return a placeholder for the converter java type or null if there is no placeholder defined
-	 * for it
-	 */
-	default String getPlaceholder()
-	{
-		return null;
-	}
-
 	/**
 	 * Gets the constraints associated with the converter java type.
 	 *
@@ -224,52 +197,7 @@ public interface Converter
 	 * @param type java class whose associated converted must be returned
 	 * @return the converter associated with the specified java class
 	 */
-	static Converter getConverter(Class<?> type)
-	{
-		return Instances.CONVERTERS.computeIfAbsent(Objects.requireNonNull(type), e ->
-		{
-			try
-			{
-				for (Class<?> clazz = e; clazz != null; clazz = clazz.getSuperclass())
-					if (Instances.CONVERTERS.containsKey(clazz))
-						return Instances.CONVERTERS.get(clazz);
-					else if (clazz.isAnnotationPresent(gate.annotation.Converter.class))
-						return clazz.getAnnotation(gate.annotation.Converter.class).value()
-								.getDeclaredConstructor().newInstance();
-					else if (Stream.of(clazz.getInterfaces()).filter(iter -> Instances.CONVERTERS.containsKey(iter)
-					                                                         || iter.isAnnotationPresent(gate.annotation.Converter.class)).count() == 1)
-						for (Class<?> inter : clazz.getInterfaces())
-							if (Instances.CONVERTERS.containsKey(inter))
-								return Instances.CONVERTERS.get(inter);
-							else if (inter.isAnnotationPresent(gate.annotation.Converter.class))
-								return inter.getAnnotation(gate.annotation.Converter.class).value()
-										.getDeclaredConstructor().newInstance();
-
-				for (var method : type.getDeclaredMethods())
-					if ("valueOf".equals(method.getName())
-					    && method.getParameterCount() == 1
-					    && method.getParameterTypes()[0] == String.class
-					    && Modifier.isStatic(method.getModifiers()))
-						return new DefaultConverter(method);
-
-				return type.isRecord() ? new RecordConverter() : new ObjectConverter();
-			} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-			         | InvocationTargetException ex)
-			{
-				throw new RuntimeException(ex);
-			}
-		});
-	}
-
-	class Instances
-	{
-
-		private static final Map<Class<?>, Converter> CONVERTERS = new ConcurrentHashMap<>()
-		{{
-			ServiceLoader.load(ConverterRegistrar.class)
-					.forEach(registrar -> registrar.register(this));
-		}};
-	}
+	static Converter getConverter(Class<?> type) {return Instances.REGISTRY.get(type);}
 
 	/**
 	 * Converts the specified java object to a string.
@@ -523,6 +451,36 @@ public interface Converter
 		{
 			throw new AppError(ex);
 		}
+	}
+
+	class Instances
+	{
+		private static final Registry<Converter> REGISTRY = Registry
+				.create(ConverterRegistrar.class,
+						type ->
+						{
+							try
+							{
+								return type.isAnnotationPresent(gate.annotation.Converter.class)
+										? type.getAnnotation(gate.annotation.Converter.class).value()
+										  .getDeclaredConstructor().newInstance()
+										: null;
+							} catch (ReflectiveOperationException e)
+							{
+								throw new RuntimeException(e);
+							}
+						},
+						type ->
+						{
+							for (var method : type.getDeclaredMethods())
+								if ("valueOf".equals(method.getName())
+								    && method.getParameterCount() == 1
+								    && method.getParameterTypes()[0] == String.class
+								    && Modifier.isStatic(method.getModifiers()))
+									return new DefaultConverter(method);
+
+							return type.isRecord() ? new RecordConverter() : new ObjectConverter();
+						});
 	}
 
 }

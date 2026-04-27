@@ -15,16 +15,6 @@ public class IDSConverter implements Converter {
 	}
 
 	@Override
-	public String getDescription() {
-		return null;
-	}
-
-	@Override
-	public String getMask() {
-		return null;
-	}
-
-	@Override
 	public String render(Class<?> type, Object object) {
 		return object != null ? object.toString() : "";
 	}

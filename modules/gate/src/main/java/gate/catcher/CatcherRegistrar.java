@@ -1,5 +1,7 @@
 package gate.catcher;
 
+import gate.registrar.Registrar;
+
 import java.util.Map;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Map;
  * To register a custom catcher, create an implementation of this interface
  * and declare it in {@code META-INF/services/gate.catcher.CatcherRegistrar}.
  */
-public interface CatcherRegistrar
+public interface CatcherRegistrar extends Registrar<Class<? extends Catcher>>
 {
 
 	/**

@@ -1,4 +1,5 @@
 package gate.converter;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Description("Duração no formato HH:MM:SS")
 public class HHMMSSDurationConverter implements Converter
 {
 
@@ -15,18 +17,6 @@ public class HHMMSSDurationConverter implements Converter
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 		= List.of(new gate.constraint.Pattern.Implementation(PATTERN.toString()), new Maxlength.Implementation(8));
-
-	@Override
-	public String getMask()
-	{
-		return "##:##:##";
-	}
-
-	@Override
-	public String getDescription()
-	{
-		return "Duração no formato HH:MM:SS";
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()

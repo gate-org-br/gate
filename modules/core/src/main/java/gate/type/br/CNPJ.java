@@ -1,7 +1,5 @@
 package gate.type.br;
 
-import gate.converter.custom.CNPJConverter;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.regex.Pattern;
@@ -658,19 +656,19 @@ public record CNPJ(long value) implements Comparable<CNPJ>, BrasilianDocument, S
 			return -1;
 
 		return (long) d0 * 10_000_000_000_000L
-			   + (long) d1 * 1_000_000_000_000L
-			   + (long) d2 * 100_000_000_000L
-			   + (long) d3 * 10_000_000_000L
-			   + (long) d4 * 1_000_000_000L
-			   + d5 * 100_000_000L
-			   + d6 * 10_000_000L
-			   + d7 * 1_000_000L
-			   + d8 * 100_000L
-			   + d9 * 10_000L
-			   + d10 * 1_000L
-			   + d11 * 100L
-			   + d12 * 10L
-			   + d13;
+		       + (long) d1 * 1_000_000_000_000L
+		       + (long) d2 * 100_000_000_000L
+		       + (long) d3 * 10_000_000_000L
+		       + (long) d4 * 1_000_000_000L
+		       + d5 * 100_000_000L
+		       + d6 * 10_000_000L
+		       + d7 * 1_000_000L
+		       + d8 * 100_000L
+		       + d9 * 10_000L
+		       + d10 * 1_000L
+		       + d11 * 100L
+		       + d12 * 10L
+		       + d13;
 	}
 
 	/**
@@ -680,7 +678,7 @@ public record CNPJ(long value) implements Comparable<CNPJ>, BrasilianDocument, S
 	 * @return the created CNPJ
 	 * @throws IllegalArgumentException if the value is not a valid CNPJ
 	 */
-	public static CNPJ of(long value)
+	public static CNPJ valueOf(long value)
 	{
 		return new CNPJ(value);
 	}
@@ -692,7 +690,7 @@ public record CNPJ(long value) implements Comparable<CNPJ>, BrasilianDocument, S
 	 * @return the created CNPJ
 	 * @throws IllegalArgumentException if the input is invalid
 	 */
-	public static CNPJ of(String value)
+	public static CNPJ valueOf(String value)
 	{
 		long parsed = toLong(value);
 		if (parsed < 0)

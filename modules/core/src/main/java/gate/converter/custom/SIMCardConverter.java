@@ -1,4 +1,5 @@
 package gate.converter.custom;
+import gate.annotation.Description;
 
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
@@ -9,20 +10,9 @@ import gate.type.SIMCard;
 import java.util.LinkedList;
 import java.util.List;
 
+@Description("Campos de SIM Card devem ser possuir 20 dígitos")
 public class SIMCardConverter implements Converter
 {
-
-	@Override
-	public String getDescription()
-	{
-		return "Campos de SIM Card devem ser possuir 20 dígitos";
-	}
-
-	@Override
-	public String getMask()
-	{
-		return null;
-	}
 
 	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
@@ -45,7 +35,7 @@ public class SIMCardConverter implements Converter
 				return new SIMCard(string);
 			} catch (Exception e)
 			{
-				throw new ConversionException(getDescription());
+				throw new ConversionException(gate.lang.property.metadata.Metadata.getMetadata(type).description());
 			}
 		}
 		return null;
