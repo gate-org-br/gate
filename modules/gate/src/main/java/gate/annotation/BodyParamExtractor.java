@@ -1,5 +1,6 @@
 package gate.annotation;
 
+import gate.adapter.converter.Converter;
 import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
@@ -16,11 +17,11 @@ public class BodyParamExtractor
 	{
 		String body = request.getBody();
 		if (parameter.isAnnotationPresent(DefaultValue.class)
-			&& (body == null || body.isBlank()))
+		    && (body == null || body.isBlank()))
 			body = parameter.getAnnotation(DefaultValue.class).value();
 
-		gate.converter.Converter converter
-				= gate.converter.Converter.getConverter(parameter);
+		Converter converter
+				= Converter.getConverter(parameter);
 
 		try
 		{

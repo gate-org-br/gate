@@ -1,7 +1,5 @@
 package gate.type;
 
-import gate.converter.custom.TaxConverter;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;

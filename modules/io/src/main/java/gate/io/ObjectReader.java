@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 
 public class ObjectReader<T> implements Reader<Optional<T>>
 {

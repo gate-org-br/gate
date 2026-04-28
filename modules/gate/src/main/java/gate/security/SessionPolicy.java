@@ -1,7 +1,8 @@
 package gate.security;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.util.SystemProperty;
+
 import java.time.Duration;
 
 public final class SessionPolicy

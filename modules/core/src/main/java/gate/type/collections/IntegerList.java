@@ -2,7 +2,7 @@ package gate.type.collections;
 
 import java.io.Serial;
 
-import gate.converter.collections.IntegerListConverter;
+import gate.adapter.converter.collections.IntegerListConverter;
 import gate.annotation.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class IntegerList extends ArrayList<Integer>
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;

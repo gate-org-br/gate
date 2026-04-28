@@ -1,11 +1,12 @@
 package gate.sql.insert;
 
+import gate.adapter.columnMapper.ColumnMapper;
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.annotation.Entity;
 import gate.error.PropertyError;
 import gate.sql.ColumnReference;
 import gate.sql.Formatter;
 import gate.sql.annotation.Table;
-import gate.sql.columnMapper.ColumnMapper;
 import gate.sql.statement.Sentence;
 import gate.type.PropertyReference;
 
@@ -60,7 +61,7 @@ public class ObjectInsert<T> implements Insert, Sentence.Compiled.Builder
 
 	public ObjectInsert<T> set(PropertyReference<T, ?> property, Object value)
 	{
-		var column = ColumnReference.of(Objects.requireNonNull(property));
+		var column = ColumnReferenceRegistry.INSTANCE.get(Objects.requireNonNull(property));
 		ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 				.getColumns(column.name())
 				.map(Formatter::identifier)

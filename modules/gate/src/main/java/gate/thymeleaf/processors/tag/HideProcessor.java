@@ -1,13 +1,15 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.icon.Icon;
 import gate.icon.Icons;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
+
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -35,8 +37,8 @@ public class HideProcessor extends TagModelProcessor
 	{
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+						e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		attributes.put("href", "#");
 		attributes.put("target", "_hide");

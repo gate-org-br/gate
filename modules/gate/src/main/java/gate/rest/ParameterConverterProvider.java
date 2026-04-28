@@ -1,7 +1,7 @@
 package gate.rest;
 
-import gate.converter.Converter;
-import gate.converter.ObjectConverter;
+import gate.adapter.converter.Converter;
+import gate.adapter.converter.ObjectConverter;
 import gate.error.ConversionException;
 import jakarta.ws.rs.ext.ParamConverter;
 import jakarta.ws.rs.ext.ParamConverterProvider;

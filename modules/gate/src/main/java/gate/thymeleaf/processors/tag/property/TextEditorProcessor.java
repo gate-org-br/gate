@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
@@ -24,13 +24,13 @@ public class TextEditorProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       Object screen, Property property, Attributes attributes)
 	{
 
 		String value = "";
 		if (attributes.containsKey("value"))
 			value = Converter.toString(expression.create()
-				.evaluate((String) attributes.remove("value")));
+					.evaluate((String) attributes.remove("value")));
 		else if (!property.toString().endsWith("[]"))
 			value = Converter.toString(property.getValue(screen));
 

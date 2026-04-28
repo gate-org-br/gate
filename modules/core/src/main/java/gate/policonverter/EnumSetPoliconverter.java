@@ -1,8 +1,9 @@
 package gate.policonverter;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -20,7 +21,8 @@ public class EnumSetPoliconverter implements Policonverter
 			for (String string : value)
 				EnumSet.class.getMethod("add", Object.class).invoke(objects, Converter.getConverter(type).ofString(type, string));
 			return objects;
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | ConversionException e)
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+		         ConversionException e)
 		{
 			throw new AppError(e);
 		}

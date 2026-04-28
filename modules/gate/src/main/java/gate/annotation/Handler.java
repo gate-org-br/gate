@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
 		{
-			ElementType.TYPE, ElementType.METHOD
+				ElementType.TYPE, ElementType.METHOD
 		})
 public @interface Handler
 {
 
-	Class<? extends gate.handler.Handler> value();
+	Class<? extends gate.adapter.handler.Handler> value();
 }

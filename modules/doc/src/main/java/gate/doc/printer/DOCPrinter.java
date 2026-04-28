@@ -1,6 +1,6 @@
 package gate.doc.printer;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.report.*;
 import gate.report.Style.TextAlign;
 import org.apache.poi.common.usermodel.PictureType;

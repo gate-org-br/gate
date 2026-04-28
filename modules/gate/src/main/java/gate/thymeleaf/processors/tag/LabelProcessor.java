@@ -2,7 +2,7 @@ package gate.thymeleaf.processors.tag;
 
 import gate.annotation.Color;
 import gate.base.Screen;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;

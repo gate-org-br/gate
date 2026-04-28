@@ -1,7 +1,5 @@
 package gate.type;
 
-import gate.converter.custom.PercentageConverter;
-
 import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

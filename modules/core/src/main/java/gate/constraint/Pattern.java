@@ -1,6 +1,6 @@
 package gate.constraint;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.AppException;
 import gate.lang.property.Property;
 

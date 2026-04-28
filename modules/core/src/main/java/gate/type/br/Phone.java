@@ -1,7 +1,6 @@
 package gate.type.br;
 
 import gate.annotation.Icon;
-import gate.converter.custom.PhoneConverter;
 
 import java.io.Serial;
 import java.io.Serializable;

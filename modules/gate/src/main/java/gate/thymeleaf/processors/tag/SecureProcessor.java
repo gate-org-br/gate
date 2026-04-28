@@ -6,7 +6,7 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 import gate.Calls;
 import gate.annotation.Current;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
@@ -36,15 +36,15 @@ public class SecureProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+	                    IProcessableElementTag element,
+	                    IElementTagStructureHandler handler)
 	{
 		try
 		{
 			RequestCommand command = new RequestCommand(
-				element.getAttributeValue("module"),
-				element.getAttributeValue("screen"),
-				element.getAttributeValue("action"));
+					element.getAttributeValue("module"),
+					element.getAttributeValue("screen"),
+					element.getAttributeValue("action"));
 
 			if (actionRegistry.canAccess(user, command))
 			{

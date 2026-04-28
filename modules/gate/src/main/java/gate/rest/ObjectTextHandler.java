@@ -1,8 +1,8 @@
 package gate.rest;
 
+import gate.adapter.converter.Converter;
+import gate.adapter.converter.custom.EntityConverter;
 import gate.annotation.Entity;
-import gate.converter.Converter;
-import gate.converter.custom.EntityConverter;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;

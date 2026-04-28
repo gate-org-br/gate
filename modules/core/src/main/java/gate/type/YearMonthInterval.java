@@ -3,7 +3,6 @@ package gate.type;
 import java.io.Serial;
 
 import gate.annotation.Icon;
-import gate.converter.custom.YearMonthIntervalConverter;
 
 import java.io.Serializable;
 import java.text.ParseException;
@@ -27,7 +26,7 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 	private final YearMonth min;
 	private final YearMonth max;
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 	private static final Pattern PATTERN = Pattern.compile("([0-9]{2}/[0-9]{4}) - ([0-9]{2}/[0-9]{4})");

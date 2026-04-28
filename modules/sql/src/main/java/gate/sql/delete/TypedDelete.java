@@ -1,8 +1,8 @@
 package gate.sql.delete;
 
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.annotation.Entity;
 import gate.lang.property.Property;
-import gate.sql.ColumnReference;
 import gate.sql.annotation.Table;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.Condition;
@@ -72,7 +72,7 @@ public class TypedDelete<T> implements Delete, Sentence.Extractor.Compiled.Build
 
 	public <R> Sentence.Compiled.Builder where(PropertyReference<T, R> property, R value)
 	{
-		CompiledCondition condition = Condition.of(ColumnReference.of(property).name()).eq(value);
+		CompiledCondition condition = Condition.of(ColumnReferenceRegistry.INSTANCE.get(property).name()).eq(value);
 		return () -> Sentence.of(TypedDelete.this + " where " + condition)
 				.parameters(condition.getParameters().toList());
 	}

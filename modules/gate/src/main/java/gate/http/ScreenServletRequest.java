@@ -1,12 +1,12 @@
 package gate.http;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
+import gate.adapter.handler.Handler;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
 import gate.error.InvalidUsernamePasswordException;
-import gate.handler.Handler;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;

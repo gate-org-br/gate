@@ -1,7 +1,7 @@
 package gate.sql.condition;
 
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.sql.Clause;
-import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
 import gate.type.PropertyReference;
 
@@ -55,13 +55,13 @@ public class LazyCompiledRelation extends Relation
 	 * Adds a new predicate with the specified property reference.
 	 *
 	 * @param reference the property reference to be associated with the new predicate
-	 * @param <T> the property owner type
-	 * @param <R> the property return type
+	 * @param <T>       the property owner type
+	 * @param <R>       the property return type
 	 * @return the new predicate created, for chained invocations
 	 */
 	public <T, R> LazyCompiledPredicate expression(PropertyReference<T, R> reference)
 	{
-		return expression(ColumnReference.of(reference).name());
+		return expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 	}
 
 	/**
@@ -365,8 +365,8 @@ public class LazyCompiledRelation extends Relation
 	 * Adds a new negated predicate from a property reference.
 	 *
 	 * @param reference the property reference to be associated with the new predicate
-	 * @param <T> the property owner type
-	 * @param <R> the property return type
+	 * @param <T>       the property owner type
+	 * @param <R>       the property return type
 	 * @return the new predicate created, for chained invocations
 	 */
 	public <T, R> LazyCompiledPredicate not(PropertyReference<T, R> reference)

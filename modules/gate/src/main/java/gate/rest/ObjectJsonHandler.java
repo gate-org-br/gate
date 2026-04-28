@@ -1,6 +1,6 @@
 package gate.rest;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.ext.MessageBodyReader;
 import jakarta.ws.rs.ext.MessageBodyWriter;
 import jakarta.ws.rs.ext.Provider;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +31,7 @@ public class ObjectJsonHandler implements MessageBodyWriter<Object>, MessageBody
 
 	@Override
 	public void writeTo(Object value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-		MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
+	                    MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
 	{
 		entityStream.write(Converter.toJson(value).getBytes());
 	}
@@ -43,7 +44,7 @@ public class ObjectJsonHandler implements MessageBodyWriter<Object>, MessageBody
 
 	@Override
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream in)
-		throws IOException, WebApplicationException
+			throws IOException, WebApplicationException
 	{
 		if (genericType instanceof ParameterizedType parameterizedType)
 		{

@@ -1,7 +1,8 @@
 package gate.converter;
 
-import mock.UserMock;
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
+import mock.UserMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -49,7 +50,7 @@ public class RecordConverterTest
 				Converter.fromJson(Mock.class, "{\"string\":\"foo\"}"));
 	}
 
-	record Mock(String string, int integer, UserMock user)
+	public record Mock(String string, int integer, UserMock user)
 	{
 	}
 }

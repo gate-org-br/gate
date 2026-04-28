@@ -2,7 +2,6 @@ package gate.type;
 
 import gate.annotation.Icon;
 import gate.annotation.Name;
-import gate.converter.custom.LocalTimeIntervalConverter;
 
 import java.io.Serial;
 import java.io.Serializable;

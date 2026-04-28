@@ -14,18 +14,18 @@ import java.lang.reflect.AnnotatedElement;
 		})
 public @interface Metadata
 {
-	Class<? extends gate.lang.property.metadata.Metadata> value();
+	Class<? extends gate.adapter.metadata.Metadata> value();
 
 	class Extractor
 	{
-		public static gate.lang.property.metadata.Metadata extract(AnnotatedElement element)
+		public static gate.adapter.metadata.Metadata extract(AnnotatedElement element)
 		{
 			try
 			{
 				return element.isAnnotationPresent(gate.annotation.Metadata.class)
 						? element.getDeclaredAnnotation(gate.annotation.Metadata.class)
 						  .value().getConstructor().newInstance()
-						: gate.lang.property.metadata.Metadata.EMPTY;
+						: gate.adapter.metadata.Metadata.EMPTY;
 			} catch (ReflectiveOperationException ex)
 			{
 				throw new RuntimeException(ex);

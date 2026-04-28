@@ -1,11 +1,13 @@
 package gate.annotation;
 
+import gate.adapter.converter.Converter;
 import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.http.ScreenServletRequest;
 import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.HeaderParam;
+
 import java.lang.reflect.Parameter;
 
 public class HeaderParamExtractor
@@ -22,7 +24,7 @@ public class HeaderParamExtractor
 		if (parameter.isAnnotationPresent(DefaultValue.class) && (header == null || header.isBlank()))
 			header = parameter.getAnnotation(DefaultValue.class).value();
 
-		gate.converter.Converter converter = gate.converter.Converter.getConverter(parameter);
+		Converter converter = Converter.getConverter(parameter);
 
 		try
 		{

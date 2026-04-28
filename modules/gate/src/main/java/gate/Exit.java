@@ -1,12 +1,12 @@
 package gate;
 
+import gate.adapter.handler.HTMLCommandHandler;
+import gate.adapter.handler.Handler;
 import gate.annotation.Current;
 import gate.catalog.SessionCatalog;
 import gate.entity.User;
 import gate.event.AppEvent;
 import gate.event.LogoffEvent;
-import gate.handler.HTMLCommandHandler;
-import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import jakarta.enterprise.event.Event;

@@ -1,6 +1,7 @@
 package gate.sql.update;
 
-import gate.sql.columnMapper.ColumnMapper;
+import gate.adapter.columnMapper.ColumnMapper;
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.sql.ColumnReference;
 import gate.sql.Formatter;
 import gate.sql.condition.ConstantCondition;
@@ -49,7 +50,7 @@ public class BatchUpdate<T> implements Update, Sentence.Extractor.Compiled.Build
 
 	public <R> BatchUpdate<T> set(PropertyReference<T, R> property)
 	{
-		var column = ColumnReference.of(Objects.requireNonNull(property));
+		var column = ColumnReferenceRegistry.INSTANCE.get(Objects.requireNonNull(property));
 		ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 				.getColumns(column.name())
 				.map(Formatter::identifier)
@@ -65,7 +66,7 @@ public class BatchUpdate<T> implements Update, Sentence.Extractor.Compiled.Build
 		Objects.requireNonNull(property);
 		Objects.requireNonNull(extractor);
 
-		ColumnReference column = ColumnReference.of((PropertyReference) property);
+		ColumnReference column = ColumnReferenceRegistry.INSTANCE.get((PropertyReference) property);
 		ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 				.getColumns(column.name())
 				.map(Formatter::identifier)

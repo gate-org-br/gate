@@ -1,6 +1,6 @@
 package gate.util;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 

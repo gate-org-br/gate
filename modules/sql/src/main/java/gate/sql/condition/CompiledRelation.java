@@ -1,7 +1,7 @@
 package gate.sql.condition;
 
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.sql.Clause;
-import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
 import gate.type.PropertyReference;
 
@@ -61,7 +61,7 @@ public class CompiledRelation extends Relation
 	@Override
 	public <T, R> CompiledPredicate expression(PropertyReference<T, R> reference)
 	{
-		return expression(ColumnReference.of(reference).name());
+		return expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 	}
 
 
@@ -233,7 +233,7 @@ public class CompiledRelation extends Relation
 	@Override
 	public <T, R> CompiledPredicate not(PropertyReference<T, R> reference)
 	{
-		return not().expression(ColumnReference.of(reference).name());
+		return not().expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 	}
 
 	/**

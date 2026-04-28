@@ -1,10 +1,12 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -30,11 +32,11 @@ public class TableProcessor extends TagModelProcessor
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+						e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		if (!attributes.containsKey("condition")
-			|| (boolean) expression.create().evaluate((String) attributes.remove("condition")))
+		    || (boolean) expression.create().evaluate((String) attributes.remove("condition")))
 		{
 			attributes.remove("otherwise");
 			replaceTag(context, model, handler, "table", attributes);

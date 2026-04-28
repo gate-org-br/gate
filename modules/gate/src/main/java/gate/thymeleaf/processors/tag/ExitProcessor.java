@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.icon.Icon;
 import gate.icon.Icons;
 import gate.thymeleaf.ELExpressionFactory;

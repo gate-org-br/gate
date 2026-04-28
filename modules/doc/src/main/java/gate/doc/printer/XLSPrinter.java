@@ -1,6 +1,6 @@
 package gate.doc.printer;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
 import gate.report.Chart;
 import gate.report.ChartGenerator;

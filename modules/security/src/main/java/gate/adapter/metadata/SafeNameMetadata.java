@@ -1,0 +1,6 @@
+package gate.adapter.metadata;
+
+public class SafeNameMetadata extends SimpleMetadata
+{
+	public SafeNameMetadata() {super(builder().description("Use apenas letras, números, espaços ou hífen."));}
+}

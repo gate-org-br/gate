@@ -2,10 +2,10 @@ package gate.lang.property;
 
 import gate.annotation.*;
 import gate.constraint.Constraint;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.annotation.Entity;
-import gate.lang.property.metadata.Metadata;
-import gate.lang.property.metadata.SimpleMetadata;
+import gate.adapter.metadata.Metadata;
+import gate.adapter.metadata.SimpleMetadata;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -44,20 +44,20 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 			else if (rawType.isArray())
 				elementType = rawType.getComponentType();
 			else if (List.class.isAssignableFrom(rawType)
-					 && genericType instanceof ParameterizedType)
+			         && genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Set.class.isAssignableFrom(rawType)
-					 && genericType instanceof ParameterizedType)
+			         && genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Map.class.isAssignableFrom(rawType)
-					 && genericType instanceof ParameterizedType)
+			         && genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[1];
 			else
 				elementType = Object.class;
 
 			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
 					? field.getAnnotation(gate.annotation.Converter.class).value()
-					.getDeclaredConstructor().newInstance()
+					  .getDeclaredConstructor().newInstance()
 					: Converter.getConverter(rawType);
 
 			List<Constraint.Implementation<?>> cons = new ArrayList<>();
@@ -74,23 +74,23 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 			var code = Code.Extractor.extract(field).orElse(null);
 			var color = Color.Extractor.extract(field).orElse(null);
 			var tooltip = Tooltip.Extractor.extract(field).orElse(null);
-				var description = Description.Extractor.extract(field).orElse(null);
-				var mask = Mask.Extractor.extract(field).orElse(null);
-				var placeholder = Placeholder.Extractor.extract(field).orElse(null);
-				this.metadata = Metadata.getMetadata(rawType)
-						.merge(SimpleMetadata.builder()
-								.name(name)
-								.description(description)
-								.tooltip(tooltip)
-								.placeholder(placeholder)
-								.mask(mask)
-								.color(color)
-								.code(code)
-								.icon(icon)
-								.build());
+			var description = Description.Extractor.extract(field).orElse(null);
+			var mask = Mask.Extractor.extract(field).orElse(null);
+			var placeholder = Placeholder.Extractor.extract(field).orElse(null);
+			this.metadata = Metadata.getMetadata(rawType)
+					.merge(SimpleMetadata.builder()
+							.name(name)
+							.description(description)
+							.tooltip(tooltip)
+							.placeholder(placeholder)
+							.mask(mask)
+							.color(color)
+							.code(code)
+							.icon(icon)
+							.build());
 
 		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-				 | InvocationTargetException ex)
+		         | InvocationTargetException ex)
 		{
 			throw new IllegalStateException("Failed to access field attribute", ex);
 		}
@@ -115,7 +115,7 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override public Metadata getMetadata() {return metadata;}
-	
+
 	@Override
 	public Converter getConverter()
 	{

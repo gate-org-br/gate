@@ -1,6 +1,5 @@
 package gate.type;
 
-import gate.converter.DataGridConverter;
 import gate.lang.json.JsonArray;
 
 import java.io.Serial;
@@ -71,14 +70,14 @@ public class DataGrid extends ArrayList<Object[]>
 	{
 		DataGrid dataGrid
 				= foot != null ? new DataGrid(IntStream.of(indexes)
-				.mapToObj(e -> head[e])
-				.toArray(String[]::new),
+											  .mapToObj(e -> head[e])
+											  .toArray(String[]::new),
 				IntStream.of(indexes)
-						.mapToObj(e -> foot[e])
-						.toArray())
+				.mapToObj(e -> foot[e])
+				.toArray())
 				: new DataGrid(IntStream.of(indexes)
-				.mapToObj(e -> head[e])
-				.toArray(String[]::new));
+							   .mapToObj(e -> head[e])
+							   .toArray(String[]::new));
 
 		stream().map(values -> IntStream.of(indexes).mapToObj(e -> values[e])
 				.toArray()).collect(Collectors.toCollection(() -> dataGrid));

@@ -1,7 +1,8 @@
 package gate.policonverter;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

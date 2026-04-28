@@ -1,7 +1,7 @@
 package gate.thymeleaf;
 
 import gate.annotation.*;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.entity.User;
 import gate.error.ConversionException;
 import gate.icon.Icons;
@@ -59,10 +59,10 @@ public class TagLib
 
 		if (temporal instanceof LocalDateTime)
 			return ((LocalDateTime) temporal)
-				.atZone(ZoneId.of("UTC")).toEpochSecond();
+					.atZone(ZoneId.of("UTC")).toEpochSecond();
 		if (temporal instanceof LocalDate)
 			return ((LocalDate) temporal).atStartOfDay()
-				.atZone(ZoneId.of("UTC")).toEpochSecond();
+					.atZone(ZoneId.of("UTC")).toEpochSecond();
 		return 0;
 	}
 

@@ -1,5 +1,6 @@
 package gate.converter;
 
+import gate.adapter.converter.Converter;
 import gate.annotation.JsonAdapter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonElement;

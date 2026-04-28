@@ -1,16 +1,16 @@
 package gate;
 
+import gate.adapter.catcher.Catcher;
+import gate.adapter.handler.HTMLCommandHandler;
+import gate.adapter.handler.Handler;
 import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.base.Screen;
 import gate.catalog.SessionCatalog;
-import gate.catcher.Catcher;
 import gate.entity.User;
 import gate.error.*;
 import gate.event.AppEvent;
 import gate.event.LoginEvent;
-import gate.handler.HTMLCommandHandler;
-import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.i18n.CurrentLocale;

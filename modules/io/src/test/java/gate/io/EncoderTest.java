@@ -1,6 +1,6 @@
 package gate.io;
 
-import gate.converter.Encoder;
+import gate.adapter.converter.Encoder;
 import gate.error.ConversionException;
 import org.junit.jupiter.api.Test;
 

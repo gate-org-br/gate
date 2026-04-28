@@ -1,11 +1,12 @@
 package gate.sql.update;
 
+import gate.adapter.columnMapper.ColumnMapper;
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.annotation.Entity;
 import gate.error.PropertyError;
 import gate.sql.ColumnReference;
 import gate.sql.Formatter;
 import gate.sql.annotation.Table;
-import gate.sql.columnMapper.ColumnMapper;
 import gate.sql.condition.CompiledCondition;
 import gate.sql.condition.Condition;
 import gate.sql.condition.ConstantCondition;
@@ -119,7 +120,7 @@ public class ClassUpdate<T> implements Update
 
 		public Compiled set(PropertyReference<T, ?> property, Object value)
 		{
-			var column = ColumnReference.of(property);
+			var column = ColumnReferenceRegistry.INSTANCE.get(property);
 			ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 					.getColumns(column.name())
 					.map(Formatter::identifier)
@@ -136,7 +137,7 @@ public class ClassUpdate<T> implements Update
 			Objects.requireNonNull(object);
 			for (PropertyReference<T, R> property : Objects.requireNonNull(properties))
 			{
-				var column = ColumnReference.of(Objects.requireNonNull(property));
+				var column = ColumnReferenceRegistry.INSTANCE.get(Objects.requireNonNull(property));
 				ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 						.getColumns(column.name())
 						.map(Formatter::identifier)

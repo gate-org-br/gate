@@ -1,7 +1,7 @@
 package gate;
 
+import gate.adapter.catcher.Catcher;
 import gate.annotation.Current;
-import gate.catcher.Catcher;
 import gate.entity.User;
 import gate.error.UnauthorizedException;
 import gate.http.ScreenServletRequest;

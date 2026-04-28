@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,8 +20,8 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 
 	@Override
 	public void process(ITemplateContext context,
-						IProcessableElementTag element,
-						IElementTagStructureHandler handler, Object screen, Property property)
+	                    IProcessableElementTag element,
+	                    IElementTagStructureHandler handler, Object screen, Property property)
 	{
 
 		if (!element.hasAttribute("title"))

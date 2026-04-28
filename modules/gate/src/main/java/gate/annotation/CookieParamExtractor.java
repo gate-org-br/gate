@@ -1,11 +1,13 @@
 package gate.annotation;
 
+import gate.adapter.converter.Converter;
 import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
 import gate.http.ScreenServletRequest;
 import jakarta.ws.rs.CookieParam;
 import jakarta.ws.rs.DefaultValue;
+
 import java.lang.reflect.Parameter;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -21,14 +23,14 @@ public class CookieParamExtractor
 		String name = parameter.getAnnotation(CookieParam.class).value();
 
 		String cookie = Stream.of(request.getCookies())
-			.filter(e -> Objects.equals(name, e.getName()))
-			.map(e -> e.getValue())
-			.findFirst().orElse(null);
+				.filter(e -> Objects.equals(name, e.getName()))
+				.map(e -> e.getValue())
+				.findFirst().orElse(null);
 
 		if (parameter.isAnnotationPresent(DefaultValue.class) && (cookie == null || cookie.isBlank()))
 			cookie = parameter.getAnnotation(DefaultValue.class).value();
 
-		gate.converter.Converter converter = gate.converter.Converter.getConverter(parameter);
+		Converter converter = Converter.getConverter(parameter);
 
 		try
 		{

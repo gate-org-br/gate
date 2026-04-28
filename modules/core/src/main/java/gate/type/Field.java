@@ -14,7 +14,6 @@ import gate.annotation.Name;
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
-import gate.converter.custom.FieldConverter;
 import gate.error.AppException;
 import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
@@ -27,7 +26,7 @@ import gate.type.collections.StringList;
 public class Field implements Serializable
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -310,9 +309,9 @@ public class Field implements Serializable
 
 		@Name
 		ONE, @Name
-		TWO, @Name
-		FOUR, @Name
-		EIGHT;
+	TWO, @Name
+	FOUR, @Name
+	EIGHT;
 
 		@Override
 		public String toString()
@@ -327,11 +326,11 @@ public class Field implements Serializable
 
 			return switch (string.trim())
 			{
-			case "0" -> ONE;
-			case "1" -> TWO;
-			case "2" -> FOUR;
-			case "3" -> EIGHT;
-			default -> null;
+				case "0" -> ONE;
+				case "1" -> TWO;
+				case "2" -> FOUR;
+				case "3" -> EIGHT;
+				default -> null;
 			};
 		}
 	}

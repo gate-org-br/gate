@@ -1,7 +1,6 @@
 package gate.command;
 
 import gate.error.AppException;
-import gate.handler.RedirectCommandHandler;
 import gate.type.RequestCommand;
 import gate.util.Parameters;
 

@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.Sequence;
 import gate.type.Attributes;
@@ -28,7 +28,7 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-						IElementTagStructureHandler handler, Object screen, Property property, Object value)
+	                    IElementTagStructureHandler handler, Object screen, Property property, Object value)
 	{
 		var type = "text";
 		if (element.hasAttribute("type"))

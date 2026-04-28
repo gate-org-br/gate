@@ -17,7 +17,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.AppError;
 import gate.report.Chart;
 import gate.report.ChartGenerator;

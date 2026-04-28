@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.type.Attributes;
 import gate.util.Toolkit;

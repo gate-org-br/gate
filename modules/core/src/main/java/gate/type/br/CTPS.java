@@ -1,7 +1,5 @@
 package gate.type.br;
 
-import gate.converter.custom.CTPSConverter;
-
 import java.io.Serial;
 import java.io.Serializable;
 

@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(
-	{
-		ElementType.TYPE, ElementType.METHOD
-	})
+		{
+				ElementType.TYPE, ElementType.METHOD
+		})
 public @interface Catcher
 {
 
-	Class<? extends gate.catcher.Catcher> value();
+	Class<? extends gate.adapter.catcher.Catcher> value();
 }

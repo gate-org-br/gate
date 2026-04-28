@@ -1,16 +1,18 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Toolkit;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.exceptions.TemplateInputException;
@@ -30,7 +32,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       Object screen, Property property, Attributes attributes)
 	{
 
 		Object options = attributes.remove("options");
@@ -54,10 +56,10 @@ public abstract class CheckableProcessor extends PropertyProcessor
 		{
 			var comparator = expression.create().comparator(sortby);
 			options = Toolkit
-				.collection(options)
-				.stream()
-				.sorted(comparator)
-				.collect(Collectors.toList());
+					.collection(options)
+					.stream()
+					.sorted(comparator)
+					.collect(Collectors.toList());
 		}
 
 		Object value = property.getValue(screen);
@@ -73,11 +75,11 @@ public abstract class CheckableProcessor extends PropertyProcessor
 		if (groups != null)
 		{
 			Toolkit.stream(options)
-				.collect(Collectors.groupingBy(groups,
-					LinkedHashMap::new,
-					Collectors.toList()))
-				.entrySet()
-				.forEach(group -> print(string, group.getValue(), labels, values, children, property.toString(), value, 0));
+					.collect(Collectors.groupingBy(groups,
+							LinkedHashMap::new,
+							Collectors.toList()))
+					.entrySet()
+					.forEach(group -> print(string, group.getValue(), labels, values, children, property.toString(), value, 0));
 		} else
 			print(string, Toolkit.iterable(options), labels, values, children, property.toString(), value, 0);
 
@@ -86,7 +88,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 	}
 
 	private void print(StringJoiner string, Iterable<?> options, Function<Object, Object> labels, Function<Object, Object> values,
-		Function<Object, Object> children, String name, Object value, int depth)
+	                   Function<Object, Object> children, String name, Object value, int depth)
 	{
 		for (Object option : options)
 		{
@@ -98,13 +100,13 @@ public abstract class CheckableProcessor extends PropertyProcessor
 			attributes.put("value", Converter.toString(values.apply(option)));
 
 			string.add(String.format("<input %s/><label style='padding-left: %dpx'>%s</label>",
-				attributes.toString(),
-				depth * 40,
-				Converter.render(labels.apply(option))));
+					attributes.toString(),
+					depth * 40,
+					Converter.render(labels.apply(option))));
 
 			if (children != null)
 				print(string, Toolkit.iterable(children.apply(option)),
-					labels, values, children, name, value, depth + 1);
+						labels, values, children, name, value, depth + 1);
 		}
 	}
 

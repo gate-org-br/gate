@@ -1,7 +1,7 @@
 package gate.sql.condition;
 
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.sql.Clause;
-import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
 import gate.type.PropertyReference;
 
@@ -76,7 +76,7 @@ public class ConstantRelation extends Relation
 	@Override
 	public <T, R> ConstantPredicate expression(PropertyReference<T, R> reference)
 	{
-		return expression(ColumnReference.of(reference).name());
+		return expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class ConstantRelation extends Relation
 	@Override
 	public <T, R> ConstantPredicate not(PropertyReference<T, R> reference)
 	{
-		return not().expression(ColumnReference.of(reference).name());
+		return not().expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 	}
 
 	/**

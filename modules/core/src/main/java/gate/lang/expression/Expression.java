@@ -1,7 +1,7 @@
 package gate.lang.expression;
 
-import gate.converter.Converter;
-import gate.converter.custom.ExpressionConverter;
+import gate.adapter.converter.Converter;
+import gate.adapter.converter.custom.ExpressionConverter;
 import gate.error.ExpressionException;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyScanner;

@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/home/davins/.sdkman/candidates/java/25.0.2-tem/lib"/>
-    <property name="sun.java.command" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260426235559240_3.jar /home/davins/Projects/gate/modules/core/target/surefire 2026-04-26T23-55-59_185-jvmRun1 surefire-20260426235559240_1tmp surefire_0-20260426235559240_2tmp"/>
+    <property name="sun.java.command" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260427215552350_3.jar /home/davins/Projects/gate/modules/core/target/surefire 2026-04-27T21-55-52_292-jvmRun1 surefire-20260427215552350_1tmp surefire_0-20260427215552350_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/davins/Projects/gate/modules/core/target/test-classes:/home/davins/Projects/gate/modules/core/target/classes:/home/davins/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/davins/.m2/repository/org/junit/jupiter/junit-jupiter-engine/6.0.2/junit-jupiter-engine-6.0.2.jar:/home/davins/.m2/repository/org/junit/platform/junit-platform-engine/6.0.2/junit-platform-engine-6.0.2.jar:/home/davins/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/davins/.m2/repository/org/junit/platform/junit-platform-commons/6.0.2/junit-platform-commons-6.0.2.jar:/home/davins/.m2/repository/org/junit/jupiter/junit-jupiter-api/6.0.2/junit-jupiter-api-6.0.2.jar:/home/davins/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/davins/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -27,7 +27,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260426235559240_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260427215552350_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.2+10-LTS"/>
     <property name="user.name" value="davins"/>
@@ -55,19 +55,19 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="formatStringNormalizesValidInputsWithOrWithoutPunctuation" classname="gate.type.br.CPFTest" time="0.0"/>
-  <testcase name="toStringReturnsFormattedCpf" classname="gate.type.br.CPFTest" time="0.001"/>
+  <testcase name="formatStringNormalizesValidInputsWithOrWithoutPunctuation" classname="gate.type.br.CPFTest" time="0.001"/>
+  <testcase name="toStringReturnsFormattedCpf" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="digitsReturnsZeroPaddedRawCpf" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="validateStringReturnsTrueForValidFormattedCpf" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="compareToOrdersByNumericValue" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="toLongParsesRawAndFormattedCpf" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="toLongReturnsMinusOneForInvalidInput" classname="gate.type.br.CPFTest" time="0.0"/>
-  <testcase name="valueOfStringCreatesCpfForValidInput" classname="gate.type.br.CPFTest" time="0.001"/>
+  <testcase name="valueOfStringCreatesCpfForValidInput" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="formatLongReturnsNullForInvalidCpf" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="digitsReturnsNullForInvalidCpf" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="equalityUsesCpfValue" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="formatStringReturnsNullForInvalidInput" classname="gate.type.br.CPFTest" time="0.0"/>
-  <testcase name="valueOfStringThrowsForInvalidInput" classname="gate.type.br.CPFTest" time="0.0"/>
+  <testcase name="valueOfStringThrowsForInvalidInput" classname="gate.type.br.CPFTest" time="0.001"/>
   <testcase name="valueOfLongAndConstructorRejectInvalidValues" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="validateLongReturnsTrueOnlyForValidCpfValue" classname="gate.type.br.CPFTest" time="0.0"/>
   <testcase name="formatLongReturnsFormattedCpf" classname="gate.type.br.CPFTest" time="0.0"/>

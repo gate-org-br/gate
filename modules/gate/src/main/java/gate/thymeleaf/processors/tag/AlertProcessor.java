@@ -1,13 +1,15 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.base.Screen;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
 import java.util.List;
 import java.util.StringJoiner;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -28,12 +30,13 @@ public class AlertProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-			IElementTagStructureHandler handler)
+	                    IElementTagStructureHandler handler)
 	{
 		@SuppressWarnings("unchecked")
 		List<String> messages =
 				extract(element, handler, "messages").map(expression.create()::evaluate)
-						.map(Toolkit::list).map(e -> (List<String>) e).orElseGet(() -> {
+						.map(Toolkit::list).map(e -> (List<String>) e).orElseGet(() ->
+						{
 							IWebContext webContext = (IWebContext) context;
 							IWebExchange exchange = webContext.getExchange();
 							Screen screen = (Screen) exchange.getAttributeValue("screen");

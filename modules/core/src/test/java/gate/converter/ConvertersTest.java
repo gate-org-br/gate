@@ -1,5 +1,6 @@
 package gate.converter;
 
+import gate.adapter.converter.Converter;
 import mock.UserMock;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ public class ConvertersTest
 	public void test01()
 	{
 		Converter converter = Converter.getConverter(ExtendedExtendedUser.class);
-		assertEquals("gate.converter.ObjectConverter", converter.getClass().getName());
+		assertEquals("gate.adapter.converter.ObjectConverter", converter.getClass().getName());
 	}
 
 	public static class ExtendedUser extends UserMock

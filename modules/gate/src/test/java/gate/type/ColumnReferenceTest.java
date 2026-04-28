@@ -1,10 +1,10 @@
 package gate.type;
 
+import gate.adapter.registry.ColumnReferenceRegistry;
+import gate.annotation.Entity;
 import gate.entity.Role;
 import gate.entity.User;
-import gate.sql.ColumnReference;
 import gate.sql.annotation.Column;
-import gate.annotation.Entity;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +23,7 @@ public class ColumnReferenceTest
 	public void testGetterProperty()
 	{
 		PropertyReference<User, String> property = User::getName;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("name", column.name());
 		assertEquals("Name", column.extractor().apply(property.apply(USER)));
 	}
@@ -32,7 +32,7 @@ public class ColumnReferenceTest
 	public void testBooleanGetterProperty()
 	{
 		PropertyReference<User, Boolean> property = User::getActive;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("active", column.name());
 		assertEquals(true, column.extractor().apply(property.apply(USER)));
 	}
@@ -41,7 +41,7 @@ public class ColumnReferenceTest
 	public void testRecordAccessorProperty()
 	{
 		PropertyReference<Client, String> property = Client::name;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("name", column.name());
 		assertEquals("Name", column.extractor().apply(property.apply(CLIENT)));
 	}
@@ -50,7 +50,7 @@ public class ColumnReferenceTest
 	public void testRecordBooleanAccessorWithIsPrefix()
 	{
 		PropertyReference<Client, Boolean> property = Client::isAdmin;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("admin", column.name());
 		assertEquals(true, column.extractor().apply(property.apply(CLIENT)));
 	}
@@ -59,7 +59,7 @@ public class ColumnReferenceTest
 	public void testEntityGetterReferenceUsesIdSuffix()
 	{
 		PropertyReference<User, Role> property = User::getRole;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("Role$id", column.name());
 		assertEquals(ID.valueOf(1), column.extractor().apply(property.apply(USER)));
 	}
@@ -68,7 +68,7 @@ public class ColumnReferenceTest
 	public void testEntityGetterReferenceUsesCustomEntityKey()
 	{
 		PropertyReference<Client, Company> property = Client::company;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("Company$uuid", column.name());
 		assertEquals("uuid", column.extractor().apply(property.apply(CLIENT)));
 	}
@@ -77,7 +77,7 @@ public class ColumnReferenceTest
 	public void testMethodColumnAnnotationOverridesConvention()
 	{
 		PropertyReference<AnnotatedUser, String> property = AnnotatedUser::getName;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("usr_name", column.name());
 		assertEquals("Name", column.extractor().apply(property.apply(new AnnotatedUser("Name"))));
 	}
@@ -86,7 +86,7 @@ public class ColumnReferenceTest
 	public void testFieldColumnAnnotationOverridesConvention()
 	{
 		PropertyReference<FieldAnnotatedUser, String> property = FieldAnnotatedUser::getName;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("usr_name", column.name());
 		assertEquals("Name", column.extractor().apply(property.apply(new FieldAnnotatedUser("Name"))));
 	}
@@ -95,7 +95,7 @@ public class ColumnReferenceTest
 	public void testMethodColumnAnnotationTakesPrecedenceOverFieldAnnotation()
 	{
 		PropertyReference<DoublyAnnotatedUser, String> property = DoublyAnnotatedUser::getName;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("getter_name", column.name());
 		assertEquals("Name", column.extractor().apply(property.apply(new DoublyAnnotatedUser("Name"))));
 	}
@@ -104,7 +104,7 @@ public class ColumnReferenceTest
 	public void testMethodColumnAnnotationOverridesEntityReferenceConvention()
 	{
 		PropertyReference<AnnotatedReferenceUser, Role> property = AnnotatedReferenceUser::getRole;
-		var column = ColumnReference.of(property);
+		var column = ColumnReferenceRegistry.INSTANCE.get(property);
 		assertEquals("role_id", column.name());
 		assertEquals(ID.valueOf(1), column.extractor().apply(property.apply(new AnnotatedReferenceUser(USER.getRole()))));
 	}

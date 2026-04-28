@@ -1,9 +1,9 @@
 package gate.sql;
 
+import gate.adapter.columnMapper.ColumnMapper;
+import gate.adapter.columnMapper.ColumnWriter;
 import gate.error.ConstraintViolationException;
 import gate.error.SQLExceptionHandler;
-import gate.sql.columnMapper.ColumnMapper;
-import gate.sql.columnMapper.ColumnWriter;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
 

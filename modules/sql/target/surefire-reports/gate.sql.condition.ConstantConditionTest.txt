@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: gate.sql.condition.ConstantConditionTest
--------------------------------------------------------------------------------
-Tests run: 42, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.047 s -- in gate.sql.condition.ConstantConditionTest

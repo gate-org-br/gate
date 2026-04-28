@@ -1,5 +1,6 @@
 package gate.lang.json;
 
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
 
 import java.util.Objects;
@@ -73,7 +74,7 @@ public class JsonString implements JsonElement, JsonScalar
 	 */
 	public <T> T decode(Class<T> type)
 	{
-		return type == String.class ? type.cast(value) : gate.converter.Converter.fromString(type, value);
+		return type == String.class ? type.cast(value) : Converter.fromString(type, value);
 	}
 
 	@Override

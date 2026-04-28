@@ -1,6 +1,6 @@
 package gate.error;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 
 import java.util.Collections;
 import java.util.List;

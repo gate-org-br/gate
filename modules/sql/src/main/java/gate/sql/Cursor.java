@@ -1,6 +1,6 @@
 package gate.sql;
 
-import gate.sql.columnMapper.ColumnMapper;
+import gate.adapter.columnMapper.ColumnMapper;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
@@ -932,7 +932,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	 * the property should be resolved
 	 * normally from the cursor.</p>
 	 *
-	 * @param graph PropertyGraph of the entity to be read
+	 * @param graph   PropertyGraph of the entity to be read
 	 * @param context function used to provide contextual values for specific property names
 	 * @return the current row as a java object of the specified type with its property values
 	 * matched to their respective column values.

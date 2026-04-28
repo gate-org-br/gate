@@ -1,9 +1,0 @@
-import './g-date-picker.js';
-import './g-date-interval-picker.js';
-import './g-time-picker.js';
-import './g-time-interval-picker.js';
-import './g-date-time-picker.js';
-import './g-date-time-interval-picker.js';
-import './g-month-picker.js';
-import './g-month-interval-picker.js';
-import './g-icon-picker.js';

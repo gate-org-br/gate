@@ -2,14 +2,12 @@ package gate.type.br;
 
 import java.io.Serial;
 
-import gate.converter.custom.CEPConverter;
-
 import java.io.Serializable;
 
 public class CEP implements Serializable
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

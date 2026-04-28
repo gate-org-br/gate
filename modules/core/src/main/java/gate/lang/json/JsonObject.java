@@ -1,6 +1,6 @@
 package gate.lang.json;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
 
@@ -470,7 +470,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.of(gate.converter.Converter.toString(value)));
+			set(key, JsonString.of(Converter.toString(value)));
 		return this;
 	}
 
@@ -489,7 +489,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.of(gate.converter.Converter.toString(value)));
+			set(key, JsonString.of(Converter.toString(value)));
 		return this;
 	}
 
@@ -506,7 +506,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public <T> Optional<T> getObject(String key, Class<T> type) throws ConversionException
 	{
 		return getString(key)
-				.map(e -> gate.converter.Converter.fromString(type, e));
+				.map(e -> Converter.fromString(type, e));
 	}
 
 	/**
@@ -523,7 +523,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public <T> Optional<T> getObject(int index, Class<T> type) throws ConversionException
 	{
 		return getString(index)
-				.map(e -> gate.converter.Converter.fromString(type, e));
+				.map(e -> Converter.fromString(type, e));
 	}
 
 	/**
@@ -970,7 +970,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 			{
 				Object value = property.getValue(obj);
 				if (value != null)
-					result.setString(name, gate.converter.Converter.render(value));
+					result.setString(name, Converter.render(value));
 			}
 		});
 

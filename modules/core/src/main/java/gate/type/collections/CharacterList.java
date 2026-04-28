@@ -5,8 +5,9 @@ import java.io.Serial;
 import gate.annotation.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
-import gate.converter.collections.CharacterListConverter;
+import gate.adapter.converter.collections.CharacterListConverter;
 import gate.policonverter.CharacterListPoliconverter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 public class CharacterList extends ArrayList<Character>
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

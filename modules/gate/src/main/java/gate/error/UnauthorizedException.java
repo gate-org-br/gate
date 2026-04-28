@@ -1,7 +1,7 @@
 package gate.error;
 
+import gate.adapter.catcher.UnauthorizedExceptionCatcher;
 import gate.annotation.Catcher;
-import gate.catcher.UnauthorizedExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Serial;

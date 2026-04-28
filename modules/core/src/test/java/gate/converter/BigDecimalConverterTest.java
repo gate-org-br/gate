@@ -1,8 +1,12 @@
 package gate.converter;
 
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
+
 import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.Test;
 
 public class BigDecimalConverterTest

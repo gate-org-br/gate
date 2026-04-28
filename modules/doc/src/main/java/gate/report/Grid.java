@@ -1,6 +1,6 @@
 package gate.report;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.json.*;
 import gate.language.Language;
 import gate.type.DataGrid;

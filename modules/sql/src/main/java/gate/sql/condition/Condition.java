@@ -1,7 +1,7 @@
 package gate.sql.condition;
 
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.sql.Clause;
-import gate.sql.ColumnReference;
 import gate.sql.statement.Query;
 import gate.type.PropertyReference;
 
@@ -65,6 +65,7 @@ public abstract class Condition implements Clause
 			{
 				return Stream.empty();
 			}
+
 			@Override
 			public String toString()
 			{
@@ -90,12 +91,12 @@ public abstract class Condition implements Clause
 		 * Creates a new extractor predicate with the specified property reference.
 		 *
 		 * @param reference the property reference to be tested
-		 * @param <R> the property return type
+		 * @param <R>       the property return type
 		 * @return the current predicate, for chained invocations
 		 */
 		default <R> ExtractorPredicate<T> expression(PropertyReference<? super T, R> reference)
 		{
-			return expression(ColumnReference.of(reference).name());
+			return expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 		}
 	}
 
@@ -115,6 +116,7 @@ public abstract class Condition implements Clause
 			{
 				return Stream.empty();
 			}
+
 			@Override
 			public String toString()
 			{
@@ -137,13 +139,13 @@ public abstract class Condition implements Clause
 		 * Creates a predicate with lazy evaluation support from a property reference.
 		 *
 		 * @param reference the property reference to be tested
-		 * @param <T> the property owner type
-		 * @param <R> the property return type
+		 * @param <T>       the property owner type
+		 * @param <R>       the property return type
 		 * @return the current predicate, for chained invocations
 		 */
 		default <T, R> LazyConstantPredicate expression(PropertyReference<T, R> reference)
 		{
-			return expression(ColumnReference.of(reference).name());
+			return expression(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 		}
 	}
 
@@ -168,6 +170,7 @@ public abstract class Condition implements Clause
 					{
 						return Stream.empty();
 					}
+
 					@Override
 					public String toString()
 					{
@@ -188,6 +191,7 @@ public abstract class Condition implements Clause
 					{
 						return Stream.empty();
 					}
+
 					@Override
 					public String toString()
 					{
@@ -205,7 +209,8 @@ public abstract class Condition implements Clause
 					public Stream<Object> getParameters()
 					{
 						return Stream.empty();
-					}				};
+					}
+				};
 			}
 		};
 	}
@@ -219,7 +224,7 @@ public abstract class Condition implements Clause
 	 */
 	public static <T, R> ConstantPredicate of(PropertyReference<T, R> reference)
 	{
-		return of(ColumnReference.of(reference).name());
+		return of(ColumnReferenceRegistry.INSTANCE.get(reference).name());
 	}
 
 	/**
@@ -238,6 +243,7 @@ public abstract class Condition implements Clause
 			{
 				return Stream.empty();
 			}
+
 			@Override
 			public String toString()
 			{
@@ -263,6 +269,7 @@ public abstract class Condition implements Clause
 			{
 				return Stream.of(parameters);
 			}
+
 			@Override
 			public String toString()
 			{
@@ -286,6 +293,7 @@ public abstract class Condition implements Clause
 			{
 				return Stream.empty();
 			}
+
 			@Override
 			public String toString()
 			{
@@ -322,6 +330,7 @@ public abstract class Condition implements Clause
 			{
 				return condition.getParameters();
 			}
+
 			@Override
 			public String toString()
 			{
@@ -348,6 +357,7 @@ public abstract class Condition implements Clause
 			{
 				return condition.getParameters();
 			}
+
 			@Override
 			public String toString()
 			{

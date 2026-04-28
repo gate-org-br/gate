@@ -1,1 +1,0 @@
-insert into Uzer (id, name, birthdate, contract__min, contract__max) values (?, ?, ?, ?, ?)

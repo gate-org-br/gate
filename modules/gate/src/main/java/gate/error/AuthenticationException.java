@@ -1,6 +1,6 @@
 package gate.error;
 
-import gate.catcher.HttpExceptionCatcher;
+import gate.adapter.catcher.HttpExceptionCatcher;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**

@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -24,7 +24,7 @@ public class ConditionProcessor extends TagProcessor
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+	                    IElementTagStructureHandler handler)
 	{
 		if (!element.hasAttribute("if"))
 			throw new TemplateProcessingException("Missing required attribute if on g:condition");

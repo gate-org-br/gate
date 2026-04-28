@@ -1,9 +1,9 @@
 package gate.lang.property;
 
 import gate.constraint.Constraint;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.PropertyError;
-import gate.lang.property.metadata.Metadata;
+import gate.adapter.metadata.Metadata;
 import gate.annotation.Entity;
 import gate.util.Reflection;
 
@@ -59,7 +59,7 @@ public interface Attribute
 			constructor.setAccessible(true);
 			return constructor.newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-				 | InvocationTargetException e)
+		         | InvocationTargetException e)
 		{
 			throw new PropertyError("Error trying to create a instance of %s.", type.getName());
 		}
@@ -182,6 +182,6 @@ public interface Attribute
 	default boolean matches(Parameter parameter)
 	{
 		return toString().equals(parameter.getName())
-			   && parameter.getType().isAssignableFrom(getRawType());
+		       && parameter.getType().isAssignableFrom(getRawType());
 	}
 }

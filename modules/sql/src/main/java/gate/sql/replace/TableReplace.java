@@ -1,6 +1,6 @@
 package gate.sql.replace;
 
-import gate.sql.columnMapper.ColumnMapper;
+import gate.adapter.columnMapper.ColumnMapper;
 import gate.sql.Formatter;
 import gate.sql.statement.Sentence;
 

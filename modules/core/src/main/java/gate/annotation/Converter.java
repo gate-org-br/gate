@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 public @interface Converter
 {
 
-	Class<? extends gate.converter.Converter> value();
+	Class<? extends gate.adapter.converter.Converter> value();
 }

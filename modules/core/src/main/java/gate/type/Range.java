@@ -2,7 +2,6 @@ package gate.type;
 
 import java.io.Serial;
 
-import gate.converter.custom.RangeConverter;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Comparator;
@@ -18,7 +17,7 @@ import java.util.stream.StreamSupport;
 public class Range implements Iterable<Long>, Serializable
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -52,7 +51,7 @@ public class Range implements Iterable<Long>, Serializable
 	public boolean contains(long value)
 	{
 		return min <= value
-			&& value <= max;
+		       && value <= max;
 	}
 
 	@Override
@@ -60,7 +59,7 @@ public class Range implements Iterable<Long>, Serializable
 	{
 		if (min == max)
 			return String
-				.valueOf(min);
+					.valueOf(min);
 		else
 			return min + " - " + max;
 	}
@@ -84,7 +83,7 @@ public class Range implements Iterable<Long>, Serializable
 		String min = matcher.group(1);
 		String max = matcher.group(3);
 		return of(Long.parseLong(min),
-			Long.parseLong(max != null ? max : min));
+				Long.parseLong(max != null ? max : min));
 	}
 
 	@Override
@@ -212,11 +211,11 @@ public class Range implements Iterable<Long>, Serializable
 			public int characteristics()
 			{
 				return Spliterator.DISTINCT
-					| Spliterator.IMMUTABLE
-					| Spliterator.NONNULL
-					| Spliterator.ORDERED
-					| Spliterator.SIZED
-					| Spliterator.SORTED;
+				       | Spliterator.IMMUTABLE
+				       | Spliterator.NONNULL
+				       | Spliterator.ORDERED
+				       | Spliterator.SIZED
+				       | Spliterator.SORTED;
 			}
 
 			@Override
@@ -231,8 +230,8 @@ public class Range implements Iterable<Long>, Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof Range
-			&& ((Range) obj).min == min
-			&& ((Range) obj).max == max;
+		       && ((Range) obj).min == min
+		       && ((Range) obj).max == max;
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package gate.lang.json;
 
 import gate.annotation.JsonAdapter;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

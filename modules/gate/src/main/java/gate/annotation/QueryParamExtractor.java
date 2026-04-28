@@ -1,9 +1,9 @@
 package gate.annotation;
 
+import gate.adapter.converter.Converter;
 import gate.constraint.Required;
 import gate.error.BadRequestException;
 import gate.error.ConversionException;
-import gate.handler.Handler;
 import gate.http.ScreenServletRequest;
 import jakarta.servlet.http.Part;
 import jakarta.ws.rs.DefaultValue;
@@ -35,13 +35,13 @@ public class QueryParamExtractor
 			{
 				try
 				{
-					value = Handler.fromPart(parameter.getType(), part);
+					value = gate.adapter.handler.Handler.fromPart(parameter.getType(), part);
 				} finally
 				{
 					part.delete();
 				}
 			} else if (value instanceof String string)
-				value = gate.converter.Converter.getConverter(parameter).ofString(parameter.getType(), string);
+				value = Converter.getConverter(parameter).ofString(parameter.getType(), string);
 
 			if (value == null && parameter.isAnnotationPresent(Required.class))
 				throw new BadRequestException("Missing required parameter: " + name);

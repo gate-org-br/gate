@@ -1,6 +1,7 @@
 package gate.sql.insert;
 
-import gate.sql.columnMapper.ColumnMapper;
+import gate.adapter.columnMapper.ColumnMapper;
+import gate.adapter.registry.ColumnReferenceRegistry;
 import gate.sql.ColumnReference;
 import gate.sql.Formatter;
 import gate.sql.statement.Sentence;
@@ -54,7 +55,7 @@ public class BatchInsert<T> implements Insert, Sentence.Extractor.Compiled.Build
 
 	public <R> BatchInsert<T> set(PropertyReference<T, R> property)
 	{
-		var column = ColumnReference.of(Objects.requireNonNull(property));
+		var column = ColumnReferenceRegistry.INSTANCE.get(Objects.requireNonNull(property));
 		ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 				.getColumns(column.name())
 				.map(Formatter::identifier)
@@ -64,13 +65,13 @@ public class BatchInsert<T> implements Insert, Sentence.Extractor.Compiled.Build
 		extractors.add(value -> column.extractor().apply(property.apply(value)));
 		return this;
 	}
-	
+
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public BatchInsert<T> set(PropertyReference<T, ?> property, Function<T, ?> extractor)
 	{
 		Objects.requireNonNull(property);
 		Objects.requireNonNull(extractor);
-		ColumnReference column = ColumnReference.of((PropertyReference) property);
+		ColumnReference column = ColumnReferenceRegistry.INSTANCE.get((PropertyReference) property);
 		ColumnMapper.getColumnMapper(property.metadata().method().getReturnType())
 				.getColumns(column.name())
 				.map(Formatter::identifier)

@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpression;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

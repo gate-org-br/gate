@@ -1,6 +1,5 @@
 package gate.command;
 
-import gate.handler.HideCommandHandler;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,17 +18,17 @@ public class HideCommand implements Command
 		return messages;
 	}
 
-	static final HideCommand of()
+	static HideCommand of()
 	{
 		return new HideCommand(List.of());
 	}
 
-	static final HideCommand of(String... messages)
+	static HideCommand of(String... messages)
 	{
 		return new HideCommand(List.of(messages));
 	}
 
-	static final HideCommand of(List<String> messages)
+	static HideCommand of(List<String> messages)
 	{
 		return new HideCommand(Collections.unmodifiableList(messages));
 	}

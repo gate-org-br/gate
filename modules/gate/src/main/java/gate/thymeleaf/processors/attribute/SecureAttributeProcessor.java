@@ -6,7 +6,7 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 import gate.Calls;
 import gate.annotation.Current;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.thymeleaf.ELExpressionFactory;
@@ -36,9 +36,9 @@ public class SecureAttributeProcessor extends AttributeProcessor
 
 	@Override
 	public void process(
-		ITemplateContext context,
-		IProcessableElementTag element,
-		IElementTagStructureHandler handler)
+			ITemplateContext context,
+			IProcessableElementTag element,
+			IElementTagStructureHandler handler)
 	{
 		try
 		{
@@ -49,7 +49,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			String action = path.length > 2 ? path[2] : null;
 
 			RequestCommand command
-				= new RequestCommand(module, screen, action);
+					= new RequestCommand(module, screen, action);
 
 			if (actionRegistry.canAccess(user, command))
 			{
@@ -61,7 +61,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			{
 				String otherwise = element.getAttributeValue("g:otherwise");
 				otherwise = Converter.render(
-					expression.create().evaluate(otherwise));
+						expression.create().evaluate(otherwise));
 				handler.replaceWith(otherwise, false);
 			} else
 			{

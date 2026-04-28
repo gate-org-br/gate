@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
@@ -25,7 +25,7 @@ public class CheckboxProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       Object screen, Property property, Attributes attributes)
 	{
 		attributes.put("type", getElement());
 

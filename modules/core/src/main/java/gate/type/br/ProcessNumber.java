@@ -1,7 +1,5 @@
 package gate.type.br;
 
-import gate.converter.custom.ProcessNumberConverter;
-
 import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -1,5 +1,6 @@
 package gate.type;
 
+import gate.adapter.converter.Converter;
 import gate.annotation.Icon;
 import gate.annotation.Name;
 
@@ -55,8 +56,8 @@ public final class DurationInterval implements Serializable, Interval<Duration>
 	@Override
 	public String toString()
 	{
-		return gate.converter.Converter.toString(min.toString())
-		       + " - " + gate.converter.Converter.toString(min.toString());
+		return Converter.toString(min.toString())
+		       + " - " + Converter.toString(min.toString());
 	}
 
 	public static DurationInterval of(Duration min, Duration max)

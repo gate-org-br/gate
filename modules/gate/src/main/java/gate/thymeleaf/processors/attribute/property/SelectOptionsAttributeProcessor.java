@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
@@ -8,10 +8,12 @@ import gate.type.Attributes;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
 import java.util.LinkedHashMap;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -37,10 +39,10 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression.create()::comparator).orElse(null);
 		if (comparator != null)
 			options = Toolkit
-				.collection(options)
-				.stream()
-				.sorted(comparator)
-				.collect(Collectors.toList());
+					.collection(options)
+					.stream()
+					.sorted(comparator)
+					.collect(Collectors.toList());
 
 		var labels = extract(element, handler, "g:labels").map(expression.create()::function).orElse(Function.identity());
 		var values = extract(element, handler, "g:values").map(expression.create()::function).orElse(Function.identity());
@@ -59,16 +61,16 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 		if (groups != null)
 		{
 			Toolkit.stream(options)
-				.collect(Collectors.groupingBy(groups,
-					LinkedHashMap::new,
-					Collectors.toList()))
-				.entrySet()
-				.forEach(group ->
-				{
-					body.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
-					print(0, body, group.getValue(), labels, values, children);
-					body.add("</optgroup>");
-				});
+					.collect(Collectors.groupingBy(groups,
+							LinkedHashMap::new,
+							Collectors.toList()))
+					.entrySet()
+					.forEach(group ->
+					{
+						body.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
+						print(0, body, group.getValue(), labels, values, children);
+						body.add("</optgroup>");
+					});
 		} else
 			print(0, body, Toolkit.iterable(options), labels, values, children);
 
@@ -87,12 +89,12 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-				+ Converter.render(labels.apply(object)) + "</option>");
+			           + Converter.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{
 				print(level + 1, string, Toolkit.iterable(children.apply(object)),
-					labels, values, children);
+						labels, values, children);
 			}
 		}
 	}

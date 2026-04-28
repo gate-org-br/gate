@@ -1,12 +1,14 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -31,8 +33,8 @@ public class CaptionProcessor extends TagModelProcessor
 		IProcessableElementTag element = (IProcessableElementTag) model.get(0);
 
 		Attributes attributes = Stream.of(element.getAllAttributes())
-			.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
-				e -> e.getValue(), (a, b) -> a, Attributes::new));
+				.collect(Collectors.toMap(e -> e.getAttributeCompleteName(),
+						e -> e.getValue(), (a, b) -> a, Attributes::new));
 
 		if (element instanceof IStandaloneElementTag)
 		{

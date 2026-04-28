@@ -1,7 +1,7 @@
 package gate.sql.insert;
 
+import gate.adapter.columnMapper.ColumnMapper;
 import gate.sql.Formatter;
-import gate.sql.columnMapper.ColumnMapper;
 import gate.sql.statement.Sentence;
 
 import java.util.ArrayList;

@@ -2,15 +2,16 @@ package gate.type;
 
 import java.io.Serial;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.lang.json.JsonObject;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 public class Status<T extends Serializable> implements Serializable
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -60,10 +61,10 @@ public class Status<T extends Serializable> implements Serializable
 	public String toString()
 	{
 		return new JsonObject()
-			.setString("type", type.name())
-			.setString("message", message)
-			.setString("value", Converter.toString(value))
-			.toString();
+				.setString("type", type.name())
+				.setString("message", message)
+				.setString("value", Converter.toString(value))
+				.toString();
 	}
 
 	public T getValue()

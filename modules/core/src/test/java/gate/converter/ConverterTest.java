@@ -5,6 +5,7 @@
  */
 package gate.converter;
 
+import gate.adapter.converter.Converter;
 import mock.UserMock;
 import gate.error.ConversionException;
 import gate.lang.json.JsonNumber;

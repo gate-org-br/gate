@@ -1,5 +1,6 @@
 package gate.lang.json;
 
+import gate.adapter.converter.Converter;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.util.Reflection;
@@ -303,7 +304,7 @@ public interface JsonElement extends Serializable
 			}
 		}
 
-		return JsonString.of(gate.converter.Converter.toString(obj));
+		return JsonString.of(Converter.toString(obj));
 	}
 
 	/**
@@ -317,7 +318,7 @@ public interface JsonElement extends Serializable
 	 * types associated with a {@link JsonAdapter} are adapted through it.
 	 * <p>
 	 * For other object types, this method falls back to a {@link JsonString}
-	 * built from {@link gate.converter.Converter#render(Object)}.
+	 * built from {@link Converter#render(Object)}.
 	 * <p>
 	 * This method still returns a {@link JsonElement}, but it may favor
 	 * readability over faithful reconstruction of the original object.
@@ -347,7 +348,7 @@ public interface JsonElement extends Serializable
 		if (obj instanceof Object[] objects)
 			return JsonArray.render(objects);
 
-		return JsonString.of(gate.converter.Converter.render(obj));
+		return JsonString.of(Converter.render(obj));
 	}
 
 	/**

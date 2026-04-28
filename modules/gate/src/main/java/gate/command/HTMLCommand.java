@@ -1,6 +1,5 @@
 package gate.command;
 
-import gate.handler.HTMLCommandHandler;
 import java.nio.file.Path;
 import java.util.Objects;
 

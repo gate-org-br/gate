@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: gate.adapter.converter.ObjectConverterTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in gate.adapter.converter.ObjectConverterTest

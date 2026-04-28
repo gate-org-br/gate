@@ -1,9 +1,9 @@
 package gate.lang.property;
 
 import gate.constraint.Constraint;
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.error.NoSuchPropertyError;
-import gate.lang.property.metadata.Metadata;
+import gate.adapter.metadata.Metadata;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -75,7 +75,7 @@ public class Property
 		{
 			for (Field field : type.getDeclaredFields())
 				if (!Modifier.isTransient(field.getModifiers())
-					&& !Modifier.isStatic(field.getModifiers()))
+				    && !Modifier.isStatic(field.getModifiers()))
 					properties.add(Property.getProperty(type, field.getName()));
 			type = type.getSuperclass();
 		}
@@ -419,14 +419,14 @@ public class Property
 	public boolean isEntityId()
 	{
 		return getAttributes().size() == 2
-			   && getAttributes().get(1).isEntityId();
+		       && getAttributes().get(1).isEntityId();
 	}
 
 	public static Object getValue(Object object, String name)
 	{
 		return object != null
 				? Property.getProperty(object.getClass(), name)
-				.getValue(object) : null;
+				  .getValue(object) : null;
 	}
 
 	public Converter getConverter()
@@ -447,7 +447,7 @@ public class Property
 			if (!(attributes.get(i) instanceof SelfAttribute))
 			{
 				if (!builder.isEmpty()
-					&& attributes.get(i) instanceof JavaIdentifierAttribute)
+				    && attributes.get(i) instanceof JavaIdentifierAttribute)
 					builder.append(".");
 				builder.append(attributes.get(i).toString());
 			}

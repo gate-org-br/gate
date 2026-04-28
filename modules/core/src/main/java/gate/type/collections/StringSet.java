@@ -2,7 +2,7 @@ package gate.type.collections;
 
 import java.io.Serial;
 
-import gate.converter.collections.StringSetConverter;
+import gate.adapter.converter.collections.StringSetConverter;
 import gate.annotation.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class StringSet extends HashSet<String>
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

@@ -13,5 +13,5 @@ import java.lang.annotation.Target;
 public @interface ColumnMapper
 {
 
-	Class<? extends gate.sql.columnMapper.ColumnMapper> value();
+	Class<? extends gate.adapter.columnMapper.ColumnMapper> value();
 }

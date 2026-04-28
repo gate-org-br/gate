@@ -2,12 +2,13 @@ package gate.type.collections;
 
 import java.io.Serial;
 
-import gate.converter.Converter;
+import gate.adapter.converter.Converter;
 import gate.annotation.ElementType;
 import gate.annotation.Policonverter;
-import gate.converter.collections.LocalDateTimeSetConverter;
+import gate.adapter.converter.collections.LocalDateTimeSetConverter;
 import gate.error.ConversionException;
 import gate.policonverter.LocalDateTimeSetPoliconverter;
+
 import java.time.LocalDateTime;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ import java.util.HashSet;
 public class LocalDateTimeSet extends HashSet<LocalDateTime>
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 

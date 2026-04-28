@@ -1,0 +1,112 @@
+package gate.adapter.converter;
+
+import gate.error.ConversionException;
+import gate.lang.json.JsonScanner;
+import gate.lang.json.JsonToken;
+import gate.lang.json.JsonWriter;
+import gate.util.Reflection;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+
+public class ArrayConverter extends ObjectConverter
+{
+
+	@Override
+	public String render(Class<?> type, Object object)
+	{
+		StringBuilder string = new StringBuilder();
+		for (Object obj : ((Object[]) object))
+		{
+			if (obj != null)
+			{
+				if (!string.isEmpty())
+					string.append(", ");
+
+				string.append(Converter.render(obj));
+			}
+		}
+		return string.toString();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
+	{
+		writer.write(JsonToken.Type.OPEN_ARRAY, null);
+
+		boolean first = true;
+		for (Object element : ((Object[]) object))
+		{
+			if (first)
+				first = false;
+			else
+				writer.write(JsonToken.Type.COMMA, null);
+
+			if (element != null)
+			{
+				Converter converter = Converter.getConverter(element.getClass());
+				converter.toJson(stack, writer, (Class<Object>) element.getClass(), element);
+			} else
+				writer.write(JsonToken.Type.NULL, null);
+		}
+
+		writer.write(JsonToken.Type.CLOSE_ARRAY, null);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <T> void toJsonText(Deque<Object> stack, JsonWriter writer, Class<T> type, T object)
+			throws ConversionException
+	{
+		writer.write(JsonToken.Type.OPEN_ARRAY, null);
+
+		boolean first = true;
+		for (Object element : ((Object[]) object))
+		{
+			if (first)
+				first = false;
+			else
+				writer.write(JsonToken.Type.COMMA, null);
+
+			if (element != null)
+			{
+				Converter converter = Converter.getConverter(element.getClass());
+				converter.toJsonText(stack, writer, (Class<Object>) element.getClass(), element);
+			} else
+				writer.write(JsonToken.Type.NULL, null);
+		}
+
+		writer.write(JsonToken.Type.CLOSE_ARRAY, null);
+	}
+
+	@Override
+	public Object ofJson(JsonScanner scanner, Type type, Type elementType)
+			throws ConversionException
+	{
+		if (scanner.getCurrent().getType() != JsonToken.Type.OPEN_ARRAY)
+			throw new ConversionException(scanner.getCurrent() + " is not a collection");
+
+		Collection<Object> collection = new ArrayList<>();
+		Converter converter = Converter.getConverter(Reflection.getRawType(elementType));
+
+		do
+		{
+			scanner.scan();
+			if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
+				collection.add(converter.ofJson(scanner, elementType,
+						Reflection.getElementType(elementType)));
+			else if (!collection.isEmpty())
+				throw new ConversionException(scanner.getCurrent() + " is not a collection");
+		} while (JsonToken.Type.COMMA == scanner.getCurrent().getType());
+
+		if (scanner.getCurrent().getType() != JsonToken.Type.CLOSE_ARRAY)
+			throw new ConversionException(scanner.getCurrent() + " is not a collection");
+
+		scanner.scan();
+		return collection.toArray();
+
+	}
+}
