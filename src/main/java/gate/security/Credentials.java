@@ -75,10 +75,5 @@ public class Credentials
 		}
 	}
 
-	public String refresh(String token)
-	{
-		return createToken(parseToken(token));
-	}
-
 	public record Subject(ID id, Instant issuedAt) {}
 }
