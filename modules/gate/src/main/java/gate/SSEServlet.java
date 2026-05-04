@@ -1,13 +1,12 @@
 package gate;
 
-import gate.adapter.catcher.Catcher;
+import gate.adapter.catcher.UnauthorizedExceptionCatcher;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.error.UnauthorizedException;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.RequestScoped;
-import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
@@ -25,9 +24,8 @@ import java.util.concurrent.TimeUnit;
 @WebServlet(value = "/SSE", asyncSupported = true)
 public class SSEServlet extends HttpServlet
 {
-	@Any
 	@Inject
-	Instance<Catcher> catchers;
+	UnauthorizedExceptionCatcher catcher;
 
 	@Inject
 	@Current
@@ -62,9 +60,7 @@ public class SSEServlet extends HttpServlet
 			context.addListener(new AsyncListener()
 			{
 				@Override
-				public void onStartAsync(AsyncEvent event)
-				{
-				}
+				public void onStartAsync(AsyncEvent event) {}
 
 				@Override
 				public void onComplete(AsyncEvent event)
@@ -86,8 +82,6 @@ public class SSEServlet extends HttpServlet
 			});
 		} catch (UnauthorizedException ex)
 		{
-			var type = Catcher.getCatcher(ex.getClass());
-			Catcher catcher = catchers.select(type).get();
 			catcher.catches(request, response, ex);
 		}
 	}

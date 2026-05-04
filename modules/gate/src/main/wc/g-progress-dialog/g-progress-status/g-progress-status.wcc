@@ -1,6 +1,7 @@
 /* global customElements */
 
 import './g-logger.js';
+
 customElements.define('g-progress-status', class extends HTMLElement
 {
 	constructor()
@@ -12,7 +13,6 @@ customElements.define('g-progress-status', class extends HTMLElement
 		let progress = this.shadowRoot.querySelector("progress");
 		let clock = this.shadowRoot.querySelector("g-digital-clock");
 		let counter = this.shadowRoot.getElementById("counter");
-		let logger = this.shadowRoot.querySelector("g-logger");
 		window.addEventListener("ProcessPending", event =>
 		{
 			if (event.detail.id === this.process)
@@ -58,9 +58,16 @@ customElements.define('g-progress-status', class extends HTMLElement
 			if (event.detail.id === this.process)
 			{
 				this.log(event);
-				title.style.color = '#666666';
-				clock.style.color = '#666666';
-				counter.style.color = '#666666';
+				if (event.detail.fatal)
+				{
+					title.style.color =
+						clock.style.color =
+							counter.style.color = '#660000';
+					clock.setAttribute("paused", "paused");
+				} else
+					title.style.color =
+						clock.style.color =
+							counter.style.color = '#666666';
 			}
 		});
 	}

@@ -3,7 +3,7 @@ function parseMessage(chunk)
 	if (!chunk || chunk.length === 0)
 		return null;
 
-	const message = {'id': null, 'retry': null, 'data': null, 'event': null};
+	const message = {id: null, retry: null, data: null, event: null};
 	chunk.split(/\n|\r\n|\r/).forEach(line =>
 	{
 		const index = line.indexOf(':');
@@ -29,7 +29,6 @@ function parseMessage(chunk)
 
 export default class SSE
 {
-	INITIALIZING = -1;
 	CONNECTING = 0;
 	OPEN = 1;
 	CLOSED = 2;
@@ -40,12 +39,14 @@ export default class SSE
 	#method;
 	#withCredentials;
 	#debug;
+	#reconnect;
+	#retry = 3000;
 	#listeners = {};
 	#xhr = null;
 	#progress = 0;
 	#chunk = '';
 
-	readyState = this.INITIALIZING;
+	readyState = this.CONNECTING;
 	lastEventId = '';
 
 	constructor(url, options = {})
@@ -53,9 +54,10 @@ export default class SSE
 		this.#url = url;
 		this.#headers = options.headers || {};
 		this.#payload = options.payload !== undefined ? options.payload : '';
-		this.#method = options.method || (this.#payload && 'POST' || 'GET');
+		this.#method = options.method || (this.#payload ? 'POST' : 'GET');
 		this.#withCredentials = !!options.withCredentials;
 		this.#debug = !!options.debug;
+		this.#reconnect = options.reconnect !== false;
 
 		if (options.start === undefined || options.start)
 			this.stream();
@@ -109,18 +111,24 @@ export default class SSE
 
 	stream()
 	{
-		if (this.#xhr)
+		if (this.readyState === this.CLOSED || this.#xhr)
 			return;
 
-		this.#setReadyState(this.CONNECTING);
+		this.readyState = this.CONNECTING;
+		this.#progress = 0;
+		this.#chunk = '';
 
 		this.#xhr = new XMLHttpRequest();
 		this.#xhr.addEventListener('progress', e => this.#onStreamProgress(e));
 		this.#xhr.addEventListener('load', e => this.#onStreamLoaded(e));
 		this.#xhr.addEventListener('readystatechange', () => this.#onReadyStateChange());
 		this.#xhr.addEventListener('error', e => this.#onStreamFailure(e));
-		this.#xhr.addEventListener('abort', () => this.#onStreamAbort());
+		this.#xhr.addEventListener('abort', () =>
+		{
+			this.#xhr = null;
+		});
 		this.#xhr.open(this.#method, this.#url);
+
 		for (let header in this.#headers)
 			this.#xhr.setRequestHeader(header, this.#headers[header]);
 
@@ -136,108 +144,111 @@ export default class SSE
 		if (this.readyState === this.CLOSED)
 			return;
 
+		this.readyState = this.CLOSED;
 		this.#xhr?.abort();
 		this.#xhr = null;
-		this.#setReadyState(this.CLOSED);
 	}
 
-	#setReadyState(state)
+	#onReadyStateChange()
 	{
-		const event = new CustomEvent('readystatechange');
-		event.readyState = state;
-		this.readyState = state;
-		this.dispatchEvent(event);
-	}
-
-	#onStreamFailure(e)
-	{
-		const event = new CustomEvent('error');
-		event.responseCode = this.#xhr.status;
-		event.data = e.currentTarget.response;
-		this.dispatchEvent(event);
-		this.close();
-	}
-
-	#onStreamAbort()
-	{
-		this.dispatchEvent(new CustomEvent('abort'));
-		this.close();
-	}
-
-	#onStreamProgress(e)
-	{
-		if (!this.#xhr)
+		if (!this.#xhr || this.#xhr.readyState !== XMLHttpRequest.HEADERS_RECEIVED)
 			return;
 
 		if (this.#xhr.status !== 200)
-		{
-			this.#onStreamFailure(e);
 			return;
+
+		const headers = {};
+		for (const headerPair of this.#xhr.getAllResponseHeaders().trim().split('\r\n'))
+		{
+			const [key, ...valueParts] = headerPair.split(':');
+			const value = valueParts.join(':').trim();
+			headers[key.trim().toLowerCase()] = headers[key.trim().toLowerCase()] || [];
+			headers[key.trim().toLowerCase()].push(value);
 		}
+
+		this.readyState = this.OPEN;
+		const event = new CustomEvent('open');
+		event.responseCode = this.#xhr.status;
+		event.headers = headers;
+		this.dispatchEvent(event);
+	}
+
+	#onStreamProgress()
+	{
+		if (!this.#xhr || this.#xhr.status !== 200)
+			return;
 
 		const data = this.#xhr.responseText.substring(this.#progress);
 		this.#progress += data.length;
 
 		const parts = (this.#chunk + data).split(/(\r\n\r\n|\r\r|\n\n)/g);
-		const lastPart = parts.pop();
+		this.#chunk = parts.pop();
 		parts.forEach(part =>
 		{
 			if (part.trim().length > 0)
-				this.dispatchEvent(this.#parseEventChunk(part));
+				this.#dispatchMessage(part);
 		});
-		this.#chunk = lastPart;
 	}
 
 	#onStreamLoaded(e)
 	{
 		this.#onStreamProgress(e);
-		this.dispatchEvent(this.#parseEventChunk(this.#chunk));
+		this.#dispatchMessage(this.#chunk);
 		this.#chunk = '';
+		this.#xhr = null;
+		this.#dispatchError();
 	}
 
-	#parseEventChunk(chunk)
+	#onStreamFailure()
+	{
+		const code = this.#xhr.status;
+		this.#xhr = null;
+		this.#dispatchError(code);
+	}
+
+	#dispatchError(responseCode = 0)
+	{
+		if (this.readyState === this.CLOSED)
+			return;
+
+		if (responseCode === 200)
+		{
+			this.readyState = this.CLOSED;
+			this.dispatchEvent(new CustomEvent('close'));
+			return;
+		}
+
+		this.readyState = this.#reconnect ? this.CONNECTING : this.CLOSED;
+		const event = new CustomEvent('error');
+		event.responseCode = responseCode;
+		this.dispatchEvent(event);
+
+		if (this.#reconnect)
+			setTimeout(() => this.stream(), this.#retry);
+	}
+
+	#dispatchMessage(chunk)
 	{
 		if (this.#debug)
 			console.debug(chunk);
 
 		const message = parseMessage(chunk);
 		if (!message)
-			return null;
+			return;
 
 		if (message.id !== null)
 			this.lastEventId = message.id;
+
+		if (message.retry !== null && !isNaN(message.retry))
+			this.#retry = parseInt(message.retry);
+
+		if (message.data === null)
+			return;
 
 		const event = new CustomEvent(message.event || 'message');
 		event.id = message.id;
 		event.data = message.data || '';
 		event.lastEventId = this.lastEventId;
-		return event;
-	}
-
-	#onReadyStateChange()
-	{
-		if (!this.#xhr)
-			return;
-
-		if (this.#xhr.readyState === XMLHttpRequest.HEADERS_RECEIVED)
-		{
-			const headers = {};
-			const headerPairs = this.#xhr.getAllResponseHeaders().trim().split('\r\n');
-
-			for (const headerPair of headerPairs)
-			{
-				const [key, ...valueParts] = headerPair.split(':');
-				const value = valueParts.join(':').trim();
-				headers[key.trim().toLowerCase()] = headers[key.trim().toLowerCase()] || [];
-				headers[key.trim().toLowerCase()].push(value);
-			}
-
-			const event = new CustomEvent('open');
-			event.responseCode = this.#xhr.status;
-			event.headers = headers;
-			this.dispatchEvent(event);
-			this.#setReadyState(this.OPEN);
-		} else if (this.#xhr.readyState === XMLHttpRequest.DONE)
-			this.#setReadyState(this.CLOSED);
+		this.dispatchEvent(event);
 	}
 }

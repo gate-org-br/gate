@@ -18,7 +18,6 @@ import gate.type.TempFile;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -30,10 +29,8 @@ import org.eclipse.microprofile.context.ThreadContext;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.Collections;
-import java.util.Locale;
 
 @MultipartConfig
 @WebServlet(value = "/Gate/*", asyncSupported = true)
@@ -59,6 +56,10 @@ public class Gate extends HttpServlet
 	@Inject
 	Instance<Catcher> catchers;
 
+	@Any
+	@Inject
+	Instance<Screen> screens;
+
 	@Inject
 	@Current
 	Authenticator authenticator;
@@ -73,15 +74,6 @@ public class Gate extends HttpServlet
 	@Inject
 	SessionCatalog sessionCatalog;
 
-	@Inject
-	@SuppressWarnings("unused")
-	HeartbeatRegistry heartbeatRegistry;
-
-	static
-	{
-		Locale.setDefault(new Locale("pt", "BR"));
-	}
-
 	@Override
 	public void service(HttpServletRequest httpServletRequest,
 	                    HttpServletResponse httpServletResponse)
@@ -93,12 +85,6 @@ public class Gate extends HttpServlet
 
 		try
 		{
-			User user = userInstance.get();
-
-			httpServletRequest.setCharacterEncoding("UTF-8");
-			response.setCharacterEncoding("UTF-8");
-			response.setLocale(Locale.getDefault());
-
 			var command = request.getCommand();
 			request.setAttribute("MODULE", command.module());
 			request.setAttribute("SCREEN", command.screen());
@@ -118,19 +104,19 @@ public class Gate extends HttpServlet
 				return;
 			}
 
+			User user = userInstance.get();
 			if (authenticator.hasCredentials(request))
 			{
 				user = authenticator.authenticate(request, response);
 				if (user != null)
 				{
-					response.createSessionCookie(request, sessionCatalog.create(user));
+					var session = sessionCatalog.create(user);
+					response.createSessionCookie(request, session);
 					event.fireAsync(new LoginEvent(user));
 
-					if (actionRegistry.getMainAction() != null
-					    && command.isDefault())
+					if (actionRegistry.getMainAction() != null && command.isDefault())
 					{
-						response.sendRedirect(actionRegistry.getMainAction()
-								.command().toString());
+						response.sendRedirect(actionRegistry.getMainAction().command().toString());
 						return;
 					}
 				}
@@ -148,7 +134,7 @@ public class Gate extends HttpServlet
 				else
 					throw new UnauthorizedException();
 
-			Screen screen = CDI.current().select(call.screen()).get();
+			Screen screen = screens.select(call.screen()).get();
 			request.setAttribute("screen", screen);
 			request.setAttribute("action", call.method());
 			screen.prepare(request, response);
@@ -208,22 +194,22 @@ public class Gate extends HttpServlet
 	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
 	                          Screen screen, Method method)
 	{
+		response.setContentLengthLong(-1);
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("text/event-stream");
-		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("X-Accel-Buffering", "no");
 		response.setHeader("Connection", "keep-alive");
+		response.setHeader("Cache-Control", "no-cache");
+		response.setHeader("Transfer-Encoding", "chunked");
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(0);
 
 		Runnable contextualTask = threadContext.contextualRunnable(() ->
 		{
-			Progress progress = null;
 			CurrentLocale.set(request.getLocale());
-			try (Writer writer = response.getWriter())
+			try (var progress = Progress.create(user, asyncContext))
 			{
-				progress = Progress.create(user, writer);
-				heartbeatRegistry.register(progress);
 				try
 				{
 					Object result = screen.execute(method);
@@ -235,26 +221,21 @@ public class Gate extends HttpServlet
 						var handler = handlers.select(type).get();
 						handler.handle(request, response, progress, result);
 					}
-					progress.close();
 				} catch (AppException ex)
 				{
 					progress.abort(ex.getMessage());
 				} catch (Throwable ex)
 				{
 					progress.abort(ex.getMessage());
-					logger.error(ex.getMessage(), ex);
+					throw ex;
+				} finally
+				{
+					TempFile.cleanup();
+					CurrentLocale.clear();
 				}
-			} catch (IOException ex)
+			} catch (Throwable ex)
 			{
 				logger.error(ex.getMessage(), ex);
-			} finally
-			{
-				if (progress != null)
-					heartbeatRegistry.unregister(progress);
-				Progress.finish();
-				TempFile.cleanup();
-				CurrentLocale.clear();
-				asyncContext.complete();
 			}
 		});
 
