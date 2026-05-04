@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SelectAttributeProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.attribute.property</a> &gt; <span class="el_source">SelectAttributeProcessor.java</span></div><h1>SelectAttributeProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.attribute.property;
+
+import gate.adapter.renderer.Renderer;
+
+import gate.adapter.converter.Converter;
+import gate.lang.property.Property;
+import gate.type.Attributes;
+import gate.util.Toolkit;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+@ApplicationScoped
+public class SelectAttributeProcessor extends FormControlAttributeProcessor
+{
+
+	public SelectAttributeProcessor()
+	{
+<span class="nc" id="L27">		super(&quot;select&quot;);</span>
+<span class="nc" id="L28">	}</span>
+
+	@Override
+	public void process(ITemplateContext context, IProcessableElementTag element,
+	                    IElementTagStructureHandler handler, Object screen, Property property, Object value)
+	{
+		Object options;
+<span class="nc bnc" id="L35" title="All 2 branches missed.">		if (element.hasAttribute(&quot;g:options&quot;))</span>
+		{
+<span class="nc" id="L37">			options = expression.evaluate(element.getAttributeValue(&quot;g:options&quot;));</span>
+<span class="nc" id="L38">			handler.removeAttribute(&quot;g:options&quot;);</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		} else if (Boolean.class.isAssignableFrom(property.getRawType()))</span>
+<span class="nc" id="L40">			options = List.of(Boolean.FALSE, Boolean.TRUE);</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">		else if (boolean.class.isAssignableFrom(property.getRawType()))</span>
+<span class="nc" id="L42">			options = List.of(Boolean.FALSE, Boolean.TRUE);</span>
+<span class="nc bnc" id="L43" title="All 2 branches missed.">		else if (Enum.class.isAssignableFrom(property.getRawType()))</span>
+<span class="nc" id="L44">			options = property.getRawType().getEnumConstants();</span>
+		else
+<span class="nc" id="L46">			options = List.of();</span>
+
+<span class="nc" id="L48">		var comparator = extract(element, handler, &quot;g:sortby&quot;).map(e -&gt; (String) e).map(expression::comparator).orElse(null);</span>
+<span class="nc bnc" id="L49" title="All 2 branches missed.">		if (comparator != null)</span>
+<span class="nc" id="L50">			options = Toolkit</span>
+<span class="nc" id="L51">					.collection(options)</span>
+<span class="nc" id="L52">					.stream()</span>
+<span class="nc" id="L53">					.sorted(comparator)</span>
+<span class="nc" id="L54">					.collect(Collectors.toList());</span>
+
+<span class="nc" id="L56">		var labels = extract(element, handler, &quot;g:labels&quot;).map(expression::function).orElse(Function.identity());</span>
+<span class="nc" id="L57">		var values = extract(element, handler, &quot;g:values&quot;).map(expression::function).orElse(Function.identity());</span>
+<span class="nc" id="L58">		var children = extract(element, handler, &quot;g:children&quot;).map(e -&gt; (String) e).map(expression::function).orElse(null);</span>
+
+<span class="nc bnc" id="L60" title="All 2 branches missed.">		if (value != null)</span>
+<span class="nc" id="L61">			handler.setAttribute(&quot;data-value&quot;,</span>
+<span class="nc" id="L62">					Converter.toString(value));</span>
+
+<span class="nc" id="L64">		StringJoiner body = new StringJoiner(&quot;\n&quot;);</span>
+
+<span class="nc" id="L66">		body.add(extract(element, handler, &quot;g:empty&quot;)</span>
+<span class="nc" id="L67">				.map(expression::evaluate)</span>
+<span class="nc" id="L68">				.map(Renderer::render)</span>
+<span class="nc" id="L69">				.orElse(&quot;&lt;option&gt;&lt;/option&gt;&quot;));</span>
+
+<span class="nc" id="L71">		Function&lt;Object, Object&gt; groups</span>
+<span class="nc" id="L72">				= extract(element, handler, &quot;g:groups&quot;)</span>
+<span class="nc" id="L73">				.map(expression::function).orElse(null);</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">		if (groups != null)</span>
+		{
+<span class="nc" id="L76">			Toolkit.stream(options)</span>
+<span class="nc" id="L77">					.collect(Collectors.groupingBy(groups,</span>
+							LinkedHashMap::new,
+<span class="nc" id="L79">							Collectors.toList()))</span>
+<span class="nc" id="L80">					.entrySet()</span>
+<span class="nc" id="L81">					.forEach(group -&gt;</span>
+					{
+<span class="nc" id="L83">						body.add(&quot;&lt;optgroup label='&quot; + Renderer.render(group.getKey()) + &quot;'&gt;&quot;);</span>
+<span class="nc" id="L84">						print(0, body, group.getValue(), labels, values, children, value);</span>
+<span class="nc" id="L85">						body.add(&quot;&lt;/optgroup&gt;&quot;);</span>
+<span class="nc" id="L86">					});</span>
+		} else
+<span class="nc" id="L88">			print(0, body, Toolkit.iterable(options), labels, values, children, value);</span>
+
+<span class="nc" id="L90">		handler.setBody(body.toString(), false);</span>
+<span class="nc" id="L91">	}</span>
+
+	private void print(int level, StringJoiner string, Iterable&lt;?&gt; options, Function&lt;Object, Object&gt; labels, Function&lt;Object, Object&gt; values, Function&lt;Object, Object&gt; children, Object value)
+	{
+<span class="nc bnc" id="L95" title="All 2 branches missed.">		for (Object object : options)</span>
+		{
+
+<span class="nc" id="L98">			var option = values.apply(object);</span>
+
+<span class="nc" id="L100">			Attributes attributes = new Attributes();</span>
+
+<span class="nc bnc" id="L102" title="All 2 branches missed.">			if (Objects.equals(option, value))</span>
+<span class="nc" id="L103">				attributes.put(&quot;selected&quot;, &quot;selected&quot;);</span>
+
+<span class="nc" id="L105">			attributes.put(&quot;value&quot;, Converter.toString(option));</span>
+
+<span class="nc" id="L107">			string.add(&quot;&lt;option &quot; + attributes + &quot;&gt;&quot; + &quot;&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&amp;nbsp&quot;.repeat(level)</span>
+<span class="nc" id="L108">			           + Renderer.render(labels.apply(object)) + &quot;&lt;/option&gt;&quot;);</span>
+
+<span class="nc bnc" id="L110" title="All 2 branches missed.">			if (children != null)</span>
+			{
+<span class="nc" id="L112">				print(level + 1, string, Toolkit.iterable(children.apply(object)),</span>
+						labels, values, children, value);
+			}
+<span class="nc" id="L115">		}</span>
+<span class="nc" id="L116">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

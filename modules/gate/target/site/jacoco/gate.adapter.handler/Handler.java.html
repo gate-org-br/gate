@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Handler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.adapter.handler</a> &gt; <span class="el_source">Handler.java</span></div><h1>Handler.java</h1><pre class="source lang-java linenums">package gate.adapter.handler;
+
+import gate.Progress;
+import gate.adapter.converter.Converter;
+import gate.adapter.registry.HandlerRegistry;
+import gate.error.AppError;
+import gate.error.ConversionException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
+public interface Handler
+{
+
+	/**
+	 * Gets the handler associated with the specified java class.
+	 *
+	 * @param type java class whose associated handler must be returned
+	 * @return the handler associated with the specified java class
+	 */
+	static Class&lt;? extends Handler&gt; getHandler(Class&lt;?&gt; type)
+	{
+<span class="nc" id="L23">		return HandlerRegistry.INSTANCE.get(type);</span>
+	}
+
+	void handle(HttpServletRequest request, HttpServletResponse response, Object value);
+
+	default Object ofPart(Class&lt;?&gt; type, Part part) throws ConversionException
+	{
+<span class="nc" id="L30">		throw new UnsupportedOperationException(&quot;This type can't be converted from a Part.&quot;);</span>
+	}
+
+	default void handle(HttpServletRequest request, HttpServletResponse response, Progress progress, Object value)
+	{
+<span class="nc" id="L35">		progress.result(&quot;application/octet-stream&quot;,</span>
+<span class="nc" id="L36">				null, Converter.toString(value));</span>
+<span class="nc" id="L37">	}</span>
+
+	static &lt;T&gt; T fromPart(Class&lt;T&gt; type, Part part) throws ConversionException
+	{
+<span class="nc bnc" id="L41" title="All 2 branches missed.">		if (part == null)</span>
+<span class="nc" id="L42">			return null;</span>
+
+		try
+		{
+<span class="nc" id="L46">			return type.cast(getHandler(type).getDeclaredConstructor().newInstance()</span>
+<span class="nc" id="L47">					.ofPart(type, part));</span>
+<span class="nc" id="L48">		} catch (ReflectiveOperationException ex)</span>
+		{
+<span class="nc" id="L50">			throw new AppError(ex);</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

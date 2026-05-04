@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Role.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.entity</a> &gt; <span class="el_source">Role.java</span></div><h1>Role.java</h1><pre class="source lang-java linenums">package gate.entity;
+
+import gate.annotation.*;
+import gate.constraint.Maxlength;
+import gate.constraint.Pattern;
+import gate.constraint.Required;
+import gate.sql.annotation.Column;
+import gate.annotation.Entity;
+import gate.sql.annotation.Schema;
+import gate.type.Hierarchy;
+import gate.type.ID;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+/**
+ * A Role on the organization structure.
+ * &lt;p&gt;
+ * A Role can contain users, other roles and a list valueOf authorizations
+ */
+@Entity
+@Icon(&quot;2005&quot;)
+@Schema(&quot;gate&quot;)
+<span class="fc" id="L30">public class Role implements Serializable, Hierarchy&lt;Role&gt;</span>
+{
+
+	@Serial private static final long serialVersionUID = 1L;
+
+	@Required
+	@Name
+	@Description
+	private ID id;
+
+	@Required
+	@Name
+	@Description
+	private Boolean active;
+
+	@Name
+	private Role role;
+
+	@Name
+	@Column(&quot;Manager&quot;)
+	@Description
+	private User manager;
+
+	@Required
+	@Name
+	@Maxlength(64)
+	@Description
+	private String name;
+
+	@Maxlength(256)
+	@Name
+	@Description
+	private String description;
+
+	@Required
+	@Name
+	@Description
+	private Boolean master;
+
+	@Name
+	@Maxlength(16)
+	@Description
+	private String rolename;
+
+	@Maxlength(64)
+	@Name
+	@Pattern(&quot;^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$&quot;)
+	@Description
+	private String email;
+
+	@Name
+	@Description
+	private Boolean recursive;
+
+	private List&lt;Auth&gt; auths;
+
+	private List&lt;User&gt; users;
+
+	private List&lt;Role&gt; roles;
+
+	private List&lt;Func&gt; funcs;
+
+	@Override
+	public ID getId()
+	{
+<span class="fc" id="L95">		return id;</span>
+	}
+
+	@Override
+	public List&lt;Role&gt; getChildren()
+	{
+<span class="fc" id="L101">		return getRoles();</span>
+	}
+
+	@Override
+	public Role getParent()
+	{
+<span class="fc" id="L107">		return getRole();</span>
+	}
+
+	@Override
+	public Role setChildren(List&lt;Role&gt; children)
+	{
+<span class="fc" id="L113">		return setRoles(children);</span>
+	}
+
+	@Override
+	public Role setParent(Role parent)
+	{
+<span class="fc" id="L119">		return setRole(parent);</span>
+	}
+
+	public Role setId(ID id)
+	{
+<span class="fc" id="L124">		this.id = id;</span>
+<span class="fc" id="L125">		return this;</span>
+	}
+
+	@NullSafe
+	public Role getRole()
+	{
+<span class="fc bfc" id="L131" title="All 2 branches covered.">		if (role == null)</span>
+<span class="fc" id="L132">			role = new Role();</span>
+<span class="fc" id="L133">		return role;</span>
+	}
+
+	public Role setRole(Role role)
+	{
+<span class="fc" id="L138">		this.role = role;</span>
+<span class="fc" id="L139">		return this;</span>
+	}
+
+	public String getName()
+	{
+<span class="fc" id="L144">		return name;</span>
+	}
+
+	public Role setName(String name)
+	{
+<span class="fc" id="L149">		this.name = name;</span>
+<span class="fc" id="L150">		return this;</span>
+	}
+
+	public String getEmail()
+	{
+<span class="fc" id="L155">		return email;</span>
+	}
+
+	public Role setEmail(String email)
+	{
+<span class="fc" id="L160">		this.email = email;</span>
+<span class="fc" id="L161">		return this;</span>
+	}
+
+	public String getDescription()
+	{
+<span class="nc" id="L166">		return description;</span>
+	}
+
+	public Role setDescription(String description)
+	{
+<span class="nc" id="L171">		this.description = description;</span>
+<span class="nc" id="L172">		return this;</span>
+	}
+
+	@NullSafe
+	public List&lt;User&gt; getUsers()
+	{
+<span class="nc bnc" id="L178" title="All 2 branches missed.">		if (users == null)</span>
+<span class="nc" id="L179">			users = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L180">		return users;</span>
+	}
+
+	public Role setUsers(List&lt;User&gt; users)
+	{
+<span class="nc" id="L185">		this.users = users;</span>
+<span class="nc" id="L186">		return this;</span>
+	}
+
+	@NullSafe
+	public List&lt;Func&gt; getFuncs()
+	{
+<span class="fc bfc" id="L192" title="All 2 branches covered.">		if (funcs == null)</span>
+<span class="fc" id="L193">			funcs = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L194">		return funcs;</span>
+	}
+
+	public void setFuncs(List&lt;Func&gt; funcs)
+	{
+<span class="nc" id="L199">		this.funcs = funcs;</span>
+<span class="nc" id="L200">	}</span>
+
+	@NullSafe
+	public List&lt;Role&gt; getRoles()
+	{
+<span class="fc bfc" id="L205" title="All 2 branches covered.">		if (roles == null)</span>
+<span class="fc" id="L206">			roles = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L207">		return roles;</span>
+	}
+
+	public Role setRoles(List&lt;Role&gt; roles)
+	{
+<span class="fc" id="L212">		this.roles = roles;</span>
+<span class="fc" id="L213">		return this;</span>
+	}
+
+	@NullSafe
+	public List&lt;Auth&gt; getAuths()
+	{
+<span class="fc bfc" id="L219" title="All 2 branches covered.">		if (auths == null)</span>
+<span class="fc" id="L220">			auths = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L221">		return auths;</span>
+	}
+
+	public Role setAuths(List&lt;Auth&gt; auth)
+	{
+<span class="nc" id="L226">		this.auths = auth;</span>
+<span class="nc" id="L227">		return this;</span>
+	}
+
+	public boolean isDisabled()
+	{
+<span class="nc" id="L232">		return parentStream()</span>
+<span class="nc" id="L233">				.anyMatch(e -&gt; Boolean.FALSE.equals(active));</span>
+	}
+
+	public String getRolename()
+	{
+<span class="fc" id="L238">		return rolename;</span>
+	}
+
+	public Role setRolename(String rolename)
+	{
+<span class="fc" id="L243">		this.rolename = rolename;</span>
+<span class="fc" id="L244">		return this;</span>
+	}
+
+	@NullSafe
+<span class="nc bnc" id="L248" title="All 2 branches missed.">	public User getManager() {return manager == null ? new User() : manager;}</span>
+
+	public Role setManager(User manager)
+	{
+<span class="nc" id="L252">		this.manager = manager;</span>
+<span class="nc" id="L253">		return this;</span>
+	}
+
+	public Boolean getRecursive()
+	{
+<span class="nc" id="L258">		return recursive;</span>
+	}
+
+	public void setRecursive(Boolean recursive)
+	{
+<span class="nc" id="L263">		this.recursive = recursive;</span>
+<span class="nc" id="L264">	}</span>
+
+	public Boolean getActive()
+	{
+<span class="nc" id="L268">		return active;</span>
+	}
+
+	public Role setActive(Boolean active)
+	{
+<span class="fc" id="L273">		this.active = active;</span>
+<span class="fc" id="L274">		return this;</span>
+	}
+
+	public Boolean getMaster()
+	{
+<span class="fc" id="L279">		return master;</span>
+	}
+
+	public Boolean isMaster()
+	{
+<span class="nc" id="L284">		return master;</span>
+	}
+
+	public Role setMaster(Boolean master)
+	{
+<span class="fc" id="L289">		this.master = master;</span>
+<span class="fc" id="L290">		return this;</span>
+	}
+
+	public Role getMasterRole()
+	{
+<span class="fc" id="L295">		return parentStream()</span>
+<span class="fc" id="L296">				.filter(e -&gt; Boolean.TRUE.equals(e.master))</span>
+<span class="fc" id="L297">				.findFirst()</span>
+<span class="fc" id="L298">				.orElse(this);</span>
+	}
+
+	public boolean isMasterOf(Role role)
+	{
+<span class="fc" id="L303">		return slaveStream().anyMatch(e -&gt; e.equals(role));</span>
+	}
+
+	public boolean isSlaveOf(Role role)
+	{
+<span class="fc" id="L308">		return getMasterRole().equals(role);</span>
+	}
+
+	public Stream&lt;Role&gt; slaveStream()
+	{
+<span class="pc bpc" id="L313" title="1 of 2 branches missed.">		return Boolean.TRUE.equals(getMaster())</span>
+<span class="fc" id="L314">				? Stream.concat(Stream.of(this), getChildren().stream()</span>
+<span class="fc bfc" id="L315" title="All 2 branches covered.">												 .filter(e -&gt; !Boolean.TRUE.equals(e.getMaster()))</span>
+<span class="fc" id="L316">												 .flatMap(Hierarchy::stream))</span>
+<span class="nc" id="L317">				: Stream.empty();</span>
+	}
+
+	public List&lt;Role&gt; toSlaveList()
+	{
+<span class="nc" id="L322">		return slaveStream().collect(Collectors.toList());</span>
+	}
+
+	public &lt;T&gt; List&lt;T&gt; toSlaveList(Function&lt;Role, T&gt; extractor)
+	{
+<span class="nc" id="L327">		return slaveStream().map(extractor).collect(Collectors.toList());</span>
+	}
+
+	public Stream&lt;Role&gt; masterStream()
+	{
+<span class="fc" id="L332">		return stream()</span>
+<span class="fc" id="L333">				.filter(e -&gt; Boolean.TRUE.equals(e.getMaster()));</span>
+	}
+
+	public List&lt;Role&gt; toMasterList()
+	{
+<span class="nc" id="L338">		return masterStream().collect(Collectors.toList());</span>
+	}
+
+	public &lt;T&gt; List&lt;T&gt; toMasterList(Function&lt;Role, T&gt; extractor)
+	{
+<span class="nc" id="L343">		return masterStream().map(extractor).collect(Collectors.toList());</span>
+	}
+
+	private Stream&lt;Auth&gt; privateAuthStream()
+	{
+<span class="pc bpc" id="L348" title="1 of 2 branches missed.">		return id != null ? Stream.concat(getAuths().stream()</span>
+<span class="fc" id="L349">										  .filter(e -&gt; Auth.Scope.PRIVATE.equals(e.getScope())),</span>
+<span class="pc" id="L350">				getFuncs().stream().flatMap(e -&gt; e.getAuths().stream())</span>
+<span class="pc" id="L351">				.filter(e -&gt; Auth.Scope.PRIVATE.equals(e.getScope())))</span>
+<span class="nc" id="L352">				: Stream.empty();</span>
+	}
+
+	private Stream&lt;Auth&gt; publicAuthStream()
+	{
+
+<span class="fc bfc" id="L358" title="All 2 branches covered.">		return id != null</span>
+<span class="fc" id="L359">				? Stream.concat(getAuths().stream()</span>
+<span class="fc" id="L360">								.filter(e -&gt; Auth.Scope.PUBLIC.equals(e.getScope())),</span>
+<span class="pc" id="L361">				Stream.concat(getFuncs().stream().flatMap(e -&gt; e.getAuths().stream())</span>
+<span class="pc" id="L362">							  .filter(e -&gt; Auth.Scope.PUBLIC.equals(e.getScope())),</span>
+<span class="fc" id="L363">						getRole().publicAuthStream())) : Stream.empty();</span>
+	}
+
+	Stream&lt;Auth&gt; computedAuthStream()
+	{
+<span class="pc bpc" id="L368" title="1 of 2 branches missed.">		return id != null ? Stream.concat(privateAuthStream(),</span>
+<span class="pc" id="L369">				publicAuthStream()) : Stream.empty();</span>
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+<span class="pc bpc" id="L375" title="1 of 4 branches missed.">		return obj instanceof Role &amp;&amp; Objects.equals(id, ((Role) obj).id);</span>
+	}
+
+	@Override
+	public int hashCode()
+	{
+<span class="nc bnc" id="L381" title="All 2 branches missed.">		return id != null ? id.getValue() : 0;</span>
+	}
+
+	@Override
+	public String toString()
+	{
+<span class="nc bnc" id="L387" title="All 2 branches missed.">		return getRole().getId() != null</span>
+<span class="nc" id="L388">				? String.format(&quot;%s / %s&quot;, getRole().toString(), getName())</span>
+<span class="nc" id="L389">				: getName();</span>
+	}
+
+	public static Role valueOf(String string)
+	{
+<span class="nc" id="L394">		return new Role().setId(ID.valueOf(string));</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

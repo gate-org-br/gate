@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Dao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.base</a> &gt; <span class="el_source">Dao.java</span></div><h1>Dao.java</h1><pre class="source lang-java linenums">package gate.base;
+
+import gate.sql.Link;
+
+import java.util.Objects;
+
+/**
+ * Base class from where data access objects can be extended.
+ */
+public abstract class Dao extends Base implements AutoCloseable
+{
+
+	private final Link link;
+	private final boolean created;
+
+	/**
+	 * Creates a data access object associated with the specified link.
+	 *
+	 * @param link link to be associated with the new DAO
+	 */
+	public Dao(Link link)
+<span class="nc" id="L22">	{</span>
+<span class="nc" id="L23">		created = false;</span>
+<span class="nc" id="L24">		this.link = Objects.requireNonNull(link);</span>
+<span class="nc" id="L25">	}</span>
+
+	/**
+	 * Creates a Dao for the specified database.
+	 *
+	 * @param driver   driver to be used
+	 * @param url      URL where to connect
+	 * @param username user to be used on connection
+	 * @param password password to be used on connection
+	 */
+	public Dao(String driver, String url, String username, String password)
+<span class="nc" id="L36">	{</span>
+<span class="nc" id="L37">		created = true;</span>
+<span class="nc" id="L38">		this.link = Link.of(driver, url, username, password);</span>
+<span class="nc" id="L39">	}</span>
+
+	/**
+	 * Returns the database link associated with this data access object.
+	 *
+	 * @return the database link associated with this data access object
+	 */
+	public Link getLink()
+	{
+<span class="nc" id="L48">		return link;</span>
+	}
+
+	/**
+	 * Closes any link created by this data access object.
+	 */
+	@Override
+	public void close()
+	{
+<span class="nc bnc" id="L57" title="All 4 branches missed.">		if (created &amp;&amp; !link.isClosed())</span>
+<span class="nc" id="L58">			link.close();</span>
+<span class="nc" id="L59">	}</span>
+
+	/**
+	 * Starts a new transaction.
+	 */
+	public void beginTran()
+	{
+<span class="nc" id="L66">		link.beginTran();</span>
+<span class="nc" id="L67">	}</span>
+
+	/**
+	 * Commits the current transaction.
+	 */
+	public void commit()
+	{
+<span class="nc" id="L74">		link.commit();</span>
+<span class="nc" id="L75">	}</span>
+
+	/**
+	 * Rollback the current transaction.
+	 */
+	public void rollback()
+	{
+<span class="nc" id="L82">		link.rollback();</span>
+<span class="nc" id="L83">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

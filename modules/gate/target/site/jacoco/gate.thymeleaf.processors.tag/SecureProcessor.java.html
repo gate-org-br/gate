@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecureProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.tag</a> &gt; <span class="el_source">SecureProcessor.java</span></div><h1>SecureProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.tag;
+
+import gate.adapter.renderer.Renderer;
+
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import gate.Calls;
+import gate.annotation.Current;
+import gate.adapter.converter.Converter;
+import gate.entity.User;
+import gate.error.AppError;
+import gate.error.BadRequestException;
+import gate.thymeleaf.ELExpressionFactory;
+import gate.type.RequestCommand;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+@ApplicationScoped
+public class SecureProcessor extends TagProcessor
+{
+
+	@Inject
+	@Current
+	User user;
+
+	@Inject
+	Calls actionRegistry;
+
+	@Inject
+	ELExpressionFactory expression;
+
+	public SecureProcessor()
+	{
+<span class="nc" id="L36">		super(&quot;secure&quot;);</span>
+<span class="nc" id="L37">	}</span>
+
+	@Override
+	public void process(ITemplateContext context,
+	                    IProcessableElementTag element,
+	                    IElementTagStructureHandler handler)
+	{
+		try
+		{
+<span class="nc" id="L46">			RequestCommand command = new RequestCommand(</span>
+<span class="nc" id="L47">					element.getAttributeValue(&quot;module&quot;),</span>
+<span class="nc" id="L48">					element.getAttributeValue(&quot;screen&quot;),</span>
+<span class="nc" id="L49">					element.getAttributeValue(&quot;action&quot;));</span>
+
+<span class="nc bnc" id="L51" title="All 2 branches missed.">			if (actionRegistry.canAccess(user, command))</span>
+			{
+<span class="nc" id="L53">				handler.removeTags();</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">			} else if (element.hasAttribute(&quot;otherwise&quot;))</span>
+			{
+<span class="nc" id="L56">				String otherwise = element.getAttributeValue(&quot;otherwise&quot;);</span>
+<span class="nc" id="L57">				otherwise = Renderer.render(expression.create().evaluate(otherwise));</span>
+<span class="nc" id="L58">				handler.replaceWith(otherwise, false);</span>
+<span class="nc" id="L59">			} else</span>
+<span class="nc" id="L60">				handler.removeElement();</span>
+
+<span class="nc" id="L62">		} catch (BadRequestException ex)</span>
+		{
+<span class="nc" id="L64">			throw new AppError(ex);</span>
+<span class="nc" id="L65">		}</span>
+<span class="nc" id="L66">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,7 @@
+gate/io/SerializerTest.class
+gate/io/CompactorTest.class
+gate/io/URLTest.class
+gate/io/PersistentSetTest.class
+gate/entity/User.class
+gate/io/DatabaseTest.class
+gate/io/EncoderTest.class

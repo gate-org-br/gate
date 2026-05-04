@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Progress.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate</a> &gt; <span class="el_source">Progress.java</span></div><h1>Progress.java</h1><pre class="source lang-java linenums">package gate;
+
+import gate.entity.User;
+import gate.lang.json.JsonObject;
+import gate.type.ID;
+import jakarta.servlet.AsyncContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+@SuppressWarnings(&quot;resource&quot;)
+public class Progress implements Heartbeat, AutoCloseable
+{
+	private final ID user;
+	private Writer writer;
+	private final String uuid;
+	private AsyncContext asyncContext;
+<span class="nc" id="L23">	private volatile State state = State.DEFAULT;</span>
+
+	private static final int UNKNOWN = -1;
+<span class="nc" id="L26">	private static final ThreadLocal&lt;Progress&gt; CURRENT = new ThreadLocal&lt;&gt;();</span>
+<span class="nc" id="L27">	private static final Logger LOGGER = LoggerFactory.getLogger(Progress.class);</span>
+
+<span class="nc" id="L29">	private static final Map&lt;String, Progress&gt; INSTANCES = new ConcurrentHashMap&lt;&gt;();</span>
+
+<span class="nc" id="L31">	public record State(Status status, long todo, long done, String text)</span>
+	{
+<span class="nc" id="L33">		public static final State UNKNOWN = new State(Status.UNKNOWN, Progress.UNKNOWN, Progress.UNKNOWN, &quot;&quot;);</span>
+<span class="nc" id="L34">		public static final State DEFAULT = new State(Status.CREATED, Progress.UNKNOWN, Progress.UNKNOWN, &quot;&quot;);</span>
+
+		@Override
+		public String toString()
+		{
+<span class="nc" id="L39">			return new JsonObject()</span>
+<span class="nc" id="L40">					.setLong(&quot;todo&quot;, todo)</span>
+<span class="nc" id="L41">					.setLong(&quot;done&quot;, done)</span>
+<span class="nc" id="L42">					.setString(&quot;text&quot;, text)</span>
+<span class="nc" id="L43">					.setString(&quot;event&quot;, &quot;Progress&quot;)</span>
+<span class="nc" id="L44">					.setString(&quot;status&quot;, status.name())</span>
+<span class="nc" id="L45">					.toString();</span>
+		}
+	}
+
+<span class="nc" id="L49">	public enum Status</span>
+	{
+<span class="nc" id="L51">		CREATED, PENDING, COMMITED, CANCELED, DISCONNECTED, UNKNOWN</span>
+	}
+
+	private Progress(ID user, String uuid, AsyncContext asyncContext, Writer writer)
+<span class="nc" id="L55">	{</span>
+<span class="nc" id="L56">		this.user = user;</span>
+<span class="nc" id="L57">		this.uuid = uuid;</span>
+<span class="nc" id="L58">		this.asyncContext = asyncContext;</span>
+<span class="nc" id="L59">		this.writer = writer;</span>
+<span class="nc" id="L60">	}</span>
+
+	private Progress update(Status status, long todo,
+	                        long done, String text)
+	{
+<span class="nc" id="L65">		this.state = new State(status, todo, done, text);</span>
+<span class="nc" id="L66">		return this;</span>
+	}
+
+	private synchronized void dispatch(String type, String message)
+	{
+<span class="nc bnc" id="L71" title="All 2 branches missed.">		if (state.status() != Status.DISCONNECTED)</span>
+		{
+			try
+			{
+<span class="nc" id="L75">				writer.write(&quot;event: %s\n&quot;.formatted(type));</span>
+<span class="nc" id="L76">				writer.write(&quot;data: &quot; + Base64.getEncoder()</span>
+<span class="nc" id="L77">						.encodeToString(message</span>
+<span class="nc" id="L78">								.getBytes(StandardCharsets.UTF_8))</span>
+				             + &quot;\n\n&quot;);
+<span class="nc" id="L80">				writer.flush();</span>
+<span class="nc" id="L81">			} catch (IOException ex)</span>
+			{
+<span class="nc" id="L83">				State state = this.state;</span>
+<span class="nc bnc" id="L84" title="All 4 branches missed.">				if (state.status == Status.CREATED</span>
+				    || state.status == Status.PENDING)
+				{
+<span class="nc" id="L87">					update(Status.DISCONNECTED, state.todo, state.done, state.text);</span>
+<span class="nc" id="L88">					HeartbeatRegistry.unregister(this);</span>
+				}
+<span class="nc" id="L90">				LOGGER.info(ex.getMessage(), ex);</span>
+<span class="nc" id="L91">			}</span>
+		}
+<span class="nc" id="L93">	}</span>
+
+	private void dispatch(String message)
+	{
+<span class="nc" id="L97">		dispatch(&quot;Progress&quot;, message);</span>
+<span class="nc" id="L98">	}</span>
+
+	@Override
+	public synchronized void close()
+	{
+<span class="nc" id="L103">		HeartbeatRegistry.unregister(this);</span>
+<span class="nc" id="L104">		dispatch(&quot;Finish&quot;, &quot;Connection closed&quot;);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">		if (asyncContext != null)</span>
+<span class="nc" id="L106">			asyncContext.complete();</span>
+<span class="nc" id="L107">		asyncContext = null;</span>
+<span class="nc" id="L108">		INSTANCES.remove(this.uuid);</span>
+<span class="nc" id="L109">		CURRENT.remove();</span>
+<span class="nc" id="L110">	}</span>
+
+	public synchronized void attach(AsyncContext asyncContext) throws IOException
+	{
+<span class="nc bnc" id="L114" title="All 2 branches missed.">		if (this.asyncContext != null)</span>
+<span class="nc" id="L115">			this.asyncContext.complete();</span>
+
+<span class="nc" id="L117">		this.asyncContext = asyncContext;</span>
+<span class="nc" id="L118">		this.writer = asyncContext.getResponse().getWriter();</span>
+<span class="nc bnc" id="L119" title="All 2 branches missed.">		if (state.status() == Status.DISCONNECTED)</span>
+<span class="nc" id="L120">			update(Status.PENDING, state.todo, state.done, state.text);</span>
+<span class="nc" id="L121">		HeartbeatRegistry.register(this);</span>
+<span class="nc" id="L122">		this.dispatch(toString());</span>
+<span class="nc" id="L123">	}</span>
+
+	public void result(String contentType,
+	                   String filename,
+	                   String data)
+	{
+<span class="nc" id="L129">		dispatch(&quot;Result&quot;, new JsonObject()</span>
+<span class="nc" id="L130">				.setString(&quot;contentType&quot;, contentType)</span>
+<span class="nc" id="L131">				.setString(&quot;filename&quot;, filename)</span>
+<span class="nc" id="L132">				.setString(&quot;data&quot;, data)</span>
+<span class="nc" id="L133">				.toString());</span>
+<span class="nc" id="L134">	}</span>
+
+	public void redirect(String url)
+	{
+<span class="nc" id="L138">		dispatch(&quot;Redirect&quot;, new JsonObject()</span>
+<span class="nc" id="L139">				.setString(&quot;url&quot;, url)</span>
+<span class="nc" id="L140">				.toString());</span>
+<span class="nc" id="L141">	}</span>
+
+	void abort(String message)
+	{
+<span class="nc" id="L145">		State state = this.state;</span>
+<span class="nc bnc" id="L146" title="All 4 branches missed.">		if (state.status == Progress.Status.PENDING</span>
+		    || state.status == Progress.Status.CREATED)
+<span class="nc" id="L148">			update(Status.CANCELED, state.todo, state.done, message);</span>
+		else
+<span class="nc" id="L150">			update(state.status, state.todo, state.done, message);</span>
+<span class="nc" id="L151">		dispatch(this.toString());</span>
+
+<span class="nc" id="L153">		dispatch(&quot;Failure&quot;, new JsonObject()</span>
+<span class="nc" id="L154">				.setString(&quot;message&quot;, message)</span>
+<span class="nc" id="L155">				.toString());</span>
+<span class="nc" id="L156">	}</span>
+
+	public String uuid()
+	{
+<span class="nc" id="L160">		return uuid;</span>
+	}
+
+	@Override
+	public String toString()
+	{
+<span class="nc" id="L166">		return state.toString();</span>
+	}
+
+	private static Optional&lt;Progress&gt; current()
+	{
+<span class="nc" id="L171">		return Optional.ofNullable(CURRENT.get());</span>
+	}
+
+	/**
+	 * Initiates a new task of indeterminate size.
+	 *
+	 * @param text description of the task being initiated
+	 */
+	public static void startup(String text)
+	{
+<span class="nc" id="L181">		startup(UNKNOWN, text);</span>
+<span class="nc" id="L182">	}</span>
+
+	/**
+	 * Initiates a new task.
+	 *
+	 * @param todo size of the task being initiated
+	 * @param text description of the task being initiated
+	 */
+	public static void startup(long todo, String text)
+	{
+<span class="nc" id="L192">		Objects.requireNonNull(text);</span>
+<span class="nc" id="L193">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L195">			State state = progress.state;</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">			if (Status.COMMITED.equals(state.status)</span>
+<span class="nc bnc" id="L197" title="All 2 branches missed.">			    || Status.CANCELED.equals(state.status))</span>
+<span class="nc" id="L198">				throw new IllegalStateException(&quot;Attempt to startup finished task&quot;);</span>
+<span class="nc" id="L199">			progress.update(Status.PENDING, todo, 0, text)</span>
+<span class="nc" id="L200">					.dispatch(progress.toString());</span>
+<span class="nc" id="L201">		});</span>
+<span class="nc" id="L202">	}</span>
+
+	/**
+	 * Display a message without updating progress.
+	 *
+	 * @param message message to be displayed
+	 */
+	public static void message(String message)
+	{
+<span class="nc" id="L211">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L213">			State state = progress.state;</span>
+<span class="nc" id="L214">			progress.update(state.status, state.todo, state.done, message)</span>
+<span class="nc" id="L215">					.dispatch(progress.toString());</span>
+<span class="nc" id="L216">		});</span>
+<span class="nc" id="L217">	}</span>
+
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param step number of records to be processed before each notification
+	 */
+	public static void updateForEach(int step)
+	{
+<span class="nc bnc" id="L226" title="All 2 branches missed.">		if (step &lt;= 0)</span>
+<span class="nc" id="L227">			throw new IllegalArgumentException(&quot;Step must be a whole positive number&quot;);</span>
+<span class="nc" id="L228">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L230">			State state = progress.state;</span>
+<span class="nc bnc" id="L231" title="All 4 branches missed.">			if (Status.PENDING != state.status</span>
+			    &amp;&amp; Status.DISCONNECTED != state.status)
+<span class="nc" id="L233">				throw new IllegalStateException(&quot;Attempt to update non pending task&quot;);</span>
+<span class="nc" id="L234">			progress.update(state.status, state.todo, state.done + 1, state.text);</span>
+<span class="nc bnc" id="L235" title="All 2 branches missed.">			if (progress.state.done % step == 0)</span>
+<span class="nc" id="L236">				progress.dispatch(progress.toString());</span>
+<span class="nc" id="L237">		});</span>
+<span class="nc" id="L238">	}</span>
+
+	/**
+	 * Increments the progress for each one percent.
+	 */
+	public static void updatePercentage()
+	{
+<span class="nc" id="L245">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L247">			State state = progress.state;</span>
+<span class="nc bnc" id="L248" title="All 4 branches missed.">			if (Status.PENDING != state.status</span>
+			    &amp;&amp; Status.DISCONNECTED != state.status)
+<span class="nc" id="L250">				throw new IllegalStateException(&quot;Attempt to update non pending task&quot;);</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">			if (state.todo == UNKNOWN)</span>
+<span class="nc" id="L252">				throw new IllegalStateException(&quot;updatePercentage requires a known todo size&quot;);</span>
+<span class="nc" id="L253">			progress.update(state.status, state.todo, state.done + 1, state.text);</span>
+<span class="nc" id="L254">			state = progress.state;</span>
+<span class="nc bnc" id="L255" title="All 2 branches missed.">			if (state.done % Math.max(Math.floorDiv(state.todo, 100), 1) == 0)</span>
+<span class="nc" id="L256">				progress.dispatch(progress.toString());</span>
+<span class="nc" id="L257">		});</span>
+<span class="nc" id="L258">	}</span>
+
+	/**
+	 * Increments the progress of the current task.
+	 */
+	public static void update()
+	{
+<span class="nc" id="L265">		current().map(e -&gt; e.state)</span>
+<span class="nc" id="L266">				.ifPresent(state -&gt; update(state.done + 1, state.text));</span>
+<span class="nc" id="L267">	}</span>
+
+	/**
+	 * Updates the progress of the current task.
+	 *
+	 * @param done new progress of the current task
+	 */
+	public static void update(long done)
+	{
+<span class="nc" id="L276">		current().map(e -&gt; e.state)</span>
+<span class="nc" id="L277">				.ifPresent(state -&gt; update(done, state.text));</span>
+<span class="nc" id="L278">	}</span>
+
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param text description of the progress made
+	 */
+	public static void update(String text)
+	{
+<span class="nc" id="L287">		current().map(e -&gt; e.state)</span>
+<span class="nc" id="L288">				.ifPresent(state -&gt; update(state.done + 1, text));</span>
+
+<span class="nc" id="L290">	}</span>
+
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param done new progress of the current task
+	 * @param text description of the progress made
+	 */
+	public static void update(long done, String text)
+	{
+<span class="nc" id="L300">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L302">			State state = progress.state;</span>
+<span class="nc bnc" id="L303" title="All 2 branches missed.">			if (!Status.PENDING.equals(state.status)</span>
+<span class="nc bnc" id="L304" title="All 2 branches missed.">			    &amp;&amp; !Status.DISCONNECTED.equals(state.status))</span>
+<span class="nc" id="L305">				throw new IllegalStateException(&quot;Attempt to update non pending task&quot;);</span>
+<span class="nc" id="L306">			progress.update(state.status, state.todo, done, text)</span>
+<span class="nc" id="L307">					.dispatch(progress.toString());</span>
+<span class="nc" id="L308">		});</span>
+<span class="nc" id="L309">	}</span>
+
+	/**
+	 * Conclude the task being executed
+	 *
+	 * @param text message indicating success
+	 */
+	public static void commit(String text)
+	{
+<span class="nc" id="L318">		Objects.requireNonNull(text);</span>
+<span class="nc" id="L319">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L321">			State state = progress.state;</span>
+<span class="nc bnc" id="L322" title="All 2 branches missed.">			if (!Status.PENDING.equals(state.status)</span>
+<span class="nc bnc" id="L323" title="All 2 branches missed.">			    &amp;&amp; !Status.DISCONNECTED.equals(state.status))</span>
+<span class="nc" id="L324">				throw new IllegalStateException(&quot;Attempt to commit non pending task&quot;);</span>
+<span class="nc" id="L325">			progress.update(Status.COMMITED, state.todo, state.done, text);</span>
+<span class="nc bnc" id="L326" title="All 2 branches missed.">			if (!Status.DISCONNECTED.equals(state.status))</span>
+<span class="nc" id="L327">				progress.dispatch(progress.toString());</span>
+<span class="nc" id="L328">		});</span>
+<span class="nc" id="L329">	}</span>
+
+	/**
+	 * Cancel the task being executed
+	 *
+	 * @param text reason for the cancellation
+	 */
+	public static void cancel(String text)
+	{
+<span class="nc" id="L338">		Objects.requireNonNull(text);</span>
+<span class="nc" id="L339">		current().ifPresent(progress -&gt;</span>
+		{
+<span class="nc" id="L341">			State state = progress.state;</span>
+<span class="nc bnc" id="L342" title="All 2 branches missed.">			if (!Status.PENDING.equals(state.status)</span>
+<span class="nc bnc" id="L343" title="All 2 branches missed.">			    &amp;&amp; !Status.DISCONNECTED.equals(state.status))</span>
+<span class="nc" id="L344">				throw new IllegalStateException(&quot;Attempt to cancel non pending task&quot;);</span>
+<span class="nc" id="L345">			progress.update(Status.CANCELED, state.todo, state.done, text);</span>
+<span class="nc bnc" id="L346" title="All 2 branches missed.">			if (!Status.DISCONNECTED.equals(state.status))</span>
+<span class="nc" id="L347">				progress.dispatch(progress.toString());</span>
+<span class="nc" id="L348">		});</span>
+<span class="nc" id="L349">	}</span>
+
+	static Progress create(User user, AsyncContext asyncContext) throws IOException
+	{
+<span class="nc bnc" id="L353" title="All 4 branches missed.">		ID id = user != null &amp;&amp; user.getId() != null ? user.getId() : ID.valueOf(0);</span>
+<span class="nc" id="L354">		String uuid = UUID.randomUUID().toString();</span>
+<span class="nc" id="L355">		Writer writer = asyncContext.getResponse().getWriter();</span>
+<span class="nc" id="L356">		Progress progress = new Progress(id, uuid, asyncContext, writer);</span>
+<span class="nc" id="L357">		INSTANCES.put(uuid, progress);</span>
+<span class="nc" id="L358">		HeartbeatRegistry.register(progress);</span>
+<span class="nc" id="L359">		progress.dispatch(&quot;UUID&quot;, uuid);</span>
+<span class="nc" id="L360">		CURRENT.set(progress);</span>
+<span class="nc" id="L361">		return progress;</span>
+	}
+
+<span class="nc" id="L364">	public static String UUID() {return current().map(Progress::uuid).orElse(null);}</span>
+
+	public static State get(ID user, String uuid)
+	{
+<span class="nc" id="L368">		return Optional.ofNullable(INSTANCES.get(uuid))</span>
+<span class="nc" id="L369">				.filter(e -&gt; Objects.equals(e.user, user))</span>
+<span class="nc" id="L370">				.map(e -&gt; e.state)</span>
+<span class="nc" id="L371">				.orElse(State.UNKNOWN);</span>
+	}
+
+	static void attach(ID user, String uuid, AsyncContext asyncContext) throws IOException
+	{
+<span class="nc" id="L376">		var progress = Optional.ofNullable(INSTANCES.get(uuid))</span>
+<span class="nc" id="L377">				.filter(e -&gt; Objects.equals(e.user, user))</span>
+<span class="nc" id="L378">				.orElseThrow(() -&gt; new IOException(&quot;Unable to initialize progress-monitor&quot;));</span>
+<span class="nc" id="L379">		progress.attach(asyncContext);</span>
+<span class="nc" id="L380">	}</span>
+
+	@Override
+	public synchronized boolean heartbeat()
+	{
+<span class="nc bnc" id="L385" title="All 4 branches missed.">		if (state.status == Status.COMMITED</span>
+		    || state.status == Status.CANCELED)
+<span class="nc" id="L387">			return false;</span>
+
+<span class="nc bnc" id="L389" title="All 2 branches missed.">		if (state.status == Status.DISCONNECTED)</span>
+<span class="nc" id="L390">			return false;</span>
+
+		try
+		{
+<span class="nc" id="L394">			writer.write(&quot;: heartbeat\n\n&quot;);</span>
+<span class="nc" id="L395">			writer.flush();</span>
+<span class="nc" id="L396">			return true;</span>
+<span class="nc" id="L397">		} catch (IOException ex)</span>
+		{
+<span class="nc" id="L399">			update(Status.DISCONNECTED, state.todo, state.done, state.text);</span>
+<span class="nc" id="L400">			HeartbeatRegistry.unregister(this);</span>
+<span class="nc" id="L401">			return false;</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

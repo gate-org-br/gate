@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ShortcutProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.tag.anchor</a> &gt; <span class="el_source">ShortcutProcessor.java</span></div><h1>ShortcutProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.tag.anchor;
+
+import gate.Call;
+import gate.entity.User;
+import gate.type.Attributes;
+import gate.util.Parameters;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.model.IStandaloneElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
+
+@ApplicationScoped
+public class ShortcutProcessor extends AnchorProcessor
+{
+
+    public ShortcutProcessor()
+    {
+<span class="nc" id="L20">        super(&quot;shortcut&quot;);</span>
+<span class="nc" id="L21">    }</span>
+
+    @Override
+    protected void process(
+            ITemplateContext context,
+            IModel model,
+            IElementModelStructureHandler handler,
+            IProcessableElementTag element,
+            User user,
+            Call call,
+            Attributes attributes,
+            Parameters parameters)
+    {
+<span class="nc bnc" id="L34" title="All 4 branches missed.">        if (!call.accessRule().allows(user) || !condition(attributes))</span>
+        {
+<span class="nc" id="L36">            model.reset();</span>
+<span class="nc" id="L37">            return;</span>
+        }
+
+<span class="nc bnc" id="L40" title="All 2 branches missed.">        if (&quot;POST&quot;.equalsIgnoreCase(method(attributes)))</span>
+<span class="nc" id="L41">            renderButton(context, model, handler, element, call, attributes, parameters);</span>
+        else
+<span class="nc" id="L43">            renderLink(context, model, handler, element, call, attributes, parameters);</span>
+<span class="nc" id="L44">    }</span>
+
+    private void renderButton(
+            ITemplateContext context,
+            IModel model,
+            IElementModelStructureHandler handler,
+            IProcessableElementTag element,
+            Call call,
+            Attributes attributes,
+            Parameters parameters)
+    {
+<span class="nc" id="L55">        attributes.put(&quot;formaction&quot;, call.command().toString(parameters));</span>
+
+<span class="nc" id="L57">        target(call, attributes)</span>
+<span class="nc" id="L58">                .ifPresent(t -&gt; attributes.put(&quot;formtarget&quot;, t));</span>
+
+<span class="nc" id="L60">        render(context, model, handler, element, &quot;button&quot;, attributes, call);</span>
+<span class="nc" id="L61">    }</span>
+
+    private void renderLink(
+            ITemplateContext context,
+            IModel model,
+            IElementModelStructureHandler handler,
+            IProcessableElementTag element,
+            Call call,
+            Attributes attributes,
+            Parameters parameters)
+    {
+<span class="nc" id="L72">        attributes.put(&quot;href&quot;, call.command().toString(parameters));</span>
+
+<span class="nc" id="L74">        target(call, attributes)</span>
+<span class="nc" id="L75">                .ifPresent(t -&gt; attributes.put(&quot;target&quot;, t));</span>
+
+<span class="nc" id="L77">        render(context, model, handler, element, &quot;a&quot;, attributes, call);</span>
+<span class="nc" id="L78">    }</span>
+
+    private void render(
+            ITemplateContext context,
+            IModel model,
+            IElementModelStructureHandler handler,
+            IProcessableElementTag element,
+            String tag,
+            Attributes attributes,
+            Call call)
+    {
+<span class="nc bnc" id="L89" title="All 2 branches missed.">        if (element instanceof IStandaloneElementTag)</span>
+<span class="nc" id="L90">            replaceWith(</span>
+                    context,
+                    model,
+                    handler,
+<span class="nc" id="L94">                    &quot;&lt;&quot; + tag + &quot; &quot; + attributes + &quot;&gt;&quot; + buildIcon(call) + &quot;&lt;/&quot; + tag + &quot;&gt;&quot;);</span>
+        else
+<span class="nc" id="L96">            replaceTag(context, model, handler, tag, attributes);</span>
+<span class="nc" id="L97">    }</span>
+
+    private String buildIcon(Call call)
+    {
+<span class="nc" id="L101">        var meta = call.metadata();</span>
+
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (meta.icon() != null)</span>
+<span class="nc" id="L104">            return &quot;&lt;g-icon&gt;&quot; + meta.icon() + &quot;&lt;/g-icon&gt;&quot;;</span>
+
+<span class="nc bnc" id="L106" title="All 2 branches missed.">        if (meta.emoji() != null)</span>
+<span class="nc" id="L107">            return &quot;&lt;e&gt;&quot; + meta.emoji() + &quot;&lt;/e&gt;&quot;;</span>
+
+<span class="nc" id="L109">        return &quot;?&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

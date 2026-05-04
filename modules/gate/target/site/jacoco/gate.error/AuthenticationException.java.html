@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthenticationException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.error</a> &gt; <span class="el_source">AuthenticationException.java</span></div><h1>AuthenticationException.java</h1><pre class="source lang-java linenums">package gate.error;
+
+import gate.adapter.catcher.HttpExceptionCatcher;
+import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ * Exception thrown when an authentication attempt fails.
+ *
+ * &lt;p&gt;
+ * This exception indicates that the client was not able to prove its identity,
+ * either due to invalid credentials, expired authentication data, or failed
+ * security validations (such as OAuth state, PKCE, nonce, or token checks).
+ * &lt;/p&gt;
+ *
+ * &lt;p&gt;
+ * When thrown, it is automatically handled by {@link HttpExceptionCatcher},
+ * resulting in an HTTP 401 (Unauthorized) response.
+ * &lt;/p&gt;
+ */
+
+public class AuthenticationException extends HttpException
+{
+
+	private static final String DEFAULT_MESSAGE = &quot;Authentication could not be completed&quot;;
+
+	/**
+	 * Creates an AuthenticationException with a default message
+	 */
+	public AuthenticationException()
+	{
+<span class="nc" id="L31">		super(DEFAULT_MESSAGE);</span>
+<span class="nc" id="L32">	}</span>
+
+	/**
+	 * Creates an AuthenticationException with a default message and the
+	 * underlying cause.
+	 *
+	 * @param cause the original exception that caused the authentication
+	 *              failure
+	 */
+	public AuthenticationException(Throwable cause)
+	{
+<span class="nc" id="L43">		super(DEFAULT_MESSAGE, cause);</span>
+<span class="nc" id="L44">	}</span>
+
+	/**
+	 * Creates an AuthenticationException with a custom message.
+	 *
+	 * @param message the message describing the authentication error
+	 */
+	public AuthenticationException(String message)
+	{
+<span class="nc" id="L53">		super(message);</span>
+<span class="nc" id="L54">	}</span>
+
+	/**
+	 * Creates an AuthenticationException with a custom message and an
+	 * underlying cause.
+	 *
+	 * @param message the message describing the authentication error
+	 * @param cause   the original exception that caused the failure
+	 */
+	public AuthenticationException(String message, Throwable cause)
+	{
+<span class="nc" id="L65">		super(message, cause);</span>
+<span class="nc" id="L66">	}</span>
+
+	/**
+	 * Returns the HTTP status code associated with this exception.
+	 *
+	 * @return 401 (Unauthorized)
+	 */
+	@Override
+	public int getStatusCode()
+	{
+<span class="nc" id="L76">		return HttpServletResponse.SC_UNAUTHORIZED;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

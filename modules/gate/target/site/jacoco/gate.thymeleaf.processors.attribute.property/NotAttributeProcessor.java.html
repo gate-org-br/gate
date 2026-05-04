@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NotAttributeProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.attribute.property</a> &gt; <span class="el_source">NotAttributeProcessor.java</span></div><h1>NotAttributeProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.attribute.property;
+
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.Precedence;
+import jakarta.enterprise.context.Dependent;
+import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.dialect.AbstractProcessorDialect;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.IProcessor;
+import org.thymeleaf.processor.element.IElementTagProcessor;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.processor.element.MatchingAttributeName;
+import org.thymeleaf.processor.element.MatchingElementName;
+import org.thymeleaf.templatemode.TemplateMode;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
+
+@Dependent
+public class NotAttributeProcessor extends AbstractProcessorDialect
+{
+
+	@Inject
+	ELExpressionFactory expression;
+
+	public NotAttributeProcessor()
+	{
+<span class="nc" id="L30">		super(&quot;Not&quot;, &quot;not&quot;, Precedence.DEFAULT);</span>
+<span class="nc" id="L31">	}</span>
+
+	@Override
+	public Set&lt;IProcessor&gt; getProcessors(final String dialectPrefix)
+	{
+<span class="nc" id="L36">		final Set&lt;IProcessor&gt; processors = new HashSet&lt;&gt;();</span>
+<span class="nc" id="L37">		processors.add(new NotAttributeProcessorHandler());</span>
+<span class="nc" id="L38">		return processors;</span>
+	}
+
+	private static class NotAttributeProcessorHandler implements IElementTagProcessor
+	{
+
+		@Override
+		public MatchingElementName getMatchingElementName()
+		{
+<span class="nc" id="L47">			return MatchingElementName.forAllElements(TemplateMode.HTML);</span>
+		}
+
+		@Override
+		public MatchingAttributeName getMatchingAttributeName()
+		{
+<span class="nc" id="L53">			return MatchingAttributeName.forAllAttributesWithPrefix(TemplateMode.HTML, &quot;not&quot;);</span>
+		}
+
+		@Override
+		public TemplateMode getTemplateMode()
+		{
+<span class="nc" id="L59">			return TemplateMode.HTML;</span>
+		}
+
+		@Override
+		public int getPrecedence()
+		{
+<span class="nc" id="L65">			return Precedence.VERY_LOW;</span>
+		}
+
+		@Override
+		public void process(ITemplateContext context, IProcessableElementTag tag, IElementTagStructureHandler handler)
+		{
+<span class="nc" id="L71">			Stream.of(tag.getAllAttributes())</span>
+<span class="nc" id="L72">					.filter(attribute -&gt; attribute.getAttributeCompleteName().startsWith(&quot;not:&quot;)).forEach(attribute -&gt;</span>
+					{
+<span class="nc" id="L74">						handler.removeAttribute(attribute.getAttributeCompleteName());</span>
+<span class="nc" id="L75">						String name = attribute.getAttributeCompleteName().substring(4);</span>
+<span class="nc" id="L76">						handler.removeAttribute(name);</span>
+<span class="nc" id="L77">					});</span>
+<span class="nc" id="L78">		}</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

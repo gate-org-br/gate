@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HandlerRegistry.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.adapter.registry</a> &gt; <span class="el_source">HandlerRegistry.java</span></div><h1>HandlerRegistry.java</h1><pre class="source lang-java linenums">package gate.adapter.registry;
+
+import gate.adapter.handler.Handler;
+import gate.adapter.handler.SerializableHandler;
+import gate.adapter.registrar.HandlerRegistrar;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.ServiceLoader;
+import java.util.stream.Collectors;
+
+public class HandlerRegistry extends Registry&lt;Class&lt;? extends Handler&gt;&gt;
+{
+<span class="nc" id="L14">	public static final HandlerRegistry INSTANCE = new HandlerRegistry();</span>
+	
+	public HandlerRegistry()
+	{
+<span class="nc" id="L18">		super(ServiceLoader.load(HandlerRegistrar.class)</span>
+<span class="nc" id="L19">				.stream()</span>
+<span class="nc" id="L20">				.map(ServiceLoader.Provider::get)</span>
+<span class="nc" id="L21">				.map(HandlerRegistrar::entries)</span>
+<span class="nc" id="L22">				.map(Map::entrySet)</span>
+<span class="nc" id="L23">				.flatMap(Collection::stream)</span>
+<span class="nc" id="L24">				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -&gt; b)));</span>
+<span class="nc" id="L25">	}</span>
+
+	@Override protected Class&lt;? extends Handler&gt; extractor(Class&lt;?&gt; type)
+	{
+<span class="nc bnc" id="L29" title="All 2 branches missed.">		return type.isAnnotationPresent(gate.annotation.Handler.class)</span>
+<span class="nc" id="L30">				? type.getAnnotation(gate.annotation.Handler.class).value()</span>
+<span class="nc" id="L31">				: null;</span>
+	}
+
+	@Override protected Class&lt;? extends Handler&gt; fallback(Class&lt;?&gt; type)
+	{
+<span class="nc" id="L36">		return SerializableHandler.class;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Mail.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.entity</a> &gt; <span class="el_source">Mail.java</span></div><h1>Mail.java</h1><pre class="source lang-java linenums">package gate.entity;
+
+import gate.annotation.Entity;
+import gate.type.ID;
+import gate.type.mime.MimeMail;
+import java.time.LocalDateTime;
+
+@Entity
+<span class="nc" id="L9">public class Mail</span>
+{
+
+	private ID id;
+	private String app;
+	private int attempts;
+	private String sender;
+	private String receiver;
+	private LocalDateTime date;
+	private MimeMail&lt;?&gt; message;
+	private LocalDateTime expiration;
+
+	public String getApp()
+	{
+<span class="nc" id="L23">		return app;</span>
+	}
+
+	public void setApp(String app)
+	{
+<span class="nc" id="L28">		this.app = app;</span>
+<span class="nc" id="L29">	}</span>
+
+	public ID getId()
+	{
+<span class="nc" id="L33">		return id;</span>
+	}
+
+	public void setId(ID id)
+	{
+<span class="nc" id="L38">		this.id = id;</span>
+<span class="nc" id="L39">	}</span>
+
+	public String getSender()
+	{
+<span class="nc" id="L43">		return sender;</span>
+	}
+
+	public void setSender(String sender)
+	{
+<span class="nc" id="L48">		this.sender = sender;</span>
+<span class="nc" id="L49">	}</span>
+
+	public LocalDateTime getExpiration()
+	{
+<span class="nc" id="L53">		return expiration;</span>
+	}
+
+	public void setExpiration(LocalDateTime expiration)
+	{
+<span class="nc" id="L58">		this.expiration = expiration;</span>
+<span class="nc" id="L59">	}</span>
+
+	public String getReceiver()
+	{
+<span class="nc" id="L63">		return receiver;</span>
+	}
+
+	public void setReceiver(String receiver)
+	{
+<span class="nc" id="L68">		this.receiver = receiver;</span>
+<span class="nc" id="L69">	}</span>
+
+	public MimeMail&lt;?&gt; getMessage()
+	{
+<span class="nc" id="L73">		return message;</span>
+	}
+
+	public void setMessage(MimeMail&lt;?&gt; message)
+	{
+<span class="nc" id="L78">		this.message = message;</span>
+<span class="nc" id="L79">	}</span>
+
+	public LocalDateTime getDate()
+	{
+<span class="nc" id="L83">		return date;</span>
+	}
+
+	public void setDate(LocalDateTime date)
+	{
+<span class="nc" id="L88">		this.date = date;</span>
+<span class="nc" id="L89">	}</span>
+
+	public int getAttempts()
+	{
+<span class="nc" id="L93">		return attempts;</span>
+	}
+
+	public void setAttempts(int attempts)
+	{
+<span class="nc" id="L98">		this.attempts = attempts;</span>
+<span class="nc" id="L99">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

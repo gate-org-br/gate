@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TemplateAttributeModelProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.thymeleaf.processors.attribute</a> &gt; <span class="el_source">TemplateAttributeModelProcessor.java</span></div><h1>TemplateAttributeModelProcessor.java</h1><pre class="source lang-java linenums">package gate.thymeleaf.processors.attribute;
+
+import java.util.LinkedList;
+
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.context.IWebContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.web.IWebExchange;
+
+import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.HTMLFileEngine;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
+@ApplicationScoped
+public class TemplateAttributeModelProcessor extends AttributeModelProcessor
+{
+
+	@Inject
+	HTMLFileEngine fileEngine;
+
+	@Inject
+	ELExpressionFactory expression;
+
+	public TemplateAttributeModelProcessor()
+	{
+<span class="nc" id="L29">		super(&quot;template&quot;);</span>
+
+<span class="nc" id="L31">	}</span>
+
+	@Override
+	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
+	{
+
+<span class="nc" id="L37">		IProcessableElementTag element = (IProcessableElementTag) model.get(0);</span>
+
+<span class="nc" id="L39">		var template = (String) expression.create().evaluate(element.getAttributeValue(&quot;g:template&quot;));</span>
+
+<span class="nc" id="L41">		IWebExchange exchange = ((IWebContext) context).getExchange();</span>
+
+<span class="nc" id="L43">		removeTag(context, model, handler);</span>
+
+<span class="nc bnc" id="L45" title="All 2 branches missed.">		if (&quot;1&quot;.equals(exchange.getRequest().getHeaderValue(&quot;X-G-Fragment&quot;)))</span>
+<span class="nc" id="L46">			return;</span>
+
+<span class="nc bnc" id="L48" title="All 2 branches missed.">		if (exchange.getAttributeValue(&quot;g-template-content&quot;) == null)</span>
+<span class="nc" id="L49">			exchange.setAttributeValue(&quot;g-template-content&quot;, new LinkedList&lt;IModel&gt;());</span>
+<span class="nc" id="L50">		((LinkedList&lt;IModel&gt;) exchange.getAttributeValue(&quot;g-template-content&quot;)).add(model);</span>
+<span class="nc" id="L51">		replaceWith(context, model, handler, fileEngine.process(template, context));</span>
+<span class="nc" id="L52">		exchange.removeAttribute(&quot;g-template-content&quot;);</span>
+<span class="nc" id="L53">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

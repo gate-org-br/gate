@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Func.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.entity</a> &gt; <span class="el_source">Func.java</span></div><h1>Func.java</h1><pre class="source lang-java linenums">package gate.entity;
+
+import gate.annotation.*;
+import gate.constraint.Maxlength;
+import gate.constraint.Required;
+import gate.annotation.Entity;
+import gate.type.ID;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+@Entity
+@Name
+@Icon(&quot;2099&quot;)
+<span class="nc" id="L17">public class Func implements Serializable</span>
+{
+
+	@Required
+	@Name
+	@Description
+	private ID id;
+
+	@Required
+	@Name
+	@Maxlength(64)
+	@Description
+	private String name;
+
+	private List&lt;Auth&gt; auths;
+	private List&lt;User&gt; users;
+	private List&lt;Role&gt; roles;
+
+	public ID getId()
+	{
+<span class="nc" id="L37">		return id;</span>
+	}
+
+	public void setId(ID id)
+	{
+<span class="nc" id="L42">		this.id = id;</span>
+<span class="nc" id="L43">	}</span>
+
+	public String getName()
+	{
+<span class="nc" id="L47">		return name;</span>
+	}
+
+	public void setName(String name)
+	{
+<span class="nc" id="L52">		this.name = name;</span>
+<span class="nc" id="L53">	}</span>
+
+	@NullSafe
+	public List&lt;Auth&gt; getAuths()
+	{
+<span class="nc bnc" id="L58" title="All 2 branches missed.">		if (auths == null)</span>
+<span class="nc" id="L59">			auths = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L60">		return auths;</span>
+	}
+
+	public void setAuths(List&lt;Auth&gt; auths)
+	{
+<span class="nc" id="L65">		this.auths = auths;</span>
+<span class="nc" id="L66">	}</span>
+
+	@NullSafe
+	public List&lt;User&gt; getUsers()
+	{
+<span class="nc bnc" id="L71" title="All 2 branches missed.">		if (users == null)</span>
+<span class="nc" id="L72">			users = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L73">		return users;</span>
+	}
+
+	public void setUsers(List&lt;User&gt; users)
+	{
+<span class="nc" id="L78">		this.users = users;</span>
+<span class="nc" id="L79">	}</span>
+
+	@NullSafe
+	public List&lt;Role&gt; getRoles()
+	{
+<span class="nc bnc" id="L84" title="All 2 branches missed.">		if (roles == null)</span>
+<span class="nc" id="L85">			roles = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L86">		return roles;</span>
+	}
+
+	public void setRoles(List&lt;Role&gt; roles)
+	{
+<span class="nc" id="L91">		this.roles = roles;</span>
+<span class="nc" id="L92">	}</span>
+
+	@Override
+	public boolean equals(Object obj)
+	{
+<span class="nc bnc" id="L97" title="All 2 branches missed.">		return obj instanceof Func</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">			   &amp;&amp; Objects.equals(id, ((Func) obj).id);</span>
+	}
+
+	@Override
+	public int hashCode()
+	{
+<span class="nc bnc" id="L104" title="All 2 branches missed.">		return id != null</span>
+<span class="nc" id="L105">				? id.getValue() : 0;</span>
+	}
+
+	public boolean allows(String module, String screen, String action)
+	{
+<span class="nc" id="L110">		return getAuths().stream().anyMatch(e -&gt; e.granted(module, screen, action));</span>
+	}
+
+	public boolean blocks(String module, String screen, String action)
+	{
+<span class="nc" id="L115">		return getAuths().stream().anyMatch(e -&gt; e.blocked(module, screen, action));</span>
+	}
+
+	@Override
+	public String toString()
+	{
+<span class="nc bnc" id="L121" title="All 2 branches missed.">		return name != null ? name : super.toString();</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

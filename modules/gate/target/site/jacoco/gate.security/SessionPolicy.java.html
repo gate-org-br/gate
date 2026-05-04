@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SessionPolicy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.security</a> &gt; <span class="el_source">SessionPolicy.java</span></div><h1>SessionPolicy.java</h1><pre class="source lang-java linenums">package gate.security;
+
+import gate.adapter.converter.Converter;
+import gate.util.SystemProperty;
+
+import java.time.Duration;
+
+public final class SessionPolicy
+{
+
+<span class="fc" id="L11">	public static final SessionPolicy CURRENT = new SessionPolicy();</span>
+
+	private final boolean statelessToken;
+	private final boolean revocable;
+	private final Duration idleTimeout;
+	private final Duration timeout;
+
+	private SessionPolicy()
+<span class="fc" id="L19">	{</span>
+<span class="fc" id="L20">		statelessToken = SystemProperty.get(&quot;gate.auth.session.stateless-token&quot;)</span>
+<span class="pc" id="L21">				.map(e -&gt; Converter.fromString(Boolean.class, e))</span>
+<span class="fc" id="L22">				.orElse(false);</span>
+
+<span class="fc" id="L24">		revocable = SystemProperty.get(&quot;gate.auth.session.revocable&quot;)</span>
+<span class="pc" id="L25">				.map(e -&gt; Converter.fromString(Boolean.class, e))</span>
+<span class="fc" id="L26">				.orElse(false);</span>
+
+<span class="fc" id="L28">		idleTimeout = SystemProperty.get(&quot;gate.auth.session.idle_timeout&quot;)</span>
+<span class="pc" id="L29">				.map(e -&gt; Converter.getConverter(Duration.class).ofString(Duration.class, e))</span>
+<span class="fc" id="L30">				.map(Duration.class::cast)</span>
+<span class="fc" id="L31">				.orElse(Duration.ofHours(1));</span>
+
+<span class="fc" id="L33">		timeout = SystemProperty.get(&quot;gate.auth.session.timeout&quot;)</span>
+<span class="pc" id="L34">				.map(e -&gt; Converter.getConverter(Duration.class).ofString(Duration.class, e))</span>
+<span class="fc" id="L35">				.map(Duration.class::cast)</span>
+<span class="fc" id="L36">				.orElse(Duration.ofHours(24));</span>
+<span class="fc" id="L37">	}</span>
+
+	public boolean statelessToken()
+	{
+<span class="nc" id="L41">		return statelessToken;</span>
+	}
+
+	public boolean revocable()
+	{
+<span class="nc" id="L46">		return revocable;</span>
+	}
+
+	public Duration idleTimeout()
+	{
+<span class="fc" id="L51">		return idleTimeout;</span>
+	}
+
+	public Duration timeout()
+	{
+<span class="fc" id="L56">		return timeout;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

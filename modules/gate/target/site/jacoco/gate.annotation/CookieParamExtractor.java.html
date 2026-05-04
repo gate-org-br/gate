@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CookieParamExtractor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">gate</a> &gt; <a href="index.source.html" class="el_package">gate.annotation</a> &gt; <span class="el_source">CookieParamExtractor.java</span></div><h1>CookieParamExtractor.java</h1><pre class="source lang-java linenums">package gate.annotation;
+
+import gate.adapter.converter.Converter;
+import gate.constraint.Required;
+import gate.error.BadRequestException;
+import gate.error.ConversionException;
+import gate.http.ScreenServletRequest;
+import jakarta.ws.rs.CookieParam;
+import jakarta.ws.rs.DefaultValue;
+
+import java.lang.reflect.Parameter;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+<span class="nc" id="L15">public class CookieParamExtractor</span>
+{
+
+	public static Object extract(ScreenServletRequest request, Parameter parameter) throws BadRequestException
+	{
+<span class="nc bnc" id="L20" title="All 2 branches missed.">		if (!parameter.isAnnotationPresent(CookieParam.class))</span>
+<span class="nc" id="L21">			throw new BadRequestException(&quot;Missing parameter name&quot;);</span>
+
+<span class="nc" id="L23">		String name = parameter.getAnnotation(CookieParam.class).value();</span>
+
+<span class="nc" id="L25">		String cookie = Stream.of(request.getCookies())</span>
+<span class="nc" id="L26">				.filter(e -&gt; Objects.equals(name, e.getName()))</span>
+<span class="nc" id="L27">				.map(e -&gt; e.getValue())</span>
+<span class="nc" id="L28">				.findFirst().orElse(null);</span>
+
+<span class="nc bnc" id="L30" title="All 6 branches missed.">		if (parameter.isAnnotationPresent(DefaultValue.class) &amp;&amp; (cookie == null || cookie.isBlank()))</span>
+<span class="nc" id="L31">			cookie = parameter.getAnnotation(DefaultValue.class).value();</span>
+
+<span class="nc" id="L33">		Converter converter = Converter.getConverter(parameter);</span>
+
+		try
+		{
+<span class="nc" id="L37">			Object value = converter.ofString(parameter.getParameterizedType(), cookie);</span>
+<span class="nc bnc" id="L38" title="All 4 branches missed.">			if (value == null &amp;&amp; parameter.isAnnotationPresent(Required.class))</span>
+<span class="nc" id="L39">				throw new BadRequestException(&quot;Missing required parameter: &quot; + name);</span>
+<span class="nc" id="L40">			return value;</span>
+<span class="nc" id="L41">		} catch (ConversionException ex)</span>
+		{
+<span class="nc" id="L43">			throw new BadRequestException(&quot;Invalid value for parameter &quot; + name + &quot;: &quot; + cookie);</span>
+		}
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
