@@ -61,9 +61,7 @@ public class SSEServlet extends HttpServlet
 			context.addListener(new AsyncListener()
 			{
 				@Override
-				public void onStartAsync(AsyncEvent event)
-				{
-				}
+				public void onStartAsync(AsyncEvent event) {}
 
 				@Override
 				public void onComplete(AsyncEvent event)

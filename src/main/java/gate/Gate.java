@@ -32,7 +32,6 @@ import org.eclipse.microprofile.context.ThreadContext;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Method;
 import java.time.Instant;
 import java.util.Collections;
@@ -202,11 +201,8 @@ public class Gate extends HttpServlet
 
 		Runnable contextualTask = threadContext.contextualRunnable(() ->
 		{
-			Progress progress = null;
-			try (Writer writer = response.getWriter())
+			try (var progress = Progress.create(user, asyncContext))
 			{
-				progress = Progress.create(user, writer);
-				heartbeatRegistry.register(progress);
 				try
 				{
 					Object result = screen.execute(method);
@@ -218,25 +214,20 @@ public class Gate extends HttpServlet
 						var handler = handlers.select(type).get();
 						handler.handle(request, response, progress, result);
 					}
-					progress.close();
 				} catch (AppException ex)
 				{
 					progress.abort(ex.getMessage());
 				} catch (Throwable ex)
 				{
 					progress.abort(ex.getMessage());
-					logger.error(ex.getMessage(), ex);
+					throw ex;
+				} finally
+				{
+					TempFile.cleanup();
 				}
-			} catch (IOException ex)
+			} catch (Throwable ex)
 			{
 				logger.error(ex.getMessage(), ex);
-			} finally
-			{
-				if (progress != null)
-					heartbeatRegistry.unregister(progress);
-				Progress.finish();
-				TempFile.cleanup();
-				asyncContext.complete();
 			}
 		});
 

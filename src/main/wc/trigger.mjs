@@ -15,8 +15,8 @@ export default function trigger(cause, element, context, action)
 	if (element.tagName === "A" && !(element.target || "_self").startsWith("@"))
 		return element.click();
 	if (element.tagName === "BUTTON"
-			&& element.form
-			&& !(element.getAttribute("formtarget") || element.form.target || "_self").startsWith("@"))
+		&& element.form
+		&& !(element.getAttribute("formtarget") || element.form.target || "_self").startsWith("@"))
 		return element.click();
 
 	let form = null;
@@ -40,9 +40,9 @@ export default function trigger(cause, element, context, action)
 		target = `@frame(${target})`;
 
 	if (!form
-			|| element.hasAttribute("formnovalidate")
-			|| form.hasAttribute("novalidate")
-			|| form.reportValidity())
+		|| element.hasAttribute("formnovalidate")
+		|| form.hasAttribute("novalidate")
+		|| form.reportValidity())
 	{
 		action = resolve(element, context || {}, action);
 		if (action === null)
@@ -54,17 +54,17 @@ export default function trigger(cause, element, context, action)
 }
 
 const DEFAULT = new Map()
-		.set("DIV", "load")
-		.set("SPAN", "load")
-		.set("LABEL", "load")
-		.set("TR", "click")
-		.set("A", "click")
-		.set("BUTTON", "click")
-		.set("TD", "click")
-		.set("LI", "click")
-		.set("INPUT", "change")
-		.set("SELECT", "change")
-		.set("TEXTAREA", "change");
+	.set("DIV", "load")
+	.set("SPAN", "load")
+	.set("LABEL", "load")
+	.set("TR", "click")
+	.set("A", "click")
+	.set("BUTTON", "click")
+	.set("TD", "click")
+	.set("LI", "click")
+	.set("INPUT", "change")
+	.set("SELECT", "change")
+	.set("TEXTAREA", "change");
 
 window.addEventListener("click", function (event)
 {
@@ -143,7 +143,7 @@ window.addEventListener("click", function (event)
 				|| element.hasAttribute("data-method")
 				|| element.hasAttribute("data-action")
 				|| element.hasAttribute("data-target"))
-				&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
+			&& (element.getAttribute("data-trigger") || DEFAULT.get(element.tagName)) === "click")
 		{
 			if (validate(element))
 				trigger(event, element, event);
@@ -156,7 +156,7 @@ window.addEventListener("submit", function (event)
 {
 	let form = event.composedPath()[0] || event.target;
 	if (!validate(form))
-		return	event.preventDefault();
+		return event.preventDefault();
 
 	let submiter = event.submitter || form;
 	let method = submiter.getAttribute("formmethod") || form.method || "get";
@@ -177,7 +177,7 @@ window.addEventListener("change", function (event)
 			|| element.hasAttribute("data-method")
 			|| element.hasAttribute("data-action")
 			|| element.hasAttribute("data-target"))
-			&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "change")
+		&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "change")
 		trigger(event, element);
 });
 
@@ -188,7 +188,7 @@ window.addEventListener("input", function (event)
 			|| element.hasAttribute("data-method")
 			|| element.hasAttribute("data-action")
 			|| element.hasAttribute("data-target"))
-			&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "input")
+		&& (element.dataset.trigger || DEFAULT.get(element.tagName)) === "input")
 		trigger(event, element);
 });
 
@@ -196,12 +196,12 @@ window.addEventListener("mouseover", function (event)
 {
 	let element = event.target || event.composedPath()[0];
 	if (element.hasAttribute("data-trigger")
-			|| element.hasAttribute("data-method")
-			|| element.hasAttribute("data-action")
-			|| element.hasAttribute("data-target"))
+		|| element.hasAttribute("data-method")
+		|| element.hasAttribute("data-action")
+		|| element.hasAttribute("data-target"))
 	{
 		let type = element.dataset.trigger
-				|| DEFAULT.get(element.tagName);
+			|| DEFAULT.get(element.tagName);
 		if (type && type.startsWith("hover(") && type.endsWith(")"))
 		{
 			const timeout = setTimeout(() => trigger(event, element), Number(type.slice(6, -1)) * 1000);
@@ -216,15 +216,15 @@ window.addEventListener("mouseover", function (event)
 });
 
 window.addEventListener("load", event =>
-		{
-			Array.from(document.querySelectorAll('*'))
-					.filter(e => e.hasAttribute("data-trigger")
-								|| e.hasAttribute("data-method")
-								|| e.hasAttribute("data-action")
-								|| e.hasAttribute("data-target"))
-					.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
-					.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
-		});
+{
+	Array.from(document.querySelectorAll('*'))
+		.filter(e => e.hasAttribute("data-trigger")
+			|| e.hasAttribute("data-method")
+			|| e.hasAttribute("data-action")
+			|| e.hasAttribute("data-target"))
+		.filter(e => (e.dataset.trigger || DEFAULT.get(e.tagName)) === "load")
+		.forEach(e => trigger(event, e, e.dataset.method, e.dataset.action, e.dataset.target));
+});
 
 window.addEventListener("load", function (event)
 {
@@ -235,8 +235,8 @@ window.addEventListener("load", function (event)
 		if (element)
 		{
 			let target = element.target
-					|| element.getAttribute("formtarget")
-					|| element.getAttribute("data-target");
+				|| element.getAttribute("formtarget")
+				|| element.getAttribute("data-target");
 			if (target && target.startsWith("@"))
 				trigger(event, element);
 		}
@@ -260,22 +260,22 @@ window.addEventListener("connected", function (event)
 			if (e.draggable)
 				e.addEventListener("dragstart", dragstart =>
 					dragstart.dataTransfer.setData("text/plain",
-							e.value
-							|| e.getAttribute("value")
-							|| e.getAttribute("data-value")
-							|| ""));
+						e.value
+						|| e.getAttribute("value")
+						|| e.getAttribute("data-value")
+						|| ""));
 
 			e.addEventListener("drop", function (drop)
 			{
 				drop.stopPropagation();
 				let source = drop.dataTransfer.getData("text/plain");
 				let target = e.value
-						|| e.getAttribute("value")
-						|| e.getAttribute("data-value")
-						|| element.value
-						|| element.getAttribute("value")
-						|| element.getAttribute("data-value")
-						|| "";
+					|| e.getAttribute("value")
+					|| e.getAttribute("data-value")
+					|| element.value
+					|| element.getAttribute("value")
+					|| element.getAttribute("data-value")
+					|| "";
 				trigger(drop, element, {source, target});
 			});
 
@@ -288,9 +288,9 @@ window.addEventListener("connected", function (event)
 			drop.stopPropagation();
 			let source = drop.dataTransfer.getData("text/plain");
 			let target = element.value
-					|| element.getAttribute("value")
-					|| element.getAttribute("data-value")
-					|| "";
+				|| element.getAttribute("value")
+				|| element.getAttribute("data-value")
+				|| "";
 			trigger(drop, element, {source, target});
 		});
 	}
@@ -299,13 +299,17 @@ window.addEventListener("connected", function (event)
 
 window.addEventListener("sse", function (event)
 {
-	DOM.traverse(document, e => e.hasAttribute("data-trigger") && e.getAttribute("data-trigger").match("sse(\([.+]\))?"), element =>
+	DOM.traverse(document, e =>
+		e.hasAttribute
+		&& e.hasAttribute("data-trigger")
+		&& e.getAttribute("data-trigger")
+			.match("sse(\([.+]\))?"), element =>
 	{
 		let action = element.getAttribute("href")
-				|| element.getAttribute("formaction")
-				|| element.getAttribute("action")
-				|| element.getAttribute("data-action")
-				|| new DataURL("application/json", JSON.stringify(event.detail)).toString();
+			|| element.getAttribute("formaction")
+			|| element.getAttribute("action")
+			|| element.getAttribute("data-action")
+			|| new DataURL("application/json", JSON.stringify(event.detail)).toString();
 
 		if (element.getAttribute("data-trigger").startsWith("sse("))
 		{

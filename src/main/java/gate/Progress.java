@@ -3,6 +3,7 @@ package gate;
 import gate.entity.User;
 import gate.lang.json.JsonObject;
 import gate.type.ID;
+import jakarta.servlet.AsyncContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,18 +13,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Progress implements Heartbeat
+@SuppressWarnings("resource")
+public class Progress implements Heartbeat, AutoCloseable
 {
+	private final ID user;
+	private Writer writer;
+	private final String uuid;
+	private AsyncContext asyncContext;
+	private volatile State state = State.DEFAULT;
 
 	private static final int UNKNOWN = -1;
 	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
 	private static final Logger LOGGER = LoggerFactory.getLogger(Progress.class);
-	private static final Map<String, Progress> INSTANCES = new ConcurrentHashMap<>();
 
-	private final Writer writer;
-	private final ID user;
-	private final String uuid;
-	private volatile State state = State.DEFAULT;
+	private static final Map<String, Progress> INSTANCES = new ConcurrentHashMap<>();
 
 	public record State(Status status, long todo, long done, String text)
 	{
@@ -48,15 +51,16 @@ public class Progress implements Heartbeat
 		CREATED, PENDING, COMMITED, CANCELED, DISCONNECTED, UNKNOWN
 	}
 
-	private Progress(ID user, Writer writer)
+	private Progress(ID user, String uuid, AsyncContext asyncContext, Writer writer)
 	{
-		this.writer = writer;
 		this.user = user;
-		this.uuid = UUID.randomUUID().toString();
-		INSTANCES.put(uuid, this);
+		this.uuid = uuid;
+		this.asyncContext = asyncContext;
+		this.writer = writer;
 	}
 
-	private Progress update(Status status, long todo, long done, String text)
+	private Progress update(Status status, long todo,
+	                        long done, String text)
 	{
 		this.state = new State(status, todo, done, text);
 		return this;
@@ -70,13 +74,19 @@ public class Progress implements Heartbeat
 			{
 				writer.write("event: %s\n".formatted(type));
 				writer.write("data: " + Base64.getEncoder()
-						.encodeToString(message.getBytes(StandardCharsets.UTF_8))
-							 + "\n\n");
+						.encodeToString(message
+								.getBytes(StandardCharsets.UTF_8))
+				             + "\n\n");
 				writer.flush();
 			} catch (IOException ex)
 			{
 				State state = this.state;
-				update(Status.DISCONNECTED, state.todo, state.done, state.text);
+				if (state.status == Status.CREATED
+				    || state.status == Status.PENDING)
+				{
+					update(Status.DISCONNECTED, state.todo, state.done, state.text);
+					HeartbeatRegistry.unregister(this);
+				}
 				LOGGER.info(ex.getMessage(), ex);
 			}
 		}
@@ -87,12 +97,34 @@ public class Progress implements Heartbeat
 		dispatch("Progress", message);
 	}
 
-	public void close()
+	@Override
+	public synchronized void close()
 	{
-		dispatch("close", "Connection closed by server");
+		HeartbeatRegistry.unregister(this);
+		dispatch("Finish", "Connection closed");
+		if (asyncContext != null)
+			asyncContext.complete();
+		asyncContext = null;
+		INSTANCES.remove(this.uuid);
+		CURRENT.remove();
 	}
 
-	public void result(String contentType, String filename, String data)
+	public synchronized void attach(AsyncContext asyncContext) throws IOException
+	{
+		if (this.asyncContext != null)
+			this.asyncContext.complete();
+
+		this.asyncContext = asyncContext;
+		this.writer = asyncContext.getResponse().getWriter();
+		if (state.status() == Status.DISCONNECTED)
+			update(Status.PENDING, state.todo, state.done, state.text);
+		HeartbeatRegistry.register(this);
+		this.dispatch(toString());
+	}
+
+	public void result(String contentType,
+	                   String filename,
+	                   String data)
 	{
 		dispatch("Result", new JsonObject()
 				.setString("contentType", contentType)
@@ -108,16 +140,11 @@ public class Progress implements Heartbeat
 				.toString());
 	}
 
-	public String uuid()
-	{
-		return uuid;
-	}
-
 	void abort(String message)
 	{
 		State state = this.state;
-		if (state.status() == Progress.Status.PENDING
-			|| state.status() == Progress.Status.CREATED)
+		if (state.status == Progress.Status.PENDING
+		    || state.status == Progress.Status.CREATED)
 			update(Status.CANCELED, state.todo, state.done, message);
 		else
 			update(state.status, state.todo, state.done, message);
@@ -126,7 +153,11 @@ public class Progress implements Heartbeat
 		dispatch("Failure", new JsonObject()
 				.setString("message", message)
 				.toString());
-		close();
+	}
+
+	public String uuid()
+	{
+		return uuid;
 	}
 
 	@Override
@@ -163,7 +194,7 @@ public class Progress implements Heartbeat
 		{
 			State state = progress.state;
 			if (Status.COMMITED.equals(state.status)
-				|| Status.CANCELED.equals(state.status))
+			    || Status.CANCELED.equals(state.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text)
 					.dispatch(progress.toString());
@@ -197,7 +228,8 @@ public class Progress implements Heartbeat
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status))
+			if (Status.PENDING != state.status
+			    && Status.DISCONNECTED != state.status)
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(state.status, state.todo, state.done + 1, state.text);
 			if (progress.state.done % step == 0)
@@ -213,7 +245,8 @@ public class Progress implements Heartbeat
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status))
+			if (Status.PENDING != state.status
+			    && Status.DISCONNECTED != state.status)
 				throw new IllegalStateException("Attempt to update non pending task");
 			if (state.todo == UNKNOWN)
 				throw new IllegalStateException("updatePercentage requires a known todo size");
@@ -229,11 +262,8 @@ public class Progress implements Heartbeat
 	 */
 	public static void update()
 	{
-		current().ifPresent(progress ->
-		{
-			State state = progress.state;
-			update(state.done + 1, state.text);
-		});
+		current().map(e -> e.state)
+				.ifPresent(state -> update(state.done + 1, state.text));
 	}
 
 	/**
@@ -243,11 +273,8 @@ public class Progress implements Heartbeat
 	 */
 	public static void update(long done)
 	{
-		current().ifPresent(progress ->
-		{
-			State state = progress.state;
-			update(done, state.text);
-		});
+		current().map(e -> e.state)
+				.ifPresent(state -> update(done, state.text));
 	}
 
 	/**
@@ -257,11 +284,9 @@ public class Progress implements Heartbeat
 	 */
 	public static void update(String text)
 	{
-		current().ifPresent(progress ->
-		{
-			State state = progress.state;
-			update(state.done + 1, text);
-		});
+		current().map(e -> e.state)
+				.ifPresent(state -> update(state.done + 1, text));
+
 	}
 
 	/**
@@ -275,7 +300,8 @@ public class Progress implements Heartbeat
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status))
+			if (!Status.PENDING.equals(state.status)
+			    && !Status.DISCONNECTED.equals(state.status))
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(state.status, state.todo, done, text)
 					.dispatch(progress.toString());
@@ -293,10 +319,12 @@ public class Progress implements Heartbeat
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status))
+			if (!Status.PENDING.equals(state.status)
+			    && !Status.DISCONNECTED.equals(state.status))
 				throw new IllegalStateException("Attempt to commit non pending task");
-			progress.update(Status.COMMITED, state.todo, state.done, text)
-					.dispatch(progress.toString());
+			progress.update(Status.COMMITED, state.todo, state.done, text);
+			if (!Status.DISCONNECTED.equals(state.status))
+				progress.dispatch(progress.toString());
 		});
 	}
 
@@ -311,22 +339,29 @@ public class Progress implements Heartbeat
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status))
+			if (!Status.PENDING.equals(state.status)
+			    && !Status.DISCONNECTED.equals(state.status))
 				throw new IllegalStateException("Attempt to cancel non pending task");
-			progress.update(Status.CANCELED, state.todo, state.done, text)
-					.dispatch(progress.toString());
+			progress.update(Status.CANCELED, state.todo, state.done, text);
+			if (!Status.DISCONNECTED.equals(state.status))
+				progress.dispatch(progress.toString());
 		});
 	}
 
-	static Progress create(User user, Writer writer)
+	static Progress create(User user, AsyncContext asyncContext) throws IOException
 	{
-		ID id = user != null && user.getId() != null
-				? user.getId() : ID.valueOf(0);
-		Progress progress = new Progress(id, writer);
-		progress.dispatch("UUID", progress.uuid);
+		ID id = user != null && user.getId() != null ? user.getId() : ID.valueOf(0);
+		String uuid = UUID.randomUUID().toString();
+		Writer writer = asyncContext.getResponse().getWriter();
+		Progress progress = new Progress(id, uuid, asyncContext, writer);
+		INSTANCES.put(uuid, progress);
+		HeartbeatRegistry.register(progress);
+		progress.dispatch("UUID", uuid);
 		CURRENT.set(progress);
 		return progress;
 	}
+
+	public static String UUID() {return current().map(Progress::uuid).orElse(null);}
 
 	public static State get(ID user, String uuid)
 	{
@@ -336,30 +371,22 @@ public class Progress implements Heartbeat
 				.orElse(State.UNKNOWN);
 	}
 
-	public static String UUID()
+	static void attach(ID user, String uuid, AsyncContext asyncContext) throws IOException
 	{
-		return current().map(Progress::uuid)
-				.orElse(null);
-	}
-
-	static Progress create(Writer writer)
-	{
-		return create(null, writer);
-	}
-
-	static void finish()
-	{
-		current().ifPresent(progress -> INSTANCES.remove(progress.uuid));
-		CURRENT.remove();
+		var progress = Optional.ofNullable(INSTANCES.get(uuid))
+				.filter(e -> Objects.equals(e.user, user))
+				.orElseThrow(() -> new IOException("Unable to initialize progress-monitor"));
+		progress.attach(asyncContext);
 	}
 
 	@Override
 	public synchronized boolean heartbeat()
 	{
-		State state = this.state;
 		if (state.status == Status.COMMITED
-			|| state.status == Status.CANCELED
-			|| state.status == Status.DISCONNECTED)
+		    || state.status == Status.CANCELED)
+			return false;
+
+		if (state.status == Status.DISCONNECTED)
 			return false;
 
 		try
@@ -370,6 +397,7 @@ public class Progress implements Heartbeat
 		} catch (IOException ex)
 		{
 			update(Status.DISCONNECTED, state.todo, state.done, state.text);
+			HeartbeatRegistry.unregister(this);
 			return false;
 		}
 	}
