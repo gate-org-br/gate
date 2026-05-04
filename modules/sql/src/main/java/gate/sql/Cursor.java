@@ -940,7 +940,7 @@ public class Cursor implements AutoCloseable, Fetchable
 	@SuppressWarnings("unchecked")
 	public <T> T getEntity(PropertyGraph<T> graph, Function<String, Object> context) throws ConversionException
 	{
-		return (T) graph.get(null, property ->
+		return (T) graph.populate(null, property ->
 		{
 			var value = context.apply(property.toString());
 			if (value != null)

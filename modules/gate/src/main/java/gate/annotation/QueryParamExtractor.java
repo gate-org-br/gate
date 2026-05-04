@@ -41,7 +41,7 @@ public class QueryParamExtractor
 					part.delete();
 				}
 			} else if (value instanceof String string)
-				value = Converter.getConverter(parameter).ofString(parameter.getType(), string);
+				value = Converter.getConverter(parameter).ofString(parameter.getParameterizedType(), string);
 
 			if (value == null && parameter.isAnnotationPresent(Required.class))
 				throw new BadRequestException("Missing required parameter: " + name);

@@ -55,7 +55,7 @@ public class ReportList extends ReportElement
 			elements.stream().forEach(element ->
 			{
 				if (element instanceof JsonString string)
-					list.add(string.toString());
+					list.add(string.unwrap());
 				else if (element instanceof JsonArray array)
 					list.add(of(new JsonObject()
 							.set("style", jsonObject.get("style"))
@@ -72,7 +72,7 @@ public class ReportList extends ReportElement
 		jsonArray.stream().forEach(element ->
 		{
 			if (element instanceof JsonString string)
-				list.add(string.toString());
+				list.add(string.unwrap());
 			else if (element instanceof JsonArray array)
 				list.add(of(array));
 		});

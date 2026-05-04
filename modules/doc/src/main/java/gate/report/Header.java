@@ -41,6 +41,6 @@ public final class Header extends ReportElement
 
 	public static Header of(JsonString jsonString)
 	{
-		return new Header(jsonString.getValue());
+		return new Header(jsonString.unwrap());
 	}
 }

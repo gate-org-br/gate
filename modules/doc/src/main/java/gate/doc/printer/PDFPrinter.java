@@ -17,7 +17,7 @@ import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.error.AppError;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
@@ -129,7 +129,7 @@ public class PDFPrinter implements Printer
 
 	private void printHeader(Header header)
 	{
-		String string = Converter.render(header.getValue());
+		String string = Renderer.render(header.getValue());
 		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(header.style()));
 		element.setAlignment(getAlignment(header.style()));
 		add(element);
@@ -137,7 +137,7 @@ public class PDFPrinter implements Printer
 
 	private void printParagraph(Paragraph paragraph)
 	{
-		String string = Converter.render(paragraph.getValue());
+		String string = Renderer.render(paragraph.getValue());
 		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(paragraph.style()));
 		element.setAlignment(getAlignment(paragraph.style()));
 		add(element);
@@ -145,7 +145,7 @@ public class PDFPrinter implements Printer
 
 	private void printFooter(Footer footer)
 	{
-		String string = Converter.render(footer.getValue());
+		String string = Renderer.render(footer.getValue());
 		com.lowagie.text.Paragraph element = new com.lowagie.text.Paragraph(string, getFont(footer.style()));
 		element.setAlignment(getAlignment(footer.style()));
 		add(element);
@@ -245,7 +245,7 @@ public class PDFPrinter implements Printer
 			table.addCell(label);
 
 			PdfPCell value = new PdfPCell(
-					new com.lowagie.text.Paragraph(Converter.render(field.getValue()), FIELD_FONT));
+					new com.lowagie.text.Paragraph(Renderer.render(field.getValue()), FIELD_FONT));
 			value.setPadding(2);
 			value.setMinimumHeight(field.getHeight());
 			value.setBorder(0);
@@ -294,14 +294,14 @@ public class PDFPrinter implements Printer
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getHead() != null))
 			{
 				grid.getColumns().stream().limit(size)
-						.forEach(e -> table.addCell(createHeadCell(Converter.render(e.getHead()), e.style())));
+						.forEach(e -> table.addCell(createHeadCell(Renderer.render(e.getHead()), e.style())));
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
 
 			if (grid.getColumns().stream().limit(size).anyMatch(e -> e.getFoot() != null))
 			{
 				grid.getColumns().stream().limit(size)
-						.forEach(e -> table.addCell(createFootCell(Converter.render(e.getFoot()), e.style())));
+						.forEach(e -> table.addCell(createFootCell(Renderer.render(e.getFoot()), e.style())));
 				table.setFooterRows(1);
 				table.setHeaderRows(table.getHeaderRows() + 1);
 			}
@@ -328,7 +328,7 @@ public class PDFPrinter implements Printer
 
 	private PdfPCell createBodyCell(Object value, Style style, int index, int level)
 	{
-		String string = Converter.render(value);
+		String string = Renderer.render(value);
 
 		PdfPCell cell = new PdfPCell(new com.lowagie.text.Paragraph(string, getFont(style)));
 		cell.setMinimumHeight(16);
@@ -466,7 +466,7 @@ public class PDFPrinter implements Printer
 				propertyCell.setPaddingRight(10f);
 				propertyCell.setBackgroundColor(lightGray);
 
-				PdfPCell valueCell = new PdfPCell(new Phrase(Converter.render(entry.getValue()), valueFont));
+				PdfPCell valueCell = new PdfPCell(new Phrase(Renderer.render(entry.getValue()), valueFont));
 				valueCell.setHorizontalAlignment(com.lowagie.text.Element.ALIGN_LEFT);
 				valueCell.setBorder(Rectangle.NO_BORDER);
 				valueCell.setBackgroundColor(lightGray);

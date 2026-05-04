@@ -1,9 +1,8 @@
 package gate.type;
 
-import java.io.Serial;
-
 import gate.annotation.Icon;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.YearMonth;
@@ -172,7 +171,7 @@ public final class YearMonthInterval implements Serializable, Comparable<YearMon
 		return new YearMonthInterval(min, max);
 	}
 
-	public static YearMonthInterval of(String string) throws ParseException
+	public static YearMonthInterval valueOf(String string) throws ParseException
 	{
 		return FORMATTER.parse(string);
 	}

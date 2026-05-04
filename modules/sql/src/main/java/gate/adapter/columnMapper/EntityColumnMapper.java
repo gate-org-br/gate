@@ -36,8 +36,7 @@ public class EntityColumnMapper implements ColumnMapper
 			{
 				Property property = Property.getProperty(type, Entity.Extractor.extract(type));
 				Object entity = type.getDeclaredConstructor().newInstance();
-				property.setValue(entity, Converter.getConverter(property.getRawType())
-						.ofString(property.getRawType(), string));
+				property.setConvertedValue(entity, string);
 				return entity;
 			}
 			return null;

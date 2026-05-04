@@ -2,30 +2,16 @@ package gate.adapter.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
+import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
-import java.util.Locale;
 
 public class LongConverter implements Converter
 {
+	private static final java.util.regex.Pattern ISO_PATTERN = java.util.regex.Pattern.compile("[+-]?\\d+");
 
-	private static final NumberFormat FORMAT
-			= NumberFormat.getInstance(Locale.getDefault());
-
-	static
-	{
-		FORMAT.setGroupingUsed(true);
-	}
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
@@ -38,25 +24,19 @@ public class LongConverter implements Converter
 	}
 
 	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? FORMAT.format(object) : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, object) : "";
-	}
-
-	@Override
 	public String toString(Class<?> type, Object object)
+	{
+		return object != null ? CurrentLocale.getIntegerFormat().format(object) : "";
+	}
+
+	@Override
+	public String toISOString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		try
 		{
@@ -67,43 +47,12 @@ public class LongConverter implements Converter
 			if (string.isEmpty())
 				return null;
 
-			Number number = FORMAT.parse(string);
-			if (number instanceof Long)
-				return number;
-
-			return number.longValue();
-		} catch (ParseException ex)
+			return ISO_PATTERN.matcher(string).matches()
+					? Long.valueOf(string)
+					: Long.valueOf(CurrentLocale.parseInteger(string).longValue());
+		} catch (NumberFormatException ex)
 		{
 			throw new ConversionException(ex, "%s não é um inteiro válido.", string);
 		}
 	}
-
-	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
-	{
-		switch (scanner.getCurrent().getType())
-		{
-			case NULL:
-				scanner.scan();
-				return null;
-			case NUMBER:
-				Long value = Long.valueOf(scanner.getCurrent().toString());
-				scanner.scan();
-				return value;
-			default:
-				throw new ConversionException(scanner.getCurrent() + " is not a number");
-		}
-	}
-
-	@Override
-	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
-	{
-		if (object == null)
-			writer.write(JsonToken.Type.NULL, null);
-		else if (object instanceof Long)
-			writer.write(JsonToken.Type.NUMBER, object.toString());
-		else
-			throw new ConversionException(object.getClass().getName() + " is not a Long");
-	}
-
 }

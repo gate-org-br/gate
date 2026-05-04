@@ -34,7 +34,7 @@ public class PNGHandler implements Handler
 				{
 					for (int c = is.read(); c != -1; c = is.read())
 						baos.write(c);
-					return new PNG(baos.toByteArray());
+						return PNG.valueOF(baos.toByteArray());
 				}
 			}
 		} catch (IOException ex)

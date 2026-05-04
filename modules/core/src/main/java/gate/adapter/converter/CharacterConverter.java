@@ -5,14 +5,13 @@ import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 
+import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
 @Description("Campos de CARACTERE devem ser preenchidos com um único caractere.")
 public class CharacterConverter implements Converter
 {
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
@@ -22,21 +21,9 @@ public class CharacterConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string)
+	public Object ofString(Type type, String string)
 	{
 		return string != null && !string.isEmpty() ? string.charAt(0) : null;
-	}
-
-	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, object) : "";
 	}
 
 	@Override

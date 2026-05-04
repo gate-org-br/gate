@@ -5,7 +5,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
-public class NumberProcessor extends InputProcessor
+public class NumberProcessor extends ISOInputProcessor
 {
 
 	@Inject

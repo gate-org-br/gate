@@ -1,6 +1,5 @@
 package gate.adapter.registry;
 
-import gate.adapter.AdapterRegistry;
 import gate.adapter.columnMapper.*;
 import gate.adapter.registrar.ColumnMapperRegistrar;
 import gate.annotation.Adapter;

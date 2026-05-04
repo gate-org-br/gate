@@ -74,8 +74,17 @@ final class ExpressionScanner extends BufferedReader
 				case '-':
 					c = read();
 					return ExpressionToken.SUB;
+				case ':':
+					c = read();
+					return ExpressionToken.DOUBLE_DOT;
 				case '*':
 					c = read();
+					if (c == '*')
+					{
+						c = read();
+						return ExpressionToken.POW;
+					}
+
 					return ExpressionToken.MUL;
 				case '/':
 					c = read();
@@ -126,6 +135,21 @@ final class ExpressionScanner extends BufferedReader
 					} else
 						return ExpressionToken.LT;
 
+				case '?':
+					c = read();
+					if (c == '?')
+					{
+						c = read();
+						return ExpressionToken.COALESCE;
+					}
+
+					if (c == ':')
+					{
+						c = read();
+						return ExpressionToken.SHORT_TERNARY;
+					}
+
+					return ExpressionToken.TERNARY;
 				case '"':
 				case '`':
 				case '\'':
@@ -179,39 +203,28 @@ final class ExpressionScanner extends BufferedReader
 
 					String name = identifier.toString();
 
-					switch (name)
+					return switch (name)
 					{
-						case "eq":
-							return ExpressionToken.EQ;
-						case "ne":
-							return ExpressionToken.NE;
-						case "ge":
-							return ExpressionToken.GE;
-						case "gt":
-							return ExpressionToken.GT;
-						case "le":
-							return ExpressionToken.LE;
-						case "lt":
-							return ExpressionToken.LT;
-						case "rx":
-							return ExpressionToken.RX;
-						case "or":
-							return ExpressionToken.OR;
-						case "and":
-							return ExpressionToken.AND;
-						case "not":
-							return ExpressionToken.NOT;
-						case "empty":
-							return ExpressionToken.EMPTY;
-						case "size":
-							return ExpressionToken.SIZE;
-						case "true":
-							return Boolean.TRUE;
-						case "false":
-							return Boolean.FALSE;
-					}
+						case "eq" -> ExpressionToken.EQ;
+						case "ne" -> ExpressionToken.NE;
+						case "ge" -> ExpressionToken.GE;
+						case "gt" -> ExpressionToken.GT;
+						case "le" -> ExpressionToken.LE;
+						case "lt" -> ExpressionToken.LT;
+						case "rx" -> ExpressionToken.RX;
+						case "bw" -> ExpressionToken.BW;
+						case "lk" -> ExpressionToken.LK;
+						case "in" -> ExpressionToken.IN;
+						case "or" -> ExpressionToken.OR;
+						case "and" -> ExpressionToken.AND;
+						case "empty" -> ExpressionToken.EMPTY;
+						case "size" -> ExpressionToken.SIZE;
+						case "true" -> Boolean.TRUE;
+						case "false" -> Boolean.FALSE;
+						case "not" -> ExpressionToken.NOT;
+						default -> identifier;
+					};
 
-					return identifier;
 			}
 		} catch (IOException e)
 		{

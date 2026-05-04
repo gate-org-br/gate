@@ -1,14 +1,12 @@
 package gate;
 
-import gate.annotation.Current;
-import gate.entity.User;
+import gate.catalog.SessionCatalog;
 import gate.error.UnauthorizedException;
 import gate.http.BearerAuthorization;
 import gate.http.CookieAuthorization;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.security.Credentials;
-import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -21,8 +19,7 @@ import java.io.IOException;
 public class SlidingSessionFilter implements Filter
 {
 	@Inject
-	@Current
-	Instance<User> userInstance;
+	SessionCatalog sessionCatalog;
 
 	@Override
 	public void doFilter(ServletRequest servletRequest,
@@ -34,52 +31,44 @@ public class SlidingSessionFilter implements Filter
 		servletResponse.setCharacterEncoding("UTF-8");
 		servletResponse.setLocale(servletRequest.getLocale());
 
-		if (!(servletRequest instanceof HttpServletRequest httpServletRequest)
-		    || !(servletResponse instanceof HttpServletResponse httpServletResponse))
+		if (servletRequest instanceof HttpServletRequest httpServletRequest
+		    && servletResponse instanceof HttpServletResponse httpServletResponse)
 		{
-			chain.doFilter(servletRequest, servletResponse);
-			return;
+			var request = new ScreenServletRequest(httpServletRequest);
+			if (!request.isStaticRequest())
+			{
+				var authorization = request.getAuthorization();
+				if (authorization != null)
+				{
+					var token = authorization.token();
+					if (token != null)
+					{
+						var response = new ScreenServletResponse(httpServletResponse);
+
+						try
+						{
+							var subject = Credentials.parse(token);
+							if (subject.sid() != null && !sessionCatalog.exists(subject))
+								throw new UnauthorizedException("Attempt to authenticate with invalid credentials");
+							request.setAttribute(Credentials.class.getName(), subject);
+
+							token = subject.refresh().toString();
+							if (authorization instanceof CookieAuthorization)
+								response.createSessionCookie(request, token);
+							else if (authorization instanceof BearerAuthorization)
+								httpServletResponse.addHeader("X-Access-Token", token);
+						} catch (UnauthorizedException ex)
+						{
+							if (authorization instanceof CookieAuthorization)
+								response.revokeSessionCookie(request);
+							httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+							return;
+						}
+					}
+				}
+			}
 		}
 
-		var request = new ScreenServletRequest(httpServletRequest);
-		if (request.isStaticRequest())
-		{
-			chain.doFilter(servletRequest, servletResponse);
-			return;
-		}
-
-		var user = userInstance.get();
 		chain.doFilter(servletRequest, servletResponse);
-		if (httpServletResponse.isCommitted())
-			return;
-
-		var authorization = request.getAuthorization();
-		if (authorization == null)
-			return;
-
-		var token = authorization.token();
-		if (token == null)
-			return;
-
-		var response = new ScreenServletResponse(httpServletResponse);
-		if (user == null || user.getId() == null)
-		{
-			if (authorization instanceof CookieAuthorization)
-				response.revokeSessionCookie(request);
-			return;
-		}
-
-		try
-		{
-			token = Credentials.parse(token).refresh().toString();
-			if (authorization instanceof CookieAuthorization)
-				response.createSessionCookie(request, token);
-			else if (authorization instanceof BearerAuthorization)
-				httpServletResponse.addHeader("X-Access-Token", token);
-		} catch (UnauthorizedException ex)
-		{
-			if (authorization instanceof CookieAuthorization)
-				response.revokeSessionCookie(request);
-		}
 	}
 }

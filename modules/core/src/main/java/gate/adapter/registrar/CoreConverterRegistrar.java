@@ -1,13 +1,10 @@
 package gate.adapter.registrar;
 
 import gate.adapter.converter.*;
-import gate.adapter.converter.collections.*;
-import gate.adapter.converter.custom.*;
-
+import gate.adapter.converter.EnumSetConverter;
 import gate.lang.json.*;
 import gate.type.*;
 import gate.type.br.*;
-import gate.type.collections.*;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
 import gate.type.mime.MimeText;
@@ -17,7 +14,9 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.*;
-import java.util.*;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class CoreConverterRegistrar implements ConverterRegistrar
@@ -28,12 +27,7 @@ public class CoreConverterRegistrar implements ConverterRegistrar
 	{
 		Map<Class<?>, Converter> registry = new HashMap<>();
 
-		registry.put(Collection.class, new CollectionConverter());
-		registry.put(Set.class, new SetConverter());
-		registry.put(Map.class, new MapConverter());
-		registry.put(List.class, new CollectionConverter());
 		registry.put(EnumSet.class, new EnumSetConverter());
-
 		registry.put(BigDecimal.class, new BigDecimalConverter());
 		registry.put(boolean.class, new BooleanConverter());
 		registry.put(Boolean.class, new BooleanConverter());
@@ -69,14 +63,12 @@ public class CoreConverterRegistrar implements ConverterRegistrar
 		registry.put(Year.class, new YearConverter());
 		registry.put(Path.class, new PathConverter());
 
-		registry.put(DataGrid.class, new DataGridConverter());
 		registry.put(Data.class, new DataConverter());
 		registry.put(DataFile.class, new DataFileConverter());
 		registry.put(EMail.class, new EMailConverter());
 		registry.put(Field.class, new FieldConverter());
 		registry.put(Form.class, new FormConverter());
 		registry.put(ID.class, new IDConverter());
-		registry.put(IDS.class, new IDSConverter());
 		registry.put(IMEI.class, new IMEIConverter());
 		registry.put(LocalDateInterval.class, new LocalDateIntervalConverter());
 		registry.put(LocalDateTimeInterval.class, new LocalDateTimeIntervalConverter());
@@ -119,11 +111,6 @@ public class CoreConverterRegistrar implements ConverterRegistrar
 		registry.put(JsonScalar.class, new JsonElementConverter());
 		registry.put(JsonString.class, new JsonElementConverter());
 
-		registry.put(StringList.class, new StringListConverter());
-		registry.put(CharacterList.class, new CharacterListConverter());
-		registry.put(IntegerList.class, new IntegerListConverter());
-		registry.put(LocalDateTimeSet.class, new LocalDateTimeSetConverter());
-		registry.put(StringSet.class, new StringSetConverter());
 		return registry;
 	}
 }

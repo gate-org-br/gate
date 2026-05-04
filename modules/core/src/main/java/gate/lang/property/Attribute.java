@@ -1,18 +1,15 @@
 package gate.lang.property;
 
-import gate.constraint.Constraint;
 import gate.adapter.converter.Converter;
-import gate.error.PropertyError;
 import gate.adapter.metadata.Metadata;
+import gate.adapter.renderer.Renderer;
 import gate.annotation.Entity;
+import gate.constraint.Constraint;
 import gate.util.Reflection;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.Collection;
 
 public interface Attribute
 {
@@ -41,29 +38,7 @@ public interface Attribute
 
 	default Object createInstance(Class<?> type)
 	{
-		try
-		{
-			if (type == List.class)
-				return new ArrayList<>();
-			else if (type == Collection.class)
-				return new ArrayList<>();
-			else if (type == Set.class)
-				return new HashSet<>();
-			else if (type == Map.class)
-				return new HashMap<>();
-
-			Constructor<?> constructor = Stream.of(type.getConstructors())
-					.filter(e -> e.getParameters().length == 0).findAny().orElse(null);
-			if (constructor == null)
-				throw new PropertyError("No default constructor found in %s.", type.getName());
-			constructor.setAccessible(true);
-			return constructor.newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-		         | InvocationTargetException e)
-		{
-			throw new PropertyError("Error trying to create a instance of %s.", type.getName());
-		}
-
+		return Reflection.createInstance(type);
 	}
 
 	default Metadata getMetadata() {return Metadata.EMPTY;}
@@ -166,7 +141,7 @@ public interface Attribute
 
 	default Collection<Constraint.Implementation<?>> getConstraints()
 	{
-		return Collections.emptyList();
+		return getConverter().getConstraints();
 	}
 
 	default boolean isEntity()
@@ -177,6 +152,28 @@ public interface Attribute
 	default Converter getConverter()
 	{
 		return Converter.getConverter(getRawType());
+	}
+
+	default Renderer getRenderer()
+	{
+		return Renderer.getRenderer(getRawType());
+	}
+
+	default String getRenderedValue(Object object)
+	{
+		return getRenderer()
+				.render(getRawType(), getValue(object));
+	}
+
+	default String getConvertedValue(Object object)
+	{
+		return getConverter()
+				.toString(getRawType(), getValue(object));
+	}
+
+	default void setConvertedValue(Object object, String value)
+	{
+		setValue(object, getConverter().ofString(getGenericType(), value));
 	}
 
 	default boolean matches(Parameter parameter)

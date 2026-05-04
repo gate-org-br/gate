@@ -1,6 +1,7 @@
 package gate.constraint;
 
 import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.error.AppException;
 import gate.lang.property.Property;
 
@@ -44,7 +45,7 @@ public @interface Step
 					String name = property.getMetadata().name();
 					if (name == null)
 						name = property.toString();
-					throw new AppException(String.format("O campo %s deve ser divisível por %s.", name, Converter.render(getValue())));
+					throw new AppException(String.format("O campo %s deve ser divisível por %s.", name, Renderer.render(getValue())));
 				}
 			}
 		}

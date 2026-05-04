@@ -65,7 +65,7 @@ public class MimeData implements Mime
 	{
 		try
 		{
-			DataURL dataURL = DataURL.parse(string);
+			DataURL dataURL = DataURL.valueOf(string);
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return MimeData.of(dataURL.getContentType(), Base64.getDecoder().decode(dataURL.getData()));

@@ -4,9 +4,9 @@ import gate.adapter.metadata.*;
 import gate.lang.expression.Expression;
 import gate.type.*;
 import gate.type.br.*;
-import gate.type.collections.*;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.time.*;
 import java.util.EnumSet;
@@ -60,14 +60,10 @@ public class CoreMetadataRegistrar implements MetadataRegistrar
 		registry.put(Phone.class, new PhoneMetadata());
 		registry.put(ProcessNumber.class, new ProcessNumberMetadata());
 		registry.put(Renavam.class, new RenavamMetadata());
-		registry.put(IntegerList.class, new IntegerListMetadata());
-		registry.put(CharacterList.class, new CharacterListMetadata());
-		registry.put(LocalDateTimeSet.class, new LocalDateTimeSetMetadata());
-		registry.put(StringList.class, new StringListMetadata());
-		registry.put(StringSet.class, new StringSetMetadata());
 		registry.put(EnumSet.class, new EnumSetMetadata());
 		registry.put(Data.class, new DataMetadata());
 		registry.put(Expression.class, new ExpressionMetadata());
+		registry.put(BigDecimal.class, new BigDecimalMetadata());
 		return registry;
 	}
 }

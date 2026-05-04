@@ -1,5 +1,7 @@
 package gate.adapter.handler;
 
+import gate.adapter.renderer.Renderer;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
@@ -19,7 +21,7 @@ public class JsonTextHandler implements Handler
 	{
 		try
 		{
-			String string = Converter.toJsonText(value);
+			String string = Renderer.toJsonText(value);
 			byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
 
 			response.setCharacterEncoding("UTF-8");

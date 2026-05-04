@@ -7,27 +7,27 @@ import gate.error.HierarchyException;
 import gate.error.HttpException;
 import gate.http.ScreenServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 
 public interface Authenticator
 {
 
-	public String provider(ScreenServletRequest request,
-			HttpServletResponse response) throws AuthenticatorException;
+	String provider(ScreenServletRequest request,
+	                HttpServletResponse response) throws AuthenticatorException;
 
-	public User authenticate(ScreenServletRequest request,
-			HttpServletResponse response)
-			throws AuthenticationException,
-			HttpException,
-			HierarchyException, IOException;
+	User authenticate(ScreenServletRequest request,
+	                  HttpServletResponse response)
+			throws HttpException,
+			       HierarchyException, IOException;
 
-	public String logoutUri(ScreenServletRequest request);
+	String logoutUri(ScreenServletRequest request);
 
-	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException;
+	boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException;
 
-	public abstract Type getType();
+	Type getType();
 
-	public enum Type
+	enum Type
 	{
 		DATABASE, LDAP, OIDC
 	}

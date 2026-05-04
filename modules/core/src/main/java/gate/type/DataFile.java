@@ -103,7 +103,7 @@ public class DataFile implements Serializable
 	public void getInflatedLines(String charset, Consumer<String> consumer)
 	{
 		try (ZipInputStream stream = new ZipInputStream(new ByteArrayInputStream(getData()));
-			 BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset)))
+		     BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset)))
 		{
 			for (ZipEntry entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry())
 				if (!entry.isDirectory())
@@ -186,17 +186,17 @@ public class DataFile implements Serializable
 	@Override
 	public String toString()
 	{
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new LinkedHashMap<>();
 		map.put("filename", name);
 		return DataURL.of(ContentType.of("application", "octet-stream"), true, map,
 				Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
-	public static DataFile parse(String string) throws ConversionException
+	public static DataFile valueOf(String string) throws ConversionException
 	{
 		try
 		{
-			DataURL dataURL = DataURL.parse(string);
+			DataURL dataURL = DataURL.valueOf(string);
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return new DataFile(Base64.getDecoder().decode(string), dataURL.getParameters().get("filename"));

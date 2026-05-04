@@ -1,8 +1,8 @@
 package gate;
 
-import gate.annotation.AllowMethod;
+import gate.annotation.Get;
+import gate.annotation.Post;
 import gate.base.Screen;
-import gate.http.HttpMethod;
 import gate.type.RequestCommand;
 import org.junit.jupiter.api.Test;
 
@@ -48,8 +48,8 @@ class TestRegistryParentScreen extends Screen
 
 class MethodScreen extends Screen
 {
-	@AllowMethod(HttpMethod.GET)
-	@AllowMethod(HttpMethod.POST)
+	@Get
+	@Post
 	public void call()
 	{
 	}

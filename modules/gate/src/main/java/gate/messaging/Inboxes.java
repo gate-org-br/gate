@@ -26,8 +26,5 @@ class Inboxes
 				.toList();
 	}
 
-	void dispatch()
-	{
-		inboxes.forEach(Inbox::dispatch);
-	}
+	void dispatch() {inboxes.forEach(Inbox::dispatch);}
 }

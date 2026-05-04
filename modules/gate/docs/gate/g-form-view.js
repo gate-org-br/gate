@@ -46,8 +46,8 @@ customElements.define('g-form-view', class extends HTMLElement
 
 		if (value)
 		{
-			value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
-			value.forEach(element => {
+			value.forEach(field => {
+				let element = field.schema;
 				let label = fieldset.appendChild(document.createElement("label"));
 
 				if (element.size)
@@ -76,8 +76,8 @@ customElements.define('g-form-view', class extends HTMLElement
 				if (element.multiple)
 					span.className = "multiple";
 
-				if (element.value)
-					span.innerHTML = element.value.join("\n");
+				if (field.value)
+					span.innerHTML = field.value.join("\n");
 			});
 		}
 	}

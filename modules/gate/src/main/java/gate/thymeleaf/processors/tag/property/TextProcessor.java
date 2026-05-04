@@ -1,5 +1,6 @@
 package gate.thymeleaf.processors.tag.property;
 
+import gate.adapter.renderer.Renderer;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Sequence;
@@ -31,8 +32,8 @@ public class TextProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element,
-						   IElementTagStructureHandler handler,
-						   Object screen, Property property, Attributes attributes)
+	                       IElementTagStructureHandler handler,
+	                       Object screen, Property property, Attributes attributes)
 	{
 		attributes.put("type", "text");
 
@@ -46,13 +47,15 @@ public class TextProcessor extends PropertyProcessor
 		if (attributes.containsKey("value"))
 			attributes.put("value", property.getConverter().toString(property.getRawType(), expression.create().evaluate((String) attributes.get("value"))));
 		else if (!property.toString().endsWith("[]"))
-			attributes.put("value", property.getConverter().toString(property.getRawType(), property.getValue(screen)));
+			attributes.put("value", property.getConvertedValue(screen));
 
 		if (attributes.containsKey("options"))
 		{
 			var options = expression.create().evaluate((String) attributes.remove("options"));
-			var labels = extract(element, handler, "labels").map(expression.create()::function).orElse(Function.identity());
-			var values = extract(element, handler, "values").map(expression.create()::function).orElse(Function.identity());
+			var labels = extract(element, handler, "labels")
+					.map(expression.create()::function).orElse(Function.identity());
+			var values = extract(element, handler, "values")
+					.map(expression.create()::function).orElse(Function.identity());
 
 			Attributes parameters = new Attributes();
 			String id = "datalist-" + sequence.next();
@@ -64,7 +67,7 @@ public class TextProcessor extends PropertyProcessor
 
 			for (Object option : Toolkit.iterable(options))
 			{
-				var label = property.getConverter().render(property.getRawType(), labels.apply(option));
+				var label = Renderer.getRenderer(property.getRawType()).render(property.getRawType(), labels.apply(option));
 				var value = property.getConverter().toString(property.getRawType(), values.apply(option));
 				string.add(String.format("<option data-value='%s'>%s</option>", value, label));
 			}

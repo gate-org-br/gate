@@ -7,13 +7,14 @@ import gate.constraint.Pattern;
 import gate.error.ConversionException;
 import gate.type.SafeText;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Description("Use apenas letras, números, espaços, quebras de linha e pontuação simples.")
 public class SafeTextConverter implements Converter
 {
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		try
 		{
@@ -30,7 +31,6 @@ public class SafeTextConverter implements Converter
 		}
 	}
 
-	@Override
 	public String render(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
@@ -42,13 +42,11 @@ public class SafeTextConverter implements Converter
 		return object != null ? object.toString() : "";
 	}
 
-	@Override
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
 	}
 
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return List.of(new Pattern.Implementation(SafeText.PATTERN.pattern()));

@@ -1,6 +1,7 @@
 package gate.rest;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.jsonConverter.JsonConverter;
+import gate.lang.json.JsonElement;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -33,7 +34,7 @@ public class ObjectJsonHandler implements MessageBodyWriter<Object>, MessageBody
 	public void writeTo(Object value, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 	                    MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		entityStream.write(Converter.toJson(value).getBytes());
+		entityStream.write(String.valueOf(JsonConverter.toJson(value)).getBytes());
 	}
 
 	@Override
@@ -52,6 +53,6 @@ public class ObjectJsonHandler implements MessageBodyWriter<Object>, MessageBody
 				genericType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 		}
 		String string = new String(in.readAllBytes());
-		return Converter.fromJson(type, genericType, string);
+		return JsonConverter.fromJson(genericType, JsonElement.parse(string));
 	}
 }

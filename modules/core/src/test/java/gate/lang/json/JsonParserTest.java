@@ -64,9 +64,10 @@ public class JsonParserTest
 		JsonString string = JsonString.of("Line 1\nLine 2\tTabbed");
 		String json = JsonElement.stringify(string);
 
-		assertEquals("Line 1\nLine 2\tTabbed", JsonElement.parse(json).toString());
-		assertEquals("John\"s", JsonElement.parse("\"John\\\"s\"").toString());
-		assertEquals("https://host/path", JsonElement.parse("\"https:\\/\\/host\\/path\"").toString());
+		assertEquals("Line 1\nLine 2\tTabbed", JsonElement.parse(json).unwrap());
+		assertEquals("\"John\\\"s\"", JsonElement.parse("\"John\\\"s\"").toString());
+		assertEquals("John\"s", JsonElement.parse("\"John\\\"s\"").unwrap());
+		assertEquals("https://host/path", JsonElement.parse("\"https:\\/\\/host\\/path\"").unwrap());
 	}
 
 	@Test

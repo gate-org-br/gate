@@ -6,10 +6,11 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.ServletContext;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.Manifest;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 /**
  * Produces a Version object with the version number of the current application.
@@ -29,7 +30,7 @@ public class VersionProducer
 	@Named(value = "version")
 	public Version produce() throws IOException
 	{
-		return Version.of(version != null ? version : manifest());
+		return Version.valueOf(version != null ? version : manifest());
 	}
 
 	private String manifest() throws IOException
@@ -37,8 +38,8 @@ public class VersionProducer
 		try (InputStream inputStream = servletContext.getResourceAsStream("/META-INF/MANIFEST.MF"))
 		{
 			return inputStream != null
-				? new Manifest(inputStream).getMainAttributes().getValue("Implementation-Version")
-				: null;
+					? new Manifest(inputStream).getMainAttributes().getValue("Implementation-Version")
+					: null;
 		}
 	}
 }

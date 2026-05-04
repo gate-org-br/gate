@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
@@ -34,7 +36,7 @@ public class ConditionProcessor extends TagProcessor
 		else if (element.hasAttribute("otherwise"))
 		{
 			String otherwise = element.getAttributeValue("otherwise");
-			otherwise = Converter.render(expression.create().evaluate(otherwise));
+			otherwise = Renderer.render(expression.create().evaluate(otherwise));
 			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
 			handler.replaceWith(otherwise, false);
 		} else

@@ -15,14 +15,14 @@ public class TaxColumnMapper implements ColumnMapper
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException
 	{
 		BigDecimal value = rs.getBigDecimal(index);
-		return rs.wasNull() ? null : new Tax(value);
+		return rs.wasNull() ? null : Tax.valueOf(value);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
 	{
 		BigDecimal value = rs.getBigDecimal(fields);
-		return rs.wasNull() ? null : new Tax(value);
+		return rs.wasNull() ? null : Tax.valueOf(value);
 	}
 
 	@Override

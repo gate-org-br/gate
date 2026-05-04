@@ -140,7 +140,7 @@ public final class LocalDateInterval implements Serializable, Comparable<LocalDa
 		return LocalDateTimeInterval.of(min.atTime(LocalTime.MIN), max.atTime(LocalTime.MAX));
 	}
 
-	public static LocalDateInterval of(String string) throws ParseException
+	public static LocalDateInterval valueOf(String string) throws ParseException
 	{
 		return FORMATTER.parse(string);
 	}

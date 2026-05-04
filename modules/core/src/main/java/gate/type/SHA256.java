@@ -11,7 +11,7 @@ import java.util.Objects;
 public class SHA256 implements Serializable
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class SHA256 implements Serializable
 		this.value = value;
 	}
 
-	public static SHA256 of(String string)
+	public static SHA256 valueOf(String string)
 	{
 		return new SHA256(string);
 	}
@@ -61,7 +61,7 @@ public class SHA256 implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof SHA256
-				&& Objects.equals(((SHA256) obj).value, value);
+		       && Objects.equals(((SHA256) obj).value, value);
 	}
 
 	@Override

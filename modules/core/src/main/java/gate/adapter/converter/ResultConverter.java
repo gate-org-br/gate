@@ -4,13 +4,12 @@ import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.type.Result;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 public class ResultConverter implements Converter
 {
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
@@ -23,25 +22,13 @@ public class ResultConverter implements Converter
 	}
 
 	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return render(type, object);
-	}
-
-	@Override
 	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		if (string == null)
 			return null;
@@ -50,7 +37,7 @@ public class ResultConverter implements Converter
 		if (string.isEmpty())
 			return null;
 
-		return Result.of(string);
+		return Result.valueOf(string);
 	}
 
 }

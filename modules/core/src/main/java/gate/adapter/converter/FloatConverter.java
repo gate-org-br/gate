@@ -2,22 +2,16 @@ package gate.adapter.converter;
 
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
+import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
-import java.util.Locale;
 
 public class FloatConverter implements Converter
 {
-
-	@Override
+	private static final java.util.regex.Pattern ISO_PATTERN
+			= java.util.regex.Pattern.compile("[+-]?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?");
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
@@ -30,67 +24,35 @@ public class FloatConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		try
 		{
-			return string != null && string.trim().length() > 0 ? Float.valueOf(getFormat().parse(string).floatValue()) : null;
-		} catch (ParseException e)
+			if (string == null)
+				return null;
+
+			string = string.trim();
+			if (string.isEmpty())
+				return null;
+
+			return ISO_PATTERN.matcher(string).matches()
+					? Float.valueOf(string)
+					: Float.valueOf(CurrentLocale.parseDecimal(string).floatValue());
+		} catch (NumberFormatException e)
 		{
 			throw new ConversionException(String.format("%s não é um decimal válido.", string));
 		}
 	}
 
 	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? getFormat().format(object) : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, object) : "";
-	}
-
-	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		return object != null ? getFormat().format(object) : "";
-	}
-
-	private NumberFormat getFormat()
-	{
-		NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
-		format.setMinimumFractionDigits(1);
-		return format;
+		return object != null ? CurrentLocale.getDecimalFormat().format(object) : "";
 	}
 
 	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
+	public String toISOString(Class<?> type, Object object)
 	{
-		switch (scanner.getCurrent().getType())
-		{
-			case NULL:
-				scanner.scan();
-				return null;
-			case NUMBER:
-				Float value = Float.valueOf(scanner.getCurrent().toString());
-				scanner.scan();
-				return value;
-			default:
-				throw new ConversionException(scanner.getCurrent() + " is not a number");
-		}
-	}
-
-	@Override
-	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
-	{
-		if (object == null)
-			writer.write(JsonToken.Type.NULL, null);
-		else if (object instanceof Float)
-			writer.write(JsonToken.Type.NUMBER, object.toString());
-		else
-			throw new ConversionException(object.getClass().getName() + " is not a Float");
+		return object != null ? object.toString() : "";
 	}
 }

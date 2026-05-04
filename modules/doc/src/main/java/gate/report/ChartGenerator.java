@@ -13,7 +13,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.util.TableOrder;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 
 public class ChartGenerator
 {
@@ -25,7 +25,7 @@ public class ChartGenerator
 
 		for (T obj : chart.getDataset())
 		{
-			String categoryName = Converter.render(chart.getCategory().getValue().apply(obj));
+			String categoryName = Renderer.render(chart.getCategory().getValue().apply(obj));
 
 			for (Value<T> value : chart.getValues())
 			{

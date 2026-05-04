@@ -56,8 +56,11 @@ export default class GFormDialog extends GWindow
 
 	static pick(value, options)
 	{
-		return GFormDialog.edit(value.map(e => typeof e === 'string' ? {name: e, required: true} : e), options)
-				.then(fields => fields.map(field => field.multiple || !field.value ? field.value : field.value[0]));
+		return GFormDialog.edit(value, options)
+				.then(fields => fields.map(field =>
+				{
+					return field.schema.multiple || !field.value ? field.value : field.value[0];
+				}));
 	}
 
 	static edit(value, options)

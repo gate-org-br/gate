@@ -55,7 +55,7 @@ public class Dictionary extends ReportElement
 		Dictionary dictionary = new Dictionary();
 
 		if (jsonObject.get("caption") instanceof JsonString caption)
-			dictionary.setCaption(caption.getValue());
+			dictionary.setCaption(caption.unwrap());
 
 		var dataset = jsonObject;
 
@@ -72,7 +72,7 @@ public class Dictionary extends ReportElement
 		dataset.entrySet().stream().forEach(element ->
 		{
 			if (element.getValue() instanceof JsonString value)
-				dictionary.put(element.getKey(), value.getValue());
+				dictionary.put(element.getKey(), value.unwrap());
 			else if (element.getValue() instanceof JsonNumber value)
 				dictionary.put(element.getKey(), value.getValue());
 			else if (element.getValue() instanceof JsonBoolean value)

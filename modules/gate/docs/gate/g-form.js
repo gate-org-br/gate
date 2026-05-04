@@ -33,8 +33,10 @@ import './g-selectn.js';
 import mask from './mask.js';
 import stylesheets from './stylesheets.js';
 
-function create(form, element)
+function create(form, field)
 {
+	let element = field.schema;
+	let value = field.value;
 	let label = document.createElement("label");
 
 	if (element.size)
@@ -79,12 +81,12 @@ function create(form, element)
 			input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
 			input.options = element.options.map(option => ({"label": option, "value": option}));
 
-			if (element.value)
-				if (Array.isArray(element.value)
-					&& element.value.length)
-					input.value = element.value;
+			if (value)
+				if (Array.isArray(value)
+					&& value.length)
+					input.value = value;
 				else
-					input.value = [element.value];
+					input.value = [value];
 		} else
 		{
 			input = span.appendChild(document.createElement("select"));
@@ -99,12 +101,12 @@ function create(form, element)
 				option.innerText = value;
 			});
 
-			if (element.value)
-				if (Array.isArray(element.value)
-					&& element.value.length)
-					input.value = element.value[0];
+			if (value)
+				if (Array.isArray(value)
+					&& value.length)
+					input.value = value[0];
 				else
-					input.value = element.value;
+					input.value = value;
 		}
 	} else if (element.multiple)
 	{
@@ -114,12 +116,12 @@ function create(form, element)
 
 		input.addEventListener("input", () => form.dispatchEvent(new CustomEvent("input")));
 		input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
-		if (element.value)
-			if (Array.isArray(element.value)
-				&& element.value.length)
-				input.value = element.value.join("\n");
+		if (value)
+			if (Array.isArray(value)
+				&& value.length)
+				input.value = value.join("\n");
 			else
-				input.value = element.value;
+				input.value = value;
 	} else
 	{
 		input = span.appendChild(document.createElement("input"));
@@ -128,12 +130,12 @@ function create(form, element)
 
 		input.addEventListener("input", () => form.dispatchEvent(new CustomEvent("input")));
 		input.addEventListener("change", () => form.dispatchEvent(new CustomEvent("change")));
-		if (element.value)
-			if (Array.isArray(element.value)
-				&& element.value.length)
-				input.value = element.value[0];
+		if (value)
+			if (Array.isArray(value)
+				&& value.length)
+				input.value = value[0];
 			else
-				input.value = element.value;
+				input.value = value;
 	}
 
 	input.name = element.name;
@@ -206,12 +208,11 @@ customElements.define('g-form', class extends HTMLElement
 
 		if (value)
 		{
-			value = value.map(e => typeof e === 'string' ? {name: e, required: true} : e);
 			value.forEach(element => fieldset.appendChild(create(this, element)));
 		}
 
 		this.#internals.setValidity({});
-		this.#internals.setFormValue(JSON.stringify(value));
+		this.#internals.setFormValue(JSON.stringify(this.value));
 		if (!this.checkValidity())
 			this.#internals.setValidity({customError: true}, "Formulário inválido.");
 	}
@@ -223,60 +224,61 @@ customElements.define('g-form', class extends HTMLElement
 			.filter(e => e.tagName === "LABEL")
 			.map(label => {
 
-				let object = {};
+				let object = {schema: {}};
+				let schema = object.schema;
 
 				if (label.hasAttribute("data-size"))
 					switch (label.getAttribute("data-size"))
 					{
 						case "1":
-							object.size = "0";
+							schema.size = "0";
 							break;
 						case "2":
-							object.size = "1";
+							schema.size = "1";
 							break;
 						case "4":
-							object.size = "2";
+							schema.size = "2";
 							break;
 						case "8":
-							object.size = "3";
+							schema.size = "3";
 							break;
 					}
 
 				let element = label.children[0].children[0];
 
 				if (element.id)
-					object.id = element.id;
+					schema.id = element.id;
 				if (element.name)
-					object.name = element.name;
+					schema.name = element.name;
 				if (element.hasAttribute("required"))
-					object.required = true;
+					schema.required = true;
 				if (element.hasAttribute("readonly"))
-					object.readonly = true;
+					schema.readonly = true;
 				if (element.title)
-					object.description = element.title;
+					schema.description = element.title;
 				if (element.hasAttribute("pattern"))
-					object.maxlength = element.getAttribute("pattern");
+					schema.pattern = element.getAttribute("pattern");
 				if (element.hasAttribute("data-mask"))
-					object.mask = element.getAttribute("data-mask");
+					schema.mask = element.getAttribute("data-mask");
 				if (element.hasAttribute("maxlength"))
-					object.maxlength = Number(element.getAttribute("maxlength"));
+					schema.maxlength = Number(element.getAttribute("maxlength"));
 
 
 				switch (element.tagName)
 				{
 					case "TEXTAREA":
-						object.multiple = true;
+						schema.multiple = true;
 						if (element.value)
 							object.value = element.value.split("\n");
 						break;
 					case "G-SELECTN":
-						object.multiple = true;
-						object.options = element.options.map(e => e.value);
+						schema.multiple = true;
+						schema.options = element.options.map(e => e.value);
 						if (element.value && element.value.length)
 							object.value = element.value;
 						break;
 					case "SELECT":
-						object.options = Array.from(element.children)
+						schema.options = Array.from(element.children)
 							.slice(1).map(option => option.value);
 						if (element.value)
 							object.value = [element.value];

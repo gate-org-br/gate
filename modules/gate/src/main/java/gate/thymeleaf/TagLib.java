@@ -1,5 +1,7 @@
 package gate.thymeleaf;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.annotation.*;
 import gate.adapter.converter.Converter;
 import gate.entity.User;
@@ -82,12 +84,12 @@ public class TagLib
 
 	public static String print(Object object)
 	{
-		return Converter.render(object);
+		return Renderer.render(object);
 	}
 
 	public static String format(Object object, String format)
 	{
-		return Converter.render(object, format);
+		return Renderer.render(object, format);
 	}
 
 	public static Class<?> type(String type)

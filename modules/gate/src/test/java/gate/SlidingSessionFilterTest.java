@@ -30,7 +30,7 @@ class SlidingSessionFilterTest
 		var chain = TestServletSupport.chain();
 		request.attributes().put(User.class.getName(), new User().setId(ID.valueOf(1)));
 
-		filter(new User().setId(ID.valueOf(1))).doFilter(request.request(), response.response(), chain.chain());
+		new SlidingSessionFilter().doFilter(request.request(), response.response(), chain.chain());
 
 		assertTrue(chain.wasCalled());
 		assertNotNull(response.header("Set-Cookie"));
@@ -53,7 +53,7 @@ class SlidingSessionFilterTest
 		var chain = TestServletSupport.chain();
 		request.attributes().put(User.class.getName(), new User().setId(ID.valueOf(1)));
 
-		filter(new User().setId(ID.valueOf(1))).doFilter(request.request(), response.response(), chain.chain());
+		new SlidingSessionFilter().doFilter(request.request(), response.response(), chain.chain());
 
 		assertTrue(chain.wasCalled());
 		assertNotNull(response.header("X-Access-Token"));
@@ -72,19 +72,13 @@ class SlidingSessionFilterTest
 		var response = TestServletSupport.response();
 		var chain = TestServletSupport.chain();
 
-		assertDoesNotThrow(() -> filter(new User().setId(ID.valueOf(1)))
+		assertDoesNotThrow(() -> new SlidingSessionFilter()
 				.doFilter(request.request(), response.response(), chain.chain()));
 
 		assertTrue(chain.wasCalled());
 		assertTrue(response.headers().isEmpty());
 	}
 
-	private static SlidingSessionFilter filter(User user)
-	{
-		var filter = new SlidingSessionFilter();
-		filter.userInstance = instance(user);
-		return filter;
-	}
 
 	@SuppressWarnings("unchecked")
 	private static Instance<User> instance(User user)

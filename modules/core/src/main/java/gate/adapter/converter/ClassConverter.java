@@ -3,20 +3,19 @@ package gate.adapter.converter;
 import gate.constraint.Constraint;
 import gate.error.AppError;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 public class ClassConverter implements Converter
 {
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string)
+	public Object ofString(Type type, String string)
 	{
 		try
 		{
@@ -31,18 +30,6 @@ public class ClassConverter implements Converter
 	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? ((Class<?>) object).getName() : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? ((Class<?>) object).getName() : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, render(type, object)) : "";
 	}
 
 }

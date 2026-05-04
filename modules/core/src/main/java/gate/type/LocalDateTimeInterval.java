@@ -80,7 +80,7 @@ public final class LocalDateTimeInterval implements Serializable, Comparable<Loc
 		return getDuration().compareTo(value.getDuration());
 	}
 
-	public static LocalDateTimeInterval of(String string) throws ParseException
+	public static LocalDateTimeInterval valueOf(String string) throws ParseException
 	{
 		return FORMATTER.parse(string);
 	}

@@ -24,9 +24,10 @@ import GFieldEditorDialog from './g-field-editor-dialog.js';
 
 function format(value)
 {
-	return [value.name, value.mask, [1, 2, 4, 8][value.size] || "", !!value.multiple,
-		!!value.required, value.maxlength, value.pattern, value.description,
-		value.options, value.value];
+	let schema = value.schema;
+	return [schema.name, schema.mask, [1, 2, 4, 8][schema.size] || "", !!schema.multiple,
+		!!schema.required, schema.maxlength, schema.pattern, schema.description,
+		schema.options, value.value];
 }
 
 customElements.define('g-form-editor', class extends HTMLElement

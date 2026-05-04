@@ -6,6 +6,7 @@ import gate.lang.json.JsonString;
 import gate.type.mime.MimeData;
 import gate.type.mime.MimeDataFile;
 import gate.util.Resource;
+
 import java.io.File;
 import java.net.URL;
 import java.text.ParseException;
@@ -45,7 +46,7 @@ public final class Image extends ReportElement
 	{
 		try
 		{
-			var dataUrl = DataURL.parse(source);
+			var dataUrl = DataURL.valueOf(source);
 			return new Image(dataUrl.getParameters().getOrDefault("filename",
 					"%s.%s".formatted(dataUrl.getContentType().getType(),
 							dataUrl.getContentType().getSubtype())),
@@ -60,7 +61,7 @@ public final class Image extends ReportElement
 	{
 		if (jsonObject.get("data") instanceof JsonString data)
 		{
-			var image = of(data.getValue());
+			var image = of(data.unwrap());
 
 			if (jsonObject.get("style") instanceof JsonString style)
 				image.style(Style.of(style));

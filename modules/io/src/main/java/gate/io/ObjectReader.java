@@ -1,10 +1,11 @@
 package gate.io;
 
+import gate.adapter.converter.Converter;
+import gate.lang.json.JsonElement;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
-
-import gate.adapter.converter.Converter;
 
 public class ObjectReader<T> implements Reader<Optional<T>>
 {
@@ -45,7 +46,7 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 	{
 		String string = StringReader.getInstance().read(is);
 		if ("application/json".equalsIgnoreCase(contentType))
-			return Optional.ofNullable(Converter.fromJson(type, elementType, string));
+			return Optional.ofNullable(JsonElement.parse(string).decode(type, elementType));
 		return Optional.ofNullable(Converter.fromString(type, string));
 	}
 

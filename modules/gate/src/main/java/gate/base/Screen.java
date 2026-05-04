@@ -55,7 +55,7 @@ public abstract class Screen extends Base
 		this.response = response;
 
 		var graph = request.getPropertyGraph(getClass());
-		graph.get(this, request::getParameter);
+		graph.populate(this, request::getParameter);
 	}
 
 	public Object execute(Method method) throws Throwable
@@ -134,17 +134,17 @@ public abstract class Screen extends Base
 		return "PATCH".equals(request.getMethod());
 	}
 
+	public boolean isOPTIONS()
+	{
+		return "PATCH".equals(request.getMethod());
+	}
+
 	public String getMethod()
 	{
 		return request.getMethod().toLowerCase();
 	}
 
-	public List<String> getMessages()
-	{
-		if (messages == null)
-			messages = new LinkedList<>();
-		return messages;
-	}
+	public List<String> getMessages() {return messages == null ? messages = new LinkedList<>() : messages;}
 
 	public void setMessages(Exception ex)
 	{
@@ -166,24 +166,14 @@ public abstract class Screen extends Base
 		this.messages = messages;
 	}
 
-	public Integer getPageIndx()
-	{
-		if (pageIndx == null)
-			pageIndx = 0;
-		return pageIndx;
-	}
+	public Integer getPageIndx() {return pageIndx == null ? pageIndx = 0 : pageIndx;}
 
 	public void setPageIndx(Integer pageIndx)
 	{
 		this.pageIndx = pageIndx;
 	}
 
-	public Integer getPageSize()
-	{
-		if (pageSize == null)
-			pageSize = getDefaultPageSize();
-		return pageSize;
-	}
+	public Integer getPageSize() {return pageSize == null ? pageSize = getDefaultPageSize() : pageSize;}
 
 	public void setPageSize(Integer pageSize)
 	{

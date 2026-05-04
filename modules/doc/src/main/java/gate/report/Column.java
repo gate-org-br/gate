@@ -189,7 +189,7 @@ public final class Column<T> extends Element
 
 		var head = jsonObject.get("head");
 		if (head instanceof JsonString jsonString)
-			column.head(jsonString.getValue());
+			column.head(jsonString.unwrap());
 		else if (head instanceof JsonNumber jsonNumber)
 			column.head(jsonNumber.toString());
 		else if (head instanceof JsonBoolean jsonBoolean)
@@ -216,7 +216,7 @@ public final class Column<T> extends Element
 			column.body(e ->
 			{
 				if (e instanceof JsonCollection jsonCollection)
-					return jsonCollection.getProperty(string.getValue()).filter(value -> value instanceof JsonScalar)
+					return jsonCollection.getProperty(string.unwrap()).filter(value -> value instanceof JsonScalar)
 							.map(value -> (JsonScalar) value).map(JsonScalar::getScalarValue).orElse("");
 				else
 					throw new IllegalArgumentException("Invalid column property");

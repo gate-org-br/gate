@@ -1,11 +1,13 @@
 package gate.type;
 
+import org.junit.jupiter.api.Test;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.Test;
 
 public class VersionTest
 {
@@ -14,7 +16,7 @@ public class VersionTest
 	public void test1() throws ParseException
 	{
 		String expected = "1.2.3";
-		Version version = Version.of(expected);
+		Version version = Version.valueOf(expected);
 		assertEquals(expected, version.toString());
 	}
 
@@ -22,7 +24,7 @@ public class VersionTest
 	public void test2() throws ParseException
 	{
 		String expected = "1.2.3-SNAPSHOT";
-		Version version = Version.of(expected);
+		Version version = Version.valueOf(expected);
 		assertEquals(expected, version.toString());
 	}
 
@@ -30,14 +32,14 @@ public class VersionTest
 	public void test3() throws ParseException
 	{
 		String expected = "1.2.3-RC-01";
-		Version version = Version.of(expected);
+		Version version = Version.valueOf(expected);
 		assertEquals(expected, version.toString());
 	}
 
 	@Test
 	public void test4() throws ParseException
 	{
-		Version version = Version.of("1.2.3-RC-02");
+		Version version = Version.valueOf("1.2.3-RC-02");
 		assertEquals(1, version.getMajor());
 		assertEquals(2, version.getMinor());
 		assertEquals(3, version.getPatch());
@@ -49,12 +51,12 @@ public class VersionTest
 	public void test5() throws ParseException
 	{
 		List<Version> versions = new ArrayList<>();
-		versions.add(Version.of("1.2.3"));
-		versions.add(Version.of("1.2.3-SNAPSHOT"));
-		versions.add(Version.of("1.2.3-RC-01"));
-		versions.add(Version.of("2.2.3-SNAPSHOT"));
-		versions.add(Version.of("3.2.3-RC-01"));
-		versions.add(Version.of("3.2.3"));
+		versions.add(Version.valueOf("1.2.3"));
+		versions.add(Version.valueOf("1.2.3-SNAPSHOT"));
+		versions.add(Version.valueOf("1.2.3-RC-01"));
+		versions.add(Version.valueOf("2.2.3-SNAPSHOT"));
+		versions.add(Version.valueOf("3.2.3-RC-01"));
+		versions.add(Version.valueOf("3.2.3"));
 		Collections.sort(versions);
 
 		assertEquals("3.2.3", versions.get(0).toString());

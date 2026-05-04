@@ -6,7 +6,9 @@ import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.error.ConversionException;
+import gate.util.Reflection;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -18,19 +20,18 @@ import java.util.regex.Pattern;
 public class LocalDateTimeConverter implements Converter
 {
 
-	private static final Pattern PATTERN = java.util.regex.Pattern.compile("^[0-9]{2}\\/[0-9]{2}\\/[0-9]{4} [0-9]{2}:[0-9]{2}$");
+	private static final Pattern PATTERN = java.util.regex.Pattern.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}$");
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
 	private static final Pattern SIMPLE_PATTERN = java.util.regex.Pattern.compile("^[0-9]{12}$");
 	private static final DateTimeFormatter SIMPLE_FORMATTER = DateTimeFormatter.ofPattern("ddMMyyyyHHmm");
 
-	private static final Pattern ISO_PATTERN = java.util.regex.Pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$");
-	private static final DateTimeFormatter IS0_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+	private static final Pattern ISO_PATTERN = java.util.regex.Pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2})?$");
+	private static final DateTimeFormatter IS0_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS = List.of(new Maxlength.Implementation(19),
-			new gate.constraint.Pattern.Implementation("^[0-9]{12}|[0-9]{2}\\/[0-9]{2}\\/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}$"));
+			new gate.constraint.Pattern.Implementation("^(?:[0-9]{12}|[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}|[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}(?::[0-9]{2})?)$"));
 
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return CONSTRAINTS;
@@ -45,23 +46,11 @@ public class LocalDateTimeConverter implements Converter
 	@Override
 	public String toISOString(Class<?> type, Object object)
 	{
-		return object != null ? IS0_FORMATTER.format((TemporalAccessor) object) : "";
+		return object != null ? object.toString() : "";
 	}
 
 	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? FORMATTER.format((TemporalAccessor) object) : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? DateTimeFormatter.ofPattern(format).format((TemporalAccessor) object) : "";
-	}
-
-	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		if (string == null)
 			return null;
@@ -85,7 +74,7 @@ public class LocalDateTimeConverter implements Converter
 			throw new ConversionException(ex,
 					"%s não é uma data/hora válida.%n%s.",
 					ex.getParsedString(),
-					Metadata.getMetadata(type).description());
+						Metadata.getMetadata(Reflection.getRawType(type)).description());
 		}
 	}
 

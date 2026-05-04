@@ -1,6 +1,6 @@
 package gate.error;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 
 import java.util.Collections;
 import java.util.List;
@@ -83,7 +83,7 @@ public class AppException extends RuntimeException
 	@Override
 	public String getMessage()
 	{
-		return Converter.render(getMessages());
+		return Renderer.render(getMessages());
 	}
 
 	/**

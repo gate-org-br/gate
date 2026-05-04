@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
@@ -44,13 +46,13 @@ public class TDProcessor extends TagModelProcessor
 			var format = attributes.remove("format");
 			format = expression.create().evaluate((String) format);
 
-			String text = Converter.render(value, (String) format);
+			String text = Renderer.render(value, (String) format);
 
 			if (text.isBlank() && attributes.containsKey("empty"))
 			{
 				var empty = attributes.remove("empty");
 				empty = expression.create().evaluate((String) empty);
-				text = Converter.render(empty);
+				text = Renderer.render(empty);
 			}
 
 			text = text.replaceAll("\\n", "<br/>");

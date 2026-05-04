@@ -1,6 +1,7 @@
 package gate.report;
 
 import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.lang.json.*;
 import gate.language.Language;
 import gate.type.DataGrid;
@@ -192,12 +193,12 @@ public class Grid<T> extends ReportElement
 	public static Grid<Object[]> of(String caption, DataGrid dataset)
 	{
 		Grid<Object[]> grid = new Grid<>(dataset).setCaption(caption).add(new Column<Object[]>()
-				.head(dataset.getHead()[0]).body(e -> Converter.render(e[0])).style(new Style().width(90).left()));
+				.head(dataset.getHead()[0]).body(e -> Renderer.render(e[0])).style(new Style().width(90).left()));
 
 		for (int i = 1; i < dataset.getHead().length; i++)
 		{
 			var index = i;
-			grid.add(new Column<Object[]>().head(dataset.getHead()[i]).body(e -> Converter.render(e[index]))
+			grid.add(new Column<Object[]>().head(dataset.getHead()[i]).body(e -> Renderer.render(e[index]))
 					.style(new Style().width(10)));
 		}
 
@@ -211,7 +212,7 @@ public class Grid<T> extends ReportElement
 		{
 			Grid<JsonElement> grid = new Grid<>(dataset);
 			if (jsonObject.get("caption") instanceof JsonString caption)
-				grid.setCaption(caption.toString());
+				grid.setCaption(caption.unwrap());
 
 			for (JsonElement element : columns)
 			{

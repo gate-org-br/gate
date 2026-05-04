@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.type.Attributes;
@@ -63,7 +65,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 
 		body.add(extract(element, handler, "g:empty")
 				.map(expression::evaluate)
-				.map(Converter::render)
+				.map(Renderer::render)
 				.orElse("<option></option>"));
 
 		Function<Object, Object> groups
@@ -78,7 +80,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 					.entrySet()
 					.forEach(group ->
 					{
-						body.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
+						body.add("<optgroup label='" + Renderer.render(group.getKey()) + "'>");
 						print(0, body, group.getValue(), labels, values, children, value);
 						body.add("</optgroup>");
 					});
@@ -103,7 +105,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-			           + Converter.render(labels.apply(object)) + "</option>");
+			           + Renderer.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.jsonConverter.JsonConverter;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ public class JsonHandler implements Handler
 	{
 		try
 		{
-			String string = Converter.toJson(value);
+			String string = String.valueOf(JsonConverter.toJson(value));
 			byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
 
 			response.setCharacterEncoding("UTF-8");

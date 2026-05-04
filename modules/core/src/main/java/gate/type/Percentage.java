@@ -23,14 +23,6 @@ public class Percentage extends Number implements Comparable<Percentage>
 		this.value = value.setScale(2, RoundingMode.HALF_EVEN);
 	}
 
-	public Percentage(String value) throws ParseException
-	{
-		DecimalFormat format = new DecimalFormat("0.00");
-		format.setCurrency(Currency.getInstance(Locale.getDefault()));
-		format.setParseBigDecimal(true);
-		this.value = (BigDecimal) format.parse(value);
-	}
-
 	@Override
 	public String toString()
 	{
@@ -115,5 +107,13 @@ public class Percentage extends Number implements Comparable<Percentage>
 	public double doubleValue()
 	{
 		return value.doubleValue();
+	}
+
+	public static Percentage valueOf(String string) throws ParseException
+	{
+		DecimalFormat format = new DecimalFormat("0.00");
+		format.setCurrency(Currency.getInstance(Locale.getDefault()));
+		format.setParseBigDecimal(true);
+		return new Percentage((BigDecimal) format.parse(string));
 	}
 }

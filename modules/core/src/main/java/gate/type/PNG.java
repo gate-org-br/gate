@@ -1,12 +1,12 @@
 package gate.type;
 
-import gate.type.collections.StringList;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.stream.Collectors;
 
 public class PNG implements Serializable
 {
@@ -18,48 +18,51 @@ public class PNG implements Serializable
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	public PNG(DataFile file)
+	private PNG(int w, int h, byte[] bytes)
 	{
-		this(file.getData());
+		this.w = w;
+		this.h = h;
+		this.bytes = bytes;
 	}
 
-	public PNG(String string)
+	public static PNG valueOf(DataFile file)
+	{
+		return PNG.valueOF(file.getData());
+	}
+
+	public static PNG valueOf(String string)
 	{
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(Base64.getDecoder().decode(string.split(",")[1])))
 		{
 			BufferedImage image = ImageIO.read(bais);
-			w = image.getWidth();
-			h = image.getHeight();
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
 				ImageIO.write(image, "png", baos);
 				baos.flush();
-				this.bytes = baos.toByteArray();
+				byte[] bytes = baos.toByteArray();
+
+				return new PNG(image.getWidth(), image.getHeight(), bytes);
 			}
 		} catch (IOException e)
 		{
-			throw new IllegalArgumentException(String.format("The image type must be: %s", new StringList(ImageIO
-					.getReaderFileSuffixes())));
+			throw new IllegalArgumentException(String.format("The image type must be: %s", suffixes()));
 		}
 	}
 
-	public PNG(byte[] bytes)
+	public static PNG valueOF(byte[] bytes)
 	{
 		try (ByteArrayInputStream bais = new ByteArrayInputStream(bytes))
 		{
 			BufferedImage image = ImageIO.read(bais);
-			w = image.getWidth();
-			h = image.getHeight();
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
 				ImageIO.write(image, "png", baos);
 				baos.flush();
-				this.bytes = baos.toByteArray();
+				return new PNG(image.getWidth(), image.getHeight(), baos.toByteArray());
 			}
 		} catch (IOException e)
 		{
-			throw new IllegalArgumentException(String.format("The image type must be: %s",
-					new StringList(ImageIO.getReaderFileSuffixes())));
+			throw new IllegalArgumentException(String.format("The image type must be: %s", suffixes()));
 		}
 	}
 
@@ -103,13 +106,17 @@ public class PNG implements Serializable
 			try (ByteArrayOutputStream baos = new ByteArrayOutputStream())
 			{
 				ImageIO.write(image, "png", baos);
-				return new PNG(baos.toByteArray());
+				return new PNG(w, h, baos.toByteArray());
 			}
 		} catch (IOException e)
 		{
-			throw new IllegalArgumentException("The image type must be: " + new StringList(ImageIO
-					.getReaderFileSuffixes()));
+			throw new IllegalArgumentException("The image type must be: " + suffixes());
 		}
+	}
+
+	private static String suffixes()
+	{
+		return Arrays.stream(ImageIO.getReaderFileSuffixes()).collect(Collectors.joining("\n"));
 	}
 
 	public PNG wscale(int w)

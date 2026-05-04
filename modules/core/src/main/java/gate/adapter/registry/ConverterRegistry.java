@@ -1,6 +1,5 @@
 package gate.adapter.registry;
 
-import gate.adapter.AdapterRegistry;
 import gate.adapter.converter.Converter;
 import gate.adapter.converter.DefaultConverter;
 import gate.adapter.converter.ObjectConverter;

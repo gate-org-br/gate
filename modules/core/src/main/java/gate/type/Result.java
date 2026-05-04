@@ -164,7 +164,7 @@ public class Result implements Serializable
 		SUCCESS, WARNING, ERROR
 	}
 
-	public static Result of(String string) throws ConversionException
+	public static Result valueOf(String string) throws ConversionException
 	{
 		JsonObject jsonObject = JsonObject.parse(string);
 		return new Result(Type.valueOf(jsonObject.getString("type").orElseThrow(() -> new ConversionException("Missing result type"))),

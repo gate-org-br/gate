@@ -16,17 +16,19 @@ public class Tax implements Serializable
 
 	private final BigDecimal value;
 
-	public Tax(BigDecimal value)
+	private Tax(BigDecimal value) {this.value = value;}
+
+	public static Tax valueOf(BigDecimal value)
 	{
-		this.value = value.setScale(6, RoundingMode.UNNECESSARY);
+		return new Tax(value.setScale(6, RoundingMode.HALF_EVEN));
 	}
 
-	public Tax(String value) throws ParseException
+	public static Tax valueOf(String string) throws ParseException
 	{
 		DecimalFormat format = new DecimalFormat("0.000000");
 		format.setCurrency(Currency.getInstance(Locale.getDefault()));
 		format.setParseBigDecimal(true);
-		this.value = (BigDecimal) format.parse(value);
+		return new Tax((BigDecimal) format.parse(string));
 	}
 
 	@Override

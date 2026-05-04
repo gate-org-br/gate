@@ -90,7 +90,7 @@ public final class LocalTimeInterval implements Serializable, Comparable<LocalTi
 		return new LocalTimeInterval(min, max);
 	}
 
-	public static LocalTimeInterval of(String string) throws ParseException
+	public static LocalTimeInterval valueOf(String string) throws ParseException
 	{
 		return FORMATTER.parse(string);
 	}

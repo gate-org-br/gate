@@ -266,7 +266,7 @@ public class Report
 	public static Report of(JsonString jsonString) throws IllegalArgumentException
 	{
 		Report report = new Report();
-		report.add(new Paragraph(jsonString.toString()));
+		report.add(new Paragraph(jsonString.unwrap()));
 		return report;
 	}
 }

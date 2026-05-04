@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.annotation.Color;
 import gate.base.Screen;
 import gate.adapter.converter.Converter;
@@ -69,9 +71,9 @@ public class LabelProcessor extends TagProcessor
 					.or(() -> Optional.ofNullable(property.getMetadata().color()))
 					.ifPresent(e -> attributes.put("style", "color: " + e));
 
-		String string = Converter.render(value, format);
+		String string = Renderer.render(value, format);
 		if (string.isBlank() && empty != null)
-			string = Converter.render(expression.create().evaluate(empty));
+			string = Renderer.render(expression.create().evaluate(empty));
 		string = string.replaceAll("\\n", "<br/>");
 
 		handler.replaceWith("<label " + attributes + ">" + string + "</label>", true);

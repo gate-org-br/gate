@@ -1,8 +1,10 @@
 package gate.type;
 
-import java.text.ParseException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+
+import java.text.ParseException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RangeTest
 {
@@ -11,7 +13,7 @@ public class RangeTest
 	public void test01() throws ParseException
 	{
 		String expected = "1 - 2";
-		assertEquals(expected, Range.of(expected).toString());
+		assertEquals(expected, Range.valueOf(expected).toString());
 	}
 
 	@Test
@@ -35,7 +37,7 @@ public class RangeTest
 	@Test
 	public void test04() throws ParseException
 	{
-		long value = Range.of("1-3").stream().sum();
+		long value = Range.valueOf("1-3").stream().sum();
 
 		assertEquals(6, value);
 	}
@@ -44,14 +46,14 @@ public class RangeTest
 	public void test05() throws ParseException
 	{
 		String expected = "1 - 2";
-		assertEquals(expected, Range.of("1-2").toString());
+		assertEquals(expected, Range.valueOf("1-2").toString());
 	}
 
 	@Test
 	public void test06() throws ParseException
 	{
 		String expected = "1";
-		assertEquals(expected, Range.of(expected).toString());
+		assertEquals(expected, Range.valueOf(expected).toString());
 	}
 
 	@Test

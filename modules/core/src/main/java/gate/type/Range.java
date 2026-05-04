@@ -74,7 +74,7 @@ public class Range implements Iterable<Long>, Serializable
 		return new Range(min, max);
 	}
 
-	public static Range of(String value) throws ParseException
+	public static Range valueOf(String value) throws ParseException
 	{
 		Matcher matcher = PATTERN.matcher(value);
 		if (!matcher.matches())

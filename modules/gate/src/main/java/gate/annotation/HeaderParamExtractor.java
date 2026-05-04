@@ -28,7 +28,7 @@ public class HeaderParamExtractor
 
 		try
 		{
-			Object value = converter.ofString(parameter.getType(), header);
+			Object value = converter.ofString(parameter.getParameterizedType(), header);
 			if (value == null && parameter.isAnnotationPresent(Required.class))
 				throw new BadRequestException("Missing required parameter: " + name);
 			return value;

@@ -1,17 +1,14 @@
 package gate.lang.json;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.jsonConverter.JsonConverter;
+import gate.adapter.renderer.Renderer;
 import gate.error.AppError;
 import gate.error.ConversionException;
-import gate.util.Reflection;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -25,9 +22,9 @@ public interface JsonElement extends Serializable
 	JsonString UNDEFINED = JsonString.of("");
 
 	/**
-	 * Gets the type parse this JSON element.
+	 * Gets the JSON element's type.
 	 *
-	 * @return the type parse this JSON element
+	 * @return the JSON element's type
 	 */
 	Type getType();
 
@@ -86,13 +83,9 @@ public interface JsonElement extends Serializable
 
 	/**
 	 * Formats the specified JsonElement on JSON notation.
-	 * <p>
-	 * If the specified JsonElement is a JsonArray or a JsonObject, it's elements will be formatted recursively as their
-	 * respective elements on JSON notation.
 	 *
 	 * @param element the JsonElement to be formatted on JSON notation
 	 * @return the specified JsonElement formatted using JSON notation
-	 * @throws NullPointerException if any parse the parameters is null
 	 */
 	static String stringify(JsonElement element)
 	{
@@ -116,7 +109,7 @@ public interface JsonElement extends Serializable
 	 * when the segment cannot be resolved.
 	 * <p>
 	 * Concrete implementations may interpret the segment according to their
-	 * structure, for example object property names.
+	 * structure, for example, object property names.
 	 *
 	 * @param name the path segment to resolve
 	 * @return the resolved child element, or {@link JsonNull#INSTANCE} when the
@@ -231,7 +224,6 @@ public interface JsonElement extends Serializable
 	 * {@link JsonElement} values are returned as-is;
 	 * booleans, numbers and strings become their respective JSON scalar types;
 	 * collections and object arrays become {@link JsonArray};
-	 * types associated with a {@link JsonAdapter} are adapted through it.
 	 * <p>
 	 * If none of the cases above apply and the object class declares a no-argument constructor,
 	 * this method falls back to reflective field-based conversion, producing a {@link JsonObject}
@@ -245,66 +237,7 @@ public interface JsonElement extends Serializable
 	 */
 	static JsonElement encode(Object obj) throws ConversionException
 	{
-		if (obj == null)
-			return JsonNull.INSTANCE;
-		if (obj instanceof JsonElement jsonElement)
-			return jsonElement;
-		if (obj instanceof Boolean aBoolean)
-			return JsonBoolean.of(aBoolean);
-		if (obj instanceof Number number)
-			return JsonNumber.of(number);
-		if (obj instanceof String string)
-			return JsonString.of(string);
-		if (obj instanceof Map<?, ?> map)
-		{
-			JsonObject result = new JsonObject();
-			for (Map.Entry<?, ?> entry : map.entrySet())
-			{
-				if (!(entry.getKey() instanceof String key))
-					throw new ConversionException("Can't encode map with non-string key: %s", entry.getKey());
-				result.set(key, encode(entry.getValue()));
-			}
-			return result;
-		}
-
-		var jsonAdapter = JsonAdapter.of((Class<Object>) obj.getClass());
-		if (jsonAdapter != null)
-			return jsonAdapter.toJson(obj);
-
-		if (obj instanceof Collection<?> collection)
-			return collection.stream().map(JsonElement::encode)
-					.collect(java.util.stream.Collectors.toCollection(JsonArray::new));
-		if (obj instanceof Object[] objects)
-			return java.util.stream.Stream.of(objects).map(JsonElement::encode)
-					.collect(java.util.stream.Collectors.toCollection(JsonArray::new));
-
-		for (Constructor<?> constructor
-				: obj.getClass().getDeclaredConstructors())
-		{
-			if (constructor.getParameterCount() == 0)
-			{
-				JsonObject result = new JsonObject();
-				for (Field field : Reflection.getFields(Reflection.getRawType(obj.getClass())))
-				{
-					if (!Modifier.isStatic(field.getModifiers()))
-					{
-						try
-						{
-							field.setAccessible(true);
-							Object value = field.get(obj);
-							if (value != null)
-								result.put(field.getName(), JsonElement.encode(value));
-						} catch (IllegalAccessException ex)
-						{
-							throw new ConversionException(ex.getMessage());
-						}
-					}
-				}
-				return result;
-			}
-		}
-
-		return JsonString.of(Converter.toString(obj));
+		return JsonConverter.toJson(obj);
 	}
 
 	/**
@@ -315,10 +248,9 @@ public interface JsonElement extends Serializable
 	 * {@link JsonElement} values are returned as-is;
 	 * numbers become {@link JsonNumber};
 	 * collections and object arrays become formatted {@link JsonArray} values;
-	 * types associated with a {@link JsonAdapter} are adapted through it.
 	 * <p>
 	 * For other object types, this method falls back to a {@link JsonString}
-	 * built from {@link Converter#render(Object)}.
+	 * built from {@link Renderer#render(Object)}.
 	 * <p>
 	 * This method still returns a {@link JsonElement}, but it may favor
 	 * readability over faithful reconstruction of the original object.
@@ -339,16 +271,12 @@ public interface JsonElement extends Serializable
 		if (obj instanceof Boolean bool)
 			return JsonBoolean.render(bool);
 
-		var jsonAdapter = JsonAdapter.of((Class<Object>) obj.getClass());
-		if (jsonAdapter != null)
-			return jsonAdapter.toJsonText(obj);
-
 		if (obj instanceof Collection<?> collection)
 			return JsonArray.render(collection);
 		if (obj instanceof Object[] objects)
 			return JsonArray.render(objects);
 
-		return JsonString.of(Converter.render(obj));
+		return JsonString.of(Renderer.render(obj));
 	}
 
 	/**

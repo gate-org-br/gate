@@ -6,29 +6,14 @@ import gate.constraint.Constraint;
 import gate.constraint.Pattern;
 import gate.error.ConversionException;
 
+import java.lang.reflect.Type;
 import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 @Description("Mês do Ano")
 public class MonthConverter implements Converter
 {
-
-	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? ((Month) object).getDisplayName(TextStyle.FULL, Locale.getDefault()) : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? ((Month) object).getDisplayName(TextStyle.valueOf(format), Locale.getDefault()) : "";
-	}
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		List<Constraint.Implementation<?>> constraints = new LinkedList<>();
@@ -44,7 +29,7 @@ public class MonthConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		if (string == null)
 			return null;

@@ -13,6 +13,11 @@ public class ProcessNumber implements Serializable
 
 	public ProcessNumber(String value)
 	{
+		this.value = value;
+	}
+
+	public static ProcessNumber valueOf(String value)
+	{
 		if (value.matches(
 				"^[0-9]{4}[.][0-9]{2}[.][0-9]{2}[.][0-9]{6}-[0-9]|[0-9]{2}[.][0-9]{2}.[0-9]{5}-[0-9]|[0-9]{7}-[0-9]{2}[.][0-9]{4}.[0-9].[0-9]{2}.[0-9]{4}$"))
 			value = value.replaceAll("[^0123456789]", "");
@@ -46,9 +51,8 @@ public class ProcessNumber implements Serializable
 				.remainder(new BigDecimal(97))).equals(new BigDecimal(String.format("%c%c", value.charAt(7), value.charAt(8)))))
 			throw new IllegalArgumentException("value");
 
-		this.value = value;
+		return new ProcessNumber(value);
 	}
-
 
 	@Override
 	public boolean equals(Object obj)

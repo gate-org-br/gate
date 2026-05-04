@@ -13,11 +13,8 @@ public class SIMCard implements Serializable
 
 	private final String value;
 
-	public SIMCard(String value)
+	private SIMCard(String value)
 	{
-		if (value == null
-		    || !value.matches("^[0-9]{20}$"))
-			throw new IllegalArgumentException("value");
 		this.value = value;
 	}
 
@@ -30,5 +27,13 @@ public class SIMCard implements Serializable
 	public String toString()
 	{
 		return value;
+	}
+
+	public static SIMCard valueOf(String string)
+	{
+		if (string == null
+		    || !string.matches("^[0-9]{20}$"))
+			throw new IllegalArgumentException("value");
+		return new SIMCard(string);
 	}
 }

@@ -59,51 +59,51 @@ public class FormProcessor extends PropertyProcessor
 	{
 
 		Attributes size = new Attributes();
-		if (field.getSize() != null)
-			size.put("data-size", Integer.parseInt(field.getSize().toString()) * 2);
+		if (field.schema().size() != null)
+			size.put("data-size", Integer.parseInt(field.schema().size().toString()) * 2);
 
-		if (Toolkit.notEmpty(field.getName()))
+		if (Toolkit.notEmpty(field.schema().name()))
 		{
 			attributes = new Attributes(attributes);
 			if (!attributes.containsKey("data-mask"))
-				if (field.getMask() != null)
-					attributes.put("data-mask", field.getMask());
+				if (field.schema().mask() != null)
+					attributes.put("data-mask", field.schema().mask());
 			if (!attributes.containsKey("required"))
-				if (Boolean.TRUE.equals(field.getRequired()))
+				if (field.schema().required())
 					attributes.put("required", "required");
 			if (!attributes.containsKey("readonly"))
-				if (field.getReadonly())
+				if (field.schema().readonly())
 					attributes.put("readonly", "readonly");
 			if (!attributes.containsKey("maxlength"))
-				if (field.getMaxlength() != null)
-					attributes.put("maxlength", field.getMaxlength());
+				if (field.schema().maxlength() != null)
+					attributes.put("maxlength", field.schema().maxlength());
 			if (!attributes.containsKey("pattern"))
-				if (field.getPattern() != null)
-					attributes.put("pattern", field.getPattern());
+				if (field.schema().pattern() != null)
+					attributes.put("pattern", field.schema().pattern());
 			if (!attributes.containsKey("title"))
-				if (field.getDescription() != null)
-					attributes.put("title", field.getDescription());
+				if (field.schema().description() != null)
+					attributes.put("title", field.schema().description());
 
-			if (field.getOptions().isEmpty())
+			if (field.schema().options().isEmpty())
 			{
 				if (!attributes.containsKey("name"))
 					attributes.put("name", property);
-				if (!field.getMultiple())
+				if (!field.schema().multiple())
 				{
 					attributes.put("type", "text");
 					if (field.getValue() != null)
 						attributes.put("value", field.getValue());
-					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.getName(), attributes);
+					return String.format("<label %s>%s:<span><input %s/></span></label>", size, field.schema().name(), attributes);
 				} else
 					return String.format("<label %s>%s:<span style='height: 60px;'><textarea %s/>%s</textarea></span></label>",
-							size, field.getName(), attributes, field.getValue() != null ? field.getValue() : "");
+							size, field.schema().name(), attributes, field.getValue() != null ? field.getValue() : "");
 			} else
 			{
 				StringBuilder options = new StringBuilder();
-				if (!field.getMultiple())
+				if (!field.schema().multiple())
 				{
 					options.append("<option value=''></option>");
-					for (String option : field.getOptions())
+					for (String option : field.schema().options())
 					{
 						Attributes optionAttributes = new Attributes();
 						optionAttributes.put("value", option);
@@ -115,12 +115,12 @@ public class FormProcessor extends PropertyProcessor
 					attributes.put("name", property);
 					return String
 							.format("<label %s>%s:<span><select %s>%s</select></span></label>", size,
-									field.getName(), attributes, options);
+									field.schema().name(), attributes, options);
 				} else
 				{
 					attributes.put("type", "checkbox");
 					attributes.put("name", String.format("%s[]", property));
-					for (String option : field.getOptions())
+					for (String option : field.schema().options())
 					{
 						attributes.put("value", option);
 						if (field.getValue().contains(option))
@@ -130,10 +130,10 @@ public class FormProcessor extends PropertyProcessor
 						options.append("<input ").append(attributes).append("/><label>").append(option).append("</label>");
 					}
 					return String.format("<fieldset %s><legend>%s:</legend><g-selectn>%s</g-selectn></fieldset>",
-							size, field.getName(), options);
+							size, field.schema().name(), options);
 				}
 			}
-		} else if (!field.getMultiple())
+		} else if (!field.schema().multiple())
 			return String.format("<label %s>&nbsp; <span style='background-color: transparent;'><label>&nbsp;</label></span></label>", size);
 		else
 			return String.format("<label %s>&nbsp; <span style='height: 60px; background-color: transparent;'><label>&nbsp;</label></span></label>", size);

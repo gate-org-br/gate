@@ -5,29 +5,16 @@ import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 @Description("Arquivo")
 public class FileConverter implements Converter
 {
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
-	}
-
-	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, object) : "";
 	}
 
 	@Override
@@ -38,7 +25,7 @@ public class FileConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		throw new UnsupportedOperationException("Files can't be represented as strings.");
 	}

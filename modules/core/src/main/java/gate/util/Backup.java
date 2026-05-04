@@ -96,8 +96,7 @@ public class Backup<T>
 						{
 							String value = values.get(i).trim();
 							Property property = properties.get(i);
-							Class<?> clazz = property.getRawType();
-							property.setValue(obj, Converter.getConverter(clazz).ofString(clazz, value));
+							property.setConvertedValue(obj, value);
 
 						}
 					objs.add(obj);

@@ -1,8 +1,8 @@
 package gate;
 
-import gate.annotation.AllowMethod;
 import gate.annotation.Asynchronous;
 import gate.annotation.Cors;
+import gate.annotation.HttpMethod;
 import gate.annotation.MainAction;
 import gate.base.Screen;
 import gate.entity.User;
@@ -11,8 +11,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @ApplicationScoped
 public class Calls
@@ -51,8 +49,7 @@ public class Calls
 				{
 					String action = method.getName().substring(4);
 					RequestCommand command = new RequestCommand(module, screen, action);
-					Set<String> methods = Stream.of(method.getAnnotationsByType(AllowMethod.class))
-							.map(e -> e.value().name()).collect(Collectors.toUnmodifiableSet());
+					Collection<String> methods = HttpMethod.Extractor.extract(method);
 
 					var cors = method.isAnnotationPresent(Cors.class);
 					var asynchronous = method.isAnnotationPresent(Asynchronous.class);

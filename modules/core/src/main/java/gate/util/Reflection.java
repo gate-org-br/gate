@@ -1,6 +1,7 @@
 package gate.util;
 
 import gate.annotation.ElementType;
+import gate.error.PropertyError;
 
 import java.beans.Introspector;
 import java.lang.invoke.*;
@@ -31,7 +32,7 @@ public class Reflection
 			return null;
 	}
 
-	public static Type getElementType(Type type)
+	public static Type getElementGenericType(Type type)
 	{
 		Class<?> clazz = getRawType(type);
 		if (clazz.isAnnotationPresent(ElementType.class))
@@ -41,6 +42,48 @@ public class Reflection
 		if (Collection.class.isAssignableFrom(clazz))
 			return ((ParameterizedType) type).getActualTypeArguments()[0];
 		return null;
+	}
+
+	public static Class<?> getKeyType(Type type)
+	{
+		Class<?> clazz = getRawType(type);
+		if (Map.class.isAssignableFrom(clazz))
+			return getRawType(((ParameterizedType) type).getActualTypeArguments()[0]);
+		return null;
+	}
+
+	public static Type getValueGenericType(Type type)
+	{
+		Class<?> clazz = getRawType(type);
+		if (Map.class.isAssignableFrom(clazz))
+			return ((ParameterizedType) type).getActualTypeArguments()[1];
+		return null;
+	}
+
+	public static Object createInstance(Class<?> type)
+	{
+		try
+		{
+			if (type == List.class || type == Collection.class)
+				return new ArrayList<>();
+			if (type == Set.class)
+				return new HashSet<>();
+			if (type == Map.class)
+				return new HashMap<>();
+
+			Constructor<?> constructor = Stream.of(type.getConstructors())
+					.filter(e -> e.getParameterCount() == 0)
+					.findAny()
+					.orElse(null);
+			if (constructor == null)
+				throw new PropertyError("No default constructor found in %s.", type.getName());
+			constructor.setAccessible(true);
+			return constructor.newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+		         | InvocationTargetException ex)
+		{
+			throw new PropertyError("Error trying to create a instance of %s.", type.getName());
+		}
 	}
 
 	public static List<Field> getFields(Class<?> clazz)

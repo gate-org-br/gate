@@ -65,17 +65,18 @@ customElements.define('g-field-editor', class extends HTMLElement
 
 		if (value)
 		{
-			name.value = value.name || "";
-			mask.value = value.mask || "";
-			size.value = value.size || "";
-			multiple.value = value.multiple || false;
-			required.value = value.required || false;
-			maxlength.value = value.maxlength || "";
-			pattern.value = value.pattern || "";
-			description.value = value.description || "";
+			let schema = value.schema;
+			name.value = schema.name || "";
+			mask.value = schema.mask || "";
+			size.value = schema.size || "";
+			multiple.value = schema.multiple || false;
+			required.value = schema.required || false;
+			maxlength.value = schema.maxlength || "";
+			pattern.value = schema.pattern || "";
+			description.value = schema.description || "";
 
-			if (value.options)
-				value.options.forEach(e => options.value = options.value ? options.value + "\n" + e : e);
+			if (schema.options)
+				schema.options.forEach(e => options.value = options.value ? options.value + "\n" + e : e);
 			if (value.value)
 				value.value.forEach(e => values.value = values.value ? values.value + "\n" + e : e);
 		} else
@@ -85,42 +86,43 @@ customElements.define('g-field-editor', class extends HTMLElement
 
 	get value()
 	{
-		let result = {};
+		let result = {schema: {}};
+		let schema = result.schema;
 
 		let name = this.shadowRoot.getElementById("name").value;
-		result.name = name || "";
+		schema.name = name || "";
 
 		let mask = this.shadowRoot.getElementById("mask").value;
 		if (mask)
-			result.mask = mask;
+			schema.mask = mask;
 
 		let size = this.shadowRoot.getElementById("size").value;
 		if (size)
-			result.size = size;
+			schema.size = size;
 
 		let multiple = this.shadowRoot.getElementById("multiple").value;
 		if (multiple === "true")
-			result.multiple = true;
+			schema.multiple = true;
 
 		let required = this.shadowRoot.getElementById("required").value;
 		if (required === "true")
-			result.required = true;
+			schema.required = true;
 
 		let maxlength = this.shadowRoot.getElementById("maxlength").value;
 		if (maxlength)
-			result.maxlength = maxlength;
+			schema.maxlength = maxlength;
 
 		let pattern = this.shadowRoot.getElementById("pattern").value;
 		if (pattern)
-			result.pattern = pattern;
+			schema.pattern = pattern;
 
 		let description = this.shadowRoot.getElementById("description").value;
 		if (description)
-			result.description = description;
+			schema.description = description;
 
 		let options = this.shadowRoot.getElementById("options").value;
 		if (options)
-			result.options = options.split("\n");
+			schema.options = options.split("\n");
 
 		let value = this.shadowRoot.getElementById("value").value;
 		if (value)

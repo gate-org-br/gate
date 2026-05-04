@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag.property;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
@@ -75,7 +77,7 @@ public class SelectProcessor extends PropertyProcessor
 				.filter(e -> e instanceof String)
 				.map(e -> (String) e)
 				.map(expression::evaluate)
-				.map(Converter::render)
+				.map(Renderer::render)
 				.orElse("");
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
@@ -93,7 +95,7 @@ public class SelectProcessor extends PropertyProcessor
 					.entrySet()
 					.forEach(group ->
 					{
-						string.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
+						string.add("<optgroup label='" + Renderer.render(group.getKey()) + "'>");
 						print(0, string, group.getValue(), labels, values, children, value);
 						string.add("</optgroup>");
 					});
@@ -119,7 +121,7 @@ public class SelectProcessor extends PropertyProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-			           + Converter.render(labels.apply(object)) + "</option>");
+			           + Renderer.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

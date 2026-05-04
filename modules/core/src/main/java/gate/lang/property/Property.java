@@ -1,9 +1,9 @@
 package gate.lang.property;
 
-import gate.constraint.Constraint;
 import gate.adapter.converter.Converter;
-import gate.error.NoSuchPropertyError;
 import gate.adapter.metadata.Metadata;
+import gate.constraint.Constraint;
+import gate.error.NoSuchPropertyError;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -429,9 +429,32 @@ public class Property
 				  .getValue(object) : null;
 	}
 
+	public Type getGenericType()
+	{
+		return lastAttribute.getGenericType();
+	}
+
 	public Converter getConverter()
 	{
 		return lastAttribute.getConverter();
+	}
+
+	public String getRenderedValue(Object object)
+	{
+		return lastAttribute.getRenderer()
+				.render(getRawType(), getValue(object));
+	}
+
+	public String getConvertedValue(Object object)
+	{
+		return lastAttribute.getConverter()
+				.toString(getRawType(), getValue(object));
+	}
+
+	public void setConvertedValue(Object object, String value)
+	{
+		setValue(object, lastAttribute.getConverter()
+				.ofString(getGenericType(), value));
 	}
 
 	public Attribute getLastAttribute()

@@ -26,7 +26,7 @@ public class BasicAuthorization implements Authorization
 
 	@Override public Type type() {return Type.BASIC;}
 
-	@Override public String token() {return toString();}
+	@Override public String token() {return null;}
 
 	public String username() {return username;}
 

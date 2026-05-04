@@ -1,88 +1,35 @@
 package gate.adapter.converter;
 
-import gate.error.ConversionException;
-import java.time.Duration;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DurationConverterTest
+import java.time.Duration;
+
+public class DurationConverterTest extends AbstractSimpleConverterTest<Duration>
 {
+	@Override protected Class<Duration> getType() {return Duration.class;}
 
-	private static final Converter CONVERTER = new DurationConverter();
+	@Override protected Duration getValue() {return Duration.ofHours(11).plusSeconds(30);}
+
+	@Override protected String getString() {return "11h 30s";}
 
 	@Test
-	public void testParseDays() throws ConversionException
+	public void testShouldConvertAlternativeFormat()
 	{
-		assertEquals(Duration.ofDays(34), CONVERTER.ofString(Duration.class, "34d"));
-		assertEquals(Duration.ofDays(34), CONVERTER.ofString(Duration.class, "34D"));
+		Assertions.assertEquals(Duration.ofHours(1), Converter.fromString(Duration.class, "01:00:00"));
+		Assertions.assertEquals(Duration.ofHours(2).plusMinutes(30), Converter.fromString(Duration.class, "02:30"));
 	}
 
 	@Test
-	public void testFormatDays() throws ConversionException
+	public void testShouldPublishPatternForBothSupportedFormats()
 	{
-		assertEquals("34d", CONVERTER.toString(Duration.class, Duration.ofDays(34)));
-	}
+		var constraint = Converter.getConverter(Duration.class).getConstraints().iterator().next();
+		var pattern = constraint.getValue().toString();
 
-	@Test
-	public void testParseHours() throws ConversionException
-	{
-		assertEquals(Duration.ofHours(34), CONVERTER.ofString(Duration.class, "34h"));
-		assertEquals(Duration.ofHours(34), CONVERTER.ofString(Duration.class, "34H"));
+		Assertions.assertTrue("11h 30s".matches(pattern));
+		Assertions.assertTrue("11H 30S".matches(pattern));
+		Assertions.assertTrue("90".matches(pattern));
+		Assertions.assertTrue("01:00:00".matches(pattern));
+		Assertions.assertTrue("02:30".matches(pattern));
 	}
-
-	@Test
-	public void testFormatHours() throws ConversionException
-	{
-		assertEquals("14h", CONVERTER.toString(Duration.class, Duration.ofHours(14)));
-		assertEquals("1d 10h", CONVERTER.toString(Duration.class, Duration.ofHours(34)));
-	}
-
-	@Test
-	public void testParseMinutes() throws ConversionException
-	{
-		assertEquals(Duration.ofMinutes(34), CONVERTER.ofString(Duration.class, "34"));
-		assertEquals(Duration.ofMinutes(34), CONVERTER.ofString(Duration.class, "34m"));
-		assertEquals(Duration.ofMinutes(34), CONVERTER.ofString(Duration.class, "34M"));
-	}
-
-	@Test
-	public void testFormatMinutes() throws ConversionException
-	{
-		assertEquals("1h 15m", CONVERTER.toString(Duration.class, Duration.ofMinutes(75)));
-		assertEquals("34m", CONVERTER.toString(Duration.class, Duration.ofMinutes(34)));
-	}
-
-	@Test
-	public void testParseSeconds() throws ConversionException
-	{
-		assertEquals(Duration.ofSeconds(34), CONVERTER.ofString(Duration.class, "34s"));
-		assertEquals(Duration.ofSeconds(34), CONVERTER.ofString(Duration.class, "34S"));
-	}
-
-	@Test
-	public void testFormatSeconds() throws ConversionException
-	{
-		assertEquals("1m 15s", CONVERTER.toString(Duration.class, Duration.ofSeconds(75)));
-		assertEquals("34s", CONVERTER.toString(Duration.class, Duration.ofSeconds(34)));
-	}
-
-	@Test
-	public void testParseComplete() throws ConversionException
-	{
-		assertEquals(Duration.ofDays(34).plusHours(12).plusMinutes(50).plusSeconds(20), CONVERTER.ofString(Duration.class, "34d 12h 50m 20s"));
-	}
-
-	@Test
-	public void testFormatComplete() throws ConversionException
-	{
-		assertEquals("34d 12h 50m 20s", CONVERTER.toString(Duration.class, Duration.ofDays(34).plusHours(12).plusMinutes(50).plusSeconds(20)));
-	}
-
-	@Test
-	public void testParseAlternative() throws ConversionException
-	{
-		assertEquals(Duration.ofHours(12).plusMinutes(50), CONVERTER.ofString(Duration.class, "12:50"));
-		assertEquals(Duration.ofHours(12).plusMinutes(50).plusSeconds(20), CONVERTER.ofString(Duration.class, "12:50:20"));
-	}
-
 }

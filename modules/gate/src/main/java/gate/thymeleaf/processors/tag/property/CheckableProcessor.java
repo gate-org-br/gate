@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag.property;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
@@ -102,7 +104,7 @@ public abstract class CheckableProcessor extends PropertyProcessor
 			string.add(String.format("<input %s/><label style='padding-left: %dpx'>%s</label>",
 					attributes.toString(),
 					depth * 40,
-					Converter.render(labels.apply(option))));
+					Renderer.render(labels.apply(option))));
 
 			if (children != null)
 				print(string, Toolkit.iterable(children.apply(option)),

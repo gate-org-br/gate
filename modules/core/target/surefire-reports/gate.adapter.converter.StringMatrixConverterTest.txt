@@ -1,14 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: gate.adapter.converter.StringMatrixConverterTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 2, Skipped: 0, Time elapsed: 0.006 s <<< FAILURE! -- in gate.adapter.converter.StringMatrixConverterTest
-gate.adapter.converter.StringMatrixConverterTest.testToString -- Time elapsed: 0.004 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "java.net.URL.openStream()" because "url" is null
-	at gate.adapter.converter.StringMatrixConverterTest.readResource(StringMatrixConverterTest.java:33)
-	at gate.adapter.converter.StringMatrixConverterTest.testToString(StringMatrixConverterTest.java:46)
-
-gate.adapter.converter.StringMatrixConverterTest.testOfString -- Time elapsed: 0 s <<< ERROR!
-java.lang.NullPointerException: Cannot invoke "java.net.URL.openStream()" because "url" is null
-	at gate.adapter.converter.StringMatrixConverterTest.readResource(StringMatrixConverterTest.java:33)
-	at gate.adapter.converter.StringMatrixConverterTest.testOfString(StringMatrixConverterTest.java:53)
-
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in gate.adapter.converter.StringMatrixConverterTest

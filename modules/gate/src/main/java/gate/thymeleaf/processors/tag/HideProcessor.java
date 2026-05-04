@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.icon.Icon;
 import gate.icon.Icons;
@@ -51,7 +53,7 @@ public class HideProcessor extends TagModelProcessor
 			{
 				var name = attributes.remove("name");
 				name = expression.create().evaluate((String) name);
-				body.add(Converter.render(name));
+				body.add(Renderer.render(name));
 			}
 
 			if (attributes.containsKey("icon"))

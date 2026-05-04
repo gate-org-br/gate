@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
+
 import gate.lang.property.Property;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -47,9 +48,10 @@ public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcess
 		{
 			Object value = property.getValue(screen);
 			if (value == null && element.hasAttribute("g:empty"))
-				handler.setBody(Converter.render(expression.evaluate(element.getAttributeValue("g:empty"))), false);
+				handler.setBody(Renderer.render(expression.evaluate(element
+						.getAttributeValue("g:empty"))), false);
 			else
-				handler.setBody(property.getConverter().render(property.getRawType(), value), false);
+				handler.setBody(property.getRenderedValue(screen), false);
 		} else
 			handler.setBody("", false);
 	}

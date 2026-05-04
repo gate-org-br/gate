@@ -63,10 +63,10 @@ customElements.define('g-progress-dialog', class extends GWindow
 			};
 		});
 
-		window.addEventListener("ProcessCanceled", event =>
-		{
-			if (event.detail.id !== this.process)
-				return;
+			window.addEventListener("ProcessCanceled", event =>
+			{
+				if (event.detail.id !== this.process)
+					return;
 
 			commit.innerHTML = "OK";
 			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r1');
@@ -74,10 +74,25 @@ customElements.define('g-progress-dialog', class extends GWindow
 			{
 				click.preventDefault();
 				click.stopPropagation();
-				this.hide();
-			};
-		});
-	}
+					this.hide();
+				};
+			});
+
+			window.addEventListener("ProcessError", event =>
+			{
+				if (event.detail.id !== this.process || !event.detail.fatal)
+					return;
+
+				commit.innerHTML = "OK";
+				commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r1');
+				commit.onclick = close.onclick = click =>
+				{
+					click.preventDefault();
+					click.stopPropagation();
+					this.hide();
+				};
+			});
+		}
 
 	set process(value)
 	{

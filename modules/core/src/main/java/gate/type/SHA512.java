@@ -11,7 +11,7 @@ import java.util.Objects;
 public class SHA512 implements Serializable
 {
 
-	
+
 	@Serial
 	private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class SHA512 implements Serializable
 		this.value = value;
 	}
 
-	public static SHA512 of(String string)
+	public static SHA512 valueOf(String string)
 	{
 		return new SHA512(string);
 	}
@@ -61,7 +61,7 @@ public class SHA512 implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof SHA512
-				&& Objects.equals(((SHA512) obj).value, value);
+		       && Objects.equals(((SHA512) obj).value, value);
 	}
 
 	@Override

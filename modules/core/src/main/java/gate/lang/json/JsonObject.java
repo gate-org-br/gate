@@ -1,6 +1,8 @@
 package gate.lang.json;
 
 import gate.adapter.converter.Converter;
+import gate.adapter.jsonConverter.JsonConverter;
+import gate.adapter.renderer.Renderer;
 import gate.error.ConversionException;
 import gate.lang.property.Property;
 
@@ -322,7 +324,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<String> getString(String key)
 	{
-		return getJsonString(key).map(JsonString::getValue);
+		return getJsonString(key).map(JsonString::unwrap);
 	}
 
 	/**
@@ -334,7 +336,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public Optional<String> getString(int index)
 	{
-		return getJsonString(index).map(JsonString::getValue);
+		return getJsonString(index).map(JsonString::unwrap);
 	}
 
 	/**
@@ -770,10 +772,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	@Override
 	public <T> T decode(Class<T> type)
 	{
-		var jsonAdapter = JsonAdapter.of(type);
-		if (jsonAdapter != null)
-			return jsonAdapter.fromJson(this);
-		return Converter.fromJson(type, toString());
+		return JsonConverter.fromJson(type, this);
 	}
 
 	/**
@@ -970,7 +969,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 			{
 				Object value = property.getValue(obj);
 				if (value != null)
-					result.setString(name, Converter.render(value));
+					result.setString(name, Renderer.render(value));
 			}
 		});
 

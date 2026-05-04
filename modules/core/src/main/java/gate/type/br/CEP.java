@@ -13,12 +13,14 @@ public class CEP implements Serializable
 
 	private final String value;
 
-	public CEP(String value)
+	private CEP(String value) {this.value = value;}
+
+	public static CEP valueOf(String string)
 	{
-		value = value.replaceAll("[^0123456789]", "");
+		String value = string.replaceAll("[^0123456789]", "");
 		if (value.length() != 8)
 			throw new IllegalArgumentException("value");
-		this.value = value;
+		return new CEP(value);
 	}
 
 	public String getValue()
@@ -41,7 +43,14 @@ public class CEP implements Serializable
 	@Override
 	public String toString()
 	{
-		return String.format("%c%c.%c%c%c-%c%c%c", value.charAt(0), value.charAt(1), value.charAt(2), value.charAt(3), value.charAt(4), value.charAt(5), value
-				.charAt(6), value.charAt(7));
+		return String.format("%c%c.%c%c%c-%c%c%c",
+				value.charAt(0),
+				value.charAt(1),
+				value.charAt(2),
+				value.charAt(3),
+				value.charAt(4),
+				value.charAt(5),
+				value.charAt(6),
+				value.charAt(7));
 	}
 }

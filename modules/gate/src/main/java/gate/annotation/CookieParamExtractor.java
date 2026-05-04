@@ -34,7 +34,7 @@ public class CookieParamExtractor
 
 		try
 		{
-			Object value = converter.ofString(parameter.getType(), cookie);
+			Object value = converter.ofString(parameter.getParameterizedType(), cookie);
 			if (value == null && parameter.isAnnotationPresent(Required.class))
 				throw new BadRequestException("Missing required parameter: " + name);
 			return value;

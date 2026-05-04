@@ -1,11 +1,15 @@
 package gate.producer;
 
+import gate.SlidingSessionFilter;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.http.TestServletSupport;
 import gate.security.Credentials;
 import gate.type.ID;
+import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +25,7 @@ class UserProducerTest
 	}
 
 	@Test
-	void testReturnsStatelessUserFromBearerToken()
+	void testReturnsStatelessUserFromBearerToken() throws ServletException, IOException
 	{
 		var embeddedUser = new User()
 				.setId(ID.valueOf(7))
@@ -37,6 +41,9 @@ class UserProducerTest
 				null,
 				"GET",
 				"/Gate");
+
+		new SlidingSessionFilter()
+				.doFilter(request.request(), TestServletSupport.response().response(), TestServletSupport.chain().chain());
 
 		var producer = new UserProducer();
 		var user = producer.getUser(request.request());

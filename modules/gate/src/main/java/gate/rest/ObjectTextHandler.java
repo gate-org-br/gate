@@ -1,7 +1,7 @@
 package gate.rest;
 
 import gate.adapter.converter.Converter;
-import gate.adapter.converter.custom.EntityConverter;
+import gate.adapter.converter.EntityConverter;
 import gate.annotation.Entity;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Produces;

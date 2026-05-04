@@ -1,6 +1,6 @@
 package gate.doc.printer;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.error.ConversionException;
 import gate.report.Chart;
 import gate.report.ChartGenerator;
@@ -175,7 +175,7 @@ public class XLSPrinter implements Printer
 				value.setCellType(CellType.BOOLEAN);
 				value.setCellValue(bool);
 			} else
-				value.setCellValue(new XSSFRichTextString(Converter.render(object)));
+				value.setCellValue(new XSSFRichTextString(Renderer.render(object)));
 		}
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);
@@ -203,7 +203,7 @@ public class XLSPrinter implements Printer
 
 			sheet.addMergedRegion(new CellRangeAddress(i, i, 0, 1));
 
-			cell.setCellValue(new XSSFRichTextString(Converter.render(form.getCaption())));
+			cell.setCellValue(new XSSFRichTextString(Renderer.render(form.getCaption())));
 		}
 
 		for (Field e : form.getFields().stream().filter(Objects::nonNull)
@@ -227,7 +227,7 @@ public class XLSPrinter implements Printer
 			label.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			((XSSFCellStyle) label.getCellStyle()).setFillForegroundColor(getColor(Color.WHITE));
 			((XSSFCellStyle) label.getCellStyle()).getFont().setBold(true);
-			label.setCellValue(new XSSFRichTextString(Converter.render(e.getName() + ":")));
+			label.setCellValue(new XSSFRichTextString(Renderer.render(e.getName() + ":")));
 
 			SXSSFCell value = row.createCell((short) 1);
 			value.setCellStyle(workbook.createCellStyle());
@@ -253,7 +253,7 @@ public class XLSPrinter implements Printer
 				value.setCellType(CellType.BOOLEAN);
 				value.setCellValue(((Boolean) e.getValue()));
 			} else
-				value.setCellValue(new XSSFRichTextString(Converter.render(e.getValue())));
+				value.setCellValue(new XSSFRichTextString(Renderer.render(e.getValue())));
 		}
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);
@@ -282,7 +282,7 @@ public class XLSPrinter implements Printer
 
 			sheet.addMergedRegion(new CellRangeAddress(index, index, 0, grid.getColumns().size() - 1));
 
-			cell.setCellValue(new XSSFRichTextString(Converter.render(grid.getCaption())));
+			cell.setCellValue(new XSSFRichTextString(Renderer.render(grid.getCaption())));
 		}
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
@@ -298,7 +298,7 @@ public class XLSPrinter implements Printer
 				cell.getCellStyle().setFillPattern(FillPatternType.SOLID_FOREGROUND);
 				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getColor(HEADER_COLOR));
 				cell.getCellStyle().setAlignment(getAlignment(col.style()));
-				cell.setCellValue(new XSSFRichTextString(Converter.render(col.getHead())));
+				cell.setCellValue(new XSSFRichTextString(Renderer.render(col.getHead())));
 			}
 		}
 
@@ -317,7 +317,7 @@ public class XLSPrinter implements Printer
 				((XSSFCellStyle) cell.getCellStyle()).setFillForegroundColor(getColor(Color.LIGHT_GRAY));
 				((XSSFCellStyle) cell.getCellStyle()).getFont().setBold(true);
 				cell.getCellStyle().setAlignment(getAlignment(col.style()));
-				cell.setCellValue(new XSSFRichTextString(Converter.render(col.getFoot())));
+				cell.setCellValue(new XSSFRichTextString(Renderer.render(col.getFoot())));
 			}
 		}
 
@@ -353,9 +353,9 @@ public class XLSPrinter implements Printer
 					cell.setCellType(CellType.BOOLEAN);
 					cell.setCellValue((Boolean) value);
 				} else if (j == 0 && level > 0)
-					cell.setCellValue(new XSSFRichTextString("        ".repeat(level) + Converter.render(value)));
+					cell.setCellValue(new XSSFRichTextString("        ".repeat(level) + Renderer.render(value)));
 				else
-					cell.setCellValue(new XSSFRichTextString(Converter.render(value)));
+					cell.setCellValue(new XSSFRichTextString(Renderer.render(value)));
 			}
 
 			if (grid.getChildren() != null)
@@ -399,7 +399,7 @@ public class XLSPrinter implements Printer
 				value.setCellType(CellType.BOOLEAN);
 				value.setCellValue(bool);
 			} else
-				value.setCellValue(new XSSFRichTextString(Converter.render(element)));
+				value.setCellValue(new XSSFRichTextString(Renderer.render(element)));
 		}
 		sheet.autoSizeColumn((short) 0);
 		sheet.autoSizeColumn((short) 1);

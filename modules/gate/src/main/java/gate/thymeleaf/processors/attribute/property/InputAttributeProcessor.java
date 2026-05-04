@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.Sequence;
@@ -36,11 +38,9 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 		else
 			handler.setAttribute("type", type);
 
-		handler.setAttribute("value",
-				"date".equalsIgnoreCase(type)
-				|| "datetime-local".equalsIgnoreCase(type)
-						? Converter.toISOString(value)
-						: Converter.toString(value));
+		handler.setAttribute("value", usesISOString(type)
+				? Converter.toISOString(value)
+				: Converter.toString(value));
 
 		if ("text".equalsIgnoreCase(type))
 		{
@@ -71,7 +71,7 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 					Object optionLabel = labels.apply(option);
 					Object optionValue = values.apply(option);
 
-					optionLabel = Converter.render(optionLabel);
+					optionLabel = Renderer.render(optionLabel);
 					optionValue = Converter.toString(optionValue);
 					String string = String.format("<option data-value='%s'>%s</option>", optionValue, optionLabel);
 					model.add(context.getModelFactory().createText(string));
@@ -82,5 +82,15 @@ public class InputAttributeProcessor extends FormControlAttributeProcessor
 				handler.insertBefore(model);
 			}
 		}
+	}
+
+	private boolean usesISOString(String type)
+	{
+		return "date".equalsIgnoreCase(type)
+		       || "datetime-local".equalsIgnoreCase(type)
+		       || "month".equalsIgnoreCase(type)
+		       || "number".equalsIgnoreCase(type)
+		       || "range".equalsIgnoreCase(type)
+		       || "time".equalsIgnoreCase(type);
 	}
 }

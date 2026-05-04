@@ -1,6 +1,6 @@
 package gate.doc.printer;
 
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
@@ -52,14 +52,14 @@ public class CSVPrinter implements Printer
 	private void printGrid(Grid<Object> grid, Object data) throws ConversionException
 	{
 		if (grid.getColumns().stream().anyMatch(e -> e.getHead() != null))
-			writeLine(grid.getColumns().stream().map(Column::getHead).map(Converter::render)
+			writeLine(grid.getColumns().stream().map(Column::getHead).map(Renderer::render)
 					.collect(Collectors.toList()));
 
 		for (Object obj : Toolkit.iterable(data))
 			if (obj != null)
 			{
 
-				writeLine(grid.getColumns().stream().map(e -> Converter.render(e.getBody().apply(obj)))
+				writeLine(grid.getColumns().stream().map(e -> Renderer.render(e.getBody().apply(obj)))
 						.collect(Collectors.toList()));
 
 				if (grid.getChildren() != null)
@@ -68,7 +68,7 @@ public class CSVPrinter implements Printer
 			}
 
 		if (grid.getColumns().stream().anyMatch(e -> e.getFoot() != null))
-			writeLine(grid.getColumns().stream().map(Column::getFoot).map(Converter::render)
+			writeLine(grid.getColumns().stream().map(Column::getFoot).map(Renderer::render)
 					.collect(Collectors.toList()));
 	}
 }

@@ -21,17 +21,19 @@ public class ParameterConverterProvider implements ParamConverterProvider
 		if (rawType.isPrimitive()
 		    || Converter.getConverter(rawType) instanceof ObjectConverter)
 			return null;
-		return new ParameterConverter<>(rawType);
+		return new ParameterConverter<>(rawType, genericType);
 	}
 
 	private static class ParameterConverter<T> implements ParamConverter<T>
 	{
 
 		private final Class<T> type;
+		private final Type genericType;
 
-		private ParameterConverter(Class<T> type)
+		private ParameterConverter(Class<T> type, Type genericType)
 		{
 			this.type = type;
+			this.genericType = genericType;
 		}
 
 		@Override
@@ -39,7 +41,7 @@ public class ParameterConverterProvider implements ParamConverterProvider
 		{
 			try
 			{
-				return Converter.fromString(type, value);
+				return type.cast(Converter.fromString(genericType, value));
 			} catch (ConversionException ex)
 			{
 				throw new IllegalArgumentException(ex.getMessage(), ex);

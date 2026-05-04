@@ -23,13 +23,15 @@ public class TextareaProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       Object screen, Property property, Attributes attributes)
 	{
 		String value = "";
 		if (attributes.containsKey("value"))
-			value = property.getConverter().toString(property.getRawType(), expression.create().evaluate((String) attributes.remove("value")));
+			value = property.getConverter().toString(property.getRawType(),
+					expression.create().evaluate((String) attributes.remove("value")));
 		else if (!property.toString().endsWith("[]"))
-			value = property.getConverter().toString(property.getRawType(), property.getValue(screen));
+			value = property.getConvertedValue(screen);
+
 		handler.replaceWith("<textarea " + attributes + ">" + value + "</textarea>", true);
 	}
 }

@@ -49,7 +49,7 @@ public interface Version extends Serializable, Comparable<Version>
 		return new VersionImpl(major, minor, patch, qualifier, iteration);
 	}
 
-	static Version of(String string)
+	static Version valueOf(String string)
 	{
 		if (string == null)
 			return Version.UNDEFINED;

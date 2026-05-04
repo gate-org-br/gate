@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="gate.lang.expression.ExpressionTest" time="0.007" tests="15" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="gate.lang.expression.ExpressionTest" time="0.088" tests="109" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="25"/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="/home/davins/.sdkman/candidates/java/25.0.2-tem/lib"/>
-    <property name="sun.java.command" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260427215552350_3.jar /home/davins/Projects/gate/modules/core/target/surefire 2026-04-27T21-55-52_292-jvmRun1 surefire-20260427215552350_1tmp surefire_0-20260427215552350_2tmp"/>
+    <property name="sun.java.command" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260503205049265_3.jar /home/davins/Projects/gate/modules/core/target/surefire 2026-05-03T20-50-49_213-jvmRun1 surefire-20260503205049265_1tmp surefire_0-20260503205049265_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/home/davins/Projects/gate/modules/core/target/test-classes:/home/davins/Projects/gate/modules/core/target/classes:/home/davins/.m2/repository/org/slf4j/slf4j-api/2.0.17/slf4j-api-2.0.17.jar:/home/davins/.m2/repository/org/junit/jupiter/junit-jupiter-engine/6.0.2/junit-jupiter-engine-6.0.2.jar:/home/davins/.m2/repository/org/junit/platform/junit-platform-engine/6.0.2/junit-platform-engine-6.0.2.jar:/home/davins/.m2/repository/org/opentest4j/opentest4j/1.3.0/opentest4j-1.3.0.jar:/home/davins/.m2/repository/org/junit/platform/junit-platform-commons/6.0.2/junit-platform-commons-6.0.2.jar:/home/davins/.m2/repository/org/junit/jupiter/junit-jupiter-api/6.0.2/junit-jupiter-api-6.0.2.jar:/home/davins/.m2/repository/org/apiguardian/apiguardian-api/1.1.2/apiguardian-api-1.1.2.jar:/home/davins/.m2/repository/org/jspecify/jspecify/1.0.0/jspecify-1.0.0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -27,7 +27,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="surefire.real.class.path" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260427215552350_3.jar"/>
+    <property name="surefire.real.class.path" value="/home/davins/Projects/gate/modules/core/target/surefire/surefirebooter-20260503205049265_3.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="25.0.2+10-LTS"/>
     <property name="user.name" value="davins"/>
@@ -55,19 +55,113 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="69.0"/>
   </properties>
-  <testcase name="shouldReturnCollectionSize" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldEvaluateMethodCallWithArgumentExpression" classname="gate.lang.expression.ExpressionTest" time="0.002"/>
+  <testcase name="shouldEvaluateNotTrue" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnTrueWhenValueIsWithinRange" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnEmptyStringForUnknownParameter" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnCollectionSize" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldUseModInComparison" classname="gate.lang.expression.ExpressionTest" time="0.002"/>
+  <testcase name="shouldThrowWhenTernaryMissingColon" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnTrueForEmptyString" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldAccessMapEntryByStringIndex" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateMethodCallWithArgumentExpression" classname="gate.lang.expression.ExpressionTest" time="0.003"/>
+  <testcase name="shouldNotMatchLikeWithSingleCharWhenMultiple" classname="gate.lang.expression.ExpressionTest" time="0.002"/>
+  <testcase name="shouldReturnOneForExponentZero" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnSizeOfCollection" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldThrowWhenLikeLeftOperandIsNotString" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
   <testcase name="shouldEvaluateNestedPropertyComparison" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldHaveHigherPrecedenceThanMultiplication" classname="gate.lang.expression.ExpressionTest" time="0.002"/>
   <testcase name="shouldEvaluateSimpleGreaterThanComparison" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnOtherwiseWhenFalse" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
   <testcase name="shouldEvaluateArithmeticWithNestedProperty" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldThrowWhenRegexOperandIsNotString" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldEvaluateNestedArithmeticExpression" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldEvaluateIndexedCollectionArithmetic" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldBeRightAssociative" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenLikeRightOperandIsNotString" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldThrowOnUnclosedParentheses" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateInWithExpression" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldThrowWhenRegexOperandIsNotString" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateNestedArithmeticExpression" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateGreaterThanOrEqual" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateTernaryConditionWithAndOr" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateIndexedCollectionArithmetic" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnFalseWhenValueIsWithinNotBetweenRange" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
   <testcase name="shouldEvaluateAndBeforeOr" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldPreserveBooleanPrecedenceAcrossMultipleOperators" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
-  <testcase name="shouldCompareArithmeticExpressionsUsingEqOperator" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldRespectParenthesesInArithmeticExpression" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenNotOperandIsNotBoolean" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldThrowWhenBetweenOperandIsNotComparable" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseWhenValueIsNotInList" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnTrueWhenValueNotBetween" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldCalculateModDouble" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnTrueWhenValueIsNotInList" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnSizeOfString" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldChainShortTernary" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnValueWhenTrue" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseWhenValueMatchesNotRegex" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenEmptyOperandIsInvalidType" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldNotMatchLikeWhenPatternDoesNotFit" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldCoalesceWithArithmeticOnRight" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldCalculateModInteger" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenSizeOperandIsInvalidType" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnThenWhenConditionIsTrue" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFirstTruthyInChain" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldNotCoalesceWhenLeftIsZero" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnBaseForExponentOne" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateBetweenWithDouble" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateDoubleNot" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenTernaryConditionIsNotBoolean" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldPreserveBooleanPrecedenceAcrossMultipleOperators" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseForNonEmptyMap" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldCompareArithmeticExpressionsUsingEqOperator" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnTrueWhenValueIsInList" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseForNonEmptyString" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnElseWhenConditionIsFalse" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenComparingNonComparable" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnZeroWhenDivisible" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateBetweenWithString" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnTrueWhenNameNotLike" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateTernaryWithCoalesce" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldMatchLikeWithWildcardAtEnd" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseWhenValueIsAboveRange" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnTrueWhenValueIsOnLowerBound" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldRespectParenthesesInArithmeticExpression" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
   <testcase name="shouldEvaluateRegexMatch" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
-  <testcase name="shouldEvaluateMethodInvocationComparison" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldUseInInsideLogicalExpression" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldChainCoalesce" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateMethodInvocationComparison" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFirstNonNullInChain" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnTrueWhenValueDoesNotMatchRegex" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenPowerOperandIsIncompatible" classname="gate.lang.expression.ExpressionTest" time="0.002"/>
+  <testcase name="shouldEvaluateTernaryWithArithmeticInBranches" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnTrueForEmptyMap" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnFalseForNonEmptyCollection" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateInWithSingleElement" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseWhenValueIsBelowRange" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateLessThanOrEqual" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnSizeOfMap" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnFalseWhenNameMatchesNotLike" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldThrowWhenOrOperandIsNotBoolean" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldCalculatePowerOfIntegers" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenNotRxOperandIsNotString" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldCalculatePowerOfAge" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnLeftWhenNotNull" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnTrueForEmptyCollection" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateParameterWithNestedProperty" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenInvalidOperatorAfterNot" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowOnUnclosedInTuple" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateNotEqual" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateNotFalse" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
   <testcase name="shouldResolveParameterValue" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldThrowWhenModOperandIsIncompatible" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateUnaryPlus" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnFalseWhenValueIsInList" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnTrueWhenValueIsOnUpperBound" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldReturnRightWhenLeftIsNull" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateUnaryMinus" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldMatchLikeWithSingleCharWildcard" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldThrowWhenAndOperandIsNotBoolean" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldMatchLikeWithWildcardAtStart" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateNestedTernary" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldMatchLikeWithWildcardBothSides" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
+  <testcase name="shouldEvaluateLessThan" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldMatchLikeExactString" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldEvaluateInWithStrings" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldCalculatePowerOfDouble" classname="gate.lang.expression.ExpressionTest" time="0.0"/>
+  <testcase name="shouldReturnRightWhenLeftIsEmptyString" classname="gate.lang.expression.ExpressionTest" time="0.001"/>
 </testsuite>

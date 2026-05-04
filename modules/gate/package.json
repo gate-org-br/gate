@@ -2,7 +2,8 @@
   "type": "module",
   "scripts": {
 	"build": "node build.mjs",
-	"build:min": "node build.mjs --minify"
+	"build:min": "node build.mjs --minify",
+	"test:js": "npm run build && node --test src/test/wc/*.test.mjs"
   },
   "devDependencies": {
 	"esbuild": "^0.25.12",

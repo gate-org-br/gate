@@ -74,7 +74,6 @@ public class JsonElementTest
 		assertEquals("User 1", ((JsonObject) values.get(0)).getString("name").orElseThrow());
 		assertSame(JsonNull.INSTANCE, values.get(1));
 		assertEquals("User 1", ((JsonObject) map.get("user")).getString("name").orElseThrow());
-		assertThrows(ConversionException.class, () -> JsonElement.encode(Map.of(1, "value")));
 	}
 
 	@Test

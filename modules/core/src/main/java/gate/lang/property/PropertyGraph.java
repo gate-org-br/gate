@@ -66,12 +66,12 @@ public class PropertyGraph<T>
 		this.graph = Map.copyOf(graph);
 	}
 
-	public Object get(Object value, Function<Property, Object> getValue)
+	public Object populate(Object value, Function<Property, Object> getValue)
 	{
-		return get(type, value, graph, getValue);
+		return populate(type, value, graph, getValue);
 	}
 
-	Object get(Class<?> type, Object value, Object properties, Function<Property, Object> getValue)
+	Object populate(Class<?> type, Object value, Object properties, Function<Property, Object> getValue)
 	{
 		try
 		{
@@ -85,7 +85,7 @@ public class PropertyGraph<T>
 			var propertyMap = (Map<Attribute, Object>) map;
 
 			return ConstructionStrategy.newInstance(type, value, propertyMap,
-					(a, current, v) -> get(a.getRawType(), current, v, getValue));
+					(a, current, v) -> populate(a.getRawType(), current, v, getValue));
 		} catch (ReflectiveOperationException ex)
 		{
 			throw new ConversionException("Error trying to match", ex);

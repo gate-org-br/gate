@@ -113,18 +113,12 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 		Class<T> clazz = (Class<T>) type;
 		Class<?> elementClazz = Reflection.getRawType(elementType);
 
-		var adapter = JsonAdapter.of(elementClazz);
-		if (adapter != null)
-			return clazz.isAssignableFrom(Set.class) ?
-					(T) stream().map(adapter::fromJson).collect(Collectors.toSet())
-					: (T) stream().map(adapter::fromJson).toList();
-
 		return clazz.isAssignableFrom(Set.class)
 				? (T) stream()
-					  .map(e -> e.decode(elementClazz, Reflection.getElementType(elementType)))
+					  .map(e -> e.decode(elementClazz, Reflection.getElementGenericType(elementType)))
 					  .collect(Collectors.toSet())
 				: (T) stream()
-					  .map(e -> e.decode(elementClazz, Reflection.getElementType(elementType))).toList();
+					  .map(e -> e.decode(elementClazz, Reflection.getElementGenericType(elementType))).toList();
 	}
 
 	/**
@@ -338,7 +332,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	public Optional<String> getString(int index)
 	{
-		return index >= 0 && values.size() > index && values.get(index) instanceof JsonString string ? Optional.of(string.getValue())
+		return index >= 0 && values.size() > index && values.get(index) instanceof JsonString string ? Optional.of(string.unwrap())
 				: Optional.empty();
 	}
 

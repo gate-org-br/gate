@@ -26,7 +26,7 @@ public class Renavam implements Serializable, Comparable<Renavam>
 	 * @return the new Renavam created
 	 * @throws IllegalArgumentException if the specified String is not a valid Brazilian Renavam
 	 */
-	public static Renavam of(String value)
+	public static Renavam valueOf(String value)
 	{
 		return new Renavam(Objects.requireNonNull(Renavam.format(value),
 				"null is not a valid Renavam value"));

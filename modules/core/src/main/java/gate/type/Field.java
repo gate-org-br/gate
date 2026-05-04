@@ -1,13 +1,7 @@
 package gate.type;
 
-import java.io.Serial;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
+import gate.adapter.converter.CollectionConverter;
+import gate.adapter.converter.Converter;
 import gate.annotation.Description;
 import gate.annotation.Icon;
 import gate.annotation.Name;
@@ -15,323 +9,518 @@ import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Required;
 import gate.error.AppException;
-import gate.error.ConversionException;
-import gate.lang.json.JsonArray;
-import gate.lang.json.JsonElement;
-import gate.lang.json.JsonObject;
-import gate.lang.json.JsonString;
-import gate.type.collections.StringList;
+import gate.lang.json.*;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Icon("2198")
 public class Field implements Serializable
 {
-
-
 	@Serial
 	private static final long serialVersionUID = 1L;
 
 	@Name
-	@Description
-	private String id;
-
-	@Name
-	@Description
-	private String name;
-
-	@Name
-	@Description
-	private Size size;
-
 	@Required
-	@Name
 	@Description
-	private boolean multiple;
-
-	@Name
-	@Description
-	private StringList options;
+	private final Schema schema;
 
 	@Name
 	@Description
-	private StringList value;
+	private Value value;
 
-	@Required
-	@Name
-	@Description
-	private boolean required;
+	public Schema schema() {return schema;}
 
-	@Name
-	@Description
-	private String mask;
+	private Field(Schema schema) {this.schema = schema;}
 
-	@Name
-	@Description
-	private String description;
+	public static Field of(Schema schema) {return new Field(schema);}
 
-	@Name
-	@Description
-	private Pattern pattern;
+	public static Field of(Schema.Builder schema) {return new Field(schema.build());}
 
-	@Name
-	@Description
-	private Integer maxlength;
+	public Value getValue() {return value == null ? value = new Value() : value;}
 
-	@Name
-	@Description
-	private boolean readonly;
-
-	public String getId()
-	{
-		return id;
-	}
-
-	public Field setId(String id)
-	{
-		this.id = id;
-		return this;
-	}
-
-	public String getName()
-	{
-		return name;
-	}
-
-	public Field setName(String name)
-	{
-		this.name = name;
-		return this;
-	}
-
-	public StringList getValue()
-	{
-		if (value == null)
-			value = new StringList();
-		return value;
-	}
-
-	public Field setValue(StringList value)
+	public Field setValue(Value value)
 	{
 		this.value = value;
 		return this;
 	}
 
-	public String getMask()
+	public int minSize()
 	{
-		return mask;
-	}
-
-	public Field setMask(String mask)
-	{
-		this.mask = mask;
-		return this;
-	}
-
-	public Size getSize()
-	{
-		return size;
-	}
-
-	public Field setSize(Size size)
-	{
-		this.size = size;
-		return this;
-	}
-
-	public boolean getMultiple()
-	{
-		return multiple;
-	}
-
-	public Field setMultiple(boolean multiple)
-	{
-		this.multiple = multiple;
-		return this;
-	}
-
-	public String getDescription()
-	{
-		return description;
-	}
-
-	public Field setDescription(String description)
-	{
-		this.description = description;
-		return this;
-	}
-
-	public List<Constraint.Implementation<?>> getConstraints()
-	{
-		List<Constraint.Implementation<?>> constraints = new ArrayList<>();
-		if (Boolean.TRUE.equals(getRequired()))
-			constraints.add(new Required.Implementation("required"));
-		if (getMaxlength() != null)
-			constraints.add(new Maxlength.Implementation(getMaxlength()));
-		if (getPattern() != null)
-			constraints.add(new gate.constraint.Pattern.Implementation(getPattern()));
-		return constraints;
-	}
-
-	public StringList getOptions()
-	{
-		if (options == null)
-			options = new StringList();
-		return options;
-	}
-
-	public Field setOptions(StringList options)
-	{
-		this.options = options;
-		return this;
-	}
-
-	public Boolean getRequired()
-	{
-		return required;
-	}
-
-	public Field setRequired(boolean required)
-	{
-		this.required = required;
-		return this;
-	}
-
-	public Pattern getPattern()
-	{
-		return pattern;
-	}
-
-	public Field setPattern(Pattern pattern)
-	{
-		this.pattern = pattern;
-		return this;
-	}
-
-	public Integer getMaxlength()
-	{
-		return maxlength;
-	}
-
-	public Field setMaxlength(Integer maxLength)
-	{
-		this.maxlength = maxLength;
-		return this;
-	}
-
-	public boolean getReadonly()
-	{
-		return readonly;
-	}
-
-	public Field setReadonly(boolean readonly)
-	{
-		this.readonly = readonly;
-		return this;
-	}
-
-	public int getMinSize()
-	{
-		return Math.max(value != null ? value.stream().mapToInt(e -> e.length()).sum() : 0,
-				name != null ? name.length() : 0);
+		return Math.max(value != null ? value.stream().mapToInt(String::length).sum() : 0,
+				schema.name() != null ? schema.name().length() : 0);
 	}
 
 	public JsonObject toJson()
 	{
-		return new JsonObject().setString("id", id).setString("name", name).setString("mask", mask)
-				.setInt("maxlength", maxlength).setObject("size", Size.class, size)
-				.setString("description", description).setObject("pattern", Pattern.class, pattern)
-				.setBoolean("readonly", readonly ? true : null).setBoolean("multiple", multiple ? true : null)
-				.setBoolean("required", required ? true : null)
-				.set("value", value != null && !value.isEmpty() ? JsonArray.wrap(value) : null)
-				.set("options", options != null && !options.isEmpty() ? JsonArray.wrap(options) : null);
+		return new JsonObject()
+				.set("schema", schema.toJson())
+				.set("value", value != null && !value.isEmpty() ? JsonArray.wrap(value) : null);
 	}
 
 	@Override
-	public String toString()
+	public String toString() {return toJson().toString();}
+
+	public static Field valueOf(String string) {return valueOf(JsonObject.parse(string));}
+
+	public static Field valueOf(JsonObject jsonObject)
 	{
-		return toJson().toString();
-	}
-
-	public static Field parse(String string) throws ConversionException
-	{
-		return parse(JsonObject.parse(string));
-	}
-
-	public static Field parse(JsonObject jsonObject) throws ConversionException
-	{
-		Field field = new Field().setId(jsonObject.getString("id").orElse(null))
-				.setName(jsonObject.getString("name").orElse(null)).setMask(jsonObject.getString("mask").orElse(null))
-				.setMaxlength(jsonObject.getInt("maxlength").orElse(null))
-				.setDescription(jsonObject.getString("description").orElse(null))
-				.setReadonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
-				.setMultiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
-				.setRequired(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
-				.setSize(jsonObject.getString("size").map(Size::parse).orElse(null))
-				.setPattern(jsonObject.getObject("pattern", Pattern.class).orElse(null));
-
-		JsonElement options = jsonObject.get("options");
-		if (options instanceof JsonString)
-			field.setOptions(new StringList(options.toString()));
-		else if (options instanceof JsonArray jsonArray)
-			field.setOptions(
-					jsonArray.stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
-
-		JsonElement value = jsonObject.get("value");
-		if (value instanceof JsonString)
-			field.setValue(new StringList(value.toString()));
-		else if (value instanceof JsonArray jsonArray)
-			field.setValue(
-					jsonArray.stream().map(JsonElement::toString).collect(Collectors.toCollection(StringList::new)));
-
+		Field field =
+				new Field(Schema.valueOf(jsonObject.getJsonObject("schema")
+						.orElse(jsonObject)));
+		field.setValue(Value.of(jsonObject.get("value")));
 		return field;
 	}
 
-	public void validate() throws AppException
+	public void validate() {schema.validate(getValue());}
+
+	public void validate(Field field) throws AppException
 	{
-		if (Boolean.TRUE.equals(getRequired()) && getValue().isEmpty())
-			throw new AppException(String.format("O campo %s é requerido", getName()));
+		if (!schema.equals(field.schema))
+			throw new AppException("Field schema mismatch");
+		field.validate();
+	}
 
-		if (getMaxlength() != null && getValue().stream().anyMatch(e -> e.length() > getMaxlength()))
-			throw new AppException(String.format("O tamanho máximo do campo %s é %s", getName(), getMaxlength()));
-
-		if (getPattern() != null)
+	public record Schema(@Name
+						 @Description
+						 String id,
+	                     @Name
+						 @Description
+						 String name,
+	                     @Name
+						 @Description
+						 Size size,
+	                     @Name
+						 @Required
+						 @Description
+						 boolean required,
+	                     @Name
+						 @Description
+						 Integer maxlength,
+	                     @Name
+						 @Description
+						 String mask,
+	                     @Name
+						 @Description
+						 String description,
+	                     @Name
+						 @Description
+						 Pattern pattern,
+	                     @Name
+						 @Description
+						 boolean readonly,
+	                     @Name
+						 @Required
+						 @Description
+						 boolean multiple,
+	                     @Name
+						 @Description
+						 @gate.annotation.Converter(CollectionConverter.class)
+						 List<String> options)
+	{
+		public Schema
 		{
-			if (getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-				throw new AppException(String.format("Formato inválido para o campo %s", getName()));
+			options = options != null
+					? List.copyOf(options) : List.of();
+		}
 
-			if (!getOptions().isEmpty() && getValue().stream().anyMatch(e -> !getPattern().matcher(e).matches()))
-				throw new AppException(
-						String.format("%s is not a valid option para o campo campo %s", value, getName()));
+		public static Schema valueOf(JsonObject jsonObject)
+		{
+			return Schema.builder()
+					.id(jsonObject.getString("id").orElse(null))
+					.name(jsonObject.getString("name").orElse(null))
+					.size(jsonObject.getString("size").map(Size::parse).orElse(null))
+					.required(jsonObject.getBoolean("required").orElse(Boolean.FALSE))
+					.maxlength(jsonObject.getInt("maxlength").orElse(null))
+					.mask(jsonObject.getString("mask").orElse(null))
+					.description(jsonObject.getString("description").orElse(null))
+					.pattern(jsonObject.getObject("pattern", Pattern.class).orElse(null))
+					.readonly(jsonObject.getBoolean("readonly").orElse(Boolean.FALSE))
+					.multiple(jsonObject.getBoolean("multiple").orElse(Boolean.FALSE))
+					.options(jsonObject.getJsonElement("options").map(Options::of).orElse(new Options()))
+					.build();
+		}
+
+		public List<Constraint.Implementation<?>> getConstraints()
+		{
+			List<Constraint.Implementation<?>> constraints = new ArrayList<>();
+			if (required())
+				constraints.add(new Required.Implementation("required"));
+			if (maxlength() != null)
+				constraints.add(new Maxlength.Implementation(maxlength()));
+			if (pattern() != null)
+				constraints.add(new gate.constraint.Pattern.Implementation(pattern()));
+			return constraints;
+		}
+
+		public JsonObject toJson()
+		{
+			return new JsonObject()
+					.setString("id", id())
+					.setString("name", name())
+					.setString("mask", mask())
+					.setInt("maxlength", maxlength())
+					.setObject("size", Size.class, size())
+					.setString("description", description())
+					.setObject("pattern", Pattern.class, pattern())
+					.setBoolean("readonly", readonly() ? true : null)
+					.setBoolean("multiple", multiple() ? true : null)
+					.setBoolean("required", required() ? true : null)
+					.set("options", options != null && !options.isEmpty() ? JsonArray.wrap(options) : null);
+		}
+
+		public void validate(List<String> value) throws AppException
+		{
+			if (required() && value.isEmpty())
+				throw new AppException(String.format("Field %s is required", name()));
+
+			if (!multiple() && value.size() > 1)
+				throw new AppException(String.format("Field %s does not accept multiple values", name()));
+
+			if (pattern() != null && value.stream().anyMatch(e -> !pattern().matcher(e).matches()))
+				throw new AppException(String.format("Invalid format for field %s", name()));
+
+			if (!options().isEmpty())
+			{
+				if (maxlength() != null && value.size() > maxlength())
+					throw new AppException(String.format("Field %s accepts at most %s options", name(), maxlength()));
+
+				if (!new HashSet<>(options()).containsAll(value))
+					throw new AppException(String.format("%s is not a valid option for field %s", value, name()));
+			} else if (maxlength() != null
+			           && value.stream().mapToInt(String::length).sum() > maxlength())
+				throw new AppException(String.format("Field %s accepts at most %s characters", name(), maxlength()));
+		}
+
+		public enum Size
+		{
+			@Name
+			ONE,
+			@Name
+			TWO,
+			@Name
+			FOUR,
+			@Name
+			EIGHT;
+
+			@Override
+			public String toString()
+			{
+				return Name.Extractor.extract(this).orElse(name());
+			}
+
+			public static Size parse(String string)
+			{
+				if (string == null)
+					return null;
+
+				return switch (string.trim())
+				{
+					case "0" -> ONE;
+					case "1" -> TWO;
+					case "2" -> FOUR;
+					case "3" -> EIGHT;
+					default -> null;
+				};
+			}
+		}
+
+		public static Builder builder()
+		{
+			return new Builder();
+		}
+
+		public static Builder builder(Schema schema)
+		{
+			return new Builder(schema);
+		}
+
+		public static final class Builder
+		{
+			private String id;
+			private String name;
+			private Size size;
+			private boolean required;
+			private Integer maxlength;
+			private String mask;
+			private String description;
+			private Pattern pattern;
+			private boolean readonly;
+			private boolean multiple;
+			private List<String> options = List.of();
+
+			private Builder()
+			{
+			}
+
+			private Builder(Schema schema)
+			{
+				this.id = schema.id();
+				this.name = schema.name();
+				this.size = schema.size();
+				this.required = schema.required();
+				this.maxlength = schema.maxlength();
+				this.mask = schema.mask();
+				this.description = schema.description();
+				this.pattern = schema.pattern();
+				this.readonly = schema.readonly();
+				this.multiple = schema.multiple();
+				this.options = schema.options();
+			}
+
+			public Builder id(String id)
+			{
+				this.id = id;
+				return this;
+			}
+
+			public Builder name(String name)
+			{
+				this.name = name;
+				return this;
+			}
+
+			public Builder size(Size size)
+			{
+				this.size = size;
+				return this;
+			}
+
+			public Builder required(boolean required)
+			{
+				this.required = required;
+				return this;
+			}
+
+			public Builder maxlength(Integer maxlength)
+			{
+				this.maxlength = maxlength;
+				return this;
+			}
+
+			public Builder mask(String mask)
+			{
+				this.mask = mask;
+				return this;
+			}
+
+			public Builder description(String description)
+			{
+				this.description = description;
+				return this;
+			}
+
+			public Builder pattern(Pattern pattern)
+			{
+				this.pattern = pattern;
+				return this;
+			}
+
+			public Builder readonly(boolean readonly)
+			{
+				this.readonly = readonly;
+				return this;
+			}
+
+			public Builder multiple(boolean multiple)
+			{
+				this.multiple = multiple;
+				return this;
+			}
+
+			public Builder options(List<String> options)
+			{
+				this.options = options != null
+						? List.copyOf(options) : List.of();
+				return this;
+			}
+
+			@SuppressWarnings("unchecked") public Builder options(String options)
+			{
+				this.options = (List<String>) Converter.fromString(List.class, options);
+				return this;
+			}
+
+			public Schema build()
+			{
+				return new Schema(id,
+						name,
+						size,
+						required,
+						maxlength,
+						mask,
+						description,
+						pattern,
+						readonly,
+						multiple,
+						options);
+			}
+		}
+
+		public static class Options extends ArrayList<String>
+		{
+			private Options() {}
+
+			private Options(Collection<String> values) {super(values != null ? values : List.of());}
+
+			public static Options of(JsonElement jsonElement)
+			{
+				if (jsonElement == null || jsonElement instanceof JsonNull)
+					return new Options();
+				if (jsonElement instanceof JsonArray jsonArray)
+					return jsonArray.stream().filter(e -> e instanceof JsonString)
+							.map(JsonString.class::cast)
+							.map(JsonString::unwrap)
+							.collect(Collectors.toCollection(Options::new));
+				if (jsonElement instanceof JsonString jsonString)
+					return valueOf(jsonString.unwrap());
+				throw new IllegalStateException("Invalid value");
+			}
+
+			@SuppressWarnings("unchecked")
+			public static Options valueOf(String value) {return new Options((List<String>) Converter.fromString(List.class, value));}
+
+			public static Options of(Collection<String> values) {return new Options(values);}
+
+			public static Options of(String... values) {return new Options(List.of(values));}
+
+			public static Options of(String value) {return new Options(value != null ? List.of(value) : List.of());}
+
+			public int length() {return stream().mapToInt(String::length).sum();}
+
+			public JsonArray toJson() {return JsonArray.wrap(this);}
 		}
 	}
 
-	public enum Size
+	public static final class Builder
 	{
+		private Value value = new Value();
+		private final Schema.Builder delegate = Schema.builder();
 
-		@Name
-		ONE, @Name
-	TWO, @Name
-	FOUR, @Name
-	EIGHT;
+		private Builder() {}
 
-		@Override
-		public String toString()
+		public Builder id(String id)
 		{
-			return Name.Extractor.extract(this).orElse(name());
+			delegate.id(id);
+			return this;
 		}
 
-		public static Size parse(String string)
+		public Builder name(String name)
 		{
-			if (string == null)
-				return null;
-
-			return switch (string.trim())
-			{
-				case "0" -> ONE;
-				case "1" -> TWO;
-				case "2" -> FOUR;
-				case "3" -> EIGHT;
-				default -> null;
-			};
+			delegate.name(name);
+			return this;
 		}
+
+		public Builder size(Field.Schema.Size size)
+		{
+			delegate.size(size);
+			return this;
+		}
+
+		public Builder required(boolean required)
+		{
+			delegate.required(required);
+			return this;
+		}
+
+		public Builder maxlength(Integer maxlength)
+		{
+			delegate.maxlength(maxlength);
+			return this;
+		}
+
+		public Builder mask(String mask)
+		{
+			delegate.mask(mask);
+			return this;
+		}
+
+		public Builder description(String description)
+		{
+			delegate.description(description);
+			return this;
+		}
+
+		public Builder pattern(Pattern pattern)
+		{
+			delegate.pattern(pattern);
+			return this;
+		}
+
+		public Builder readonly(boolean readonly)
+		{
+			delegate.readonly(readonly);
+			return this;
+		}
+
+		public Builder multiple(boolean multiple)
+		{
+			delegate.multiple(multiple);
+			return this;
+		}
+
+		public Builder options(List<String> options)
+		{
+			delegate.options(options);
+			return this;
+		}
+
+		public Builder options(String options)
+		{
+			delegate.options(options);
+			return this;
+		}
+
+		public Builder value(Value value)
+		{
+			this.value = value != null ? value : new Value();
+			return this;
+		}
+
+		public Field build() {return new Field(delegate.build()).setValue(value);}
+	}
+
+	public static Builder builder() {return new Builder();}
+
+	public static class Value extends ArrayList<String>
+	{
+		private Value() {}
+
+		private Value(Collection<String> values) {super(values != null ? values : List.of());}
+
+		public static Value of(JsonElement jsonElement)
+		{
+			if (jsonElement == null || jsonElement instanceof JsonNull)
+				return new Value();
+			if (jsonElement instanceof JsonArray jsonArray)
+				return jsonArray.stream().filter(e -> e instanceof JsonString)
+						.map(JsonString.class::cast)
+						.map(JsonString::unwrap)
+						.collect(Collectors.toCollection(Value::new));
+			if (jsonElement instanceof JsonString jsonString)
+				return valueOf(jsonString.unwrap());
+			throw new IllegalStateException("Invalid value");
+		}
+
+		public static Value of() {return new Value();}
+
+		public static Value of(String... values) {return new Value(List.of(values));}
+
+		public static Value of(Collection<String> values) {return new Value(values);}
+
+		public static Value of(String value) {return new Value(value != null ? List.of(value) : List.of());}
+
+		@SuppressWarnings("unchecked")
+		public static Value valueOf(String value) {return new Value((List<String>) Converter.fromString(List.class, value));}
+
+		public int length() {return stream().mapToInt(String::length).sum();}
+
+		public JsonArray toJson() {return JsonArray.wrap(this);}
 	}
 }

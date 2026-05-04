@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -78,7 +78,7 @@ public class MimeText implements Mime
 	{
 		try
 		{
-			Map<String, String> map = new HashMap<>();
+			Map<String, String> map = new LinkedHashMap<>();
 			map.put("charset", charset);
 
 			return DataURL.of(getContentType(), false, map, URLEncoder.encode(getText(), charset)).toString();
@@ -88,16 +88,16 @@ public class MimeText implements Mime
 		}
 	}
 
-	public static MimeText parse(String string) throws ConversionException
+	public static MimeText valueOF(String string) throws ConversionException
 	{
 		try
 		{
-			DataURL dataURL = DataURL.parse(string);
+			DataURL dataURL = DataURL.valueOf(string);
 
 			String charset = dataURL.getParameters().getOrDefault("charset", "utf-8");
 
 			String text = dataURL.isBase64() ? new String(Base64.getDecoder().decode(dataURL.getData()), charset)
-					: URLDecoder.decode(string, charset);
+					: URLDecoder.decode(dataURL.getData(), charset);
 
 			return new MimeText(dataURL.getContentType(), charset, text);
 		} catch (ParseException | UnsupportedEncodingException ex)

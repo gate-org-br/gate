@@ -6,7 +6,9 @@ import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.error.ConversionException;
+import gate.util.Reflection;
 
+import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -32,7 +34,6 @@ public class LocalDateConverter implements Converter
 			= Arrays.asList(new Maxlength.Implementation(10),
 			new gate.constraint.Pattern.Implementation("^(?:\\d{8}|\\d{2}\\/\\d{2}\\/\\d{4}|\\d{4}-\\d{2}-\\d{2})$"));
 
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return CONSTRAINTS;
@@ -51,19 +52,7 @@ public class LocalDateConverter implements Converter
 	}
 
 	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? FORMATTER.format((TemporalAccessor) object) : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? DateTimeFormatter.ofPattern(format).format((TemporalAccessor) object) : "";
-	}
-
-	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		if (string == null)
 			return null;
@@ -87,7 +76,7 @@ public class LocalDateConverter implements Converter
 			throw new ConversionException(ex,
 					"%s não é uma data válida.%n%s.",
 					ex.getParsedString(),
-					Metadata.getMetadata(type).description());
+						Metadata.getMetadata(Reflection.getRawType(type)).description());
 		}
 	}
 

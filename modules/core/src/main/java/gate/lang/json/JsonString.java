@@ -51,7 +51,7 @@ public class JsonString implements JsonElement, JsonScalar
 	@Override
 	public String toString()
 	{
-		return value;
+		return JsonElement.stringify(this);
 	}
 
 	@Override

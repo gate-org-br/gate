@@ -27,10 +27,10 @@ public class Form extends ReportElement
 		this.columns = 8;
 		form.getFields().forEach((e) ->
 		{
-			if (e.getMultiple())
-				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1).height(40f));
+			if (e.schema().multiple())
+				elements.add(new Field(e.schema().name(), e.getValue()).colspan(e.schema().size().ordinal() + 1).height(40f));
 			else
-				elements.add(new Field(e.getName(), e.getValue()).colspan(e.getSize().ordinal() + 1));
+				elements.add(new Field(e.schema().name(), e.getValue()).colspan(e.schema().size().ordinal() + 1));
 		});
 	}
 
@@ -64,11 +64,11 @@ public class Form extends ReportElement
 		if (!form.getFields().isEmpty())
 		{
 
-			form.getFields().forEach(e -> add(e.getName(), e.getValue())
-					.colspan(e.getSize().ordinal() + 1));
+			form.getFields().forEach(e -> add(e.schema().name(), e.getValue())
+					.colspan(e.schema().size().ordinal() + 1));
 
 			int count = form.getFields().stream()
-								.mapToInt(e -> e.getSize().ordinal() + 1)
+								.mapToInt(e -> e.schema().size().ordinal() + 1)
 								.sum() % columns;
 			if (count > 0)
 			{

@@ -21,8 +21,8 @@ public abstract class InputProcessor extends PropertyProcessor
 
 	@Override
 	protected void process(ITemplateContext context, IProcessableElementTag element,
-		IElementTagStructureHandler handler,
-		Object screen, Property property, Attributes attributes)
+	                       IElementTagStructureHandler handler,
+	                       Object screen, Property property, Attributes attributes)
 	{
 		attributes.put("type", getElement());
 
@@ -31,13 +31,9 @@ public abstract class InputProcessor extends PropertyProcessor
 			var value = attributes.get("value");
 			value = expression.create().evaluate((String) value);
 			value = property.getConverter().toString(property.getRawType(), value);
-			attributes.put("value", (String) value);
-		} else if (!property.toString().endsWith("[]"))
-		{
-			var value = property.getValue(screen);
-			value = property.getConverter().toString(property.getRawType(), value);
 			attributes.put("value", value);
-		}
+		} else if (!property.toString().endsWith("[]"))
+			attributes.put("value", property.getConvertedValue(screen));
 
 		handler.replaceWith("<input " + attributes + "/>", true);
 	}

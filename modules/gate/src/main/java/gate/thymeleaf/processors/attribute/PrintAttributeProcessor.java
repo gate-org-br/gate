@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpression;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -28,9 +30,9 @@ public class PrintAttributeProcessor extends AttributeProcessor
 		var format = extract(element, handler, "g:format").orElse(null);
 		var empty = extract(element, handler, "g:empty").orElse(null);
 
-		value = Converter.render(expression.evaluate(value), format);
+		value = Renderer.render(expression.evaluate(value), format);
 		if (value.isBlank() && empty != null)
-			value = Converter.render(expression.evaluate(empty));
+			value = Renderer.render(expression.evaluate(empty));
 		value = HtmlEscape.escapeHtml4Xml(value);
 		value = value.replaceAll("\\n", "<br/>");
 		handler.setBody(value, false);

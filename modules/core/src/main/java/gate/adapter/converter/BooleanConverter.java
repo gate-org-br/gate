@@ -1,27 +1,20 @@
 package gate.adapter.converter;
 
 import gate.constraint.Constraint;
-import gate.error.ConversionException;
-import gate.lang.json.JsonScanner;
-import gate.lang.json.JsonToken;
-import gate.lang.json.JsonWriter;
 
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.List;
 
 public class BooleanConverter implements Converter
 {
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string)
+	public Object ofString(Type type, String string)
 	{
 		return string != null && !string.trim().isEmpty() ? Boolean.valueOf(string) : null;
 	}
@@ -30,64 +23,5 @@ public class BooleanConverter implements Converter
 	public String toString(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? Boolean.TRUE.equals(object) ? "Sim" : "Não" : "";
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, Boolean.TRUE.equals(object) ? "Sim" : "Não") : "";
-	}
-
-	@Override
-	public Object ofJson(JsonScanner scanner, Type type, Type elementType) throws ConversionException
-	{
-		return switch (scanner.getCurrent().getType())
-		{
-			case TRUE ->
-			{
-				scanner.scan();
-				yield Boolean.TRUE;
-			}
-			case FALSE ->
-			{
-				scanner.scan();
-				yield Boolean.FALSE;
-			}
-			case NULL ->
-			{
-				scanner.scan();
-				yield null;
-			}
-			default -> throw new ConversionException(scanner.getCurrent() + " is not a boolean");
-		};
-	}
-
-	/**
-	 * Serializes the specified {@link java.lang.Boolean} on JSON notation.
-	 * <p>
-	 * A non-null java Boolean will be formatted as their respective true or
-	 * false JSON boolean. A null reference will be formatted as a JSON
-	 * Null.
-	 *
-	 * @throws gate.error.ConversionException if the specified object is not
-	 *                                        a boolean
-	 */
-	@Override
-	public <T> void toJson(Deque<Object> stack, JsonWriter writer, Class<T> type, T object) throws ConversionException
-	{
-		if (object == null)
-			writer.write(JsonToken.Type.NULL, null);
-		else if (Boolean.TRUE.equals(object))
-			writer.write(JsonToken.Type.TRUE, null);
-		else if (Boolean.FALSE.equals(object))
-			writer.write(JsonToken.Type.FALSE, null);
-		else
-			throw new ConversionException(object.getClass().getName() + " is not a boolean");
 	}
 }

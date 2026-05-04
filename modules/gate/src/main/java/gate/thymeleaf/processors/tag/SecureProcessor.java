@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -52,7 +54,7 @@ public class SecureProcessor extends TagProcessor
 			} else if (element.hasAttribute("otherwise"))
 			{
 				String otherwise = element.getAttributeValue("otherwise");
-				otherwise = Converter.render(expression.create().evaluate(otherwise));
+				otherwise = Renderer.render(expression.create().evaluate(otherwise));
 				handler.replaceWith(otherwise, false);
 			} else
 				handler.removeElement();

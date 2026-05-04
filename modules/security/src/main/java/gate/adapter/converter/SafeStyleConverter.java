@@ -6,13 +6,14 @@ import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.type.SafeStyle;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Description("CSS inline seguro.")
 public class SafeStyleConverter implements Converter
 {
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		try
 		{
@@ -30,7 +31,6 @@ public class SafeStyleConverter implements Converter
 		}
 	}
 
-	@Override
 	public String render(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
@@ -42,13 +42,11 @@ public class SafeStyleConverter implements Converter
 		return object != null ? object.toString() : "";
 	}
 
-	@Override
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
 	}
 
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return List.of();

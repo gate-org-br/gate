@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.base.Screen;
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
@@ -49,7 +51,7 @@ public class AlertProcessor extends TagProcessor
 
 			string.add("<script>");
 			string.add("window.addEventListener('load',function(){");
-			messages.stream().map(Converter::render).map(e -> e.replace('\'', '"'))
+			messages.stream().map(Renderer::render).map(e -> e.replace('\'', '"'))
 					.map(e -> "alert('" + e + "');").forEach(string::add);
 			string.add("let href = window.location.href;");
 			string.add("href = href.replace(/messages=[a-zA-Z0-9+\\/=%]*&/, '');");

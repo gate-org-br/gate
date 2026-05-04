@@ -2,5 +2,10 @@ package gate.adapter.metadata;
 
 public class YearMonthIntervalMetadata extends SimpleMetadata
 {
-	public YearMonthIntervalMetadata() {super(builder().description("Campos de intervalo de datas devem ser preenchidos no formato MM/YYYY - MM/YYYY").mask("##/#### - ##/####"));}
+	public YearMonthIntervalMetadata()
+	{
+		super(builder()
+				.description("Campos de intervalo de datas devem ser preenchidos no formato MM/YYYY - MM/YYYY")
+				.mask("##/#### - ##/####"));
+	}
 }

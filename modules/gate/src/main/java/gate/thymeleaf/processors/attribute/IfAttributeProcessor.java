@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
@@ -30,7 +32,7 @@ public class IfAttributeProcessor extends AttributeProcessor
 		} else if (element.hasAttribute("g:otherwise"))
 		{
 			String otherwise = element.getAttributeValue("g:otherwise");
-			otherwise = Converter.render(expression.create().evaluate(otherwise));
+			otherwise = Renderer.render(expression.create().evaluate(otherwise));
 			handler.replaceWith(otherwise, false);
 		} else
 			handler.removeElement();

@@ -2,6 +2,7 @@ package gate.lang.template;
 
 import gate.error.TemplateException;
 import gate.lang.expression.Expression;
+
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,7 @@ class TemplateParser
 		List<Evaluable> evaluables = new ArrayList<>();
 
 		while (token != TemplateToken.EOF
-				&& token != TemplateToken.BLOCK_END)
+		       && token != TemplateToken.BLOCK_END)
 			evaluables.add(evaluable(scanner));
 		return new Template(evaluables);
 	}
@@ -31,10 +32,10 @@ class TemplateParser
 	public Evaluable evaluable(TemplateScanner scanner) throws TemplateException
 	{
 		if (token == TemplateToken.LINE_BREAK
-				&& scanner.peek(0) instanceof Spacing
-				&& (scanner.peek(1) == TemplateToken.BLOCK
-				|| scanner.peek(1) == TemplateToken.INVERTED_BLOCK
-				|| scanner.peek(1) == TemplateToken.BLOCK_END))
+		    && scanner.peek(0) instanceof Spacing
+		    && (scanner.peek(1) == TemplateToken.BLOCK
+		        || scanner.peek(1) == TemplateToken.INVERTED_BLOCK
+		        || scanner.peek(1) == TemplateToken.BLOCK_END))
 		{
 			token = scanner.next();
 			token = scanner.next();
@@ -42,7 +43,7 @@ class TemplateParser
 		}
 
 		if (token == TemplateToken.EXPRESSION_HEAD
-				|| token == TemplateToken.EL_HEAD)
+		    || token == TemplateToken.EL_HEAD)
 			return expression(scanner);
 
 		if (token == TemplateToken.BLOCK)
@@ -60,7 +61,7 @@ class TemplateParser
 		{
 			token = scanner.next();
 		} else if (token instanceof Spacing
-				&& scanner.peek(0) == TemplateToken.LINE_BREAK)
+		           && scanner.peek(0) == TemplateToken.LINE_BREAK)
 		{
 			token = scanner.next();
 			token = scanner.next();
@@ -109,34 +110,34 @@ class TemplateParser
 	public Expression expression(TemplateScanner scanner) throws TemplateException
 	{
 		if (token == TemplateToken.EXPRESSION_HEAD
-				|| token == TemplateToken.BLOCK
-				|| token == TemplateToken.INVERTED_BLOCK
-				|| token == TemplateToken.BLOCK_END)
+		    || token == TemplateToken.BLOCK
+		    || token == TemplateToken.INVERTED_BLOCK
+		    || token == TemplateToken.BLOCK_END)
 		{
 			StringBuilder string = new StringBuilder();
 			for (token = scanner.next();
-					token != TemplateToken.EXPRESSION_TAIL
-					&& token != TemplateToken.EOF;
-					token = scanner.next())
+			     token != TemplateToken.EXPRESSION_TAIL
+			     && token != TemplateToken.EOF;
+			     token = scanner.next())
 				string.append(token.toString());
 
 			if (token == TemplateToken.EOF)
 				throw new TemplateException(String.format("Expected %s and found  %s.", TemplateToken.EXPRESSION_TAIL, token));
 			token = scanner.next();
-			return Expression.of(string.toString());
+			return Expression.valueOf(string.toString());
 		} else if (token == TemplateToken.EL_HEAD)
 		{
 			StringBuilder string = new StringBuilder();
 			for (token = scanner.next();
-					token != TemplateToken.EXPRESSION_TAIL
-					&& token != TemplateToken.EOF;
-					token = scanner.next())
+			     token != TemplateToken.EXPRESSION_TAIL
+			     && token != TemplateToken.EOF;
+			     token = scanner.next())
 				string.append(token.toString());
 
 			if (token != TemplateToken.EOF)
 				throw new TemplateException(String.format("Expected %s and found  %s.", TemplateToken.EXPRESSION_TAIL, token));
 			token = scanner.next();
-			return Expression.of(string.toString());
+			return Expression.valueOf(string.toString());
 		} else
 			throw new TemplateException(String.format("Expected expression and found  %s.", token));
 	}

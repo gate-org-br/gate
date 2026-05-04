@@ -25,7 +25,7 @@ public class BodyParamExtractor
 
 		try
 		{
-			Object value = converter.ofString(parameter.getType(), body);
+			Object value = converter.ofString(parameter.getParameterizedType(), body);
 			if (value == null && parameter.isAnnotationPresent(Required.class))
 				throw new BadRequestException("Missing required body parameter");
 			return value;

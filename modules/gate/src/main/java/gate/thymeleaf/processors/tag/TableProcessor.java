@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
@@ -44,7 +46,7 @@ public class TableProcessor extends TagModelProcessor
 		{
 			var otherwise = attributes.remove("otherwise");
 			otherwise = expression.create().evaluate((String) otherwise);
-			otherwise = Converter.render(otherwise);
+			otherwise = Renderer.render(otherwise);
 			otherwise = "<div class='TEXT'><h1>" + otherwise + "</h1></div>";
 			replaceWith(context, model, handler, otherwise.toString());
 		} else

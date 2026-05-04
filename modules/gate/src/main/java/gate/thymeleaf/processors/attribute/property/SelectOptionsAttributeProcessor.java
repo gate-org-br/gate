@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.adapter.converter.Converter;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
@@ -67,7 +69,7 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 					.entrySet()
 					.forEach(group ->
 					{
-						body.add("<optgroup label='" + Converter.render(group.getKey()) + "'>");
+						body.add("<optgroup label='" + Renderer.render(group.getKey()) + "'>");
 						print(0, body, group.getValue(), labels, values, children);
 						body.add("</optgroup>");
 					});
@@ -89,7 +91,7 @@ public class SelectOptionsAttributeProcessor extends AttributeProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-			           + Converter.render(labels.apply(object)) + "</option>");
+			           + Renderer.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

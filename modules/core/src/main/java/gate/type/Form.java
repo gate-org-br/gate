@@ -6,14 +6,10 @@ import gate.error.ConversionException;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
-import gate.type.collections.StringList;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -26,12 +22,7 @@ public class Form implements Serializable
 
 	private List<Field> fields;
 
-	public List<Field> getFields()
-	{
-		if (fields == null)
-			fields = new ArrayList<>();
-		return fields;
-	}
+	public List<Field> getFields() {return fields == null ? fields = new ArrayList<>() : fields;}
 
 	public Form setFields(List<Field> fields)
 	{
@@ -45,16 +36,13 @@ public class Form implements Serializable
 		return toJson().toString();
 	}
 
-	public static Form valueOf(String string) throws ConversionException
-	{
-		return valueOf(JsonElement.parse(string));
-	}
+	public static Form valueOf(String string) {return valueOf(JsonElement.parse(string));}
 
 	public static Form valueOf(JsonArray json) throws ConversionException
 	{
 		return new Form().setFields(json.stream()
 				.map(e -> (JsonObject) e)
-				.map(Field::parse)
+				.map(Field::valueOf)
 				.collect(Collectors.toList()));
 	}
 
@@ -62,9 +50,14 @@ public class Form implements Serializable
 	{
 		return new Form().setFields(json
 				.entrySet().stream()
-				.map(e -> new Field()
-						.setName(e.getKey())
-						.setValue(new StringList(e.getValue().toString())))
+				.map(e ->
+				{
+					Field field = Field.of(Field.Schema.builder()
+							.name(e.getKey())
+							.build());
+					field.setValue(Field.Value.of(toList(String.valueOf(e.getValue().unwrap()))));
+					return field;
+				})
 				.collect(Collectors.toList()));
 	}
 
@@ -90,13 +83,25 @@ public class Form implements Serializable
 			field.validate();
 	}
 
+	public void validate(Form form) throws AppException
+	{
+		if (form == null)
+			throw new AppException("Form is required");
+
+		if (getFields().size() != form.getFields().size())
+			throw new AppException("Form schema mismatch");
+
+		for (int i = 0; i < getFields().size(); i++)
+			getFields().get(i).validate(form.getFields().get(i));
+	}
+
 	public static Map<String, Map<String, Long>>
 	getStatistics(List<Form> forms)
 	{
 		return forms.stream()
 				.flatMap(e -> e.getFields().stream())
-				.filter(e -> !e.getOptions().isEmpty())
-				.collect(Collectors.groupingBy(Field::getName,
+				.filter(e -> !e.schema().options().isEmpty())
+				.collect(Collectors.groupingBy(e -> e.schema().name(),
 						Collectors.collectingAndThen(Collectors.toList(),
 								e -> e.stream().flatMap(v -> v.getValue().stream())
 										.collect(Collectors.groupingBy(Function.identity(), Collectors.counting())))));
@@ -105,10 +110,18 @@ public class Form implements Serializable
 	public List<String> getValues(String id)
 	{
 		return getFields().stream()
-				.filter(e -> id.equals(e.getId()))
+				.filter(e -> id.equals(e.schema().id()))
 				.findAny()
 				.map(Field::getValue)
-				.orElseGet(StringList::new);
+				.orElseGet(Field.Value::of);
+	}
+
+	private static List<String> toList(String string)
+	{
+		return Arrays.stream(string.split(",|;|\\r?\\n"))
+				.map(String::trim)
+				.filter(e -> !e.isEmpty())
+				.collect(Collectors.toList());
 	}
 
 	public Optional<String> getValue(String id)
@@ -125,116 +138,124 @@ public class Form implements Serializable
 		return this;
 	}
 
+	private void setSize(int index, Field.Schema.Size size)
+	{
+		Field field = fields.get(index);
+		Field sized = Field.of(Field.Schema.builder(field.schema()).size(size).build());
+		sized.setValue(field.getValue());
+		fields.set(index, sized);
+	}
+
 	public void pack(int limit)
 	{
 		int i = 0;
 		while (i < fields.size())
 		{
 			if (i + 8 < fields.size()
-			    && fields.get(i).getMinSize() <= limit
-			    && fields.get(i + 1).getMinSize() <= limit
-			    && fields.get(i + 2).getMinSize() <= limit
-			    && fields.get(i + 3).getMinSize() <= limit
-			    && fields.get(i + 4).getMinSize() <= limit
-			    && fields.get(i + 5).getMinSize() <= limit
-			    && fields.get(i + 6).getMinSize() <= limit
-			    && fields.get(i + 7).getMinSize() <= limit)
+			    && fields.get(i).minSize() <= limit
+			    && fields.get(i + 1).minSize() <= limit
+			    && fields.get(i + 2).minSize() <= limit
+			    && fields.get(i + 3).minSize() <= limit
+			    && fields.get(i + 4).minSize() <= limit
+			    && fields.get(i + 5).minSize() <= limit
+			    && fields.get(i + 6).minSize() <= limit
+			    && fields.get(i + 7).minSize() <= limit)
 			{
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
 
 			} else if (i + 6 < fields.size()
-			           && fields.get(i).getMinSize() <= limit
-			           && fields.get(i + 1).getMinSize() <= limit
-			           && fields.get(i + 2).getMinSize() <= limit
-			           && fields.get(i + 3).getMinSize() <= limit
-			           && fields.get(i + 4).getMinSize() <= limit * 2
-			           && fields.get(i + 5).getMinSize() <= limit * 2)
+			           && fields.get(i).minSize() <= limit
+			           && fields.get(i + 1).minSize() <= limit
+			           && fields.get(i + 2).minSize() <= limit
+			           && fields.get(i + 3).minSize() <= limit
+			           && fields.get(i + 4).minSize() <= limit * 2
+			           && fields.get(i + 5).minSize() <= limit * 2)
 			{
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
 			} else if (i + 6 < fields.size()
-			           && fields.get(i).getMinSize() <= limit * 2
-			           && fields.get(i + 1).getMinSize() <= limit * 2
-			           && fields.get(i + 2).getMinSize() <= limit
-			           && fields.get(i + 3).getMinSize() <= limit
-			           && fields.get(i + 4).getMinSize() <= limit
-			           && fields.get(i + 5).getMinSize() <= limit)
+			           && fields.get(i).minSize() <= limit * 2
+			           && fields.get(i + 1).minSize() <= limit * 2
+			           && fields.get(i + 2).minSize() <= limit
+			           && fields.get(i + 3).minSize() <= limit
+			           && fields.get(i + 4).minSize() <= limit
+			           && fields.get(i + 5).minSize() <= limit)
 			{
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
 			} else if (i + 5 < fields.size()
-			           && fields.get(i).getMinSize() <= limit * 4
-			           && fields.get(i + 1).getMinSize() <= limit
-			           && fields.get(i + 2).getMinSize() <= limit
-			           && fields.get(i + 3).getMinSize() <= limit
-			           && fields.get(i + 4).getMinSize() <= limit)
+			           && fields.get(i).minSize() <= limit * 4
+			           && fields.get(i + 1).minSize() <= limit
+			           && fields.get(i + 2).minSize() <= limit
+			           && fields.get(i + 3).minSize() <= limit
+			           && fields.get(i + 4).minSize() <= limit)
 			{
-				fields.get(i++).setSize(Field.Size.FOUR);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
+				setSize(i++, Field.Schema.Size.FOUR);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
 			} else if (i + 5 < fields.size()
-			           && fields.get(i).getMinSize() <= limit
-			           && fields.get(i + 1).getMinSize() <= limit
-			           && fields.get(i + 2).getMinSize() <= limit
-			           && fields.get(i + 3).getMinSize() <= limit
-			           && fields.get(i + 4).getMinSize() <= limit * 4)
+			           && fields.get(i).minSize() <= limit
+			           && fields.get(i + 1).minSize() <= limit
+			           && fields.get(i + 2).minSize() <= limit
+			           && fields.get(i + 3).minSize() <= limit
+			           && fields.get(i + 4).minSize() <= limit * 4)
 			{
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.ONE);
-				fields.get(i++).setSize(Field.Size.FOUR);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.ONE);
+				setSize(i++, Field.Schema.Size.FOUR);
 			} else if (i + 4 < fields.size()
-			           && fields.get(i).getMinSize() <= limit * 2
-			           && fields.get(i + 1).getMinSize() <= limit * 2
-			           && fields.get(i + 2).getMinSize() <= limit * 2
-			           && fields.get(i + 3).getMinSize() <= limit * 2)
+			           && fields.get(i).minSize() <= limit * 2
+			           && fields.get(i + 1).minSize() <= limit * 2
+			           && fields.get(i + 2).minSize() <= limit * 2
+			           && fields.get(i + 3).minSize() <= limit * 2)
 			{
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
 			} else if (i + 3 < fields.size()
-			           && fields.get(i).getMinSize() <= limit * 2
-			           && fields.get(i + 1).getMinSize() <= limit * 2
-			           && fields.get(i + 2).getMinSize() <= limit * 4)
+			           && fields.get(i).minSize() <= limit * 2
+			           && fields.get(i + 1).minSize() <= limit * 2
+			           && fields.get(i + 2).minSize() <= limit * 4)
 			{
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.FOUR);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.FOUR);
 			} else if (i + 3 < fields.size()
-			           && fields.get(i).getMinSize() <= limit * 4
-			           && fields.get(i + 1).getMinSize() <= limit * 2
-			           && fields.get(i + 2).getMinSize() <= limit * 2)
+			           && fields.get(i).minSize() <= limit * 4
+			           && fields.get(i + 1).minSize() <= limit * 2
+			           && fields.get(i + 2).minSize() <= limit * 2)
 			{
-				fields.get(i++).setSize(Field.Size.FOUR);
-				fields.get(i++).setSize(Field.Size.TWO);
-				fields.get(i++).setSize(Field.Size.TWO);
+				setSize(i++, Field.Schema.Size.FOUR);
+				setSize(i++, Field.Schema.Size.TWO);
+				setSize(i++, Field.Schema.Size.TWO);
 			} else if (i + 2 < fields.size()
-			           && fields.get(i + 1).getMinSize() <= limit * 4
-			           && fields.get(i + 2).getMinSize() <= limit * 4)
+			           && fields.get(i + 1).minSize() <= limit * 4
+			           && fields.get(i + 2).minSize() <= limit * 4)
 			{
-				fields.get(i++).setSize(Field.Size.FOUR);
-				fields.get(i++).setSize(Field.Size.FOUR);
+				setSize(i++, Field.Schema.Size.FOUR);
+				setSize(i++, Field.Schema.Size.FOUR);
 			} else
-				fields.get(i++).setSize(Field.Size.EIGHT);
+				setSize(i++, Field.Schema.Size.EIGHT);
 
 		}
 	}

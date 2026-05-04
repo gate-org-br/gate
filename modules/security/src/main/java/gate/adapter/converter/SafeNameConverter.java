@@ -7,6 +7,7 @@ import gate.constraint.Pattern;
 import gate.error.ConversionException;
 import gate.type.SafeName;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 @Description("Use apenas letras, números, espaços ou hífen.")
@@ -14,7 +15,7 @@ public class SafeNameConverter implements Converter
 {
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		try
 		{
@@ -32,7 +33,6 @@ public class SafeNameConverter implements Converter
 		}
 	}
 
-	@Override
 	public String render(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
@@ -44,13 +44,11 @@ public class SafeNameConverter implements Converter
 		return object != null ? object.toString() : "";
 	}
 
-	@Override
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";
 	}
 
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return List.of(new Pattern.Implementation(SafeName.PATTERN.pattern()));

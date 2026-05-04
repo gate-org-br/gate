@@ -1,6 +1,5 @@
 package gate.adapter.registry;
 
-import gate.adapter.AdapterRegistry;
 import gate.adapter.metadata.Metadata;
 import gate.adapter.registrar.MetadataRegistrar;
 

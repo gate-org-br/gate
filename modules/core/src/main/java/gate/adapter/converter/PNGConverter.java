@@ -1,0 +1,28 @@
+package gate.adapter.converter;
+
+import gate.constraint.Constraint;
+import gate.type.PNG;
+
+import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+
+public class PNGConverter implements Converter
+{
+	public List<Constraint.Implementation<?>> getConstraints()
+	{
+		return Collections.emptyList();
+	}
+
+	@Override
+	public Object ofString(Type type, String string)
+	{
+		return PNG.valueOf(string);
+	}
+
+	@Override
+	public String toString(Class<?> type, Object object)
+	{
+		return object != null ? object.toString() : "";
+	}
+}

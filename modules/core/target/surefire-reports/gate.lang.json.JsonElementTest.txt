@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: gate.lang.json.JsonElementTest
 -------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s -- in gate.lang.json.JsonElementTest
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.010 s -- in gate.lang.json.JsonElementTest

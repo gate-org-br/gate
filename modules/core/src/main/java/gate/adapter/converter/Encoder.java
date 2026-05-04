@@ -1,6 +1,8 @@
 package gate.adapter.converter;
 
+import gate.adapter.jsonConverter.JsonConverter;
 import gate.error.ConversionException;
+import gate.lang.json.JsonElement;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -37,11 +39,13 @@ public abstract class Encoder<T>
 		{
 			if (object == null)
 				return "";
-			var json = Converter.toJson(object);
-			return Base64.getEncoder().encodeToString(json.getBytes(StandardCharsets.UTF_8));
+			var jsonElement = JsonElement.encode(object);
+			var string = jsonElement.toString().getBytes(StandardCharsets.UTF_8);
+			return Base64.getEncoder().encodeToString(string);
 		}
 
 		@Override
+		@SuppressWarnings("unchecked")
 		public T decode(String string) throws ConversionException
 		{
 			if (string == null)
@@ -50,7 +54,7 @@ public abstract class Encoder<T>
 			if (string.isEmpty())
 				return null;
 			var json = new String(Base64.getDecoder().decode(string), StandardCharsets.UTF_8);
-			return Converter.fromJson(type, json);
+			return (T) JsonConverter.fromJson(type, JsonElement.parse(json));
 		}
 	}
 }

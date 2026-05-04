@@ -9,7 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.util.Base64;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -103,18 +103,18 @@ public class MimeDataFile extends MimeData implements MimeFile
 	@Override
 	public String toString()
 	{
-		Map<String, String> map = new HashMap<>();
+		Map<String, String> map = new LinkedHashMap<>();
 		map.put("filename", name);
 		return DataURL.of(getContentType(), true, map,
 				Base64.getEncoder().encodeToString(getData())).toString();
 	}
 
-	public static MimeDataFile parse(String string)
+	public static MimeDataFile valueOf(String string)
 			throws ConversionException
 	{
 		try
 		{
-			DataURL dataURL = DataURL.parse(string);
+			DataURL dataURL = DataURL.valueOf(string);
 			if (!dataURL.isBase64())
 				throw new ConversionException("a binary data url must be on base 64 format");
 			return MimeDataFile.of(dataURL.getContentType(),

@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.attribute;
 
+import gate.adapter.renderer.Renderer;
+
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -60,7 +62,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			if (element.hasAttribute("g:otherwise"))
 			{
 				String otherwise = element.getAttributeValue("g:otherwise");
-				otherwise = Converter.render(
+				otherwise = Renderer.render(
 						expression.create().evaluate(otherwise));
 				handler.replaceWith(otherwise, false);
 			} else

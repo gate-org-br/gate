@@ -6,6 +6,7 @@ import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.error.ConversionException;
 
+import java.lang.reflect.Type;
 import java.time.Duration;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -20,7 +21,6 @@ public class HHMMSSDurationConverter implements Converter
 	private static final List<Constraint.Implementation<?>> CONSTRAINTS
 			= List.of(new gate.constraint.Pattern.Implementation(PATTERN.toString()), new Maxlength.Implementation(8));
 
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return CONSTRAINTS;
@@ -36,7 +36,7 @@ public class HHMMSSDurationConverter implements Converter
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string) throws ConversionException
+	public Object ofString(Type type, String string) throws ConversionException
 	{
 		if (string.isBlank())
 			return null;
@@ -51,15 +51,4 @@ public class HHMMSSDurationConverter implements Converter
 		return Duration.ofSeconds((long) h * 60 * 60 + m * 60L + s);
 	}
 
-	@Override
-	public String render(Class<?> type, Object object)
-	{
-		return toString(type, object);
-	}
-
-	@Override
-	public String render(Class<?> type, Object object, String format)
-	{
-		return toString(type, object);
-	}
 }

@@ -275,7 +275,7 @@ public final class Style
 	public static Style of(JsonString string)
 	{
 		var style = new Style();
-		style.apply(string.toString());
+		style.apply(string.unwrap());
 		return style;
 	}
 

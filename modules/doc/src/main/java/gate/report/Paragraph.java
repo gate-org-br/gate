@@ -42,6 +42,6 @@ public final class Paragraph extends ReportElement
 
 	public static Paragraph of(JsonString jsonString)
 	{
-		return new Paragraph(jsonString.getValue());
+		return new Paragraph(jsonString.unwrap());
 	}
 }

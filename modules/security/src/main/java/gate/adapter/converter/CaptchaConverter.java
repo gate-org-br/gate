@@ -4,20 +4,19 @@ import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.security.Captcha;
 
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 
 public class CaptchaConverter implements Converter
 {
-
-	@Override
 	public List<Constraint.Implementation<?>> getConstraints()
 	{
 		return Collections.emptyList();
 	}
 
 	@Override
-	public Object ofString(Class<?> type, String string)
+	public Object ofString(Type type, String string)
 			throws ConversionException
 	{
 		if (string != null && string.trim().length() > 0)
@@ -31,13 +30,11 @@ public class CaptchaConverter implements Converter
 		return object == null ? "" : object.toString();
 	}
 
-	@Override
 	public String render(Class<?> type, Object object)
 	{
 		return object != null ? object.toString() : "";
 	}
 
-	@Override
 	public String render(Class<?> type, Object object, String format)
 	{
 		return object != null ? String.format(format, object) : "";

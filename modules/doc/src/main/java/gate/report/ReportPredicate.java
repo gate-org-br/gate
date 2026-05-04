@@ -54,7 +54,7 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof String value)
 			return element instanceof JsonString string
-			       && value.compareTo(string.getValue()) == 0;
+			       && value.compareTo(string.unwrap()) == 0;
 
 		if (object instanceof Boolean value)
 			return element instanceof JsonBoolean bool
@@ -62,17 +62,17 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof LocalDate value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.getValue()) instanceof LocalDate date
+			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.unwrap()) instanceof LocalDate date
 			       && value.isEqual(date);
 
 		if (object instanceof LocalTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.getValue()) instanceof LocalTime time
+			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.unwrap()) instanceof LocalTime time
 			       && value.equals(time);
 
 		if (object instanceof LocalDateTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.getValue()) instanceof LocalDateTime dateTime
+			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.unwrap()) instanceof LocalDateTime dateTime
 			       && value.isEqual(dateTime);
 
 		return false;
@@ -86,7 +86,7 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof String value)
 			return element instanceof JsonString string
-			       && value.compareTo(string.getValue()) > 0;
+			       && value.compareTo(string.unwrap()) > 0;
 
 		if (object instanceof Boolean value)
 			return element instanceof JsonBoolean bool
@@ -94,17 +94,17 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof LocalDate value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.getValue()) instanceof LocalDate date
+			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.unwrap()) instanceof LocalDate date
 			       && value.isAfter(date);
 
 		if (object instanceof LocalTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.getValue()) instanceof LocalTime time
+			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.unwrap()) instanceof LocalTime time
 			       && value.isAfter(time);
 
 		if (object instanceof LocalDateTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.getValue()) instanceof LocalDateTime dateTime
+			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.unwrap()) instanceof LocalDateTime dateTime
 			       && value.isAfter(dateTime);
 
 		return false;
@@ -118,7 +118,7 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof String value)
 			return element instanceof JsonString string
-			       && value.compareTo(string.getValue()) >= 0;
+			       && value.compareTo(string.unwrap()) >= 0;
 
 		if (object instanceof Boolean value)
 			return element instanceof JsonBoolean bool
@@ -126,17 +126,17 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof LocalDate value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.getValue()) instanceof LocalDate date
+			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.unwrap()) instanceof LocalDate date
 			       && (value.isEqual(date) || value.isAfter(date));
 
 		if (object instanceof LocalTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.getValue()) instanceof LocalTime time
+			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.unwrap()) instanceof LocalTime time
 			       && (value.equals(time) || value.isAfter(time));
 
 		if (object instanceof LocalDateTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.getValue()) instanceof LocalDateTime dateTime
+			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.unwrap()) instanceof LocalDateTime dateTime
 			       && (value.isEqual(dateTime) || value.isAfter(dateTime));
 
 		return false;
@@ -150,7 +150,7 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof String value)
 			return element instanceof JsonString string
-			       && value.compareTo(string.getValue()) < 0;
+			       && value.compareTo(string.unwrap()) < 0;
 
 		if (object instanceof Boolean value)
 			return element instanceof JsonBoolean bool
@@ -158,17 +158,17 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof LocalDate value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.getValue()) instanceof LocalDate date
+			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.unwrap()) instanceof LocalDate date
 			       && value.isBefore(date);
 
 		if (object instanceof LocalTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.getValue()) instanceof LocalTime time
+			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.unwrap()) instanceof LocalTime time
 			       && value.isBefore(time);
 
 		if (object instanceof LocalDateTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.getValue()) instanceof LocalDateTime dateTime
+			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.unwrap()) instanceof LocalDateTime dateTime
 			       && value.isBefore(dateTime);
 
 		return false;
@@ -182,7 +182,7 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof String value)
 			return element instanceof JsonString string
-			       && value.compareTo(string.getValue()) <= 0;
+			       && value.compareTo(string.unwrap()) <= 0;
 
 		if (object instanceof Boolean value)
 			return element instanceof JsonBoolean bool
@@ -190,17 +190,17 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof LocalDate value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.getValue()) instanceof LocalDate date
+			       && Converter.getConverter(LocalDate.class).ofString(LocalDate.class, string.unwrap()) instanceof LocalDate date
 			       && (value.isEqual(date) || value.isBefore(date));
 
 		if (object instanceof LocalTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.getValue()) instanceof LocalTime time
+			       && Converter.getConverter(LocalTime.class).ofString(LocalTime.class, string.unwrap()) instanceof LocalTime time
 			       && (value.equals(time) || value.isBefore(time));
 
 		if (object instanceof LocalDateTime value)
 			return element instanceof JsonString string
-			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.getValue()) instanceof LocalDateTime dateTime
+			       && Converter.getConverter(LocalDateTime.class).ofString(LocalDateTime.class, string.unwrap()) instanceof LocalDateTime dateTime
 			       && (value.isEqual(dateTime) || value.isBefore(dateTime));
 
 		return false;
@@ -211,7 +211,7 @@ public class ReportPredicate implements Predicate<Object>
 
 		if (object instanceof String value)
 			return element instanceof JsonString string
-			       && value.matches(string.getValue());
+			       && value.matches(string.unwrap());
 
 		return false;
 	}

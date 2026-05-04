@@ -1,5 +1,7 @@
 package gate.thymeleaf.processors.tag.anchor;
 
+import gate.adapter.renderer.Renderer;
+
 import gate.Call;
 import gate.adapter.converter.Converter;
 import gate.entity.User;
@@ -142,6 +144,6 @@ public class LinkProcessor extends AnchorProcessor
 		if (otherwise == null)
 			return Optional.empty();
 
-		return Optional.of(Converter.render(otherwise));
+		return Optional.of(Renderer.render(otherwise));
 	}
 }

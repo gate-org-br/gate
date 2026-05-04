@@ -16,8 +16,9 @@ public class JsonStringTest
 		String json = JsonElement.stringify(string);
 
 		assertEquals(string, JsonString.parse(json));
-		assertEquals("John\"s", JsonString.parse("\"John\\\"s\"").toString());
-		assertEquals("https://host/path", JsonString.parse("\"https:\\/\\/host\\/path\"").toString());
+		assertEquals("\"John\\\"s\"", JsonString.parse("\"John\\\"s\"").toString());
+		assertEquals("John\"s", JsonString.parse("\"John\\\"s\"").unwrap());
+		assertEquals("https://host/path", JsonString.parse("\"https:\\/\\/host\\/path\"").unwrap());
 		assertEquals(JsonString.of("String"), JsonString.parse(JsonString.of("String").toString()));
 	}
 
@@ -30,6 +31,7 @@ public class JsonStringTest
 		assertEquals("42", string.getValue());
 		assertEquals("42", string.getScalarValue());
 		assertEquals("42", string.unwrap());
+		assertEquals("\"42\"", string.toString());
 		assertEquals("42", string.decode(String.class));
 		assertEquals(IDMock.valueOf(42), string.decode(IDMock.class));
 		assertEquals(IDMock.valueOf(42), string.decode(IDMock.class, null));

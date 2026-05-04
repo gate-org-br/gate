@@ -34,15 +34,15 @@ public abstract class ReportElement extends Element
 				return Grid.of(array);
 
 		if (element instanceof JsonString string)
-			return switch (string.getValue())
+			return switch (string.unwrap())
 			{
 				case "line-break" ->
 					new LineBreak();
 				case "page-break" ->
 					new PageBreak();
 				default ->
-					string.getValue().startsWith("data:")
-					? Image.of(string.getValue())
+					string.unwrap().startsWith("data:")
+					? Image.of(string.unwrap())
 					: Header.of(string);
 			};
 
@@ -54,7 +54,7 @@ public abstract class ReportElement extends Element
 
 		if (element instanceof JsonObject object)
 			if (object.get("type") instanceof JsonString type)
-				return switch (type.toString())
+				return switch (type.unwrap())
 				{
 					case "line-break" ->
 						new LineBreak();

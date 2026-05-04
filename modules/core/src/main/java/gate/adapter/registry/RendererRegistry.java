@@ -1,7 +1,8 @@
 package gate.adapter.registry;
 
-import gate.adapter.AdapterRegistry;
 import gate.adapter.registrar.RendererRegistrar;
+import gate.adapter.renderer.ObjectRenderer;
+import gate.adapter.renderer.RecordRenderer;
 import gate.adapter.renderer.Renderer;
 
 import java.util.Collection;
@@ -42,6 +43,8 @@ public class RendererRegistry extends Registry<Renderer>
 
 	@Override protected Renderer fallback(Class<?> type)
 	{
-		return new ObjectRenderer(method);
+		if (type.isRecord())
+			return new RecordRenderer();
+		return new ObjectRenderer();
 	}
 }

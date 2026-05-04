@@ -11,12 +11,17 @@ public class CTPS implements Serializable, Comparable<CTPS>
 
 	private final String value;
 
-	public CTPS(String value)
+	private CTPS(String value)
 	{
-		value = value.toUpperCase().replaceAll("[^0123456789A-Z]", "");
+		this.value = value;
+	}
+
+	public static CTPS valueOf(String string)
+	{
+		String value = string.toUpperCase().replaceAll("[^0123456789A-Z]", "");
 		if (!value.matches("[0-9]{10}[A-Z]{2}"))
 			throw new IllegalArgumentException("value");
-		this.value = value;
+		return new CTPS(value);
 	}
 
 	public String getNumber()

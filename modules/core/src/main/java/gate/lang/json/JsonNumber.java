@@ -73,8 +73,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return value;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
+
 	/**
 	 * Converts this JSON number to the specified Java numeric type.
 	 *
@@ -82,6 +81,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * @param type the target Java type
 	 * @return the numeric value converted to the requested type
 	 */
+	@SuppressWarnings("unchecked") @Override
 	public <T> T decode(Class<T> type)
 	{
 		if (type == short.class || type == Short.class)
@@ -114,8 +114,7 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 		return value;
 	}
 
-	@Override
-	@SuppressWarnings("unchecked")
+
 	/**
 	 * Converts this JSON number to the specified parameterized Java type.
 	 * <p>
@@ -126,13 +125,14 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * @param elementType ignored for scalar numbers
 	 * @return the numeric value converted to the requested type
 	 */
+	@SuppressWarnings("unchecked") @Override
 	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
 	{
 		return decode((Class<T>) type);
 	}
 
 	/**
-	 * Parses a JSON formatted string into a JsonNumber object.
+	 * Parses a JSON-formatted string into a JsonNumber object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonNumber object
 	 * @return a JsonNumber object representing the JSON formatted string specified

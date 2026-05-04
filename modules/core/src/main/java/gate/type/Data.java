@@ -1,9 +1,8 @@
 package gate.type;
 
-import java.io.Serial;
-
 import gate.annotation.Icon;
 
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -50,7 +49,7 @@ public class Data extends Number implements Comparable<Data>
 		this(new BigDecimal(value), unit);
 	}
 
-	public Data(String value)
+	private Data(String value)
 	{
 		try
 		{
@@ -224,4 +223,6 @@ public class Data extends Number implements Comparable<Data>
 		return new Data(values.filter(Objects::nonNull).map(Data::getBytes).reduce(BigDecimal.ZERO,
 				BigDecimal::add));
 	}
+
+	public static Data valueOf(String string) {return new Data(string);}
 }

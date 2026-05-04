@@ -27,7 +27,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.get(null, prop -> request.get(prop.toString()));
+				.populate(null, prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(1, result.getId());
 		Assertions.assertEquals("Ana", result.getName());
@@ -46,7 +46,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.get(null, prop -> request.get(prop.toString()));
+				.populate(null, prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals("Ana", result.getName());
 		Assertions.assertEquals("Admin", result.getRole().getName());
@@ -69,7 +69,7 @@ class PropertyGraphTest
 
 		var result = PropertyGraph
 				.of(LineMock.class, new ArrayList<>(request.keySet()))
-				.get(null, prop -> request.get(prop.toString()));
+				.populate(null, prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(expected, result);
 	}
@@ -82,7 +82,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.get(null, prop -> request.get(prop.toString()));
+				.populate(null, prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(1, result.getContacts().size());
 		Assertions.assertEquals("module1", result.getContacts().get(0).getValue());
@@ -96,7 +96,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.get(null, prop -> request.get(prop.toString()));
+				.populate(null, prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(1, result.getContacts().size());
 		Assertions.assertEquals("module1", result.getContacts().get(0).getValue());
@@ -112,7 +112,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, properties)
-				.get(null, prop -> request.get(prop.toString()));
+				.populate(null, prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals("Ana", result.getName());
 	}
@@ -130,7 +130,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.get(original, prop -> request.get(prop.toString()));
+				.populate(original, prop -> request.get(prop.toString()));
 
 		Assertions.assertSame(original, result);
 		Assertions.assertEquals("New", result.getName());
@@ -148,13 +148,13 @@ class PropertyGraphTest
 
 		var result = (ConstructionMocks.BuilderMock) PropertyGraph.of(ConstructionMocks.BuilderMock.class,
 						List.of("field1", "field2", "field3"))
-				.get(null, e -> switch (e.toString())
-					{
-						case "field1" -> "value1";
-						case "field2" -> LocalDate.of(2, 2, 2);
-						case "field3" -> 3;
-						default -> throw new IllegalStateException("Unexpected value: " + e);
-					});
+				.populate(null, e -> switch (e.toString())
+				{
+					case "field1" -> "value1";
+					case "field2" -> LocalDate.of(2, 2, 2);
+					case "field3" -> 3;
+					default -> throw new IllegalStateException("Unexpected value: " + e);
+				});
 
 		Assertions.assertEquals(expected.getField1(), result.getField1());
 		Assertions.assertEquals(expected.getField2(), result.getField2());
@@ -164,14 +164,14 @@ class PropertyGraphTest
 	@Test
 	public void testAmbiguousConstructor()
 	{
-			var request = Map
-					.of("field1", "value1",
-							"field2", LocalDate.of(2, 2, 2),
-							"field3", 3);
+		var request = Map
+				.of("field1", "value1",
+						"field2", LocalDate.of(2, 2, 2),
+						"field3", 3);
 
 		Assertions.assertThrows(ConversionException.class, () ->
 				PropertyGraph
 						.of(ConstructionMocks.AmbiguousConstructorMock.class, new ArrayList<>(request.keySet()))
-						.get(null, prop -> request.get(prop.toString())));
+						.populate(null, prop -> request.get(prop.toString())));
 	}
 }
