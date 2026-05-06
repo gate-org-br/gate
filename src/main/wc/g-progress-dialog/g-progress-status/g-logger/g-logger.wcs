@@ -4,7 +4,9 @@
 	cursor: pointer;
 	overflow-y: auto;
 	border-radius: 5px;
-	background-color: white;
+	color: var(--text1);
+	border: 1px solid var(--main3);
+	background-color: var(--main2);
 }
 
 span

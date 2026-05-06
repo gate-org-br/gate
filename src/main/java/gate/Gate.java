@@ -9,6 +9,7 @@ import gate.catcher.Catcher;
 import gate.entity.User;
 import gate.error.*;
 import gate.event.AppEvent;
+import gate.event.EventClient;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
@@ -59,13 +60,18 @@ public class Gate extends HttpServlet
 	@Current
 	Instance<User> userInstance;
 
-	@Inject Logger logger;
-	@Inject Call mainAction;
-	@Inject Event<AppEvent> event;
-	@Inject Credentials credentials;
-	@Inject ThreadContext threadContext;
-	@Inject HeartbeatRegistry heartbeatRegistry;
-	@Inject HTMLCommandHandler htmlCommandHandler;
+	@Inject
+	Logger logger;
+	@Inject
+	Call mainAction;
+	@Inject
+	Event<AppEvent> event;
+	@Inject
+	Credentials credentials;
+	@Inject
+	ThreadContext threadContext;
+	@Inject
+	HTMLCommandHandler htmlCommandHandler;
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws IOException
@@ -198,10 +204,9 @@ public class Gate extends HttpServlet
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(0);
-
-		Runnable contextualTask = threadContext.contextualRunnable(() ->
+		asyncContext.start(threadContext.contextualRunnable(() ->
 		{
-			try (var progress = Progress.create(user, asyncContext))
+			try (var progress = Progress.create(user, new EventClient(user, asyncContext)))
 			{
 				try
 				{
@@ -225,12 +230,7 @@ public class Gate extends HttpServlet
 				{
 					TempFile.cleanup();
 				}
-			} catch (Throwable ex)
-			{
-				logger.error(ex.getMessage(), ex);
-			}
-		});
-
-		asyncContext.start(contextualTask);
+			} catch (Throwable ex) {logger.error(ex.getMessage(), ex);}
+		}));
 	}
 }

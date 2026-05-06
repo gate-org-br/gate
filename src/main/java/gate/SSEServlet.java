@@ -4,9 +4,15 @@ import gate.annotation.Current;
 import gate.catcher.UnauthorizedExceptionCatcher;
 import gate.entity.User;
 import gate.error.UnauthorizedException;
+import gate.event.AppEvent;
+import gate.event.EventClient;
+import gate.event.EventClients;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.ObservesAsync;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
@@ -25,38 +31,38 @@ import java.util.concurrent.TimeUnit;
 public class SSEServlet extends HttpServlet
 {
 	@Inject
-	UnauthorizedExceptionCatcher catcher;
-
-	@Inject
 	@Current
 	@RequestScoped
 	Instance<User> userInstance;
 
 	@Inject
-	SSEClients clients;
+	EventListener eventListener;
+
+	@Inject
+	UnauthorizedExceptionCatcher catcher;
 
 	@Override
-	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws ServletException, IOException
+	protected void doGet(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse)
+			throws ServletException, IOException
 	{
 		httpServletResponse.addHeader("Cache-Control", "no-cache");
-		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
 		ScreenServletResponse response = new ScreenServletResponse(httpServletResponse);
+		ScreenServletRequest request = new ScreenServletRequest(httpServletRequest);
+
 		try
 		{
 			User user = userInstance.get();
 			if (user == null || user.getId() == null)
 				throw new UnauthorizedException();
 
-			response.setContentLengthLong(-1);
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/event-stream");
-			response.setHeader("X-Accel-Buffering", "no");
 
 			AsyncContext context = request.startAsync();
 			context.setTimeout(TimeUnit.HOURS.toMillis(1));
 
-			SSEClient client = new SSEClient(user.unwrap(), context);
-			clients.add(client);
+			EventClient client = new EventClient(user.unwrap(), context);
+			eventListener.subscribe(client);
 
 			context.addListener(new AsyncListener()
 			{
@@ -66,7 +72,7 @@ public class SSEServlet extends HttpServlet
 				@Override
 				public void onComplete(AsyncEvent event)
 				{
-					clients.remove(client);
+					eventListener.unsubscribe(client);
 				}
 
 				@Override
@@ -85,5 +91,13 @@ public class SSEServlet extends HttpServlet
 		{
 			catcher.catches(request, response, ex);
 		}
+	}
+
+	@ApplicationScoped
+	public static class EventListener extends EventClients
+	{
+		void onEvent(@Observes AppEvent event) {dispatch(event::checkAccess, event.toString());}
+
+		void onEventAsync(@ObservesAsync AppEvent event) {dispatch(event::checkAccess, event.toString());}
 	}
 }

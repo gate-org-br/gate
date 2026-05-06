@@ -1,31 +1,27 @@
 package gate;
 
 import gate.entity.User;
+import gate.event.EventClient;
+import gate.event.EventClients;
 import gate.lang.json.JsonObject;
-import gate.type.ID;
-import jakarta.servlet.AsyncContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("resource")
-public class Progress implements Heartbeat, AutoCloseable
+public class Progress implements AutoCloseable
 {
-	private final ID user;
-	private Writer writer;
+	private final User user;
 	private final String uuid;
-	private AsyncContext asyncContext;
 	private volatile State state = State.DEFAULT;
+	private final EventClients clients = new EventClients();
 
 	private static final int UNKNOWN = -1;
 	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
-	private static final Logger LOGGER = LoggerFactory.getLogger(Progress.class);
-
 	private static final Map<String, Progress> INSTANCES = new ConcurrentHashMap<>();
 
 	public record State(Status status, long todo, long done, String text)
@@ -51,80 +47,40 @@ public class Progress implements Heartbeat, AutoCloseable
 		CREATED, PENDING, COMMITED, CANCELED, DISCONNECTED, UNKNOWN
 	}
 
-	private Progress(ID user, String uuid, AsyncContext asyncContext, Writer writer)
+	private Progress(String uuid, User user, EventClient client)
 	{
-		this.user = user;
 		this.uuid = uuid;
-		this.asyncContext = asyncContext;
-		this.writer = writer;
+		this.user = user;
+		this.clients.subscribe(client);
 	}
 
-	private Progress update(Status status, long todo,
-	                        long done, String text)
+	private Progress update(Status status, long todo, long done, String text)
 	{
 		this.state = new State(status, todo, done, text);
 		return this;
 	}
 
-	private synchronized void dispatch(String type, String message)
-	{
-		if (state.status() != Status.DISCONNECTED)
-		{
-			try
-			{
-				writer.write("event: %s\n".formatted(type));
-				writer.write("data: " + Base64.getEncoder()
-						.encodeToString(message
-								.getBytes(StandardCharsets.UTF_8))
-				             + "\n\n");
-				writer.flush();
-			} catch (IOException ex)
-			{
-				State state = this.state;
-				if (state.status == Status.CREATED
-				    || state.status == Status.PENDING)
-				{
-					update(Status.DISCONNECTED, state.todo, state.done, state.text);
-					HeartbeatRegistry.unregister(this);
-				}
-				LOGGER.info(ex.getMessage(), ex);
-			}
-		}
-	}
+	private void dispatch(String message) {clients.dispatch("Progress", message);}
 
-	private void dispatch(String message)
-	{
-		dispatch("Progress", message);
-	}
+	private void dispatch(String type, String message) {clients.dispatch(type, message);}
 
 	@Override
 	public synchronized void close()
 	{
-		HeartbeatRegistry.unregister(this);
 		dispatch("Finish", "Connection closed");
-		if (asyncContext != null)
-			asyncContext.complete();
-		asyncContext = null;
+		clients.close();
 		INSTANCES.remove(this.uuid);
 		CURRENT.remove();
 	}
 
-	public synchronized void attach(AsyncContext asyncContext) throws IOException
+	synchronized void attach(EventClient client)
 	{
-		if (this.asyncContext != null)
-			this.asyncContext.complete();
-
-		this.asyncContext = asyncContext;
-		this.writer = asyncContext.getResponse().getWriter();
-		if (state.status() == Status.DISCONNECTED)
-			update(Status.PENDING, state.todo, state.done, state.text);
-		HeartbeatRegistry.register(this);
-		this.dispatch(toString());
+		clients.subscribe(client);
+		dispatch("UUID", '"' + uuid + '"');
+		client.dispatch("Progress", state.toString());
 	}
 
-	public void result(String contentType,
-	                   String filename,
-	                   String data)
+	public synchronized void result(String contentType, String filename, String data)
 	{
 		dispatch("Result", new JsonObject()
 				.setString("contentType", contentType)
@@ -133,53 +89,39 @@ public class Progress implements Heartbeat, AutoCloseable
 				.toString());
 	}
 
-	public void redirect(String url)
+	public synchronized void redirect(String url)
 	{
 		dispatch("Redirect", new JsonObject()
 				.setString("url", url)
 				.toString());
 	}
 
-	void abort(String message)
+	synchronized void abort(String message)
 	{
 		State state = this.state;
-		if (state.status == Progress.Status.PENDING
-		    || state.status == Progress.Status.CREATED)
+		if (state.status == Status.PENDING || state.status == Status.CREATED)
 			update(Status.CANCELED, state.todo, state.done, message);
 		else
 			update(state.status, state.todo, state.done, message);
 		dispatch(this.toString());
-
 		dispatch("Failure", new JsonObject()
 				.setString("message", message)
 				.toString());
 	}
 
-	public String uuid()
-	{
-		return uuid;
-	}
+	public String uuid() {return uuid;}
 
 	@Override
-	public String toString()
-	{
-		return state.toString();
-	}
+	public String toString() {return state.toString();}
 
-	private static Optional<Progress> current()
-	{
-		return Optional.ofNullable(CURRENT.get());
-	}
+	private static Optional<Progress> current() {return Optional.ofNullable(CURRENT.get());}
 
 	/**
 	 * Initiates a new task of indeterminate size.
 	 *
 	 * @param text description of the task being initiated
 	 */
-	public static void startup(String text)
-	{
-		startup(UNKNOWN, text);
-	}
+	public static void startup(String text) {startup(UNKNOWN, text);}
 
 	/**
 	 * Initiates a new task.
@@ -193,8 +135,7 @@ public class Progress implements Heartbeat, AutoCloseable
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (Status.COMMITED.equals(state.status)
-			    || Status.CANCELED.equals(state.status))
+			if (Status.COMMITED.equals(state.status) || Status.CANCELED.equals(state.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text)
 					.dispatch(progress.toString());
@@ -228,8 +169,7 @@ public class Progress implements Heartbeat, AutoCloseable
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (Status.PENDING != state.status
-			    && Status.DISCONNECTED != state.status)
+			if (Status.PENDING != state.status && Status.DISCONNECTED != state.status)
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(state.status, state.todo, state.done + 1, state.text);
 			if (progress.state.done % step == 0)
@@ -245,8 +185,7 @@ public class Progress implements Heartbeat, AutoCloseable
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (Status.PENDING != state.status
-			    && Status.DISCONNECTED != state.status)
+			if (Status.PENDING != state.status && Status.DISCONNECTED != state.status)
 				throw new IllegalStateException("Attempt to update non pending task");
 			if (state.todo == UNKNOWN)
 				throw new IllegalStateException("updatePercentage requires a known todo size");
@@ -286,7 +225,6 @@ public class Progress implements Heartbeat, AutoCloseable
 	{
 		current().map(e -> e.state)
 				.ifPresent(state -> update(state.done + 1, text));
-
 	}
 
 	/**
@@ -300,8 +238,7 @@ public class Progress implements Heartbeat, AutoCloseable
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status)
-			    && !Status.DISCONNECTED.equals(state.status))
+			if (!Status.PENDING.equals(state.status) && !Status.DISCONNECTED.equals(state.status))
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(state.status, state.todo, done, text)
 					.dispatch(progress.toString());
@@ -319,8 +256,7 @@ public class Progress implements Heartbeat, AutoCloseable
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status)
-			    && !Status.DISCONNECTED.equals(state.status))
+			if (!Status.PENDING.equals(state.status) && !Status.DISCONNECTED.equals(state.status))
 				throw new IllegalStateException("Attempt to commit non pending task");
 			progress.update(Status.COMMITED, state.todo, state.done, text);
 			if (!Status.DISCONNECTED.equals(state.status))
@@ -339,8 +275,7 @@ public class Progress implements Heartbeat, AutoCloseable
 		current().ifPresent(progress ->
 		{
 			State state = progress.state;
-			if (!Status.PENDING.equals(state.status)
-			    && !Status.DISCONNECTED.equals(state.status))
+			if (!Status.PENDING.equals(state.status) && !Status.DISCONNECTED.equals(state.status))
 				throw new IllegalStateException("Attempt to cancel non pending task");
 			progress.update(Status.CANCELED, state.todo, state.done, text);
 			if (!Status.DISCONNECTED.equals(state.status))
@@ -348,22 +283,19 @@ public class Progress implements Heartbeat, AutoCloseable
 		});
 	}
 
-	static Progress create(User user, AsyncContext asyncContext) throws IOException
+	static Progress create(User user, EventClient client)
 	{
-		ID id = user != null && user.getId() != null ? user.getId() : ID.valueOf(0);
 		String uuid = UUID.randomUUID().toString();
-		Writer writer = asyncContext.getResponse().getWriter();
-		Progress progress = new Progress(id, uuid, asyncContext, writer);
+		Progress progress = new Progress(uuid, user, client);
 		INSTANCES.put(uuid, progress);
-		HeartbeatRegistry.register(progress);
-		progress.dispatch("UUID", uuid);
+		progress.dispatch("UUID", '"' + uuid + '"');
 		CURRENT.set(progress);
 		return progress;
 	}
 
 	public static String UUID() {return current().map(Progress::uuid).orElse(null);}
 
-	public static State get(ID user, String uuid)
+	public static State state(User user, String uuid)
 	{
 		return Optional.ofNullable(INSTANCES.get(uuid))
 				.filter(e -> Objects.equals(e.user, user))
@@ -371,34 +303,11 @@ public class Progress implements Heartbeat, AutoCloseable
 				.orElse(State.UNKNOWN);
 	}
 
-	static void attach(ID user, String uuid, AsyncContext asyncContext) throws IOException
+	static void attach(User user, String uuid, EventClient client) throws IOException
 	{
 		var progress = Optional.ofNullable(INSTANCES.get(uuid))
 				.filter(e -> Objects.equals(e.user, user))
 				.orElseThrow(() -> new IOException("Unable to initialize progress-monitor"));
-		progress.attach(asyncContext);
-	}
-
-	@Override
-	public synchronized boolean heartbeat()
-	{
-		if (state.status == Status.COMMITED
-		    || state.status == Status.CANCELED)
-			return false;
-
-		if (state.status == Status.DISCONNECTED)
-			return false;
-
-		try
-		{
-			writer.write(": heartbeat\n\n");
-			writer.flush();
-			return true;
-		} catch (IOException ex)
-		{
-			update(Status.DISCONNECTED, state.todo, state.done, state.text);
-			HeartbeatRegistry.unregister(this);
-			return false;
-		}
+		progress.attach(client);
 	}
 }
