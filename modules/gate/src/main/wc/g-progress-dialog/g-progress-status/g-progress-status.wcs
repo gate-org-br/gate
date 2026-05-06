@@ -6,11 +6,27 @@
 	width: 100%;
 	display: grid;
 	padding: 10px;
+	color: var(--text1);
 	border-radius: 3px;
 	place-items: stretch;
 	place-content: stretch;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 32px 32px 32px 120px;
+}
+
+:host([status="commited"])
+{
+	color: var(--g1);
+}
+
+:host([status="canceled"])
+{
+	color: var(--r1);
+}
+
+:host([status="error"])
+{
+	color: var(--main3);
 }
 
 #title
@@ -46,5 +62,3 @@ g-logger
 {
 	grid-column: 1 / span 2;
 }
-
-

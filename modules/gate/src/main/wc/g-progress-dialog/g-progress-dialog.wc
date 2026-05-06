@@ -14,7 +14,6 @@
 		</section>
 		<footer>
 			<button id='commit'>
-				Processando
 			</button>
 		</footer>
 	</dialog>

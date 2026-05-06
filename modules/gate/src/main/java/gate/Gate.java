@@ -10,6 +10,7 @@ import gate.catalog.SessionCatalog;
 import gate.entity.User;
 import gate.error.*;
 import gate.event.AppEvent;
+import gate.event.EventClient;
 import gate.event.LoginEvent;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
@@ -204,11 +205,10 @@ public class Gate extends HttpServlet
 
 		AsyncContext asyncContext = request.startAsync(request, response);
 		asyncContext.setTimeout(0);
-
-		Runnable contextualTask = threadContext.contextualRunnable(() ->
+		asyncContext.start(threadContext.contextualRunnable(() ->
 		{
 			CurrentLocale.set(request.getLocale());
-			try (var progress = Progress.create(user, asyncContext))
+			try (var progress = Progress.create(user, new EventClient(user, asyncContext)))
 			{
 				try
 				{
@@ -233,12 +233,7 @@ public class Gate extends HttpServlet
 					TempFile.cleanup();
 					CurrentLocale.clear();
 				}
-			} catch (Throwable ex)
-			{
-				logger.error(ex.getMessage(), ex);
-			}
-		});
-
-		asyncContext.start(contextualTask);
+			} catch (Throwable ex) {logger.error(ex.getMessage(), ex);}
+		}));
 	}
 }

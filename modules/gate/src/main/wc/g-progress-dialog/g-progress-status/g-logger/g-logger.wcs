@@ -1,12 +1,16 @@
-:host(*) {
+:host(*)
+{
 	padding: 4px;
 	cursor: pointer;
 	overflow-y: auto;
 	border-radius: 5px;
-	background-color: var(--main1, white);
+	color: var(--text1);
+	border: 1px solid var(--main3);
+	background-color: var(--main2);
 }
 
-span {
+span
+{
 	height: 16px;
 	display: flex;
 	align-items: center;

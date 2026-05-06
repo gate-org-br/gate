@@ -2,6 +2,7 @@ package gate;
 
 import gate.annotation.Current;
 import gate.entity.User;
+import gate.event.EventClient;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @WebServlet(urlPatterns = {"/Progress", "/progress"}, asyncSupported = true)
 public class ProgressServlet extends HttpServlet
@@ -22,7 +24,6 @@ public class ProgressServlet extends HttpServlet
 	Instance<User> userInstance;
 
 	@Override
-	@SuppressWarnings("resource")
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
 		resp.setCharacterEncoding("UTF-8");
@@ -32,20 +33,21 @@ public class ProgressServlet extends HttpServlet
 
 		var user = userInstance.get();
 		String uuid = req.getParameter("uuid");
-		if (user != null && user.getId() != null
-		    && uuid != null && !uuid.isBlank())
+
+		AsyncContext asyncContext = req.startAsync(req, resp);
+		asyncContext.setTimeout(0);
+
+		var client = new EventClient(user, asyncContext);
+		try
 		{
-			AsyncContext asyncContext = req.startAsync(req, resp);
-			asyncContext.setTimeout(0);
-			try
+			Progress.attach(user, uuid, client);
+		} catch (NoSuchElementException ex)
+		{
+			try (client)
 			{
-				Progress.attach(user.getId(), uuid, asyncContext);
-			} catch (IOException | RuntimeException ex)
-			{
-				resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-				asyncContext.complete();
+				client.dispatch("UUID", uuid);
+				client.dispatch("Progress", Progress.State.UNKNOWN.toString());
 			}
-		} else
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+		}
 	}
 }
