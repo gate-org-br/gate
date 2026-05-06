@@ -13,11 +13,27 @@ template.innerHTML = `
 	width: 100%;
 	display: grid;
 	padding: 10px;
+	color: var(--text1);
 	border-radius: 3px;
 	place-items: stretch;
 	place-content: stretch;
 	grid-template-columns: 1fr 1fr;
 	grid-template-rows: 32px 32px 32px 120px;
+}
+
+:host([status="commited"])
+{
+	color: var(--g1);
+}
+
+:host([status="canceled"])
+{
+	color: var(--r1);
+}
+
+:host([status="error"])
+{
+	color: var(--main3);
 }
 
 #title
@@ -53,12 +69,12 @@ g-logger
 {
 	grid-column: 1 / span 2;
 }
-
-
 </style>`;
 /* global customElements */
 
 import './g-logger.js';
+import './g-digital-clock.js';
+
 customElements.define('g-progress-status', class extends HTMLElement
 {
 	constructor()
@@ -66,82 +82,64 @@ customElements.define('g-progress-status', class extends HTMLElement
 		super();
 		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		let title = this.shadowRoot.getElementById("title");
-		let progress = this.shadowRoot.querySelector("progress");
-		let clock = this.shadowRoot.querySelector("g-digital-clock");
-		let counter = this.shadowRoot.getElementById("counter");
-		let logger = this.shadowRoot.querySelector("g-logger");
-		window.addEventListener("ProcessPending", event =>
-		{
-			if (event.detail.id === this.process)
-			{
-				this.log(event);
-				title.style.color = '#000000';
-				clock.style.color = '#000000';
-				counter.style.color = '#000000';
-			}
-		});
-		window.addEventListener("ProcessCommited", event =>
-		{
-			if (event.detail.id === this.process)
-			{
-				this.log(event);
-				if (!progress.max)
-					progress.max = 100;
-				if (!progress.value)
-					progress.value = 100;
-				title.style.color = '#006600';
-				clock.style.color = '#006600';
-				counter.style.color = '#006600';
-				clock.setAttribute("paused", "paused");
-			}
-		});
-		window.addEventListener("ProcessCanceled", event =>
-		{
-			if (event.detail.id === this.process)
-			{
-				this.log(event);
-				if (!progress.max)
-					progress.max = 100;
-				if (!progress.value)
-					progress.value = 0;
-				title.style.color = '#660000';
-				clock.style.color = '#660000';
-				counter.style.color = '#660000';
-				clock.setAttribute("paused", "paused");
-			}
-		});
-		window.addEventListener("ProcessError", event =>
-		{
-			if (event.detail.id === this.process)
-			{
-				this.log(event);
-				title.style.color = '#666666';
-				clock.style.color = '#666666';
-				counter.style.color = '#666666';
-			}
-		});
-	}
 
-	log(event)
-	{
-		let title = this.shadowRoot.getElementById("title");
-		let logger = this.shadowRoot.querySelector("g-logger");
-		let counter = this.shadowRoot.getElementById("counter");
-		let progress = this.shadowRoot.querySelector("progress");
-		if (event.detail.progress)
-			counter.innerHTML = event.detail.progress;
-		if (event.detail.text !== title.innerHTML)
-		{
-			logger.append(event.detail.text);
-			title.innerHTML = event.detail.text;
-		}
+		const title = this.shadowRoot.getElementById("title");
+		const progress = this.shadowRoot.querySelector("progress");
+		const clock = this.shadowRoot.querySelector("g-digital-clock");
+		const counter = this.shadowRoot.getElementById("counter");
+		const logger = this.shadowRoot.querySelector("g-logger");
 
-		if (event.detail.todo && event.detail.todo !== -1)
+		const update = detail =>
 		{
-			progress.max = event.detail.todo;
-			if (event.detail.done && event.detail.done !== -1)
-				progress.value = event.detail.done;
-		}
+			if (detail.todo > 0 && detail.done >= 0)
+				counter.textContent = `${detail.done}/${detail.todo} (${Math.round((detail.done / detail.todo) * 100)}%)`;
+			if (detail.text !== title.innerHTML)
+			{
+				logger.append(detail.text);
+				title.innerHTML = detail.text;
+			}
+			if (detail.todo > 0)
+			{
+				progress.max = detail.todo;
+				if (detail.done >= 0)
+					progress.value = detail.done;
+			}
+		};
+
+		this.addEventListener('Progress', e =>
+		{
+			switch (e.detail.status)
+			{
+				case 'COMMITED':
+					this.setAttribute("status", "commited");
+					update(e.detail);
+					if (!progress.max) progress.max = 100;
+					if (!progress.value) progress.value = 100;
+					clock.setAttribute("paused", "paused");
+					break;
+				case 'CANCELED':
+					this.setAttribute("status", "canceled");
+					update(e.detail);
+					if (!progress.max) progress.max = 100;
+					if (!progress.value) progress.value = 0;
+					clock.setAttribute("paused", "paused");
+					break;
+				case 'UNKNOWN':
+					this.setAttribute("status", "error");
+					update(e.detail);
+					if (!progress.max) progress.max = 100;
+					if (!progress.value) progress.value = 0;
+					clock.setAttribute("paused", "paused");
+					break;
+				default:
+					this.removeAttribute("status");
+					update(e.detail);
+			}
+		});
+		this.addEventListener('error', e =>
+		{
+			this.setAttribute("status", "error");
+			update(e.detail);
+		});
 	}
 });

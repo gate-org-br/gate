@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: gate.adapter.converter.LocalDateTimeIntervalConverterTest
--------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.003 s -- in gate.adapter.converter.LocalDateTimeIntervalConverterTest

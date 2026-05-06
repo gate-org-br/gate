@@ -6,7 +6,9 @@ import trigger from './trigger-core.js';
 window.addEventListener("sse", function (event)
 {
 	const REGEX = /^sse(?:\(([A-Za-z_$][A-Za-z0-9_$]*)\))?$/;
-	DOM.traverse(document, e => e.hasAttribute("data-trigger")
+	DOM.traverse(document, e =>
+		e.hasAttribute
+		&& e.hasAttribute("data-trigger")
 		&& REGEX.test(e.getAttribute("data-trigger")), element =>
 	{
 		const name = element.getAttribute("data-trigger");

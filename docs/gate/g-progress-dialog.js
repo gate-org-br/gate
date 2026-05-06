@@ -4,9 +4,7 @@ template.innerHTML = `
 			Progresso
 			<a id='close' href="#"><g-icon>
 					&#X1011;
-				</g-icon></a></header><section><g-progress-status></g-progress-status></section><footer><button id='commit'>
-				Processando
-			</button></footer></dialog>
+				</g-icon></a></header><section><g-progress-status></g-progress-status></section><footer><button id='commit'></button></footer></dialog>
 <style data-element="g-progress-dialog">dialog
 {
 	height: fit-content;
@@ -18,93 +16,85 @@ template.innerHTML = `
 dialog > footer > button {
 	flex-grow: 1;
 	justify-content: center;
-}</style>`;
+}
+
+#commit::after
+{
+	content: "Processando";
+}
+
+:host([status="commited"]) #commit,
+:host([status="redirect"]) #commit
+{
+	color: var(--question1);
+}
+
+:host([status="canceled"]) #commit
+{
+	color: var(--error1);
+}
+
+:host([status="commited"]) #commit::after,
+:host([status="canceled"]) #commit::after,
+:host([status="redirect"]) #commit::after
+{
+	content: "Ok";
+}
+</style>`;
 /* global customElements */
 
 import './g-icon.js';
 import './trigger.js';
 import './g-progress-status.js';
-import process from './process.js';
 import GWindow from './g-window.js';
-import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
-import ResponseHandler from './response-handler.js';
 
 customElements.define('g-progress-dialog', class extends GWindow
 {
+	#status;
+	#commit;
+	#redirect;
+
 	constructor()
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.#status = this.shadowRoot.querySelector("g-progress-status");
+		this.#commit = this.shadowRoot.getElementById("commit");
+		const close = this.shadowRoot.getElementById("close");
 
-		let close = this.shadowRoot.getElementById("close");
-		let commit = this.shadowRoot.getElementById("commit");
-
-		commit.onclick = close.onclick = event =>
+		this.#commit.onclick = close.onclick = event =>
 		{
 			event.preventDefault();
 			event.stopPropagation();
-			if (confirm("Tem certeza de que deseja fechar o progresso?"))
-				this.hide();
+			switch (this.getAttribute("status"))
+			{
+				case "commited":
+				case "canceled":
+					this.hide();
+					break;
+				case "redirect":
+					window.location = this.#redirect;
+					break;
+				default:
+					if (confirm("Tem certeza de que deseja fechar o progresso?"))
+						this.hide();
+			}
 		};
 
-		window.addEventListener("ProcessCommited", event =>
+		this.addEventListener('Progress', e =>
 		{
-			if (event.detail.id !== this.process)
-				return;
-
-			commit.innerHTML = "Ok";
-			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--b1');
-			commit.onclick = close.onclick = click =>
-			{
-				click.preventDefault();
-				click.stopPropagation();
-				this.hide();
-			};
+			this.#status.dispatchEvent(new CustomEvent('Progress', {detail: e.detail}));
+			if (e.detail.status === 'COMMITED')
+				this.setAttribute("status", "commited");
+			else if (e.detail.status === 'CANCELED')
+				this.setAttribute("status", "canceled");
 		});
 
-		window.addEventListener("ProcessCanceled", event =>
+		this.addEventListener('Redirect', e =>
 		{
-			if (event.detail.id !== this.process)
-				return;
-
-			commit.innerHTML = "OK";
-			commit.style.color = getComputedStyle(document.documentElement).getPropertyValue('--r1');
-			commit.onclick = close.onclick = click =>
-			{
-				click.preventDefault();
-				click.stopPropagation();
-				this.hide();
-			};
+			this.#redirect = e.detail.url;
+			this.setAttribute("status", "redirect");
 		});
+		this.addEventListener('error', e => this.#status.dispatchEvent(new CustomEvent('error', {detail: e.detail})));
 	}
-
-	set process(value)
-	{
-		this.setAttribute("process", value);
-	}
-
-	get process()
-	{
-		return this.getAttribute("process");
-	}
-
-	attributeChangedCallback(name)
-	{
-		this.shadowRoot.querySelector("g-progress-status")
-			.process = this.process;
-	}
-
-	static get observedAttributes()
-	{
-		return ["process"];
-	}
-});
-
-window.addEventListener("ProcessRequest", function (event)
-{
-	let dialog = window.top.document.createElement("g-progress-dialog");
-	dialog.process = event.detail.id;
-	dialog.caption = event.detail.name;
-	dialog.show();
 });

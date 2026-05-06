@@ -1,6 +1,10 @@
 /build/
 /dist/
 /target/
+target/
+/modules/*/target/
+/modules/gate/docs/gate/
+/modules/gate/src/main/resources/META-INF/resources/gate/
 /nbproject/
 /node_modules/
 /.vscode/

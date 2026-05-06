@@ -1,5 +1,0 @@
-{{#this}}
-{{#users}}
-{{../name}}: {{name}}
-{{/users}}
-{{/this}}

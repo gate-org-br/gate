@@ -65,6 +65,7 @@ import "./g-form-editor.js";
 import "./g-form-view.js";
 import "./g-form.js";
 import "./g-icon.js";
+import "./g-job.js";
 import "./g-selectn.js";
 
 import "./g-select-menu.js";

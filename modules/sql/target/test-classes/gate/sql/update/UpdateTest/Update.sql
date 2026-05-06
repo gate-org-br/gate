@@ -1,1 +1,0 @@
-update Uzer set name = ?, birthdate = ?, contract__min = ?, contract__max = ? where id = ?
