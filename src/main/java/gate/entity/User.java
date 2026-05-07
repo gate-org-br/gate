@@ -251,7 +251,7 @@ public class User implements Serializable
 	{
 
 		return obj instanceof User
-				&& Objects.equals(this.getId(), ((User) obj).getId());
+		       && Objects.equals(this.getId(), ((User) obj).getId());
 	}
 
 	@Override
@@ -390,22 +390,17 @@ public class User implements Serializable
 	public boolean checkAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-				.noneMatch(e -> e.blocked(module, screen, action))
-				&& computedAuthStream()
-						.anyMatch(e -> e.granted(module, screen, action));
+					   .noneMatch(e -> e.blocked(module, screen, action))
+		       && computedAuthStream()
+					   .anyMatch(e -> e.granted(module, screen, action));
 	}
 
 	public boolean checkSpecificAccess(String module, String screen, String action)
 	{
 		return computedAuthStream()
-				.noneMatch(e -> e.blocked(module, screen, action))
-				&& computedAuthStream()
-						.anyMatch(e -> e.equals(module, screen, action));
-	}
-
-	public User unwrap()
-	{
-		return this;
+					   .noneMatch(e -> e.blocked(module, screen, action))
+		       && computedAuthStream()
+					   .anyMatch(e -> e.equals(module, screen, action));
 	}
 
 	public static User valueOf(String string)

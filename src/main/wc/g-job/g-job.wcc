@@ -57,7 +57,7 @@ customElements.define('g-job', class extends HTMLElement
 				{
 					job.addEventListener('Progress', e =>
 					{
-						const detail = JSON.parse(e.detail);
+						const detail = e.detail;
 						this.status = detail.status;
 						this.setAttribute('done', detail.done);
 						this.setAttribute('todo', detail.todo);

@@ -1,18 +1,19 @@
 export default class Base64
 {
-	static	decode(string)
+	static #decoder = new TextDecoder('utf-8');
+	static #encoder = new TextEncoder('utf-8');
+
+	static decode(string)
 	{
-		const bytes = new Uint8Array(atob(string).split('').map(char => char.charCodeAt(0)));
-		const decoder = new TextDecoder('utf-8');
-		return decoder.decode(bytes);
+		const bytes = Uint8Array.from(atob(string), char => char.charCodeAt(0));
+		return this.#decoder.decode(bytes);
 	}
 
-	static	encode(string)
+	static encode(string)
 	{
-		const encoder = new TextEncoder('utf-8');
-		const bytes = encoder.encode(string);
-		let binaryString = '';
-		bytes.forEach(byte => binaryString += String.fromCharCode(byte));
-		return btoa(binaryString);
+		const bytes = this.#encoder.encode(string);
+		let binary = '';
+		bytes.forEach(byte => binary += String.fromCharCode(byte));
+		return btoa(binary);
 	}
 }

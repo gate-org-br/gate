@@ -36,32 +36,24 @@ customElements.define('g-progress-status', class extends HTMLElement
 
 		this.addEventListener('Progress', e =>
 		{
+			update(e.detail);
 			switch (e.detail.status)
 			{
 				case 'COMMITED':
 					this.setAttribute("status", "commited");
-					update(e.detail);
-					if (!progress.max) progress.max = 100;
-					if (!progress.value) progress.value = 100;
 					clock.setAttribute("paused", "paused");
 					break;
 				case 'CANCELED':
 					this.setAttribute("status", "canceled");
-					update(e.detail);
-					if (!progress.max) progress.max = 100;
-					if (!progress.value) progress.value = 0;
 					clock.setAttribute("paused", "paused");
 					break;
 				case 'UNKNOWN':
-					this.setAttribute("status", "error");
-					update(e.detail);
-					if (!progress.max) progress.max = 100;
-					if (!progress.value) progress.value = 0;
+					this.setAttribute("status", "unknown");
 					clock.setAttribute("paused", "paused");
 					break;
 				default:
 					this.removeAttribute("status");
-					update(e.detail);
+					clock.removeAttribute("paused");
 			}
 		});
 		this.addEventListener('error', e =>

@@ -21,21 +21,17 @@ window.addEventListener("@progress", function (event)
 			.then(response => Job.from(response))
 			.then(job =>
 			{
-				job.addEventListener('Progress', e =>
-				{
-					const detail = JSON.parse(e.detail);
-					dialog.dispatchEvent(new CustomEvent('Progress', {detail}));
-				});
-				job.addEventListener('Result', e =>
-				{
-					const result = JSON.parse(e.detail);
-					event.success(path, new DataURL(result.contentType || 'text/plain;charset=utf-8',
-						result.data, result.filename ? {name: result.filename} : {}).toString());
-				});
+				job.addEventListener('Progress', e => dialog
+					.dispatchEvent(new CustomEvent('Progress', {detail: e.detail})));
 
-				job.addEventListener('Redirect', e => dialog.dispatchEvent(new CustomEvent('Redirect', {detail: JSON.parse(e.detail)})));
+				job.addEventListener('Result', e =>
+					event.success(path, new DataURL(e.detail.contentType || 'text/plain;charset=utf-8',
+						e.detail.data, e.detail.filename ? {name: e.detail.filename} : {}).toString()));
+
+				job.addEventListener('Redirect', e => dialog
+					.dispatchEvent(new CustomEvent('Redirect', {detail: e.detail})));
 				job.addEventListener('Finish', () => event.resolve(path));
-				job.addEventListener('Failure', e => event.failure(path, JSON.parse(e.detail)));
+				job.addEventListener('Failure', e => event.failure(path, e.detail.message));
 
 				return job.start();
 			})

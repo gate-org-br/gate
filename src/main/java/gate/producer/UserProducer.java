@@ -1,37 +1,51 @@
 package gate.producer;
 
+import gate.GateContext;
 import gate.GateControl;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.security.Credentials;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
+import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
+@ApplicationScoped
 public class UserProducer
 {
 	@Inject
 	GateControl control;
 
+	@Inject
+	Instance<HttpServletRequest> requestInstance;
+
 	@Current
 	@Produces
-	@RequestScoped
+	@Dependent
 	@Named(value = "user")
-	public User getUser(HttpServletRequest httpServletRequest)
+	public User getUser()
 	{
-		if (httpServletRequest.getAttribute(User.class.getName()) instanceof User user)
-			return user;
+		var context = GateContext.get();
+		if (context != null)
+			return context.user();
 
-		var subject = (Credentials.Subject) httpServletRequest
-				.getAttribute(Credentials.Subject.class.getName());
-		if (subject == null)
-			return new User();
+		HttpServletRequest request;
+		Credentials.Subject subject;
 
-		User user = control.select(subject.id());
+		try
+		{
+			request = requestInstance.get();
+			if (request.getAttribute(User.class.getName()) instanceof User user)
+				return user;
+			subject = (Credentials.Subject) request
+					.getAttribute(Credentials.Subject.class.getName());
+		} catch (RuntimeException ex) {return new User();}
 
-		httpServletRequest.setAttribute(User.class.getName(), user);
+		User user = subject != null ? control.select(subject.id()) : new User();
+		try {request.setAttribute(User.class.getName(), user);} catch (Exception ignored) {}
 		return user;
 	}
 }

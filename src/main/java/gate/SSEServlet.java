@@ -61,7 +61,7 @@ public class SSEServlet extends HttpServlet
 			AsyncContext context = request.startAsync();
 			context.setTimeout(TimeUnit.HOURS.toMillis(1));
 
-			EventClient client = new EventClient(user.unwrap(), context);
+			EventClient client = new EventClient(user, context);
 			eventListener.subscribe(client);
 
 			context.addListener(new AsyncListener()
@@ -96,8 +96,13 @@ public class SSEServlet extends HttpServlet
 	@ApplicationScoped
 	public static class EventListener extends EventClients
 	{
-		void onEvent(@Observes AppEvent event) {dispatch(event::checkAccess, event.toString());}
+		void onEvent(@Observes AppEvent event)
+		{
+			dispatch(event::checkAccess, event.toJsonObject());
+			clients.stream().filter(e -> !e.isConnected()).forEach(EventClient::close);
+			clients.removeIf(e -> !e.isClosed());
+		}
 
-		void onEventAsync(@ObservesAsync AppEvent event) {dispatch(event::checkAccess, event.toString());}
+		void onEventAsync(@ObservesAsync AppEvent event) {onEvent(event);}
 	}
 }

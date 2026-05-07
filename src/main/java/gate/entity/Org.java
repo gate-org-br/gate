@@ -9,6 +9,7 @@ import gate.constraint.Required;
 import gate.type.LocalTimeInterval;
 import gate.type.mime.MimeData;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Icon("2006")
@@ -17,7 +18,7 @@ import java.io.Serializable;
 public class Org implements Serializable
 {
 
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	@Required
 	@Maxlength(16)

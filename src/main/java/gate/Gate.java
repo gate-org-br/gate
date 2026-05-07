@@ -112,7 +112,7 @@ public class Gate extends HttpServlet
 			if (call.getMethod().isAnnotationPresent(Asynchronous.class))
 				executeAsync(user, request, response, screen, call.getMethod());
 			else
-				execute(request, response, screen, call.getMethod());
+				execute(user, request, response, screen, call.getMethod());
 
 		} catch (AuthenticationException ex)
 		{
@@ -169,9 +169,10 @@ public class Gate extends HttpServlet
 		return false;
 	}
 
-	private void execute(ScreenServletRequest request, ScreenServletResponse response, Screen screen,
+	private void execute(User user, ScreenServletRequest request, ScreenServletResponse response, Screen screen,
 	                     Method method)
 	{
+		GateContext.init(new GateContext(user));
 		try
 		{
 			Object result = screen.execute(method);
@@ -188,6 +189,9 @@ public class Gate extends HttpServlet
 			var type = Catcher.getCatcher(ex.getClass());
 			Catcher catcher = catchers.select(type).get();
 			catcher.catches(request, response, ex);
+		} finally
+		{
+			GateContext.close();
 		}
 	}
 
@@ -206,6 +210,7 @@ public class Gate extends HttpServlet
 		asyncContext.setTimeout(0);
 		asyncContext.start(threadContext.contextualRunnable(() ->
 		{
+			GateContext.init(new GateContext(user));
 			try (var progress = Progress.create(user, new EventClient(user, asyncContext)))
 			{
 				try
@@ -230,7 +235,7 @@ public class Gate extends HttpServlet
 				{
 					TempFile.cleanup();
 				}
-			} catch (Throwable ex) {logger.error(ex.getMessage(), ex);}
+			} catch (Throwable ex) {logger.error(ex.getMessage(), ex);} finally {GateContext.close();}
 		}));
 	}
 }

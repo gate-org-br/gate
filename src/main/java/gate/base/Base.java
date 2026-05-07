@@ -12,12 +12,11 @@ abstract class Base
 	/**
 	 * Returns information about the current user.
 	 *
-	 * @return an User object with information about the current user
+	 * @return a User object with information about the current user
 	 */
 	public User getUser()
 	{
-		return CDI.current().select(User.class, Current.LITERAL).get()
-				.unwrap();
+		return CDI.current().select(User.class, Current.LITERAL).get();
 	}
 
 	/**
