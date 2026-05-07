@@ -6,7 +6,7 @@ import gate.error.UnauthorizedException;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
@@ -21,8 +21,7 @@ public class ThrowableCatcher implements Catcher
 
 	@Inject
 	@Current
-	@RequestScoped
-	User user;
+	Instance<User> userInstance;
 
 	@Inject
 	Logger logger;
@@ -50,7 +49,7 @@ public class ThrowableCatcher implements Catcher
 
 		try (PrintWriter writer = response.getWriter())
 		{
-			if (user.isSuperUser())
+				if (userInstance.get().isSuperUser())
 				exception.printStackTrace(writer);
 			else
 				writer.write("Erro de sistema: procure o suporte para informar o ocorrido");

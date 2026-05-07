@@ -7,7 +7,7 @@ import gate.entity.User;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -19,8 +19,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
-	User user;
+	Instance<User> userInstance;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -38,7 +37,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 		String screen = path.length >= 2 ? path[1] : null;
 		String action = path.length >= 3 ? path[2] : null;
 
-		if (Call.of(module, screen, action).checkAccess(user))
+		if (Call.of(module, screen, action).checkAccess(userInstance.get()))
 		{
 			handler.removeAttribute("g:secure");
 		} else if (element.hasAttribute("g:otherwise"))

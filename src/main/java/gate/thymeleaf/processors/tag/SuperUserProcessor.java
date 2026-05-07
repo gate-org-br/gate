@@ -4,7 +4,7 @@ import gate.annotation.Current;
 import gate.entity.User;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IModel;
@@ -16,8 +16,7 @@ public class SuperUserProcessor extends TagModelProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
-	User user;
+	Instance<User> userInstance;
 
 	public SuperUserProcessor()
 	{
@@ -27,7 +26,7 @@ public class SuperUserProcessor extends TagModelProcessor
 	@Override
 	public void process(ITemplateContext context, IModel model, IElementModelStructureHandler handler)
 	{
-		if (user.isSuperUser())
+		if (userInstance.get().isSuperUser())
 			removeTag(context, model, handler);
 		else
 			model.reset();

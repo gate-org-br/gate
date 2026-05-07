@@ -6,7 +6,7 @@ import gate.converter.Converter;
 import gate.entity.User;
 import gate.thymeleaf.ELExpressionFactory;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -19,8 +19,7 @@ public class SecureProcessor extends TagProcessor
 
 	@Inject
 	@Current
-	@RequestScoped
-	User user;
+	Instance<User> userInstance;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -39,7 +38,7 @@ public class SecureProcessor extends TagProcessor
 						element.getAttributeValue("module"),
 						element.getAttributeValue("screen"),
 						element.getAttributeValue("action"))
-				.checkAccess(user))
+					.checkAccess(userInstance.get()))
 			handler.removeTags();
 		else if (element.hasAttribute("otherwise"))
 		{
