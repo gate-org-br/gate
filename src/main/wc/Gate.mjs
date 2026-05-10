@@ -1,6 +1,3 @@
-if (!document.querySelectorAll)
-	window.location = '../gate/NAVI.jsp';
-
 import "./mask.js";
 import "./switch.js";
 import "./g-tree-grid.js";
