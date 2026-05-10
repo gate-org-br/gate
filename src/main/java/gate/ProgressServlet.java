@@ -2,7 +2,6 @@ package gate;
 
 import gate.annotation.Current;
 import gate.entity.User;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.servlet.AsyncContext;
@@ -18,7 +17,6 @@ public class ProgressServlet extends HttpServlet
 {
 	@Inject
 	@Current
-	@RequestScoped
 	Instance<User> userInstance;
 
 	@Override

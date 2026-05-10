@@ -9,7 +9,6 @@ import gate.event.EventClients;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.ObservesAsync;
 import jakarta.enterprise.inject.Instance;
@@ -28,7 +27,6 @@ public class SSEServlet extends HttpServlet
 
 	@Inject
 	@Current
-	@RequestScoped
 	Instance<User> userInstance;
 
 	@Inject
