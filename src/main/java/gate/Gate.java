@@ -190,6 +190,7 @@ public class Gate extends HttpServlet
 			catcher.catches(request, response, ex);
 		} finally
 		{
+			TempFile.cleanup();
 			GateContext.close();
 		}
 	}
