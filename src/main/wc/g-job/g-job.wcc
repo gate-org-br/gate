@@ -1,7 +1,6 @@
 import Job from './job.js';
 
 const Status = Object.freeze({
-	CREATED: 'CREATED',
 	PENDING: 'PENDING',
 	COMMITED: 'COMMITED',
 	CANCELED: 'CANCELED',
@@ -11,6 +10,7 @@ const Status = Object.freeze({
 
 customElements.define('g-job', class extends HTMLElement
 {
+	#timeout;
 	#counter;
 	#progress;
 
@@ -32,7 +32,7 @@ customElements.define('g-job', class extends HTMLElement
 
 	set status(value) { this.setAttribute("status", value) }
 
-	get status() { return this.getAttribute("status") || Status.CREATED; }
+	get status() { return this.getAttribute("status") || Status.PENDING; }
 
 	set todo(value) { this.setAttribute("todo", value) }
 
@@ -46,15 +46,14 @@ customElements.define('g-job', class extends HTMLElement
 
 	connectedCallback()
 	{
-		if (this.uuid
-			&& (this.status === Status.CREATED
-				|| this.status === Status.PENDING))
+		if (this.uuid && this.status === Status.PENDING)
 		{
 			this.status = Status.CONNECTING;
 			fetch(`Progress?uuid=${encodeURIComponent(this.uuid)}`)
 				.then(response => Job.from(response))
 				.then(job =>
 				{
+					this.status = Status.PENDING;
 					job.addEventListener('Progress', e =>
 					{
 						const detail = e.detail;
@@ -67,23 +66,26 @@ customElements.define('g-job', class extends HTMLElement
 				.catch(() =>
 				{
 					this.status = Status.PENDING;
-					setTimeout(() => this.isConnected && this.connectedCallback(), 1000);
+					this.#timeout = setTimeout(() =>
+						this.isConnected && this.connectedCallback(), 5000);
 				});
 		}
 	}
 
+	disconnectedCallback() { this.#timeout && clearTimeout(this.#timeout); }
+
 	attributeChangedCallback()
 	{
-		if (this.todo > 0 && this.done >= 0)
+		if (this.todo)
 		{
 			this.#progress.max = this.todo;
 			this.#progress.value = this.done;
 			this.#counter.textContent = `${this.done}/${this.todo} (${this.percentage}%)`;
 		} else
 		{
-			this.#progress.removeAttribute("max");
-			this.#progress.removeAttribute("value");
-			this.#counter.textContent = `??????????`;
+			this.#counter.textContent = this.done;
+			this.#progress.removeAttribute('max');
+			this.#progress.removeAttribute('value');
 		}
 	}
 });

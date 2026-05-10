@@ -1,6 +1,4 @@
 <template>
-	<div id="container">
-		<span id="counter"></span>
-		<progress></progress>
-	</div>
+	<progress></progress>
+	<span id="counter"></span>
 </template>

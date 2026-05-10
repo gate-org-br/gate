@@ -31,7 +31,7 @@ window.addEventListener("@progress", function (event)
 				job.addEventListener('Redirect', e => dialog
 					.dispatchEvent(new CustomEvent('Redirect', {detail: e.detail})));
 				job.addEventListener('Finish', () => event.resolve(path));
-				job.addEventListener('Failure', e => event.failure(path, e.detail.message));
+				job.addEventListener('Failure', e => event.failure(path, e.detail));
 
 				return job.start();
 			})
@@ -41,7 +41,7 @@ window.addEventListener("@progress", function (event)
 				if (!reconnect)
 					return event.failure(path, err);
 				dialog.dispatchEvent(new CustomEvent('error', {detail: {text: "Reconnecting to server", uuid: reconnect}}));
-				setTimeout(() => connect(`Progress?uuid=${encodeURIComponent(reconnect)}`, reconnect), 1000);
+				setTimeout(() => connect(`Progress?uuid=${encodeURIComponent(reconnect)}`, reconnect), 5000);
 			});
 	connect(event.detail.action);
 });

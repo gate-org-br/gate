@@ -1,5 +1,5 @@
 import Base64 from "./base64.js";
-import LineReader from "./line-header.js";
+import LineReader from "./line-reader.js";
 
 export default class EventReader
 {

@@ -18,7 +18,6 @@ public class HttpExceptionCatcher implements Catcher
 	public void catches(ScreenServletRequest request,
 	                    ScreenServletResponse response, Throwable exception)
 	{
-
 		response.setStatus(((HttpException) exception).getStatusCode());
 		response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
 

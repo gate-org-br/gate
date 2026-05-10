@@ -24,12 +24,12 @@ import java.util.function.Predicate;
 public class EventClient implements AutoCloseable
 {
 	private final User subject;
-	private ServletOutputStream out;
 	private final AsyncContext asyncContext;
+	private ServletOutputStream out;
 	private volatile boolean closed = false;
 	private volatile boolean connected = true;
-	
-	public EventClient(User user, AsyncContext asyncContext)
+
+	public EventClient(AsyncContext asyncContext, User user)
 	{
 		this.subject = user;
 		this.asyncContext = asyncContext;
@@ -57,6 +57,9 @@ public class EventClient implements AutoCloseable
 	@Override
 	public synchronized void close()
 	{
+		if (closed)
+			return;
+
 		closed = true;
 		HeartbeatRegistry.unregister(this);
 		if (out != null)
@@ -68,6 +71,7 @@ public class EventClient implements AutoCloseable
 	{
 		if (!connected)
 			return false;
+
 		try
 		{
 			if (out == null)
@@ -77,27 +81,21 @@ public class EventClient implements AutoCloseable
 			out.flush();
 			asyncContext.getResponse().flushBuffer();
 			return true;
-		} catch (Exception e)
-		{
-			return connected = false;
-		}
+		} catch (Exception e) {return connected = false;}
 	}
 
 	public boolean isClosed() {return closed;}
-
-	public boolean isConnected() {return connected;}
 
 	@ApplicationScoped
 	public static class HeartbeatRegistry
 	{
 
+		private static final Set<EventClient> TARGETS =
+				Collections.newSetFromMap(new ConcurrentHashMap<>());
+		private static final long HEARTBEAT = 20L;
 		@Inject
 		Logger logger;
-
-		private static final Set<EventClient> TARGETS = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		private ScheduledExecutorService executor;
-
-		private static final long HEARTBEAT = 20L;
 
 		static void register(EventClient target) {TARGETS.add(target);}
 
@@ -105,9 +103,6 @@ public class EventClient implements AutoCloseable
 
 		void init(@Observes @Initialized(ApplicationScoped.class) Object event)
 		{
-			if (HEARTBEAT == 0)
-				return;
-
 			executor = Executors.newSingleThreadScheduledExecutor(r ->
 			{
 				Thread thread = new Thread(r, "Heartbeat");

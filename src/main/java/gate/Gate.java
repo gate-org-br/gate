@@ -9,7 +9,6 @@ import gate.catcher.Catcher;
 import gate.entity.User;
 import gate.error.*;
 import gate.event.AppEvent;
-import gate.event.EventClient;
 import gate.event.LoginEvent;
 import gate.handler.HTMLCommandHandler;
 import gate.handler.Handler;
@@ -211,7 +210,7 @@ public class Gate extends HttpServlet
 		asyncContext.start(threadContext.contextualRunnable(() ->
 		{
 			GateContext.init(new GateContext(user));
-			try (var progress = Progress.create(user, new EventClient(user, asyncContext)))
+			try (var progress = Progress.create(asyncContext, user))
 			{
 				try
 				{
