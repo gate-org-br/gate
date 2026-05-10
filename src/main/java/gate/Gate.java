@@ -229,12 +229,13 @@ public class Gate extends HttpServlet
 				} catch (Throwable ex)
 				{
 					progress.abort(ex.getMessage());
-					throw ex;
-				} finally
-				{
-					TempFile.cleanup();
+					logger.error(ex.getMessage(), ex);
 				}
-			} catch (Throwable ex) {logger.error(ex.getMessage(), ex);} finally {GateContext.close();}
+			} finally
+			{
+				TempFile.cleanup();
+				GateContext.close();
+			}
 		}));
 	}
 }
