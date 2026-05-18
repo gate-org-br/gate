@@ -1,6 +1,7 @@
 package gate.thymeleaf;
 
 import gate.thymeleaf.processors.attribute.property.NotAttributeProcessor;
+import gate.thymeleaf.processors.attribute.property.HasAttributeProcessor;
 import gate.thymeleaf.processors.attribute.property.SetAttributeProcessor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -32,11 +33,13 @@ public interface TextEngine
 		@Inject
 		public TextEngineImpl(GateDialect dialect,
 			SetAttributeProcessor set,
+			HasAttributeProcessor has,
 			NotAttributeProcessor not)
 		{
 			OgnlRuntime.setSecurityManager(null);
 			this.templateEngine = new TemplateEngine();
 			templateEngine.addDialect(set);
+			templateEngine.addDialect(has);
 			templateEngine.addDialect(not);
 			templateEngine.addDialect(dialect);
 			templateEngine.setTemplateResolver(new StringTemplateResolver());

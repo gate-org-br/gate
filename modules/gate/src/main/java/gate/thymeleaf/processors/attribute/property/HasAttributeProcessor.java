@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
+import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.IProcessor;
 import org.thymeleaf.processor.element.IElementTagProcessor;
@@ -18,26 +19,26 @@ import org.thymeleaf.processor.element.MatchingElementName;
 import org.thymeleaf.templatemode.TemplateMode;
 
 @Dependent
-public class SetAttributeProcessor extends AbstractProcessorDialect
+public class HasAttributeProcessor extends AbstractProcessorDialect
 {
 
 	@Inject
 	ELExpressionFactory expression;
 
-	public SetAttributeProcessor()
+	public HasAttributeProcessor()
 	{
-		super("Set", "set", Precedence.DEFAULT);
+		super("Has", "has", Precedence.DEFAULT);
 	}
 
 	@Override
 	public Set<IProcessor> getProcessors(final String dialectPrefix)
 	{
 		final Set<IProcessor> processors = new HashSet<>();
-		processors.add(new SetAttributeProcessorHandler());
+		processors.add(new HasAttributeProcessorHandler());
 		return processors;
 	}
 
-	private class SetAttributeProcessorHandler implements IElementTagProcessor
+	private class HasAttributeProcessorHandler implements IElementTagProcessor
 	{
 
 		@Override
@@ -49,7 +50,7 @@ public class SetAttributeProcessor extends AbstractProcessorDialect
 		@Override
 		public MatchingAttributeName getMatchingAttributeName()
 		{
-			return MatchingAttributeName.forAllAttributesWithPrefix(TemplateMode.HTML, "set");
+			return MatchingAttributeName.forAllAttributesWithPrefix(TemplateMode.HTML, "has");
 		}
 
 		@Override
@@ -68,12 +69,17 @@ public class SetAttributeProcessor extends AbstractProcessorDialect
 		public void process(ITemplateContext context, IProcessableElementTag tag, IElementTagStructureHandler handler)
 		{
 			Stream.of(tag.getAllAttributes())
-					.filter(attribute -> attribute.getAttributeCompleteName().startsWith("set:")).forEach(attribute ->
+					.filter(attribute -> attribute.getAttributeCompleteName().startsWith("has:")).forEach(attribute ->
 					{
 						handler.removeAttribute(attribute.getAttributeCompleteName());
 						String name = attribute.getAttributeCompleteName().substring(4);
-						Object value = expression.create().evaluate(attribute.getValue());
-						handler.setAttribute(name, value != null ? value.toString() : null);
+						Boolean condition = (Boolean) expression.create().evaluate(attribute.getValue());
+
+						if (Boolean.TRUE.equals(condition) && Stream.of(tag.getAllAttributes())
+								.map(IAttribute::getAttributeCompleteName).noneMatch(name::equals))
+							handler.setAttribute(name, null);
+						else
+							handler.removeAttribute(name);
 					});
 		}
 	}

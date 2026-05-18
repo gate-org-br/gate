@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag.property;
 
 import gate.lang.property.Property;
-import gate.thymeleaf.ELExpressionFactory;
+import gate.thymeleaf.ELExpression;
 import gate.thymeleaf.processors.tag.TagProcessor;
 import gate.type.Attributes;
 import jakarta.inject.Inject;
@@ -12,6 +12,7 @@ import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public abstract class PropertyProcessor extends TagProcessor
 {
 
 	@Inject
-	ELExpressionFactory expressionFactory;
+	ELExpression expression;
 
 	public PropertyProcessor(String name)
 	{
@@ -35,8 +36,6 @@ public abstract class PropertyProcessor extends TagProcessor
 		if (element.getElementCompleteName().startsWith("g-"))
 			return;
 
-		var expression = expressionFactory.create();
-
 		var exchange = ((IWebContext) context).getExchange();
 
 		Object screen = Optional.ofNullable(element.getAttributeValue("context"))
@@ -46,18 +45,6 @@ public abstract class PropertyProcessor extends TagProcessor
 		Attributes attributes = Stream.of(element.getAllAttributes())
 				.collect(Collectors.toMap(IAttribute::getAttributeCompleteName,
 						e -> Objects.requireNonNullElse(e.getValue(), ""), (a, b) -> a, Attributes::new));
-
-		var not = Stream.concat(attributes.keySet().stream()
-								.filter(e -> e.startsWith("not:"))
-								.map(e -> e.substring(4)),
-						attributes.entrySet().stream()
-								.filter(e -> e.getKey().startsWith("set:"))
-								.filter(e -> !Boolean.TRUE.equals(expression.evaluate((String) e.getValue())))
-								.map(e -> e.getKey().substring(4)))
-				.toList();
-
-		attributes.keySet().removeIf(e -> e.startsWith("not:"));
-		attributes.keySet().removeIf(e -> e.startsWith("set:"));
 
 		if (!attributes.containsKey("property"))
 			throw new TemplateProcessingException("Missing required attribute property on g:" + getElement());
@@ -98,12 +85,32 @@ public abstract class PropertyProcessor extends TagProcessor
 				attributes.put("placeholder", placeholder);
 		}
 
-		attributes.keySet().removeIf(not::contains);
+		attributes.entrySet().stream()
+				.filter(e -> e.getKey().startsWith("set:"))
+				.map(e -> Map.entry(e.getKey().substring(4),
+						expression.evaluate((String) e.getValue())))
+				.toList()
+				.forEach(e -> attributes.put(e.getKey(), e.getValue()));
+		attributes.keySet().removeIf(e -> e.startsWith("set:"));
+
+		attributes.keySet().stream()
+				.filter(e -> e.startsWith("not:"))
+				.map(e -> e.substring(4))
+				.toList().forEach(attributes::remove);
+		attributes.keySet().removeIf(e -> e.startsWith("not:"));
+
+		attributes.entrySet().stream()
+				.filter(e -> e.getKey().startsWith("has:"))
+				.filter(e -> !Boolean.TRUE.equals(expression.evaluate((String) e.getValue())))
+				.map(e -> e.getKey().substring(4))
+				.toList().forEach(attributes::remove);
+		attributes.keySet().removeIf(e -> e.startsWith("has:"));
+
 		process(context, element, handler, screen, property, attributes);
 
 	}
 
 	protected abstract void process(ITemplateContext context, IProcessableElementTag element,
-									IElementTagStructureHandler handler, Object screen, Property property, Attributes attributes);
+	                                IElementTagStructureHandler handler, Object screen, Property property, Attributes attributes);
 
 }
