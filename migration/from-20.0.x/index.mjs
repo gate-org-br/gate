@@ -10,6 +10,7 @@ import replaceLinkConstructorWithLinkOf from "./replace-link-constructor-with-li
 import removeLinkSourceInjectionAndReplaceGetLinkUsage from "./remove-linksource-injection-and-replace-getlink-usage.mjs";
 import replaceEjbScheduleWithQuarkusScheduled from "./replace-ejb-schedule-with-quarkus-scheduled.mjs";
 import removeEnumStringConverterAnnotations from "./remove-enumstringconverter-annotations.mjs";
+import replaceSetAttributesWithHasAttributes from "./replace-set-attributes-with-has-attributes.mjs";
 
 export default [
 	rewriteScreenChildNotation,
@@ -23,5 +24,6 @@ export default [
 	replaceLinkConstructorWithLinkOf,
 	removeLinkSourceInjectionAndReplaceGetLinkUsage,
 	replaceEjbScheduleWithQuarkusScheduled,
-	removeEnumStringConverterAnnotations
+	removeEnumStringConverterAnnotations,
+	replaceSetAttributesWithHasAttributes
 ];
