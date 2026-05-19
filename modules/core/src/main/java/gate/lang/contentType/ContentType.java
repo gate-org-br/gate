@@ -13,14 +13,19 @@ import java.util.Objects;
 
 public class ContentType implements Serializable
 {
+	public static final ContentType TEXT_HTML = ContentType.of("text", "html");
+	public static final ContentType TEXT_PLAIN = ContentType.of("text", "plain");
+	public static final ContentType APPLICATION_JSON = ContentType.of("application", "json");
+	public static final ContentType APPLICATION_OCTET_STREAM = ContentType.of("application", "octet-stream");
+	public static final ContentType APPLICATION_JAVASCRIPT = ContentType.of("application", "javascript");
 
 	private final String type;
 	private final String subtype;
 	private final Map<String, String> parameters;
 
 	private ContentType(String type,
-						String subtype,
-						Map<String, String> parameters)
+	                    String subtype,
+	                    Map<String, String> parameters)
 	{
 		Objects.requireNonNull(parameters);
 		this.type = type;
@@ -44,7 +49,7 @@ public class ContentType implements Serializable
 	}
 
 	public static ContentType of(String type, String subtype,
-								 Map<String, String> parameters)
+	                             Map<String, String> parameters)
 	{
 		return new ContentType(type, subtype, parameters);
 	}
@@ -92,8 +97,8 @@ public class ContentType implements Serializable
 	public boolean equals(Object obj)
 	{
 		return obj instanceof ContentType contentType
-			   && Objects.equals(type, contentType.type)
-			   && Objects.equals(subtype, contentType.subtype);
+		       && Objects.equals(type, contentType.type)
+		       && Objects.equals(subtype, contentType.subtype);
 	}
 
 	@Override
