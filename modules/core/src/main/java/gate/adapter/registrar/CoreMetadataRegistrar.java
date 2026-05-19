@@ -48,8 +48,6 @@ public class CoreMetadataRegistrar implements MetadataRegistrar
 		registry.put(SHA256.class, new SHA256Metadata());
 		registry.put(SHA512.class, new SHA512Metadata());
 		registry.put(SIMCard.class, new SIMCardMetadata());
-		registry.put(TempFile.class, new TempFileMetadata());
-		registry.put(NamedTempFile.class, new TempFileMetadata());
 		registry.put(Version.class, new VersionMetadata());
 		registry.put(YearMonthInterval.class, new YearMonthIntervalMetadata());
 		registry.put(BrasilianDocument.class, new BrasilianDocumentMetadata());

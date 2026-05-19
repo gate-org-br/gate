@@ -4,17 +4,10 @@ import gate.adapter.jsonConverter.*;
 import gate.lang.json.*;
 import gate.type.DataGrid;
 import gate.type.Form;
-import gate.type.NamedTempFile;
-import gate.type.TempFile;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.Year;
-import java.time.YearMonth;
+import java.time.*;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -47,8 +40,6 @@ public class CoreJsonConverterRegistrar implements JsonConverterRegistrar
 
 		var unsupported = new UnsupportedTypeJsonConverter();
 		registry.put(File.class, unsupported);
-		registry.put(TempFile.class, unsupported);
-		registry.put(NamedTempFile.class, unsupported);
 
 		registry.put(Duration.class, new DurationJsonConverter());
 		registry.put(LocalDate.class, new LocalDateJsonConverter());

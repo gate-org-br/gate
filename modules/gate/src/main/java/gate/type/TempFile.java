@@ -1,5 +1,10 @@
 package gate.type;
 
+import jakarta.annotation.PreDestroy;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.spi.CDI;
+import jakarta.inject.Inject;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
@@ -13,40 +18,14 @@ import java.util.List;
  *
  * <p>
  * Instances of this class represent files created in the operating system
- * temporary directory and must be explicitly closed when no longer needed.
+ * temporary directory and are automatically registered in the current job
+ * context and cleaned up at the end of the request or asynchronous execution.
  * </p>
  *
  * <p>
- * This class implements {@link AutoCloseable}. Failing to invoke
- * {@link #close()} will cause the underlying temporary file to remain on disk,
- * resulting in a resource leak.
+ * This class requires an active CDI request context. Attempting to create
+ * instances outside of the Gate execution pipeline will result in an error.
  * </p>
- *
- * <p>
- * When used inside the Gate execution pipeline, temporary files are
- * automatically cleaned up at the end of the request or asynchronous execution.
- * However, when created or used manually, the caller is fully responsible for
- * closing the instance.
- * </p>
- *
- * <p>
- * Recommended usage:
- * </p>
- *
- * <pre>{@code
- * try (TempFile file = TempFile.of(bytes)) {
- *     // use file
- * }
- * }</pre>
- *
- * <p>
- * Not closing this resource may lead to:
- * </p>
- * <ul>
- * <li>temporary files accumulating on disk</li>
- * <li>file descriptor leaks</li>
- * <li>unexpected behavior in long-running applications</li>
- * </ul>
  */
 public class TempFile implements AutoCloseable
 {
@@ -54,15 +33,8 @@ public class TempFile implements AutoCloseable
 	private final File file;
 	private InputStream inputStream;
 	private OutputStream outputStream;
-	private static final ThreadLocal<List<TempFile>> FILES = new ThreadLocal<>();
 
-	protected TempFile(File file)
-	{
-		this.file = file;
-		if (FILES.get() == null)
-			FILES.set(new ArrayList<>());
-		FILES.get().add(this);
-	}
+	protected TempFile(File file) {this.file = file;}
 
 	/**
 	 * Returns the name of the temporary file.
@@ -83,7 +55,6 @@ public class TempFile implements AutoCloseable
 	 */
 	public InputStream getInputStream() throws IOException
 	{
-
 		if (inputStream != null)
 			inputStream.close();
 		inputStream = new FileInputStream(file);
@@ -114,10 +85,7 @@ public class TempFile implements AutoCloseable
 	 * @throws java.io.IOException if an IOException occurs when trying to
 	 *                             read the bytes
 	 */
-	public byte[] getBytes() throws IOException
-	{
-		return Files.readAllBytes(file.toPath());
-	}
+	public byte[] getBytes() throws IOException {return Files.readAllBytes(file.toPath());}
 
 	/**
 	 * Return the length of the temporary file.
@@ -163,65 +131,9 @@ public class TempFile implements AutoCloseable
 	 */
 	public static TempFile empty()
 	{
-		try
-		{
-			File file = File.createTempFile("temp", ".tmp");
-			return new TempFile(file);
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return CDI.current().select(TempFiles.class).get().create();
 	}
 
-	/**
-	 * Removes and deletes all temporary files created in the current thread
-	 * context.
-	 *
-	 * <p>
-	 * This method closes every {@link TempFile} registered in the current
-	 * {@link ThreadLocal} and deletes the underlying temporary files.
-	 * </p>
-	 *
-	 * <p>
-	 * It is intended to be called at the end of a processing cycle, such
-	 * as:
-	 * </p>
-	 * <ul>
-	 * <li>when an HTTP request finishes</li>
-	 * <li>when an asynchronous task completes</li>
-	 * </ul>
-	 *
-	 * <p>
-	 * The cleanup is always limited to the current thread. Temporary files
-	 * created in other threads are not affected.
-	 * </p>
-	 *
-	 * <p>
-	 * This method is safe to call multiple times. If no temporary files
-	 * were created in the current thread, the method does nothing.
-	 * </p>
-	 *
-	 * <p>
-	 * After execution, the internal {@link ThreadLocal} context is cleared
-	 * to prevent resource leaks in thread pools.
-	 * </p>
-	 */
-	public static void cleanup()
-	{
-		var files = FILES.get();
-
-		if (files == null)
-			return;
-
-		try
-		{
-			for (var file : files)
-				file.close();
-		} finally
-		{
-			FILES.remove();
-		}
-	}
 
 	/**
 	 * Creates a new temporary file with the contents of a byte array.
@@ -273,41 +185,70 @@ public class TempFile implements AutoCloseable
 	@Override
 	public void close()
 	{
-		if (outputStream != null)
-		{
-			try
-			{
-				outputStream.close();
-			} catch (IOException | RuntimeException ex)
-			{
-				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
-			}
-		}
-
-		if (inputStream != null)
-		{
-			try
-			{
-				inputStream.close();
-			} catch (IOException | RuntimeException ex)
-			{
-				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
-			}
-		}
-
 		try
 		{
-			Files.deleteIfExists(file.toPath());
+			if (outputStream != null)
+				outputStream.close();
 		} catch (IOException | RuntimeException ex)
 		{
 			LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
+		} finally
+		{
+			try
+			{
+				if (inputStream != null)
+					inputStream.close();
+			} catch (IOException | RuntimeException ex)
+			{
+				LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
+			} finally
+			{
+				try
+				{
+					Files.deleteIfExists(file.toPath());
+				} catch (IOException | RuntimeException ex)
+				{
+					LoggerFactory.getLogger(getClass()).error(ex.getMessage(), ex);
+				}
+			}
 		}
 	}
 
 	@Override
-	public String toString()
-	{
-		return getName();
-	}
+	public String toString() {return getName();}
 
+	@ApplicationScoped
+	static class TempFiles
+	{
+		@Inject
+		TempFileRegistry registry;
+
+		public TempFile create() {return registry.create();}
+
+		@RequestScoped
+		static class TempFileRegistry implements AutoCloseable
+		{
+			private final List<TempFile> files = new ArrayList<>();
+
+			public TempFile create()
+			{
+				try
+				{
+					TempFile file = new TempFile(File.createTempFile("temp", ".tmp"));
+					files.add(file);
+					return file;
+				} catch (IOException ex)
+				{
+					throw new UncheckedIOException(ex);
+				}
+			}
+
+			@Override
+			@PreDestroy
+			public void close()
+			{
+				files.forEach(TempFile::close);
+			}
+		}
+	}
 }

@@ -51,8 +51,6 @@ public class SqlColumnMapperRegistrar implements ColumnMapperRegistrar
 		registry.put(LocalDateInterval.class, new LocalDateIntervalColumnMapper());
 		registry.put(LocalDateTimeInterval.class, new LocalDateTimeIntervalColumnMapper());
 		registry.put(LocalTimeInterval.class, new LocalTimeIntervalColumnMapper());
-		registry.put(TempFile.class, new TempFileColumnMapper());
-		registry.put(NamedTempFile.class, new NamedTempFileColumnMapper());
 		registry.put(Range.class, new RangeColumnMapper());
 		registry.put(DataFile.class, new DataFileColumnMapper());
 

@@ -1,7 +1,6 @@
 package gate.adapter.registrar;
 
 import gate.adapter.converter.*;
-import gate.adapter.converter.EnumSetConverter;
 import gate.lang.json.*;
 import gate.type.*;
 import gate.type.br.*;
@@ -83,8 +82,6 @@ public class CoreConverterRegistrar implements ConverterRegistrar
 		registry.put(SHA512.class, new SHA512Converter());
 		registry.put(SIMCard.class, new SIMCardConverter());
 		registry.put(Tax.class, new TaxConverter());
-		registry.put(TempFile.class, new TempFileConverter());
-		registry.put(NamedTempFile.class, new TempFileConverter());
 		registry.put(Version.class, new VersionConverter());
 		registry.put(YearMonthInterval.class, new YearMonthIntervalConverter());
 
