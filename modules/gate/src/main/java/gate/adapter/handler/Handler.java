@@ -9,9 +9,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
+import java.lang.reflect.Method;
+
 public interface Handler
 {
-
 	/**
 	 * Gets the handler associated with the specified java class.
 	 *
@@ -30,10 +31,9 @@ public interface Handler
 		throw new UnsupportedOperationException("This type can't be converted from a Part.");
 	}
 
-	default void handle(HttpServletRequest request, HttpServletResponse response, Progress progress, Object value)
+	default void handle(HttpServletRequest request, Progress progress, Object value)
 	{
-		progress.result("application/octet-stream",
-				null, Converter.toString(value));
+		progress.result("application/octet-stream", null, Converter.toString(value));
 	}
 
 	static <T> T fromPart(Class<T> type, Part part) throws ConversionException
@@ -49,5 +49,12 @@ public interface Handler
 		{
 			throw new AppError(ex);
 		}
+	}
+
+	static Class<? extends Handler> getHandler(Method method, Object result)
+	{
+		return method.isAnnotationPresent(gate.annotation.Handler.class)
+				? method.getAnnotation(gate.annotation.Handler.class).value()
+				: Handler.getHandler(result.getClass());
 	}
 }

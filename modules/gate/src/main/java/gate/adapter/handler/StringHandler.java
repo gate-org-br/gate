@@ -43,7 +43,7 @@ public class StringHandler implements Handler
 		if (string.endsWith(".html"))
 			htmlHandler.handle(request, response, string);
 		else if (string.endsWith(".js")
-				 || string.endsWith(".mjs"))
+		         || string.endsWith(".mjs"))
 			jsHandler.handle(request, response, string);
 		else
 			textHandler.handle(request, response, string);
@@ -51,16 +51,16 @@ public class StringHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response,
-					   Progress progress, Object value)
+	public void handle(HttpServletRequest request,
+	                   Progress progress, Object value)
 	{
 		String string = value.toString();
 		if (string.endsWith(".html"))
-			htmlHandler.handle(request, response, progress, string);
+			htmlHandler.handle(request, progress, string);
 		else if (string.endsWith(".js")
-				 || string.endsWith(".mjs"))
-			jsHandler.handle(request, response, string);
+		         || string.endsWith(".mjs"))
+			jsHandler.handle(request, progress, string);
 		else
-			textHandler.handle(request, response, progress, string);
+			textHandler.handle(request, progress, string);
 	}
 }

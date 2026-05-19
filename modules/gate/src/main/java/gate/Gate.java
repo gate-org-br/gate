@@ -10,12 +10,10 @@ import gate.catalog.SessionCatalog;
 import gate.entity.User;
 import gate.error.*;
 import gate.event.AppEvent;
-import gate.event.EventClient;
 import gate.event.LoginEvent;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.i18n.CurrentLocale;
-import gate.type.TempFile;
 import jakarta.enterprise.event.Event;
 import jakarta.enterprise.inject.Any;
 import jakarta.enterprise.inject.Instance;
@@ -40,14 +38,11 @@ public class Gate extends HttpServlet
 
 	static final String HTML = "/views/Gate.html";
 
-	@Inject
-	Logger logger;
-
-	@Inject
-	Calls actionRegistry;
-
-	@Inject
-	Event<AppEvent> event;
+	@Inject Logger logger;
+	@Inject Calls actionRegistry;
+	@Inject Event<AppEvent> event;
+	@Inject ThreadContext threadContext;
+	@Inject SessionCatalog sessionCatalog;
 
 	@Any
 	@Inject
@@ -66,14 +61,8 @@ public class Gate extends HttpServlet
 	Authenticator authenticator;
 
 	@Inject
-	ThreadContext threadContext;
-
-	@Inject
 	@Current
 	Instance<User> userInstance;
-
-	@Inject
-	SessionCatalog sessionCatalog;
 
 	@Override
 	public void service(HttpServletRequest httpServletRequest,
@@ -170,20 +159,17 @@ public class Gate extends HttpServlet
 		}
 	}
 
+
 	private void execute(ScreenServletRequest request, ScreenServletResponse response, Screen screen,
 	                     Method method)
 	{
+		CurrentLocale.set(request.getLocale());
 		try
 		{
 			Object result = screen.execute(method);
 			if (result != null)
-			{
-				var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-						? method.getAnnotation(gate.annotation.Handler.class).value()
-						: Handler.getHandler(result.getClass());
-				var handler = handlers.select(type).get();
-				handler.handle(request, response, result);
-			}
+				handlers.select(Handler.getHandler(method, result)).get()
+						.handle(request, response, result);
 		} catch (Throwable ex)
 		{
 			var type = Catcher.getCatcher(ex.getClass());
@@ -207,33 +193,23 @@ public class Gate extends HttpServlet
 		asyncContext.setTimeout(0);
 		asyncContext.start(threadContext.contextualRunnable(() ->
 		{
-			CurrentLocale.set(request.getLocale());
-			try (var progress = Progress.create(user, new EventClient(user, asyncContext)))
+			try (var progress = Progress.create(asyncContext, user))
 			{
 				try
 				{
 					Object result = screen.execute(method);
 					if (result != null)
-					{
-						var type = method.isAnnotationPresent(gate.annotation.Handler.class)
-								? method.getAnnotation(gate.annotation.Handler.class).value()
-								: Handler.getHandler(result.getClass());
-						var handler = handlers.select(type).get();
-						handler.handle(request, response, progress, result);
-					}
+						handlers.select(Handler.getHandler(method, result)).get()
+								.handle(request, progress, result);
 				} catch (AppException ex)
 				{
 					progress.abort(ex.getMessage());
 				} catch (Throwable ex)
 				{
 					progress.abort(ex.getMessage());
-					throw ex;
-				} finally
-				{
-					TempFile.cleanup();
-					CurrentLocale.clear();
+					logger.error(ex.getMessage(), ex);
 				}
-			} catch (Throwable ex) {logger.error(ex.getMessage(), ex);}
+			}
 		}));
 	}
 }

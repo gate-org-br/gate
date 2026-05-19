@@ -32,8 +32,8 @@ public class JsonElementHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response,
-					   Progress progress, Object value)
+	public void handle(HttpServletRequest request,
+	                   Progress progress, Object value)
 	{
 		String string = JsonElement.stringify((JsonElement) value);
 		progress.result("application/json", null, string);

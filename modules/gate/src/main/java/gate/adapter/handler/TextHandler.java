@@ -1,12 +1,13 @@
 package gate.adapter.handler;
 
 import gate.Progress;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
 @ApplicationScoped
 public class TextHandler implements Handler
@@ -29,8 +30,8 @@ public class TextHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response,
-		Progress progress, Object value)
+	public void handle(HttpServletRequest request,
+	                   Progress progress, Object value)
 	{
 		progress.result("text/plain", null, value.toString());
 	}

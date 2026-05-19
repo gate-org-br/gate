@@ -1,89 +1,54 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<div id="container"><span id="counter"></span><progress></progress></div>
+	<progress></progress><span id="counter"></span>
 <style data-element="g-job">:host {
-    display: inline-grid;
-    width: min(220px, 100%);
-    color: var(--text1);
+	width: 100%;
+	display: inline-grid;
+
+	gap: 4px;
+	padding: 4px 6px;
+	border-radius: 4px;
+	align-items: center;
+	border: 1px solid var(--main3);
+	background-color: var(--main2);
+	grid-template-columns: 16px 100px 1fr;
 }
 
-#container {
-    display: grid;
-    align-items: center;
-    grid-template-columns: auto 1fr;
-    gap: 4px;
-    padding: 4px 6px;
-    border-radius: 4px;
-    border: 1px solid var(--main3);
-    background-color: var(--main2);
-}
+:host::before { font-family: "gate"; color: inherit; }
+
+:host([status="CONNECTING"])::before { content: "\\2051";}
+
+:host([status="PENDING"])::before { content: "\\2206";}
+
+:host([status="COMMITED"])::before { content: "\\1000";}
+
+:host([status="CANCELED"])::before { content: "\\1001";}
+
+:host([status="UNKNOWN"])::before { content: "\\1006";}
+
+progress { width: 100%; height: 8px; }
 
 #counter {
-    display: flex;
-    align-items: center;
-    font-size: 11px;
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
+	padding: 2px;
+	display: flex;
+	font-size: 11px;
+	white-space: nowrap;
+	align-items: center;
+	font-variant-numeric: tabular-nums;
 }
 
-#counter::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    flex: 0 0 auto;
-    margin-right: 6px;
-    border-radius: 50%;
-    background-color: currentColor;
-}
+:host([status="PENDING"]) { color: var(--text1);}
 
-:host([status="COMMITED"]) #container {
-    border-color: var(--g2);
-}
+:host([status="COMMITED"]) { color: var(--g2);}
 
-:host([status="CANCELED"]) #container {
-    border-color: var(--r2);
-}
+:host([status="CANCELED"]) { color: var(--r2);}
 
-:host([status="PENDING"]) #container,
-:host([status="CREATED"]) #container,
-:host([status="CONNECTING"]) #container {
-    border-color: var(--main3);
-}
+:host([status="UNKNOWN"]) { color: var(--r2);}
 
-:host([status="UNKNOWN"]) #container {
-    border-color: var(--r2);
-}
-
-:host([status="COMMITED"]) #counter {
-	color: var(--g1);
-}
-
-:host([status="CANCELED"]) #counter {
-	color: var(--r1);
-}
-
-:host([status="CONNECTING"]) #counter {
-	color: var(--main3);
-}
-
-:host([status="PENDING"]) #counter,
-:host([status="CREATED"]) #counter {
-	color: var(--text1);
-}
-
-:host([status="UNKNOWN"]) #counter {
-    color: var(--r1);
-}
-
-progress {
-    width: 100%;
-    height: 8px;
-}
-</style>`;
+:host([status="CONNECTING"]) { color: var(--y2);}</style>`;
 import Job from './job.js';
 
 const Status = Object.freeze({
-	CREATED: 'CREATED',
 	PENDING: 'PENDING',
 	COMMITED: 'COMMITED',
 	CANCELED: 'CANCELED',
@@ -93,6 +58,7 @@ const Status = Object.freeze({
 
 customElements.define('g-job', class extends HTMLElement
 {
+	#timeout;
 	#counter;
 	#progress;
 
@@ -114,7 +80,7 @@ customElements.define('g-job', class extends HTMLElement
 
 	set status(value) { this.setAttribute("status", value) }
 
-	get status() { return this.getAttribute("status") || Status.CREATED; }
+	get status() { return this.getAttribute("status") || Status.PENDING; }
 
 	set todo(value) { this.setAttribute("todo", value) }
 
@@ -128,18 +94,17 @@ customElements.define('g-job', class extends HTMLElement
 
 	connectedCallback()
 	{
-		if (this.uuid
-			&& (this.status === Status.CREATED
-				|| this.status === Status.PENDING))
+		if (this.uuid && this.status === Status.PENDING)
 		{
 			this.status = Status.CONNECTING;
 			fetch(`Progress?uuid=${encodeURIComponent(this.uuid)}`)
 				.then(response => Job.from(response))
 				.then(job =>
 				{
+					this.status = Status.PENDING;
 					job.addEventListener('Progress', e =>
 					{
-						const detail = JSON.parse(e.detail);
+						const detail = e.detail;
 						this.status = detail.status;
 						this.setAttribute('done', detail.done);
 						this.setAttribute('todo', detail.todo);
@@ -149,23 +114,26 @@ customElements.define('g-job', class extends HTMLElement
 				.catch(() =>
 				{
 					this.status = Status.PENDING;
-					setTimeout(() => this.isConnected && this.connectedCallback(), 1000);
+					this.#timeout = setTimeout(() =>
+						this.isConnected && this.connectedCallback(), 5000);
 				});
 		}
 	}
 
+	disconnectedCallback() { this.#timeout && clearTimeout(this.#timeout); }
+
 	attributeChangedCallback()
 	{
-		if (this.todo > 0 && this.done >= 0)
+		if (this.todo)
 		{
 			this.#progress.max = this.todo;
 			this.#progress.value = this.done;
 			this.#counter.textContent = `${this.done}/${this.todo} (${this.percentage}%)`;
 		} else
 		{
-			this.#progress.removeAttribute("max");
-			this.#progress.removeAttribute("value");
-			this.#counter.textContent = `??????????`;
+			this.#counter.textContent = this.done;
+			this.#progress.removeAttribute('max');
+			this.#progress.removeAttribute('value');
 		}
 	}
 });

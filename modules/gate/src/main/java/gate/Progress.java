@@ -4,111 +4,33 @@ import gate.entity.User;
 import gate.event.EventClient;
 import gate.event.EventClients;
 import gate.lang.json.JsonObject;
+import jakarta.servlet.AsyncContext;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @SuppressWarnings("resource")
 public class Progress implements AutoCloseable
 {
-	private final User user;
-	private final String uuid;
-	private volatile State state = State.DEFAULT;
-	private final EventClients clients = new EventClients();
-
-	private static final int UNKNOWN = -1;
+	private static final int UNKNOWN = 0;
 	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
 	private static final Map<String, Progress> INSTANCES = new ConcurrentHashMap<>();
 
-	public record State(Status status, long todo, long done, String text)
-	{
-		public static final State UNKNOWN = new State(Status.UNKNOWN, Progress.UNKNOWN, Progress.UNKNOWN, "");
-		public static final State DEFAULT = new State(Status.CREATED, Progress.UNKNOWN, Progress.UNKNOWN, "");
-
-		@Override
-		public String toString()
-		{
-			return new JsonObject()
-					.setLong("todo", todo)
-					.setLong("done", done)
-					.setString("text", text)
-					.setString("event", "Progress")
-					.setString("status", status.name())
-					.toString();
-		}
-	}
-
-	public enum Status
-	{
-		CREATED, PENDING, COMMITED, CANCELED, UNKNOWN
-	}
+	private final User user;
+	private final String uuid;
+	private final EventClient client;
+	private volatile State state = State.DEFAULT;
+	private final EventClients clients = new EventClients();
 
 	private Progress(String uuid, User user, EventClient client)
 	{
 		this.uuid = uuid;
 		this.user = user;
-		this.clients.subscribe(client);
+		this.client = client;
 	}
-
-	private Progress update(Status status, long todo, long done, String text)
-	{
-		this.state = new State(status, todo, done, text);
-		return this;
-	}
-
-	private void dispatch(String message) {clients.dispatch("Progress", message);}
-
-	private void dispatch(String type, String message) {clients.dispatch(type, message);}
-
-	@Override
-	public synchronized void close()
-	{
-		dispatch("Finish", "Connection closed");
-		clients.close();
-		INSTANCES.remove(this.uuid);
-		CURRENT.remove();
-	}
-
-	synchronized void attach(EventClient client)
-	{
-		clients.subscribe(client);
-		dispatch("UUID", uuid);
-		client.dispatch("Progress", state.toString());
-	}
-
-	public synchronized void result(String contentType, String filename, String data)
-	{
-		dispatch("Result", new JsonObject()
-				.setString("contentType", contentType)
-				.setString("filename", filename)
-				.setString("data", data)
-				.toString());
-	}
-
-	public synchronized void redirect(String url)
-	{
-		dispatch("Redirect", new JsonObject()
-				.setString("url", url)
-				.toString());
-	}
-
-	synchronized void abort(String message)
-	{
-		State state = this.state;
-		if (state.status == Status.PENDING || state.status == Status.CREATED)
-			update(Status.CANCELED, state.todo, state.done, message);
-		else
-			update(state.status, state.todo, state.done, message);
-		dispatch(this.toString());
-		dispatch("Failure", new JsonObject()
-				.setString("message", message)
-				.toString());
-	}
-
-	public String uuid() {return uuid;}
-
-	@Override
-	public String toString() {return state.toString();}
 
 	private static Optional<Progress> current() {return Optional.ofNullable(CURRENT.get());}
 
@@ -134,7 +56,7 @@ public class Progress implements AutoCloseable
 			if (Status.COMMITED.equals(state.status) || Status.CANCELED.equals(state.status))
 				throw new IllegalStateException("Attempt to startup finished task");
 			progress.update(Status.PENDING, todo, 0, text)
-					.dispatch(progress.toString());
+					.dispatch(progress.toJson());
 		});
 	}
 
@@ -149,7 +71,7 @@ public class Progress implements AutoCloseable
 		{
 			State state = progress.state;
 			progress.update(state.status, state.todo, state.done, message)
-					.dispatch(progress.toString());
+					.dispatch(progress.toJson());
 		});
 	}
 
@@ -169,7 +91,7 @@ public class Progress implements AutoCloseable
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(state.status, state.todo, state.done + 1, state.text);
 			if (progress.state.done % step == 0)
-				progress.dispatch(progress.toString());
+				progress.dispatch(progress.toJson());
 		});
 	}
 
@@ -188,7 +110,7 @@ public class Progress implements AutoCloseable
 			progress.update(state.status, state.todo, state.done + 1, state.text);
 			state = progress.state;
 			if (state.done % Math.max(Math.floorDiv(state.todo, 100), 1) == 0)
-				progress.dispatch(progress.toString());
+				progress.dispatch(progress.toJson());
 		});
 	}
 
@@ -237,7 +159,7 @@ public class Progress implements AutoCloseable
 			if (!Status.PENDING.equals(state.status))
 				throw new IllegalStateException("Attempt to update non pending task");
 			progress.update(state.status, state.todo, done, text)
-					.dispatch(progress.toString());
+					.dispatch(progress.toJson());
 		});
 	}
 
@@ -255,7 +177,7 @@ public class Progress implements AutoCloseable
 			if (!Status.PENDING.equals(state.status))
 				throw new IllegalStateException("Attempt to commit non pending task");
 			progress.update(Status.COMMITED, state.todo, state.done, text);
-			progress.dispatch(progress.toString());
+			progress.dispatch(progress.toJson());
 		});
 	}
 
@@ -273,16 +195,18 @@ public class Progress implements AutoCloseable
 			if (!Status.PENDING.equals(state.status))
 				throw new IllegalStateException("Attempt to cancel non pending task");
 			progress.update(Status.CANCELED, state.todo, state.done, text);
-			progress.dispatch(progress.toString());
+			progress.dispatch(progress.toJson());
 		});
 	}
 
-	static Progress create(User user, EventClient client)
+	static Progress create(AsyncContext context, User user)
 	{
 		String uuid = UUID.randomUUID().toString();
+		var client = new EventClient(context, user);
 		Progress progress = new Progress(uuid, user, client);
 		INSTANCES.put(uuid, progress);
-		progress.dispatch("UUID", uuid);
+		progress.dispatch("UUID", new JsonObject()
+				.setString("uuid", uuid));
 		CURRENT.set(progress);
 		return progress;
 	}
@@ -297,15 +221,111 @@ public class Progress implements AutoCloseable
 				.orElse(State.UNKNOWN);
 	}
 
-	static void attach(User user, String uuid, EventClient client) throws NoSuchElementException
+	static void attach(AsyncContext context, User user, String uuid)
 	{
-		if (user == null || user.getId() == null
-		    || uuid == null || uuid.isBlank())
-			throw new NoSuchElementException();
+		if (user == null)
+			throw new IllegalArgumentException("Missing user");
+		if (uuid == null || uuid.isBlank())
+			throw new IllegalArgumentException("Missing uuid");
 
-		var progress = Optional.ofNullable(INSTANCES.get(uuid))
-				.filter(e -> Objects.equals(e.user, user))
-				.orElseThrow(() -> new NoSuchElementException("Unable to initialize progress-monitor"));
-		progress.attach(client);
+		var progress = INSTANCES.get(uuid);
+
+		if (progress == null || !Objects.equals(progress.user, user))
+		{
+			try (EventClient client = new EventClient(context, user))
+			{
+				client.dispatch("UUID", new JsonObject().setString("uuid", uuid));
+				client.dispatch("Progress", State.UNKNOWN.toJson());
+			}
+		} else
+			progress.attach(context, user);
+	}
+
+	private Progress update(Status status, long todo, long done, String text)
+	{
+		this.state = new State(status, todo, done, text);
+		return this;
+	}
+
+	private void dispatch(JsonObject message) {dispatch("Progress", message);}
+
+	private void dispatch(String type, JsonObject message)
+	{
+		client.dispatch(type, message);
+		clients.dispatch(type, message);
+	}
+
+	@Override
+	public synchronized void close()
+	{
+		dispatch("Finish", new JsonObject().setString("message", "Job complete"));
+		client.close();
+		clients.close();
+		INSTANCES.remove(this.uuid);
+		CURRENT.remove();
+	}
+
+	synchronized void attach(AsyncContext context, User user)
+	{
+		clients.subscribe(context, user);
+		dispatch("UUID", new JsonObject().setString("uuid", uuid));
+		client.dispatch("Progress", state.toJson());
+	}
+
+	public synchronized void result(String contentType, String filename, String data)
+	{
+		dispatch("Result", new JsonObject()
+				.setString("contentType", contentType)
+				.setString("filename", filename)
+				.setString("data", data));
+	}
+
+	public synchronized void redirect(String url)
+	{
+		dispatch("Redirect", new JsonObject()
+				.setString("url", url));
+	}
+
+	synchronized void abort(String message)
+	{
+		State state = this.state;
+		if (state.status == Status.PENDING)
+			update(Status.CANCELED, state.todo, state.done, message);
+		else
+			update(state.status, state.todo, state.done, message);
+		dispatch(this.toJson());
+		dispatch("Failure", new JsonObject()
+				.setString("message", message));
+	}
+
+	public String uuid() {return uuid;}
+
+	public JsonObject toJson() {return state.toJson();}
+
+	@Override
+	public String toString() {return toJson().toString();}
+
+	public enum Status
+	{
+		PENDING, COMMITED, CANCELED, UNKNOWN
+	}
+
+	public record State(Status status, long todo, long done, String text)
+	{
+		public static final State DEFAULT = new State(Status.PENDING, Progress.UNKNOWN, Progress.UNKNOWN, "Connecting");
+		public static final State UNKNOWN = new State(Status.UNKNOWN, Progress.UNKNOWN, Progress.UNKNOWN, "Lost track of progress");
+
+		public JsonObject toJson()
+		{
+			return new JsonObject()
+					.setLong("todo", todo)
+					.setLong("done", done)
+					.setString("text", text)
+					.setString("event", "Progress")
+					.setString("status", status.name());
+		}
+
+		@Override
+		public String toString() {return toJson().toString();}
 	}
 }

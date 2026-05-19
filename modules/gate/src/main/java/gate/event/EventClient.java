@@ -1,7 +1,7 @@
 package gate.event;
 
 import gate.entity.User;
-import gate.util.SystemProperty;
+import gate.lang.json.JsonObject;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.Initialized;
@@ -11,7 +11,6 @@ import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletOutputStream;
 import org.slf4j.Logger;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
@@ -25,90 +24,81 @@ import java.util.function.Predicate;
 public class EventClient implements AutoCloseable
 {
 	private final User subject;
-	private ServletOutputStream out;
 	private final AsyncContext asyncContext;
+	private ServletOutputStream out;
+	private volatile boolean closed = false;
+	private volatile boolean connected = true;
 
-	public EventClient(User user, AsyncContext asyncContext)
+	public EventClient(AsyncContext asyncContext, User user)
 	{
 		this.subject = user;
+		asyncContext.setTimeout(0);
 		this.asyncContext = asyncContext;
 		HeartbeatRegistry.register(this);
 	}
 
-	public synchronized boolean dispatch(Predicate<User> predicate, String event, String message)
+	public AsyncContext asyncContext() {return asyncContext;}
+
+	public boolean dispatch(Predicate<User> predicate, String event, JsonObject message)
 	{
 		if (!predicate.test(subject))
 			return true;
-
-		try
-		{
-			if (out == null)
-				out = asyncContext.getResponse().getOutputStream();
-
-			var data = Base64.getEncoder()
-					.encodeToString(message.getBytes(StandardCharsets.UTF_8));
-
-			out.println("event: " + event);
-			out.println("data: " + data);
-			out.println();
-			out.flush();
-			asyncContext.getResponse().flushBuffer();
-			return true;
-		} catch (IOException | RuntimeException ex)
-		{
-			close();
-			return false;
-		}
+		var data = Base64.getEncoder()
+				.encodeToString(message.toString()
+						.getBytes(StandardCharsets.UTF_8));
+		return send("""
+				event: %s
+				data: %s""".formatted(event, data));
 	}
 
-	public boolean dispatch(String message) {return dispatch(e -> true, "message", message);}
+	public boolean dispatch(JsonObject message) {return dispatch(e -> true, "message", message);}
 
-	public boolean dispatch(String event, String message) {return dispatch(e -> true, event, message);}
+	public boolean dispatch(String event, JsonObject message) {return dispatch(e -> true, event, message);}
 
-	public boolean dispatch(Predicate<User> predicate, String message) {return dispatch(predicate, "message", message);}
+	public boolean dispatch(Predicate<User> predicate, JsonObject message) {return dispatch(predicate, "message", message);}
 
 	@Override
 	public synchronized void close()
 	{
+		if (closed)
+			return;
+
+		closed = true;
 		HeartbeatRegistry.unregister(this);
 		if (out != null)
 			try {out.close();} catch (Exception ignored) {}
 		try {asyncContext.complete();} catch (Exception ignored) {}
 	}
 
-	synchronized boolean heartbeat()
+	private synchronized boolean send(String message)
 	{
+		if (!connected)
+			return false;
+
 		try
 		{
 			if (out == null)
 				out = asyncContext.getResponse().getOutputStream();
-			out.println(": heartbeat");
+			out.println(message);
 			out.println();
 			out.flush();
+			asyncContext.getResponse().flushBuffer();
 			return true;
-		} catch (Exception e)
-		{
-			close();
-			return false;
-		}
+		} catch (Exception e) {return connected = false;}
 	}
+
+	public boolean isClosed() {return closed;}
 
 	@ApplicationScoped
 	public static class HeartbeatRegistry
 	{
 
+		private static final Set<EventClient> TARGETS =
+				Collections.newSetFromMap(new ConcurrentHashMap<>());
+		private static final long HEARTBEAT = 20L;
 		@Inject
 		Logger logger;
-
-		private static final Set<EventClient> TARGETS = Collections.newSetFromMap(new ConcurrentHashMap<>());
 		private ScheduledExecutorService executor;
-
-		private static final long HEARTBEAT = SystemProperty.get("gate.sse.heartbeat")
-				.filter(e -> !e.isBlank())
-				.filter(e -> e.chars().allMatch(Character::isDigit))
-				.filter(e -> e.length() <= 10)
-				.map(Long::parseLong)
-				.orElse(20L);
 
 		static void register(EventClient target) {TARGETS.add(target);}
 
@@ -116,9 +106,6 @@ public class EventClient implements AutoCloseable
 
 		void init(@Observes @Initialized(ApplicationScoped.class) Object event)
 		{
-			if (HEARTBEAT == 0)
-				return;
-
 			executor = Executors.newSingleThreadScheduledExecutor(r ->
 			{
 				Thread thread = new Thread(r, "Heartbeat");
@@ -132,7 +119,7 @@ public class EventClient implements AutoCloseable
 		{
 			try
 			{
-				TARGETS.removeIf(target -> !target.heartbeat());
+				TARGETS.removeIf(target -> !target.send(": heartbeat"));
 			} catch (RuntimeException ex)
 			{
 				logger.error("Error trying to send heartbeats", ex);

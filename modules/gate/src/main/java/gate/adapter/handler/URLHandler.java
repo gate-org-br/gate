@@ -2,11 +2,12 @@ package gate.adapter.handler;
 
 import gate.Progress;
 import gate.error.AppError;
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
 
 @ApplicationScoped
 public class URLHandler implements Handler
@@ -25,10 +26,10 @@ public class URLHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response,
-		Progress progress, Object value) throws AppError
+	public void handle(HttpServletRequest request,
+	                   Progress progress, Object value) throws AppError
 	{
 		progress.result("text/plain",
-			null, value.toString());
+				null, value.toString());
 	}
 }

@@ -21,55 +21,51 @@ template.innerHTML = `
 	grid-template-rows: 32px 32px 32px 120px;
 }
 
-:host([status="commited"])
-{
-	color: var(--g1);
+:host([status="commited"]) {
+	color: var(--success1);
 }
 
-:host([status="canceled"])
-{
-	color: var(--r1);
+:host([status="canceled"]) {
+	color: var(--error1);
 }
 
-:host([status="error"])
-{
-	color: var(--main3);
+:host([status="unknown"]) {
+	color: var(--error1);
 }
 
-#title
-{
+:host([status="error"]) {
+	color: var(--warning1);
+}
+
+#title {
 	display: flex;
 	font-size: 20px;
 	align-items: center;
 	grid-column: 1 / span 2;
 }
 
-progress
-{
+progress {
 	width: 100%;
 	height: 40px;
 	grid-column: 1 / span 2;
 }
 
-g-digital-clock
-{
+g-digital-clock {
 	display: flex;
 	font-size: 12px;
 	align-items: center;
 }
 
-#counter{
+#counter {
 	display: flex;
 	font-size: 12px;
 	align-items: center;
 	justify-content: flex-end;
 }
 
-g-logger
-{
+g-logger {
 	grid-column: 1 / span 2;
-}
-</style>`;
+}</style>`;
 /* global customElements */
 
 import './g-logger.js';
@@ -108,32 +104,24 @@ customElements.define('g-progress-status', class extends HTMLElement
 
 		this.addEventListener('Progress', e =>
 		{
+			update(e.detail);
 			switch (e.detail.status)
 			{
 				case 'COMMITED':
 					this.setAttribute("status", "commited");
-					update(e.detail);
-					if (!progress.max) progress.max = 100;
-					if (!progress.value) progress.value = 100;
 					clock.setAttribute("paused", "paused");
 					break;
 				case 'CANCELED':
 					this.setAttribute("status", "canceled");
-					update(e.detail);
-					if (!progress.max) progress.max = 100;
-					if (!progress.value) progress.value = 0;
 					clock.setAttribute("paused", "paused");
 					break;
 				case 'UNKNOWN':
-					this.setAttribute("status", "error");
-					update(e.detail);
-					if (!progress.max) progress.max = 100;
-					if (!progress.value) progress.value = 0;
+					this.setAttribute("status", "unknown");
 					clock.setAttribute("paused", "paused");
 					break;
 				default:
 					this.removeAttribute("status");
-					update(e.detail);
+					clock.removeAttribute("paused");
 			}
 		});
 		this.addEventListener('error', e =>
