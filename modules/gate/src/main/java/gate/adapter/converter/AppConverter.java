@@ -25,16 +25,6 @@ public class AppConverter implements Converter
 		return App.of(string);
 	}
 
-	public String render(Class<?> type, Object object)
-	{
-		return object != null ? object.toString() : "";
-	}
-
-	public String render(Class<?> type, Object object, String format)
-	{
-		return object != null ? String.format(format, object) : "";
-	}
-
 	@Override
 	public String toString(Class<?> type, Object object)
 	{

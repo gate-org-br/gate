@@ -8,6 +8,7 @@ import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.xfer.InMemoryDestFile;
 import net.schmizz.sshj.xfer.InMemorySourceFile;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -85,8 +86,8 @@ public class SSH implements AutoCloseable
 	 * Authenticate {@code username} using the {@code "publickey"} authentication method, with keys from one or more {@code locations} in the file system.
 	 * <p>
 	 * In case multiple {@code locations} are specified; authentication is attempted in order as long as the {@code
-	 * "publickey"} authentication method is available. If there is an error loading keys from any of them (e.g. file could not be read, file format not
-	 * recognized) that key file it is ignored.
+	 * "publickey"} authentication method is available. If there is an error loading keys from any of them (e.g. a file could not be read, a file format not
+	 * recognized), that key file it is ignored.
 	 * <p>
 	 * This method does not provide a way to specify a passphrase.
 	 *
@@ -151,27 +152,24 @@ public class SSH implements AutoCloseable
 	{
 		try (Session session = client.startSession())
 		{
-			try (Session.Command sessionCommand = session.exec("cd " + directory + " && " + command))
+			try (Session.Command sessionCommand = session.exec("cd " + directory + " && " + command);
+			     var writer = new StringWriter())
 			{
 				try (InputStream stream = sessionCommand.getInputStream())
 				{
 					for (int c = stream.read(); c != -1; c = stream.read())
-						try (var nos = OutputStream.nullOutputStream())
-						{
-							nos.write(c);
-						}
+						writer.write(c);
 				}
 
 				try (InputStream stream = sessionCommand.getErrorStream())
 				{
 					for (int c = stream.read(); c != -1; c = stream.read())
-						try (var nos = OutputStream.nullOutputStream())
-						{
-							nos.write(c);
-						}
+						writer.write(c);
 				}
 
 				sessionCommand.close();
+				if (sessionCommand.getExitStatus() != 0)
+					LoggerFactory.getLogger(getClass()).error(writer.toString());
 				return sessionCommand.getExitStatus() == 0;
 			}
 		}
@@ -191,10 +189,10 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Execute the specified command on the remote host and read result
+	 * Execute the specified command on the remote host and read the result
 	 *
 	 * @param command command to execute
-	 * @return The command result as a SSHResult object
+	 * @return The command result as an SSHResult object
 	 */
 	public SSHResult call(String command)
 	{
@@ -202,11 +200,11 @@ public class SSH implements AutoCloseable
 	}
 
 	/**
-	 * Execute the specified command with the specified parameters on the remote host and read result
+	 * Execute the specified command with the specified parameters on the remote host and read the result
 	 *
 	 * @param command    command to execute
 	 * @param parameters parameters to be used on execution
-	 * @return The command result as a SSHResult object
+	 * @return The command result as an SSHResult object
 	 */
 	public SSHResult call(String command, Object... parameters)
 	{
@@ -227,13 +225,13 @@ public class SSH implements AutoCloseable
 			client.newSCPFileTransfer().download(filename, new InMemoryDestFile()
 			{
 				@Override
-				public OutputStream getOutputStream() throws IOException
+				public OutputStream getOutputStream()
 				{
 					return stream;
 				}
 
 				@Override
-				public OutputStream getOutputStream(boolean bln) throws IOException
+				public OutputStream getOutputStream(boolean bln)
 				{
 					return stream;
 				}
@@ -254,7 +252,7 @@ public class SSH implements AutoCloseable
 	/**
 	 * Uploads a file to the remote host
 	 *
-	 * @param directory the directory where to put file
+	 * @param directory the directory where to put the file
 	 * @param filename  the name of the file to be uploaded
 	 * @param data      the contents of the file to be uploaded
 	 * @throws IOException in case of failure during command execution
@@ -266,7 +264,7 @@ public class SSH implements AutoCloseable
 			client.newSCPFileTransfer().upload(new InMemorySourceFile()
 			{
 				@Override
-				public InputStream getInputStream() throws IOException
+				public InputStream getInputStream()
 				{
 					return stream;
 				}
