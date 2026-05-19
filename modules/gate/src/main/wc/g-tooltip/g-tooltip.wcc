@@ -3,7 +3,6 @@
 import DOM from './dom.js';
 import './mutation-events.js';
 import anchor from './anchor.js';
-import DataURL from './data-url.js';
 import ResponseHandler from './response-handler.js';
 import GJsonHTMLElement from './g-json-html-element.js';
 
@@ -130,32 +129,40 @@ function trigger()
 	this.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
 }
 
-window.addEventListener("connected", event => {
+window.addEventListener("connected", event =>
+{
 	let target = event.composedPath()[0] || event.target;
 	if (target.hasAttribute("data-tooltip")
+		|| target.hasAttribute("data-tooltip:text")
 		|| target.hasAttribute("data-tooltip:source"))
 		target.addEventListener("mouseenter", trigger);
 });
 
-window.addEventListener("disconnected", event => {
+window.addEventListener("disconnected", event =>
+{
 	let target = event.composedPath()[0] || event.target;
 	target.removeEventListener("mouseenter", trigger);
 });
 
-window.addEventListener("attribute-created", event => {
+window.addEventListener("attribute-created", event =>
+{
 	let attribute = event.detail.attribute;
 	let target = event.composedPath()[0] || event.target;
 	if (attribute === "data-tooltip"
+		|| attribute === "data-tooltip:text"
 		|| attribute === "data-tooltip:source")
 		target.addEventListener("mouseenter", trigger);
 });
 
-window.addEventListener("attribute-removed", event => {
+window.addEventListener("attribute-removed", event =>
+{
 	let attribute = event.detail.attribute;
 	let target = event.composedPath()[0] || event.target;
 	if (attribute === "data-tooltip"
+		|| attribute === "data-tooltip:text"
 		|| attribute === "data-tooltip:source")
 		if (!target.hasAttribute("data-tooltip")
+			&& !target.hasAttribute("data-tooltip:text")
 			&& !target.hasAttribute("data-tooltip:source"))
 			target.removeEventListener("mouseenter", trigger);
 });

@@ -1,9 +1,8 @@
 let template = document.createElement("template");
 template.innerHTML = `
-<style data-element="g-table">table[data-table-size='0'][data-empty] {
+<style data-element="g-table">table[data-table-size="0"][data-empty] {
 	display: flex;
 	padding: 12px;
-	display: flex;
 	font-size: 16px;
 	border: 1px solid;
 	text-align: justify;
@@ -14,20 +13,20 @@ template.innerHTML = `
 	border-color: var(--main3, #DDDDDD);
 }
 
-table[data-table-size='0'][data-empty] * {
+table[data-table-size="0"][data-empty] * {
 	display: none !important;
 }
 
-table[data-table-size='0'][data-empty]::before {
+table[data-table-size="0"][data-empty]::before {
 	content: attr(data-empty);
 }
 
-table>thead>tr>th[data-sortable] {
+table > thead > tr > th[data-sortable] {
 	cursor: pointer;
 	color: var(--text1);
 }
 
-table>thead>tr>th[data-sortable]::before {
+table > thead > tr > th[data-sortable]::before {
 	opacity: 0.2;
 	font-size: 16px;
 	content: "\\2195 ";
@@ -35,18 +34,18 @@ table>thead>tr>th[data-sortable]::before {
 	color: var(--text1, #000000);
 }
 
-table>thead>tr>th[data-sortable="A"]::before {
+table > thead > tr > th[data-sortable="A"]::before {
 	opacity: 1;
 	content: "\\2191 ";
 }
 
-table>thead>tr>th[data-sortable="D"]::before {
+table > thead > tr > th[data-sortable="D"]::before {
 	opacity: 1;
 	content: "\\2193 ";
 
 }
 
-table>tbody>tr[hidden] {
+table > tbody > tr[hidden] {
 	display: none;
 }</style>`;
 /* global template */
@@ -117,8 +116,7 @@ function update(table)
 		table.setAttribute("data-table-size", rows.length);
 		table.querySelectorAll("[data-table-size]")
 			.forEach(e => e.textContent = rows.length);
-	}
-	finally
+	} finally
 	{
 		listener.resume();
 	}
@@ -170,8 +168,7 @@ function filter(elements, value, ...columns)
 			{
 				if (cell.getAttribute("data-filter:value").trim().toUpperCase() !== column)
 					return element.setAttribute("hidden", "hidden");
-			}
-			else if (!cell.textContent.trim().toUpperCase().includes(column))
+			} else if (!cell.textContent.trim().toUpperCase().includes(column))
 				return element.setAttribute("hidden", "hidden");
 		}
 
@@ -198,8 +195,7 @@ window.addEventListener("click", event =>
 	{
 		target.setAttribute("data-sortable", "D");
 		table.setAttribute("data-sorted", `${position}:D`);
-	}
-	else
+	} else
 	{
 		target.setAttribute("data-sortable", "A");
 		table.setAttribute("data-sorted", `${position}:A`);

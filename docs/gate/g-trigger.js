@@ -5,9 +5,6 @@ template.innerHTML = `
 
 /* global customElements, template */
 
-import GDrawer from './g-drawer.js';
-import GContextMenu from './g-context-menu.js';
-
 export default class GTrigger extends HTMLElement
 {
 	constructor()

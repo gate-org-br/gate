@@ -13,11 +13,37 @@ const resources = path.resolve(
 	__dirname,
 	"src/main/resources/META-INF/resources/gate"
 );
+const documentation = path.resolve(__dirname, "../../docs");
 const documentationGate = path.resolve(__dirname, "../../docs/gate");
+const documentationIconPage = path.join(documentation, "icon/main.html");
 const sourceIconsDir = path.resolve(__dirname, "src/main/icon");
 const resourcesIconDir = path.join(resources, "icon");
 const shouldMinify = process.argv.includes("--minify");
 const fontTimestamp = 0;
+const iconCategories = [
+	{id: "actions", title: "Actions"},
+	{id: "animals", title: "Animals"},
+	{id: "arrows", title: "Arrows"},
+	{id: "buildings", title: "Buildings"},
+	{id: "charts", title: "Charts"},
+	{id: "database", title: "Database"},
+	{id: "development", title: "Development"},
+	{id: "documents", title: "Documents"},
+	{id: "emotions", title: "Emotions"},
+	{id: "graphs", title: "Graphs"},
+	{id: "hands", title: "Hands"},
+	{id: "hardware", title: "Hardware"},
+	{id: "navigation", title: "Navigation"},
+	{id: "people", title: "People"},
+	{id: "phone", title: "Phone"},
+	{id: "playback", title: "Playback"},
+	{id: "security", title: "Security"},
+	{id: "symbols", title: "Symbols"},
+	{id: "text", title: "Text"},
+	{id: "types", title: "Types"},
+	{id: "ui", title: "UI"},
+	{id: "vehicles", title: "Vehicles"}
+];
 
 async function exists(file)
 {
@@ -199,6 +225,94 @@ async function createIconList()
 	);
 }
 
+async function readIconMetadata(code)
+{
+	const file = path.join(sourceIconsDir, `${code}.json`);
+
+	if (!await exists(file))
+		return {};
+
+	return JSON.parse(await fs.readFile(file, "utf8"));
+}
+
+function renderIconButton(metadata, level = 1)
+{
+	const text = `${metadata.name || metadata.code}`;
+	const icon = `<g-icon>&#X${metadata.code};</g-icon>`;
+	const action = `data:text/plain,${metadata.code}`;
+	const tooltip = `data:application/json,${JSON.stringify(metadata)}`;
+	const target = "@clipboard > @map(e => `${e} was copied to clipboard`) > @message(1000)";
+	return `<a href="${action}" target="${target}" data-tooltip:source='${tooltip}'>${text}${icon}</a>`;
+}
+
+function renderIconGroup({title, icons})
+{
+	return `\t<g-desk-pane>
+\t\t${title}
+\t\t<g-icon>&#X${icons[0].code};</g-icon>
+${icons.map(icon => renderIconButton(icon, 2)).join("\n")}
+\t</g-desk-pane>`;
+}
+
+async function createIconDocumentation()
+{
+	const files = await sortedGlob(`${resourcesIconDir}/*.svg`);
+	const icons = files.map(f => path.basename(f, ".svg"));
+	const metadata = new Map();
+	const categorized = new Set();
+	const groups = [];
+
+	for (const code of icons)
+		metadata.set(code, await readIconMetadata(code));
+
+	for (const category of iconCategories.toSorted((a, b) =>
+		a.title.localeCompare(b.title)))
+	{
+		const categoryIcons = icons
+			.filter(code => metadata.get(code).categories?.includes(category.id))
+			.map(code => ({
+				code,
+				name: metadata.get(code).name,
+				categories: metadata.get(code).categories
+			}));
+
+		if (categoryIcons.length < 2)
+			continue;
+
+		categoryIcons.forEach(icon => categorized.add(icon.code));
+		groups.push({
+			title: category.title,
+			icons: categoryIcons
+		});
+	}
+
+	const uncategorized = icons
+		.filter(code => !categorized.has(code))
+		.map(code => ({code}));
+
+	if (uncategorized.length)
+		groups.push({
+			title: "Uncategorized",
+			icons: uncategorized
+		});
+
+	groups.push({
+		title: "All",
+		icons: icons.map(code => ({code}))
+	});
+
+	const content = `<input data-trigger="input" 
+data-action="data:text/plain,@value(this)" 
+			data-target="@attribute(#desk-pane:filter)">
+<g-desk-pane id="desk-pane" class="inline">
+${groups.map(renderIconGroup).join("\n")}
+</g-desk-pane>
+`;
+
+	await fs.mkdir(path.dirname(documentationIconPage), {recursive: true});
+	await fs.writeFile(documentationIconPage, content);
+}
+
 async function createIconData()
 {
 	const files = await sortedGlob(`${resourcesIconDir}/*.svg`);
@@ -297,6 +411,7 @@ async function build()
 	await compileLess();
 	await copyIconsToResources();
 	await createIconList();
+	await createIconDocumentation();
 	await createIconData();
 	await createIconFont();
 	if (shouldMinify)

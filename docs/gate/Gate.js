@@ -1,6 +1,3 @@
-if (!document.querySelectorAll)
-	window.location = '../gate/NAVI.jsp';
-
 import "./g-tree-grid.js";
 import "./g-tree-list.js";
 import "./mask.js";
@@ -64,8 +61,8 @@ import "./g-form-dialog.js";
 import "./g-form-editor.js";
 import "./g-form-view.js";
 import "./g-form.js";
-import "./g-icon.js";
 import "./g-job.js";
+import "./g-icon.js";
 import "./g-selectn.js";
 
 import "./g-select-menu.js";

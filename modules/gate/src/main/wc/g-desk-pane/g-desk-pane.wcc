@@ -10,6 +10,8 @@ sheet.replaceSync(`g-desk-pane img {order: -1; width: 48px; height: 48px}
 		g-desk-pane.small i, g-desk-pane.small e, g-desk-pane.small g-icon {font-size: 24px}`);
 document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
 
+const CHILDREN = new WeakMap();
+
 customElements.define('g-desk-pane', class extends HTMLElement
 {
 	constructor()
@@ -45,14 +47,50 @@ customElements.define('g-desk-pane', class extends HTMLElement
 		}, true);
 	}
 
+	attributeChangedCallback(unused, old, val)
+	{
+		old = (old || "").trim();
+		val = (val || "").trim();
+
+		if (!old && val)
+		{
+			const children = new Map();
+			children.set(this, this.buttons);
+			Array.from(this.querySelectorAll("g-desk-pane"))
+				.forEach(e => children.set(e, e.buttons));
+			Array.from(this.querySelectorAll("a, button"))
+				.forEach(e => this.appendChild(e));
+			CHILDREN.set(this, children);
+		}
+
+		if (!val && old)
+		{
+			const children = CHILDREN.get(this);
+			Array.from(children.entries()).reverse().forEach(([pane, buttons]) =>
+			{
+				pane.buttons.forEach(e => e.remove());
+				buttons.forEach(e => pane.appendChild(e));
+			});
+			CHILDREN.delete(this);
+		}
+
+		if (old !== val)
+		{
+			Array.from(this.querySelectorAll("g-desk-pane"))
+				.forEach(e => e.style.display = val ? "none" : "");
+			Array.from(this.querySelectorAll("a, button"))
+				.forEach(e => e.style.display = e.textContent.indexOf(val) === -1 ? "none" : "");
+		}
+	}
+
 	get buttons()
 	{
 		return Array.from(this.children)
 			.filter(e => e.tagName === "A"
-					|| e.tagName === "BUTTON"
-					|| e.tagName === "G-DESK-PANE"
-					|| e.tagName === "G-DESK-PANE-RESET"
-					|| e.classList.contains("g-command"));
+				|| e.tagName === "BUTTON"
+				|| e.tagName === "G-DESK-PANE"
+				|| e.tagName === "G-DESK-PANE-RESET"
+				|| e.classList.contains("g-command"));
 	}
 
 	connectedCallback()
@@ -61,6 +99,8 @@ customElements.define('g-desk-pane', class extends HTMLElement
 		if (this.parentNode.tagName === "G-DESK-PANE")
 			this.setAttribute("child", "");
 	}
+
+	static observedAttributes = ["filter"];
 });
 
 customElements.define('g-desk-pane-reset', class extends HTMLElement

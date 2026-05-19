@@ -66,8 +66,7 @@ function update(table)
 		table.setAttribute("data-table-size", rows.length);
 		table.querySelectorAll("[data-table-size]")
 			.forEach(e => e.textContent = rows.length);
-	}
-	finally
+	} finally
 	{
 		listener.resume();
 	}
@@ -119,8 +118,7 @@ function filter(elements, value, ...columns)
 			{
 				if (cell.getAttribute("data-filter:value").trim().toUpperCase() !== column)
 					return element.setAttribute("hidden", "hidden");
-			}
-			else if (!cell.textContent.trim().toUpperCase().includes(column))
+			} else if (!cell.textContent.trim().toUpperCase().includes(column))
 				return element.setAttribute("hidden", "hidden");
 		}
 
@@ -147,8 +145,7 @@ window.addEventListener("click", event =>
 	{
 		target.setAttribute("data-sortable", "D");
 		table.setAttribute("data-sorted", `${position}:D`);
-	}
-	else
+	} else
 	{
 		target.setAttribute("data-sortable", "A");
 		table.setAttribute("data-sorted", `${position}:A`);
