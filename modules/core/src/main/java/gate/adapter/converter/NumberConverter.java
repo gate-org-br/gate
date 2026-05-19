@@ -6,6 +6,7 @@ import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,8 +39,8 @@ public class NumberConverter implements Converter
 
 			return ISO_PATTERN.matcher(string).matches()
 					? new BigDecimal(string)
-					: new BigDecimal(CurrentLocale.parseBigDecimal(string).toString());
-		} catch (NumberFormatException e)
+					: new BigDecimal(CurrentLocale.getBigDecimalFormat().parse(string).toString());
+		} catch (NumberFormatException | ParseException e)
 		{
 			throw new ConversionException(String.format("%s não representa um número válido.", string));
 		}

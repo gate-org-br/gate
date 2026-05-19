@@ -5,6 +5,7 @@ import gate.error.ConversionException;
 import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class LongConverter implements Converter
 
 			return ISO_PATTERN.matcher(string).matches()
 					? Long.valueOf(string)
-					: Long.valueOf(CurrentLocale.parseInteger(string).longValue());
-		} catch (NumberFormatException ex)
+					: Long.valueOf(CurrentLocale.getIntegerFormat().parse(string).longValue());
+		} catch (NumberFormatException | ParseException ex)
 		{
 			throw new ConversionException(ex, "%s não é um inteiro válido.", string);
 		}

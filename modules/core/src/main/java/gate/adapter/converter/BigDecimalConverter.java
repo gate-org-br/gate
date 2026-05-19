@@ -7,6 +7,7 @@ import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,9 +32,15 @@ public class BigDecimalConverter implements Converter
 		string = string.trim();
 		if (string.isEmpty())
 			return null;
-		return ISO_PATTERN.matcher(string).matches()
-				? new BigDecimal(string)
-				: new BigDecimal(CurrentLocale.parseBigDecimal(string).toString());
+		try
+		{
+			return ISO_PATTERN.matcher(string).matches()
+					? new BigDecimal(string)
+					: new BigDecimal(CurrentLocale.getBigDecimalFormat().parse(string).toString());
+		} catch (ParseException e)
+		{
+			throw new ConversionException(string + " is not a valid big decimal");
+		}
 	}
 
 	@Override

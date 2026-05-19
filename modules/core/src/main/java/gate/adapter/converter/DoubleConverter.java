@@ -5,6 +5,7 @@ import gate.error.ConversionException;
 import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,8 +38,8 @@ public class DoubleConverter implements Converter
 
 			return ISO_PATTERN.matcher(string).matches()
 					? Double.valueOf(string)
-					: Double.valueOf(CurrentLocale.parseDecimal(string).doubleValue());
-		} catch (NumberFormatException e)
+					: Double.valueOf(CurrentLocale.getDecimalFormat().parse(string).doubleValue());
+		} catch (NumberFormatException | ParseException e)
 		{
 			throw new ConversionException(String.format("%s não é um decimal válido.", string));
 		}

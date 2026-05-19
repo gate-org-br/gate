@@ -5,6 +5,7 @@ import gate.error.ConversionException;
 import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -47,9 +48,9 @@ public class IntegerConverter implements Converter
 				return null;
 
 			return ISO_PATTERN.matcher(string).matches()
-					? Integer.valueOf(string)
-					: Math.toIntExact(CurrentLocale.parseInteger(string).longValue());
-		} catch (NumberFormatException | ArithmeticException ex)
+					? Integer.parseInt(string)
+					: Math.toIntExact(CurrentLocale.getIntegerFormat().parse(string).longValue());
+		} catch (NumberFormatException | ArithmeticException | ParseException ex)
 		{
 			throw new ConversionException(ex, "%s não é um inteiro válido.", string);
 		}

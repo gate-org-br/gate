@@ -5,6 +5,7 @@ import gate.error.ConversionException;
 import gate.i18n.CurrentLocale;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -49,8 +50,8 @@ public class ByteConverter implements Converter
 
 			return ISO_PATTERN.matcher(string).matches()
 					? Byte.valueOf(string)
-					: Byte.valueOf(Long.toString(CurrentLocale.parseInteger(string).longValue()));
-		} catch (NumberFormatException ex)
+					: Byte.valueOf(Long.toString(CurrentLocale.getIntegerFormat().parse(string).longValue()));
+		} catch (NumberFormatException | ParseException ex)
 		{
 			throw new ConversionException(ex, "%s não é um inteiro válido.", string);
 		}
