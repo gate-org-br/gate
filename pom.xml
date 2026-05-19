@@ -34,11 +34,11 @@
         </license>
     </licenses>
 
-	<modules>
-		<module>modules/core</module>
-		<module>modules/security</module>
-		<module>modules/sql</module>
-		<module>modules/doc</module>
+    <modules>
+        <module>modules/core</module>
+        <module>modules/security</module>
+        <module>modules/sql</module>
+        <module>modules/doc</module>
         <module>modules/io</module>
         <module>modules/gate</module>
     </modules>
