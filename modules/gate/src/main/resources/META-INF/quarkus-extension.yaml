@@ -1,0 +1,4 @@
+name: Gate
+artifact: io.github.gate-org-br:gate:21.0.0
+metadata:
+    deployment-artifact: io.github.gate-org-br:gate-quarkus:21.0.0
