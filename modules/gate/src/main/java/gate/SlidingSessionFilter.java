@@ -47,12 +47,12 @@ public class SlidingSessionFilter implements Filter
 
 						try
 						{
-							var subject = Credentials.parse(token);
-							if (subject.sid() != null && !sessionCatalog.exists(subject))
+							var credentials = Credentials.parse(token);
+							if (credentials.sid() != null && !sessionCatalog.exists(credentials))
 								throw new UnauthorizedException("Attempt to authenticate with invalid credentials");
-							request.setAttribute(Credentials.class.getName(), subject);
+							request.setAttribute(Credentials.class.getName(), credentials);
 
-							token = subject.refresh().toString();
+							token = credentials.refresh().toString();
 							if (authorization instanceof CookieAuthorization)
 								response.createSessionCookie(request, token);
 							else if (authorization instanceof BearerAuthorization)

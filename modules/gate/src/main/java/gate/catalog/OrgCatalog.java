@@ -26,8 +26,8 @@ public class OrgCatalog
 
 	@Current
 	@Produces
-	@Named("organization")
 	@RequestScoped
+	@Named("organization")
 	public Org select()
 	{
 		return find().orElse(DEFAULT);
