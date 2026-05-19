@@ -4,13 +4,14 @@ import gate.annotation.Current;
 import gate.catalog.UserCatalog;
 import gate.entity.User;
 import gate.security.Credentials;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.servlet.http.HttpServletRequest;
 
-@RequestScoped
+@ApplicationScoped
 public class UserProducer
 {
 	@Inject
@@ -20,20 +21,19 @@ public class UserProducer
 	@Produces
 	@RequestScoped
 	@Named(value = "user")
-	public User getUser(HttpServletRequest httpServletRequest)
+	public User getUser(HttpServletRequest request)
 	{
-		if (httpServletRequest.getAttribute(User.class.getName()) instanceof User user)
+		if (request.getAttribute(User.class.getName()) instanceof User user)
 			return user;
 
-		var credentials = (Credentials) httpServletRequest.getAttribute(Credentials.class.getName());
-		if (credentials == null)
+		if (!(request.getAttribute(Credentials.class.getName()) instanceof Credentials credentials))
 			return new User();
 
 		User user = credentials.stateless()
 				? credentials.usr()
 				: userCatalog.select(credentials.sub());
 
-		httpServletRequest.setAttribute(User.class.getName(), user);
+		request.setAttribute(User.class.getName(), user);
 		return user;
 	}
 }

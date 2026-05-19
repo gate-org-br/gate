@@ -1,25 +1,53 @@
 package gate.producer;
 
+import gate.CDITestSupport;
 import gate.SlidingSessionFilter;
+import gate.annotation.Current;
 import gate.entity.Role;
 import gate.entity.User;
 import gate.http.TestServletSupport;
 import gate.security.Credentials;
 import gate.type.ID;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Instance;
+import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
+import org.jboss.weld.junit5.EnableWeld;
+import org.jboss.weld.junit5.WeldInitiator;
+import org.jboss.weld.junit5.WeldSetup;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@EnableWeld
 class UserProducerTest
 {
+	@WeldSetup
+	WeldInitiator weld = WeldInitiator.from(UserProducer.class,
+					CDITestSupport.HttpServletRequestProducer.class,
+					CDITestSupport.UserCatalogProducer.class)
+			.activate(RequestScoped.class)
+			.build();
+
+	@Inject
+	@Current
+	Instance<User> userInstance;
+
+	@AfterEach
+	void clearRequest()
+	{
+		CDITestSupport.HttpServletRequestProducer.clear();
+	}
+
 	@Test
 	void testReturnsEmptyUserWhenRequestHasNoAuthorization()
 	{
-		var producer = new UserProducer();
-		var user = producer.getUser(TestServletSupport.request().request());
+		CDITestSupport.HttpServletRequestProducer.set(TestServletSupport.request().request());
+
+		var user = userInstance.get();
 
 		assertNull(user.getId());
 	}
@@ -45,11 +73,14 @@ class UserProducerTest
 		new SlidingSessionFilter()
 				.doFilter(request.request(), TestServletSupport.response().response(), TestServletSupport.chain().chain());
 
-		var producer = new UserProducer();
-		var user = producer.getUser(request.request());
+		CDITestSupport.HttpServletRequestProducer.set(request.request());
+
+		var user = userInstance.get();
 
 		assertEquals(embeddedUser.getId(), user.getId());
 		assertEquals(embeddedUser.getUsername(), user.getUsername());
-		assertSame(user, request.attributes().get(User.class.getName()));
+		var cachedUser = (User) request.attributes().get(User.class.getName());
+		assertEquals(embeddedUser.getId(), cachedUser.getId());
+		assertEquals(embeddedUser.getUsername(), cachedUser.getUsername());
 	}
 }
