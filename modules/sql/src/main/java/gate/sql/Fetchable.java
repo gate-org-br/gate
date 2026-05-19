@@ -7,7 +7,6 @@ import gate.sql.fetcher.*;
 import gate.sql.mapper.*;
 import gate.type.DataGrid;
 import gate.type.PivotTable;
-import gate.type.TempFile;
 import gate.util.Page;
 
 import java.util.List;
@@ -599,16 +598,6 @@ public interface Fetchable
 	default JsonArray fetchJsonDataset(boolean includeHeader)
 	{
 		return fetch(new JsonDatasetFetcher(includeHeader));
-	}
-
-	/**
-	 * Fetches all rows as a temporary zipped multipart file.
-	 *
-	 * @return all rows as a temporary zipped multipart file
-	 */
-	default TempFile fetchZipPackage()
-	{
-		return fetch(ZipPackageFetcher.INSTANCE);
 	}
 
 	/**

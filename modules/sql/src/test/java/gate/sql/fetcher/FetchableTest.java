@@ -6,22 +6,22 @@ import gate.lang.json.JsonObject;
 import gate.lang.property.Property;
 import gate.sql.Link;
 import gate.sql.TestDataSource;
-import mock.UserMock;
 import gate.sql.statement.Query;
-import gate.type.*;
+import gate.type.DataGrid;
+import gate.type.ID;
+import gate.type.LocalDateInterval;
+import gate.type.PivotTable;
 import gate.util.Page;
+import mock.UserMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.zip.ZipInputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -272,28 +272,6 @@ public class FetchableTest
 			assertEquals("Root", root.getString("label").orElseThrow());
 			JsonObject child = (JsonObject) root.getJsonArray("children").orElseThrow().get(0);
 			assertEquals("Child", child.getString("label").orElseThrow());
-		}
-	}
-
-	@Test
-	public void shouldFetchZipPackage() throws IOException
-	{
-		try (Link link = TestDataSource.getLink();
-		     TempFile file = Query.of("select 'a.txt' as name, stringtoutf8('alpha') as data "
-		                              + "union all select 'b.txt' as name, stringtoutf8('beta') as data")
-					 .constant().connect(link)
-					 .fetchZipPackage())
-		{
-			assertEquals("package.zip", file.getName());
-
-			try (ZipInputStream zip = new ZipInputStream(file.getInputStream()))
-			{
-				assertEquals("a.txt", Objects.requireNonNull(zip.getNextEntry()).getName());
-				assertEquals("alpha", new String(zip.readAllBytes()));
-				assertEquals("b.txt", zip.getNextEntry().getName());
-				assertEquals("beta", new String(zip.readAllBytes()));
-				assertNull(zip.getNextEntry());
-			}
 		}
 	}
 
