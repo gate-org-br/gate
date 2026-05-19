@@ -6,6 +6,7 @@ import gate.error.UnauthorizedException;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
@@ -17,13 +18,12 @@ import java.io.UncheckedIOException;
 @ApplicationScoped
 public class ThrowableCatcher implements Catcher
 {
+	@Inject
+	Logger logger;
 
 	@Inject
 	@Current
-	User user;
-
-	@Inject
-	Logger logger;
+	Instance<User> userInstance;
 
 	@Inject
 	UnauthorizedExceptionCatcher unauthorizedExceptionCatcher;
@@ -45,6 +45,7 @@ public class ThrowableCatcher implements Catcher
 		response.setStatus(500);
 		response.setHeader(HttpHeaders.CONTENT_TYPE, "text/plain");
 
+		User user = userInstance.get();
 		try (PrintWriter writer = response.getWriter())
 		{
 			if (user.isSuperUser())

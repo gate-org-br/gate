@@ -4,6 +4,7 @@ import gate.annotation.Current;
 import gate.entity.User;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
@@ -15,7 +16,7 @@ public class SuperUserAttributeProcessor extends AttributeProcessor
 
 	@Inject
 	@Current
-	User user;
+	Instance<User> userInstance;
 
 	public SuperUserAttributeProcessor()
 	{
@@ -25,7 +26,7 @@ public class SuperUserAttributeProcessor extends AttributeProcessor
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element, IElementTagStructureHandler handler)
 	{
-		if (user.isSuperUser())
+		if (userInstance.get().isSuperUser())
 			handler.removeAttribute("g:superuser");
 		else
 			handler.removeElement();

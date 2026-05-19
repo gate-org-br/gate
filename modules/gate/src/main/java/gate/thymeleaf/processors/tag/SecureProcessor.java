@@ -1,32 +1,30 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.adapter.renderer.Renderer;
-
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
-
 import gate.Calls;
+import gate.adapter.renderer.Renderer;
 import gate.annotation.Current;
-import gate.adapter.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class SecureProcessor extends TagProcessor
 {
 
 	@Inject
-	@Current
-	User user;
+	Calls actionRegistry;
 
 	@Inject
-	Calls actionRegistry;
+	@Current
+	Instance<User> userInstance;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -48,7 +46,7 @@ public class SecureProcessor extends TagProcessor
 					element.getAttributeValue("screen"),
 					element.getAttributeValue("action"));
 
-			if (actionRegistry.canAccess(user, command))
+			if (actionRegistry.canAccess(userInstance.get(), command))
 			{
 				handler.removeTags();
 			} else if (element.hasAttribute("otherwise"))

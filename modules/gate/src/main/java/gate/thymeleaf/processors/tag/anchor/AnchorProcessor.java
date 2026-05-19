@@ -9,6 +9,7 @@ import gate.thymeleaf.processors.tag.TagModelProcessor;
 import gate.type.Attributes;
 import gate.type.RequestCommand;
 import gate.util.Parameters;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.context.IWebContext;
@@ -23,13 +24,12 @@ import java.util.stream.Stream;
 
 public abstract class AnchorProcessor extends TagModelProcessor
 {
+	@Inject
+	Calls actionRegistry;
 
 	@Inject
 	@Current
-	User user;
-
-	@Inject
-	Calls actionRegistry;
+	Instance<User> userInstance;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -54,7 +54,8 @@ public abstract class AnchorProcessor extends TagModelProcessor
 					.forEach(entry -> parameters.put(entry.getKey(),
 							expression.create().evaluate(entry.getValue().toString())));
 
-		attributes.entrySet().stream().filter(e -> e.getValue() != null).filter(e -> e.getKey().startsWith("_"))
+		attributes.entrySet().stream().filter(e -> e.getValue() != null)
+				.filter(e -> e.getKey().startsWith("_"))
 				.forEach(e -> parameters.put(e.getKey().substring(1),
 						expression.create().evaluate((String) e.getValue())));
 		attributes.entrySet().removeIf(e -> e.getKey().startsWith("_"));
@@ -95,7 +96,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 				attributes.put("title", metadata.name());
 		}
 
-		process(context, model, handler, element, user, call, attributes, parameters);
+		process(context, model, handler, element, userInstance.get(), call, attributes, parameters);
 	}
 
 	protected boolean condition(Attributes attributes)

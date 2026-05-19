@@ -253,11 +253,6 @@ public class User implements Serializable
 					   .anyMatch(e -> e.equals(module, screen, action));
 	}
 
-	public User unwrap()
-	{
-		return this;
-	}
-
 	public static User valueOf(String string)
 	{
 		return new User().setId(ID.valueOf(string));

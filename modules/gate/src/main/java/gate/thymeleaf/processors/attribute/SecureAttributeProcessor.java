@@ -1,32 +1,30 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.adapter.renderer.Renderer;
-
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
-
 import gate.Calls;
+import gate.adapter.renderer.Renderer;
 import gate.annotation.Current;
-import gate.adapter.converter.Converter;
 import gate.entity.User;
 import gate.error.AppError;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 @ApplicationScoped
 public class SecureAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	@Current
-	User user;
+	Calls actionRegistry;
 
 	@Inject
-	Calls actionRegistry;
+	@Current
+	Instance<User> userInstance;
 
 	@Inject
 	ELExpressionFactory expression;
@@ -53,7 +51,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 			RequestCommand command
 					= new RequestCommand(module, screen, action);
 
-			if (actionRegistry.canAccess(user, command))
+			if (actionRegistry.canAccess(userInstance.get(), command))
 			{
 				handler.removeAttribute("g:secure");
 				return;
