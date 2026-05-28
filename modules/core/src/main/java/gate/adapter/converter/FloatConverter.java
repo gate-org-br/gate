@@ -39,9 +39,9 @@ public class FloatConverter implements Converter
 			return ISO_PATTERN.matcher(string).matches()
 					? Float.valueOf(string)
 					: Float.valueOf(CurrentLocale.getDecimalFormat().parse(string).floatValue());
-		} catch (NumberFormatException | ParseException e)
+		} catch (NumberFormatException | ParseException ex)
 		{
-			throw new ConversionException(String.format("%s não é um decimal válido.", string));
+			throw new ConversionException(string + " is not a valid decimal number.", ex);
 		}
 	}
 

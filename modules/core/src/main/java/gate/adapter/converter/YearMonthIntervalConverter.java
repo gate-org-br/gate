@@ -48,7 +48,7 @@ public class YearMonthIntervalConverter implements Converter
 					Converter.fromString(YearMonth.class, values[1]));
 		} catch (RuntimeException ex)
 		{
-			throw new ConversionException(ex, Metadata.getMetadata(Reflection.getRawType(type)).description());
+			throw new ConversionException(Metadata.getMetadata(Reflection.getRawType(type)).description(), ex);
 		}
 	}
 

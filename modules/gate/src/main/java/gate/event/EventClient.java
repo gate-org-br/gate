@@ -32,7 +32,6 @@ public class EventClient implements AutoCloseable
 	public EventClient(AsyncContext asyncContext, User user)
 	{
 		this.subject = user;
-		asyncContext.setTimeout(0);
 		this.asyncContext = asyncContext;
 		HeartbeatRegistry.register(this);
 	}

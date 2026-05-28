@@ -62,10 +62,10 @@ public class Property
 	}
 
 	/**
-	 * Selects all first level properties of the specified java class.
+	 * Selects all first-level properties of the specified java class.
 	 *
 	 * @param type java class whose properties are to be selected
-	 * @return all first level properties of the specified java class
+	 * @return all first-level properties of the specified java class
 	 */
 	public static List<Property> getProperties(Class<?> type)
 	{

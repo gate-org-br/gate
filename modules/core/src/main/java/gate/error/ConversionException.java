@@ -17,49 +17,17 @@ public class ConversionException extends RuntimeException
 	}
 
 	/**
-	 * Constructs an ConversionException with the specified detail message
-	 * formatted with the specified parameters.
-	 *
-	 * @param message    The detail message, which is saved for later retrieval
-	 *                   by the getMessage() method
-	 * @param parameters parameters to formatted into the detail message
-	 * @see java.util.Formatter
-	 */
-	public ConversionException(String message, Object... parameters)
-	{
-		this(String.format(message, parameters));
-	}
-
-	/**
-	 * Constructs an ConversionException with the specified cause and detail
+	 * Constructs a ConversionException with the specified cause and detail
 	 * message.
 	 *
-	 * @param cause   The cause, which is saved for later retrieval by the
-	 *                getCause() method. A null value is permitted, and indicates that the
-	 *                cause is nonexistent or unknown.
 	 * @param message The detail message, which are saved for later
 	 *                retrieval by the getMessages() or getMessage() method
+	 * @param cause   The cause, which is saved for later retrieval by the
+	 *                getCause() method. A null value is permitted and indicates that the
+	 *                cause is nonexistent or unknown.
 	 */
-	public ConversionException(Throwable cause, String message)
+	public ConversionException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}
-
-	/**
-	 * Constructs an ConversionException with the specified detail message
-	 * formatted with the specified parameters.
-	 *
-	 * @param cause      The cause, which is saved for later retrieval by the
-	 *                   getCause() method. A null value is permitted, and indicates that the
-	 *                   cause is nonexistent or unknown.
-	 * @param message    The detail message, which is saved for later retrieval
-	 *                   by the getMessage() method
-	 * @param parameters parameters to formatted into the detail message
-	 * @see java.util.Formatter
-	 */
-	public ConversionException(Throwable cause, String message, Object... parameters)
-	{
-		this(cause, String.format(message, parameters));
-	}
-
 }

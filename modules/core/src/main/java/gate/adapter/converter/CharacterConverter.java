@@ -1,7 +1,5 @@
 package gate.adapter.converter;
 
-import gate.annotation.Description;
-
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 
@@ -9,7 +7,6 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
-@Description("Campos de CARACTERE devem ser preenchidos com um único caractere.")
 public class CharacterConverter implements Converter
 {
 	public List<Constraint.Implementation<?>> getConstraints()

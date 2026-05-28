@@ -1,11 +1,8 @@
 package gate.adapter.converter;
 
-import gate.adapter.metadata.Metadata;
 import gate.annotation.Description;
-
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
-import gate.util.Reflection;
 
 import java.lang.reflect.Type;
 import java.time.Year;
@@ -41,7 +38,7 @@ public class YearConverter implements Converter
 			return Year.parse(string);
 		} catch (DateTimeParseException ex)
 		{
-			throw new ConversionException(ex, "%s não é um ano válido.", ex.getParsedString(), Metadata.getMetadata(Reflection.getRawType(type)).description());
+			throw new ConversionException("%s não é um ano válido.".formatted(string), ex);
 		}
 	}
 

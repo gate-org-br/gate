@@ -37,13 +37,13 @@ public class DefaultConverter implements Converter
 			return valueOf.invoke(null, string);
 		} catch (IllegalAccessException ex)
 		{
-			throw new ConversionException(ex, ex.getMessage());
+			throw new ConversionException(ex.getMessage(), ex);
 		} catch (InvocationTargetException ex)
 		{
 			Throwable cause = ex.getCause();
 			if (cause instanceof ConversionException conversionException)
 				throw conversionException;
-			throw new ConversionException(cause, cause.getMessage());
+			throw new ConversionException(cause.getMessage(), cause);
 		}
 	}
 

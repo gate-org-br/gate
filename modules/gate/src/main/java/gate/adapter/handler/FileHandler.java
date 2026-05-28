@@ -2,22 +2,14 @@ package gate.adapter.handler;
 
 import gate.error.AppError;
 import gate.error.ConversionException;
-import jakarta.servlet.http.Part;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @ApplicationScoped
 public class FileHandler implements Handler
@@ -40,7 +32,7 @@ public class FileHandler implements Handler
 			}
 		} catch (IOException ex)
 		{
-			throw new ConversionException(ex, "Error trying to convert uploaded file");
+			throw new ConversionException("Error trying to convert uploaded file", ex);
 		}
 	}
 
@@ -53,12 +45,12 @@ public class FileHandler implements Handler
 			response.setContentLength((int) file.length());
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", String.format(
-				"attachment; filename=\"%s\"", URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)));
-			try ( BufferedInputStream is = new BufferedInputStream(
-				new FileInputStream(file)))
+					"attachment; filename=\"%s\"", URLEncoder.encode(file.getName(), StandardCharsets.UTF_8)));
+			try (BufferedInputStream is = new BufferedInputStream(
+					new FileInputStream(file)))
 			{
-				try ( BufferedOutputStream os = new BufferedOutputStream(
-					response.getOutputStream()))
+				try (BufferedOutputStream os = new BufferedOutputStream(
+						response.getOutputStream()))
 				{
 					for (int data = is.read(); data != -1; data = is.read())
 						os.write(data);

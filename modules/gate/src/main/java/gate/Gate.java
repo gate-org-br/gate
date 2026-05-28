@@ -39,7 +39,7 @@ public class Gate extends HttpServlet
 	static final String HTML = "/views/Gate.html";
 
 	@Inject Logger logger;
-	@Inject Calls actionRegistry;
+	@Inject CallRegistry calls;
 	@Inject Event<AppEvent> event;
 	@Inject ThreadContext threadContext;
 	@Inject SessionCatalog sessionCatalog;
@@ -82,7 +82,7 @@ public class Gate extends HttpServlet
 			request.setAttribute("METHOD", request.getMethod());
 
 			if (command.isDefault()
-			    && (actionRegistry.getMainAction() == null
+			    && (calls.getMainAction() == null
 			        || !authenticator.hasCredentials(request)))
 			{
 				String provider = authenticator.provider(request, response);
@@ -104,19 +104,20 @@ public class Gate extends HttpServlet
 					response.createSessionCookie(request, session);
 					event.fireAsync(new LoginEvent(user));
 
-					if (actionRegistry.getMainAction() != null && command.isDefault())
+					if (calls.getMainAction() != null && command.isDefault())
 					{
-						response.sendRedirect(actionRegistry.getMainAction().command().toString());
+						response.sendRedirect(calls.getMainAction().command().toString());
 						return;
 					}
 				}
 				request.setAttribute(User.class.getName(), user);
 			}
 
-			Call call = actionRegistry.get(command)
-					.orElseThrow(() -> new BadRequestException(command));
-			if (!call.allowsHttpMethod(request.getMethod().toUpperCase()))
-				throw new MethodNotAllowedException();
+			Call call = calls.get(request.getMethod(), command).orElse(null);
+			if (call == null)
+				throw calls.contains(command)
+						? new MethodNotAllowedException()
+						: new BadRequestException(command);
 
 			if (!call.accessRule().allows(user))
 				if (user != null && user.getId() != null)
@@ -127,11 +128,11 @@ public class Gate extends HttpServlet
 			Screen screen = screens.select(call.screen()).get();
 			request.setAttribute("screen", screen);
 			request.setAttribute("action", call.method());
-			screen.prepare(request, response);
 
 			if (call.cors())
 				response.enableCors(request.getHeader("Origin"));
 
+			screen.prepare(request, response);
 			if (call.asynchronous())
 				executeAsync(user, request, response, screen, call.method());
 			else
@@ -178,7 +179,7 @@ public class Gate extends HttpServlet
 		}
 	}
 
-	private void executeAsync(User user, ScreenServletRequest request, HttpServletResponse response,
+	private void executeAsync(User user, ScreenServletRequest request, ScreenServletResponse response,
 	                          Screen screen, Method method)
 	{
 		response.setContentLengthLong(-1);

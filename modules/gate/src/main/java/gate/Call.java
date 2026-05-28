@@ -16,10 +16,4 @@ public record Call(
 		boolean asynchronous,
 		ActionMetadata metadata)
 {
-
-	public boolean allowsHttpMethod(String method)
-	{
-		return httpMethods.isEmpty()
-		       || httpMethods.contains(method);
-	}
 }

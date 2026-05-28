@@ -71,10 +71,9 @@ public class LocalDateTimeConverter implements Converter
 				throw new DateTimeParseException("Invalid date time format", string, 0);
 		} catch (DateTimeParseException ex)
 		{
-			throw new ConversionException(ex,
-					"%s não é uma data/hora válida.%n%s.",
-					ex.getParsedString(),
-						Metadata.getMetadata(Reflection.getRawType(type)).description());
+			throw new ConversionException(
+					"%s não é uma data/hora válida.%n%s.".formatted(ex.getParsedString(),
+							Metadata.getMetadata(Reflection.getRawType(type)).description()), ex);
 		}
 	}
 

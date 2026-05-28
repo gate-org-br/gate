@@ -6,14 +6,14 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BasicAuthorization implements Authorization
+public class BasicAuthentication implements Authentication
 {
 
 	private final String username;
 	private final String password;
 	private static final Pattern AUTHORIZATION = Pattern.compile("^Basic ([^ ]+)$", Pattern.CASE_INSENSITIVE);
 
-	private BasicAuthorization(String username, String password)
+	private BasicAuthentication(String username, String password)
 	{
 		if (username == null || username.trim().isEmpty())
 			throw new IllegalArgumentException("Username cannot be null or empty");
@@ -36,9 +36,9 @@ public class BasicAuthorization implements Authorization
 	}
 
 	/**
-	 * Creates a Basic Authorization header string.
+	 * Creates a Basic Authentication header string.
 	 *
-	 * @return the Basic Authorization header string
+	 * @return the Basic Authentication header string
 	 */
 	@Override
 	public String toString()
@@ -51,19 +51,19 @@ public class BasicAuthorization implements Authorization
 	}
 
 	/**
-	 * Creates a BasicAuthorization instance from an authorization header string.
+	 * Creates a BasicAuthentication instance from an authorization header string.
 	 *
 	 * @param string the authorization header string
-	 * @return a new BasicAuthorization instance
-	 * @throws IllegalArgumentException if the string is not a valid Basic Authorization header
+	 * @return a new BasicAuthentication instance
+	 * @throws IllegalArgumentException if the string is not a valid Basic Authentication header
 	 */
-	public static BasicAuthorization valueOf(String string)
+	public static BasicAuthentication valueOf(String string)
 	{
 		if (string == null)
-			throw new IllegalArgumentException("Authorization header can't be null");
+			throw new IllegalArgumentException("Authentication header can't be null");
 		Matcher matcher = AUTHORIZATION.matcher(string);
 		if (!matcher.matches())
-			throw new IllegalArgumentException("Invalid Authorization header format");
+			throw new IllegalArgumentException("Invalid Authentication header format");
 
 		String encodedCredentials = matcher.group(1);
 
@@ -75,18 +75,18 @@ public class BasicAuthorization implements Authorization
 		if (values.length != 2)
 			throw new IllegalArgumentException("Invalid credentials format");
 
-		return new BasicAuthorization(values[0], values[1]);
+		return new BasicAuthentication(values[0], values[1]);
 	}
 
-	public static BasicAuthorization from(String username, String password)
+	public static BasicAuthentication of(String username, String password)
 	{
-		return new BasicAuthorization(username, password);
+		return new BasicAuthentication(username, password);
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof BasicAuthorization basicAuthorization
+		return o instanceof BasicAuthentication basicAuthorization
 		       && Objects.equals(username, basicAuthorization.username)
 		       && Objects.equals(password, basicAuthorization.password);
 	}

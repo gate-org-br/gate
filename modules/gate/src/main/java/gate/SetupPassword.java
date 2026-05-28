@@ -4,7 +4,7 @@ import gate.annotation.Current;
 import gate.authenticator.Authenticator;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
-import gate.http.BasicAuthorization;
+import gate.http.BasicAuthentication;
 import gate.http.ScreenServletRequest;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -47,7 +47,7 @@ public class SetupPassword extends HttpServlet
 			try
 			{
 
-				if (request.getAuthorization() instanceof BasicAuthorization)
+				if (request.getAuthentication() instanceof BasicAuthentication)
 				{
 					var user = authenticator.authenticate(request, response);
 					control.update(user, request.getBody().trim());

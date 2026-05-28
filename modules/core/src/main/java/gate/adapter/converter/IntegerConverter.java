@@ -52,7 +52,7 @@ public class IntegerConverter implements Converter
 					: Math.toIntExact(CurrentLocale.getIntegerFormat().parse(string).longValue());
 		} catch (NumberFormatException | ArithmeticException | ParseException ex)
 		{
-			throw new ConversionException(ex, "%s não é um inteiro válido.", string);
+			throw new ConversionException(string + " is not a valid whole number.", ex);
 		}
 	}
 }

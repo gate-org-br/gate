@@ -10,18 +10,44 @@ import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @ApplicationScoped
-public class Calls
+public class CallRegistry
 {
-
 	private Call mainAction;
-	private final Map<RequestCommand, Call> instances = new HashMap<>();
+	private static final String ANY = "ANY";
+	private final Map<String, Map<RequestCommand, Call>> instances = new ConcurrentHashMap<>();
 
-	public Optional<Call> get(RequestCommand command)
+	public boolean contains(RequestCommand command)
 	{
-		return Optional.ofNullable(instances.get(command));
+		return instances.values().stream()
+				.anyMatch(e -> e.containsKey(command));
+	}
+
+	public Optional<Call> get(String method, RequestCommand command)
+	{
+		method = method != null ? method.toUpperCase() : null;
+
+		Call call = instances.getOrDefault(method, Map.of()).get(command);
+		if (call != null)
+			return Optional.of(call);
+
+		call = instances.getOrDefault(ANY, Map.of()).get(command);
+		if (call != null)
+			return Optional.of(call);
+
+		return Optional.empty();
+	}
+
+	public Optional<ActionMetadata> getMetadata(RequestCommand command)
+	{
+		return Optional.ofNullable(instances.getOrDefault("GET", Map.of()).get(command))
+				.map(Call::metadata);
 	}
 
 	public Call getMainAction()
@@ -32,6 +58,8 @@ public class Calls
 	public boolean canAccess(User user, RequestCommand command)
 	{
 		return instances.values().stream()
+				.map(Map::values)
+				.flatMap(Collection::stream)
 				.filter(a -> a.command().matches(command))
 				.anyMatch(a -> a.accessRule().allows(user));
 	}
@@ -78,8 +106,29 @@ public class Calls
 
 	private void register(RequestCommand command, Call runtimeAction)
 	{
-		if (instances.containsKey(command))
+		Collection<String> methods = runtimeAction.httpMethods().isEmpty()
+				? List.of(ANY)
+				: runtimeAction.httpMethods().stream().toList();
+
+		for (String method : methods)
+			checkDuplicated(command, method);
+
+		for (String method : methods)
+			instances.computeIfAbsent(method, e -> new ConcurrentHashMap<>())
+					.put(command, runtimeAction);
+	}
+
+	private void checkDuplicated(RequestCommand command, String method)
+	{
+		if (ANY.equals(method))
+		{
+			if (instances.values().stream().anyMatch(e -> e.containsKey(command)))
+				throw new IllegalStateException("Duplicated action: " + command);
+			return;
+		}
+
+		if (instances.getOrDefault(ANY, Map.of()).containsKey(command)
+		    || instances.getOrDefault(method, Map.of()).containsKey(command))
 			throw new IllegalStateException("Duplicated action: " + command);
-		instances.put(command, runtimeAction);
 	}
 }

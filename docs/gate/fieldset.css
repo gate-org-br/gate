@@ -18,8 +18,8 @@ fieldset > legend {
   font-weight: bold;
   border-radius: 3px;
   align-items: center;
-  color: var(--base1, #2f5674);
-  background-color: var(--base3, #cfdce6);
+  color: var(--base1, #2F5674);
+  background-color: var(--base3, #CFDCE6);
   box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
 }
 fieldset > legend > i,
@@ -38,6 +38,16 @@ fieldset > legend label {
   height: 20px;
   display: flex;
   align-items: center;
+}
+fieldset > hr {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: block;
+  font-size: 14px;
+  visibility: hidden;
+  grid-column: span 16;
+  height: calc(1.2em + 40px);
 }
 fieldset > label {
   display: flex;
@@ -145,10 +155,10 @@ fieldset > label > span > *:only-child,
 fieldset > label > form > *:only-child {
   border-radius: 3px;
 }
-fieldset > label > span > input[type='checkbox'],
-fieldset > label > form > input[type='checkbox'],
-fieldset > label > span > input[type='radio'],
-fieldset > label > form > input[type='radio'] {
+fieldset > label > span > input[type="checkbox"],
+fieldset > label > form > input[type="checkbox"],
+fieldset > label > span > input[type="radio"],
+fieldset > label > form > input[type="radio"] {
   flex-basis: 16px;
   margin-left: 16px;
   margin-right: 16px;

@@ -188,9 +188,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return getParameter(property.getRawType(), property.toString());
 	}
 
-	public Authorization getAuthorization() throws AuthenticationException
+	public Authentication getAuthentication() throws AuthenticationException
 	{
-		String header = getHeader("Authorization");
+		String header = getHeader("Authentication");
 		if (header == null)
 		{
 			String username = getParameter("$username");
@@ -201,11 +201,11 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 					throw new InvalidUsernamePasswordException();
 				if (password == null || password.isBlank())
 					throw new InvalidUsernamePasswordException();
-				return BasicAuthorization.from(username, password);
+				return BasicAuthentication.of(username, password);
 			}
 
 			return getCookieValue("subject")
-					.map(CookieAuthorization::valueOf)
+					.map(CookieAuthentication::valueOf)
 					.orElse(null);
 		}
 
@@ -217,9 +217,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String type = authorization.group(1);
 		return switch (type.toUpperCase())
 		{
-			case "BEARER" -> BearerAuthorization.valueOf(header);
-			case "BASIC" -> BasicAuthorization.valueOf(header);
-			default -> throw new AuthenticationException("Authorization type not supported: " + type);
+			case "BEARER" -> BearerAuthentication.valueOf(header);
+			case "BASIC" -> BasicAuthentication.valueOf(header);
+			default -> throw new AuthenticationException("Authentication type not supported: " + type);
 		};
 
 	}

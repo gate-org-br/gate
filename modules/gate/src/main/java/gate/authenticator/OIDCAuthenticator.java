@@ -4,8 +4,8 @@ import gate.cache.Cache;
 import gate.catalog.UserCatalog;
 import gate.entity.User;
 import gate.error.*;
-import gate.http.BasicAuthorization;
-import gate.http.BearerAuthorization;
+import gate.http.BasicAuthentication;
+import gate.http.BearerAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.io.HttpCall;
 import gate.io.URLBuilder;
@@ -104,8 +104,8 @@ public class OIDCAuthenticator implements Authenticator
 	{
 		return request.getParameter("code") != null
 		       || request.getParameter("error") != null
-		       || request.getAuthorization() instanceof BearerAuthorization
-		       || request.getAuthorization() instanceof BasicAuthorization;
+		       || request.getAuthentication() instanceof BearerAuthentication
+		       || request.getAuthentication() instanceof BasicAuthentication;
 	}
 
 	@Override
@@ -124,9 +124,9 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			if (request.getParameter("code") != null)
 				return authorizationCodeFlow(request);
-			else if (request.getAuthorization() instanceof BearerAuthorization bearerAuthorization)
+			else if (request.getAuthentication() instanceof BearerAuthentication bearerAuthorization)
 				return clientCredentialsFlow(bearerAuthorization);
-			else if (request.getAuthorization() instanceof BasicAuthorization basicAuthorization)
+			else if (request.getAuthentication() instanceof BasicAuthentication basicAuthorization)
 				return resourceOwnerPasswordCredentialsFlow(basicAuthorization);
 			else
 				throw new AuthenticationException("Attempt to authenticate without supplying credentials");
@@ -185,7 +185,7 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = HttpCall.get(userInfoEndpoint.get())
-				.authorization(BearerAuthorization.from(accessToken))
+				.authorization(BearerAuthentication.of(accessToken))
 				.execute()
 				.readJsonObject()
 				.orElseThrow(AuthenticationException::new);
@@ -194,7 +194,7 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(AuthenticationException::new));
 	}
 
-	private User clientCredentialsFlow(BearerAuthorization bearerAuthorization)
+	private User clientCredentialsFlow(BearerAuthentication bearerAuthorization)
 			throws AuthenticationException, HierarchyException
 	{
 		String token = bearerAuthorization.token();
@@ -220,7 +220,7 @@ public class OIDCAuthenticator implements Authenticator
 		return userCatalog.select(systemId);
 	}
 
-	private User resourceOwnerPasswordCredentialsFlow(BasicAuthorization basicAuth)
+	private User resourceOwnerPasswordCredentialsFlow(BasicAuthentication basicAuth)
 			throws AuthenticationException, HierarchyException, IOException
 	{
 
@@ -253,7 +253,7 @@ public class OIDCAuthenticator implements Authenticator
 				.orElseThrow(AuthenticationException::new);
 
 		JsonObject userInfo = HttpCall.get(userInfoEndpoint.get())
-				.authorization(BearerAuthorization.from(accessToken))
+				.authorization(BearerAuthentication.of(accessToken))
 				.execute()
 				.readJsonObject()
 				.orElseThrow(AuthenticationException::new);

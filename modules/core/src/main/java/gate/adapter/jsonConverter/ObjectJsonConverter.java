@@ -1,10 +1,10 @@
 package gate.adapter.jsonConverter;
 
 import gate.error.ConversionException;
+import gate.lang.constructionStrategy.ConstructionStrategy;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
 import gate.lang.property.Attribute;
-import gate.lang.property.ConstructionStrategy;
 import gate.lang.property.FieldAttribute;
 import gate.util.Reflection;
 
@@ -38,7 +38,7 @@ public class ObjectJsonConverter implements JsonConverter
 			return ConstructionStrategy.newInstance(type, attributes);
 		} catch (ReflectiveOperationException ex)
 		{
-			throw new ConversionException(ex, ex.getMessage());
+			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 

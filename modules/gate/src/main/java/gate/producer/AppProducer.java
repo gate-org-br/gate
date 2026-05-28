@@ -1,6 +1,6 @@
 package gate.producer;
 
-import gate.Calls;
+import gate.CallRegistry;
 import gate.annotation.Current;
 import gate.annotation.LinkResource;
 import gate.base.Control;
@@ -59,7 +59,7 @@ public class AppProducer implements Serializable
 	AppControl control;
 
 	@Inject
-	Calls actionRegistry;
+	CallRegistry actionRegistry;
 
 	@PostConstruct
 	public void prepare()

@@ -1,6 +1,5 @@
 package gate.adapter.converter;
 
-import gate.adapter.jsonConverter.JsonConverter;
 import gate.error.ConversionException;
 import gate.lang.json.JsonElement;
 
@@ -45,16 +44,24 @@ public abstract class Encoder<T>
 		}
 
 		@Override
-		@SuppressWarnings("unchecked")
 		public T decode(String string) throws ConversionException
 		{
-			if (string == null)
-				return null;
-			string = string.trim();
-			if (string.isEmpty())
-				return null;
-			var json = new String(Base64.getDecoder().decode(string), StandardCharsets.UTF_8);
-			return (T) JsonConverter.fromJson(type, JsonElement.parse(json));
+			try
+			{
+				if (string == null)
+					return null;
+				string = string.trim();
+				if (string.isEmpty())
+					return null;
+				var json = new String(Base64.getDecoder().decode(string), StandardCharsets.UTF_8);
+
+				JsonElement jsonElement = JsonElement.parse(json);
+				return jsonElement.decode(type);
+			} catch (Exception ex)
+			{
+				throw new ConversionException("%s is not a valid encoded %s"
+						.formatted(string, type.getName()), ex);
+			}
 		}
 	}
 }

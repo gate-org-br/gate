@@ -4,19 +4,19 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BearerAuthorization implements Authorization
+public class BearerAuthentication implements Authentication
 {
 
 	private final String token;
 	private static final Pattern AUTHORIZATION = Pattern.compile("^Bearer ([^ ]+)$", Pattern.CASE_INSENSITIVE);
 
 	/**
-	 * Creates a new BearerAuthorization instance.
+	 * Creates a new BearerAuthentication instance.
 	 *
 	 * @param token the bearer token
 	 * @throws IllegalArgumentException if token is null or empty
 	 */
-	private BearerAuthorization(String token)
+	private BearerAuthentication(String token)
 	{
 		if (token == null || token.trim().isEmpty())
 			throw new IllegalArgumentException("Creadentials cannot be null or empty");
@@ -35,9 +35,9 @@ public class BearerAuthorization implements Authorization
 	@Override public Type type() {return Type.BEARER;}
 
 	/**
-	 * Creates a Bearer Authorization header string.
+	 * Creates a Bearer Authentication header string.
 	 *
-	 * @return the Bearer Authorization header string
+	 * @return the Bearer Authentication header string
 	 */
 	@Override
 	public String toString()
@@ -46,32 +46,32 @@ public class BearerAuthorization implements Authorization
 	}
 
 	/**
-	 * Creates a BearerAuthorization instance from an authorization header string.
+	 * Creates a BearerAuthentication instance from an authorization header string.
 	 *
 	 * @param authString the authorization header string
-	 * @return a new BearerAuthorization instance
-	 * @throws IllegalArgumentException if the string is not a valid Bearer Authorization header
+	 * @return a new BearerAuthentication instance
+	 * @throws IllegalArgumentException if the string is not a valid Bearer Authentication header
 	 */
-	public static BearerAuthorization valueOf(String authString)
+	public static BearerAuthentication valueOf(String authString)
 	{
 		if (authString == null)
-			throw new IllegalArgumentException("Authorization header can't be null");
+			throw new IllegalArgumentException("Authentication header can't be null");
 
 		Matcher matcher = AUTHORIZATION.matcher(authString);
 		if (!matcher.matches())
-			throw new IllegalArgumentException("Invalid Authorization header format");
-		return new BearerAuthorization(matcher.group(1));
+			throw new IllegalArgumentException("Invalid Authentication header format");
+		return new BearerAuthentication(matcher.group(1));
 	}
 
-	public static BearerAuthorization from(String token)
+	public static BearerAuthentication of(String token)
 	{
-		return new BearerAuthorization(token);
+		return new BearerAuthentication(token);
 	}
 
 	@Override
 	public boolean equals(Object o)
 	{
-		return o instanceof BearerAuthorization bearerAuthorization
+		return o instanceof BearerAuthentication bearerAuthorization
 		       && Objects.equals(token, bearerAuthorization.token);
 	}
 

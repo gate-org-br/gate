@@ -1,11 +1,10 @@
 package gate.thymeleaf.processors.attribute.request;
 
 import gate.Call;
-import gate.Calls;
+import gate.CallRegistry;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.thymeleaf.ELExpression;
-import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.processors.attribute.AttributeProcessor;
 import gate.type.RequestCommand;
 import gate.util.Parameters;
@@ -26,10 +25,10 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	ELExpressionFactory expressionFactory;
+	ELExpression expression;
 
 	@Inject
-	Calls actionRegistry;
+	CallRegistry actionRegistry;
 
 	public RequestAttributeProcessor(String name)
 	{
@@ -44,6 +43,10 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 		String module = element.getAttributeValue("g:module");
 		String screen = element.getAttributeValue("g:screen");
 		String action = element.getAttributeValue("g:action");
+
+		module = module != null ? expression.evaluate(module).toString() : null;
+		screen = screen != null ? expression.evaluate(screen).toString() : null;
+		action = action != null ? expression.evaluate(action).toString() : null;
 
 		handler.removeAttribute("g:module");
 		handler.removeAttribute("g:screen");
@@ -63,7 +66,7 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 										.map(e -> e.substring("/Gate".length()))
 										.orElse(null))));
 
-		Call call = actionRegistry.get(command)
+		Call call = actionRegistry.get(getMethod(element), command)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid command: " + command));
 
 		User user = CDI.current()
@@ -71,7 +74,6 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 				.get();
 
 		Parameters parameters = new Parameters();
-		ELExpression expression = expressionFactory.create();
 
 		Stream.of(element.getAllAttributes())
 				.filter(e -> e.getValue() != null)
@@ -164,5 +166,19 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 
 			handler.setBody(body.toString(), true);
 		}
+	}
+
+	private String getMethod(IProcessableElementTag element)
+	{
+		if (element.hasAttribute("method"))
+			return element.getAttributeValue("method");
+
+		if (element.hasAttribute("formmethod"))
+			return element.getAttributeValue("formmethod");
+
+		if (element.hasAttribute("data-method"))
+			return element.getAttributeValue("data-method");
+
+		return "GET";
 	}
 }

@@ -45,7 +45,7 @@ class SlidingSessionFilterTest
 		var token = Credentials.create(ID.valueOf(1), null, null).toString();
 		var request = TestServletSupport.request(
 				java.util.Map.of(),
-				java.util.Map.of("Authorization", "Bearer " + token),
+				java.util.Map.of("Authentication", "Bearer " + token),
 				null,
 				"GET",
 				"/Gate");

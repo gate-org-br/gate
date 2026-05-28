@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.attribute;
 
-import gate.Calls;
+import gate.CallRegistry;
 import gate.adapter.renderer.Renderer;
 import gate.annotation.Current;
 import gate.entity.User;
@@ -20,7 +20,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 {
 
 	@Inject
-	Calls actionRegistry;
+	CallRegistry actionRegistry;
 
 	@Inject
 	@Current

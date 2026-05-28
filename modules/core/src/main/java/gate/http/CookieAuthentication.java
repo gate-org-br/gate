@@ -1,11 +1,11 @@
 package gate.http;
 
-public class CookieAuthorization implements Authorization
+public class CookieAuthentication implements Authentication
 {
 
 	private final String token;
 
-	private CookieAuthorization(String token)
+	private CookieAuthentication(String token)
 	{
 		this.token = token;
 	}
@@ -24,8 +24,8 @@ public class CookieAuthorization implements Authorization
 		return token;
 	}
 
-	public static CookieAuthorization valueOf(String string)
+	public static CookieAuthentication valueOf(String string)
 	{
-		return new CookieAuthorization(string);
+		return new CookieAuthentication(string);
 	}
 }

@@ -2,6 +2,7 @@ package gate.adapter.registrar;
 
 import gate.adapter.converter.*;
 import gate.lang.json.*;
+import gate.lang.template.Template;
 import gate.type.*;
 import gate.type.br.*;
 import gate.type.mime.MimeData;
@@ -11,6 +12,7 @@ import gate.type.mime.MimeTextFile;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.nio.file.Path;
 import java.time.*;
 import java.util.EnumSet;
@@ -107,6 +109,10 @@ public class CoreConverterRegistrar implements ConverterRegistrar
 		registry.put(JsonObject.class, new JsonElementConverter());
 		registry.put(JsonScalar.class, new JsonElementConverter());
 		registry.put(JsonString.class, new JsonElementConverter());
+
+		registry.put(Template.class, new TemplateConverter());
+
+		registry.put(URI.class, new URIConverter());
 
 		return registry;
 	}

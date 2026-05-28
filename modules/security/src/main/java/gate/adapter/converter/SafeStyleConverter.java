@@ -27,7 +27,7 @@ public class SafeStyleConverter implements Converter
 			return SafeStyle.of(string);
 		} catch (IllegalArgumentException ex)
 		{
-			throw new ConversionException(ex, ex.getMessage());
+			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 

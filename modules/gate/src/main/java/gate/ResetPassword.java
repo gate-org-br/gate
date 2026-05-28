@@ -2,7 +2,7 @@ package gate;
 
 import gate.entity.User;
 import gate.error.*;
-import gate.http.BearerAuthorization;
+import gate.http.BearerAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.messaging.Messenger;
 import gate.type.ID;
@@ -91,7 +91,7 @@ public class ResetPassword extends HttpServlet
 
 			try
 			{
-				if (request.getAuthorization() instanceof BearerAuthorization authorization)
+				if (request.getAuthentication() instanceof BearerAuthentication authorization)
 				{
 					User user = parseToken(authorization.token());
 					control.update(user, request.getBody().trim());

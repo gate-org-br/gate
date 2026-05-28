@@ -43,7 +43,7 @@ public class CollectionConverter implements Converter
 
 		Class<?> rawType = Reflection.getRawType(type);
 		if (rawType == null || !Collection.class.isAssignableFrom(rawType))
-			throw new ConversionException("Type %s is not a collection.", type);
+			throw new ConversionException("Type %s is not a collection.".formatted(type));
 
 		Type elementType = getElementType(type, rawType);
 		Collection<Object> collection = (Collection<Object>) Reflection.createInstance(rawType);

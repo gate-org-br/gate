@@ -9,6 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="./gate/Gate.css"/>
 		<script type="module" src="./gate/g-html-viewer.js"></script>
 		<script type="module" src="./gate/Gate.js"></script>
+		<script type="module" src="./gate/form-coleta.js"></script>
 	</head>
 
 	<body data-loading onload="document.body.removeAttribute('data-loading')">
@@ -62,30 +63,7 @@
 			</nav>
 
 			<section id="content">
-				<h1>Gate</h1>
-
-				<p>
-					Gate is a full stack application framework that combines screen routing, authentication,
-					authorization, SQL access, HTML targets and web components in a single model.
-					The goal is to keep application structure close to the code: packages define modules,
-					screen classes define routes and call methods define actions.
-				</p>
-
-				<p>
-					This documentation is organized by the main parts of the framework.
-					Start with <b>Routing</b> if you want to understand how screens are discovered and how
-					URLs map to Java classes and methods.
-					Go to <b>Authentication</b> and <b>Access Control</b> to understand how Gate identifies
-					users and protects routes.
-					The <b>Targets</b> and <b>Components</b> sections document the browser-side model, while
-					<b>SQL</b> covers the database API used by applications built on Gate.
-				</p>
-
-				<g-callout>
-					If you are new to Gate, the recommended reading order is Routing, Authentication,
-					Access Control and then SQL.
-					After that, read Targets and Components according to the type of screen you are building.
-				</g-callout>
+				<form-coleta></form-coleta>
 			</section>
 
 			<footer>

@@ -8,29 +8,29 @@ fieldset {
 	grid-template-columns: repeat(16, 1fr);
 	border: 1px solid var(--main2, #F0F0F0);
 
-	>* {
+	> * {
 		grid-column: span 16;
 	}
 
-	>legend {
+	> legend {
 		padding: 6px;
 		display: flex;
 		font-size: 12px;
 		font-weight: bold;
 		border-radius: 3px;
 		align-items: center;
-		color: var(--base1, #2f5674);
-		background-color: var(--base3, #cfdce6);
+		color: var(--base1, #2F5674);
+		background-color: var(--base3, #CFDCE6);
 		box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.75);
 
-		>i,
-		>g-icon {
+		> i,
+		> g-icon {
 			order: -1;
 			margin-right: 4px;
 			font-size: inherit;
 		}
 
-		>img {
+		> img {
 			order: -1;
 			width: 20px;
 			height: 20px;
@@ -44,15 +44,26 @@ fieldset {
 		}
 	}
 
-	>label {
+	> hr {
+		border: 0;
+		margin: 0;
+		padding: 0;
+		display: block;
+		font-size: 14px;
+		visibility: hidden;
+		grid-column: span 16;
+		height: calc(1.2em + 40px);
+	}
+
+	> label {
 		display: flex;
 		font-size: 14px;
 		text-indent: 4px;
 		grid-column: span 16;
 		flex-direction: column;
 
-		>span,
-		>form {
+		> span,
+		> form {
 			flex-grow: 1;
 			display: flex;
 			overflow: auto;
@@ -69,11 +80,11 @@ fieldset {
 				border: none;
 			}
 
-			*+* {
+			* + * {
 				border-left: 1px solid var(--main3, #DDDDDD);
 			}
 
-			>label {
+			> label {
 				height: 100%;
 				flex-grow: 1;
 				overflow: auto;
@@ -87,9 +98,9 @@ fieldset {
 				}
 			}
 
-			>a,
-			>button,
-			>.g-command {
+			> a,
+			> button,
+			> .g-command {
 				height: 100%;
 				flex-grow: 0;
 				display: flex;
@@ -103,8 +114,8 @@ fieldset {
 				justify-content: center;
 				color: var(--text1, #000000);
 
-				>i,
-				>g-icon {
+				> i,
+				> g-icon {
 					flex-grow: 1;
 					display: flex;
 					text-indent: 0;
@@ -118,27 +129,27 @@ fieldset {
 				}
 			}
 
-			>*:first-child {
+			> *:first-child {
 				border-radius: 3px 0 0 3px;
 			}
 
-			>*:last-child {
+			> *:last-child {
 				border-radius: 0 3px 3px 0;
 			}
 
-			>*:only-child {
+			> *:only-child {
 				border-radius: 3px;
 			}
 
-			>input[type='checkbox'],
-			>input[type='radio'] {
+			> input[type="checkbox"],
+			> input[type="radio"] {
 				flex-basis: 16px;
 				margin-left: 16px;
 				margin-right: 16px;
 			}
 
-			>i,
-			>g-icon {
+			> i,
+			> g-icon {
 				right: 0;
 				order: 1000;
 				width: 32px;
@@ -150,8 +161,6 @@ fieldset {
 				align-items: center;
 				justify-content: center;
 			}
-
-
 
 			&[data-icon]::after {
 				right: 0;
@@ -168,56 +177,56 @@ fieldset {
 		}
 	}
 
-	>fieldset {
+	> fieldset {
 		margin: 0;
 	}
 }
 
 
 @media only screen and (min-width: 600px) {
-	fieldset>*[data-size="1"] {
+	fieldset > *[data-size="1"] {
 		grid-column: span 8;
 	}
 }
 
 @media only screen and (min-width: 800px) {
-	fieldset>*[data-size="1"] {
+	fieldset > *[data-size="1"] {
 		grid-column: span 4;
 	}
 
-	fieldset>*[data-size="2"] {
+	fieldset > *[data-size="2"] {
 		grid-column: span 8;
 	}
 }
 
 @media only screen and (min-width: 1024px) {
-	fieldset>*[data-size="1"] {
+	fieldset > *[data-size="1"] {
 		grid-column: span 2;
 	}
 
-	fieldset>*[data-size="2"] {
+	fieldset > *[data-size="2"] {
 		grid-column: span 4;
 	}
 
-	fieldset>*[data-size="4"] {
+	fieldset > *[data-size="4"] {
 		grid-column: span 8;
 	}
 }
 
 @media only screen and (min-width: 1366px) {
-	fieldset>*[data-size="1"] {
+	fieldset > *[data-size="1"] {
 		grid-column: span 1;
 	}
 
-	fieldset>*[data-size="2"] {
+	fieldset > *[data-size="2"] {
 		grid-column: span 2;
 	}
 
-	fieldset>*[data-size="4"] {
+	fieldset > *[data-size="4"] {
 		grid-column: span 4;
 	}
 
-	fieldset>*[data-size="8"] {
+	fieldset > *[data-size="8"] {
 		grid-column: span 8;
 	}
 }

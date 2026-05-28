@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.Call;
-import gate.Calls;
+import gate.ActionMetadata;
+import gate.CallRegistry;
 import gate.type.Attributes;
 import gate.type.RequestCommand;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,7 +20,7 @@ public class PathProcessor extends TagProcessor
 {
 
 	@Inject
-	Calls calls;
+	CallRegistry calls;
 
 	public PathProcessor()
 	{
@@ -60,18 +60,18 @@ public class PathProcessor extends TagProcessor
 
 		if (command.module() != null)
 		{
-			calls.get(new RequestCommand(command.module(), null, null))
+			calls.getMetadata(new RequestCommand(command.module(), null, null))
 					.flatMap(PathProcessor::getText)
 					.ifPresent(string::add);
 
 			if (command.screen() != null)
 			{
-				calls.get(new RequestCommand(command.module(), command.screen(), null))
+				calls.getMetadata(new RequestCommand(command.module(), command.screen(), null))
 						.flatMap(PathProcessor::getText)
 						.ifPresent(string::add);
 
 				if (command.action() != null)
-					calls.get(new RequestCommand(command.module(), command.screen(), command.action()))
+					calls.getMetadata(new RequestCommand(command.module(), command.screen(), command.action()))
 							.flatMap(PathProcessor::getText)
 							.ifPresent(string::add);
 
@@ -85,18 +85,18 @@ public class PathProcessor extends TagProcessor
 		handler.replaceWith("<g-path " + attributes + ">" + string + "</g-path>", false);
 	}
 
-	private static Optional<String> getText(Call call)
+	private static Optional<String> getText(ActionMetadata metadata)
 	{
 		StringJoiner string = new StringJoiner("");
-		if (call.metadata().name() != null)
+		if (metadata.name() != null)
 		{
 			string.add("<label>");
-			if (call.metadata().icon() != null)
-				string.add("<g-icon>" + call.metadata().icon() + "</g-icon>");
-			string.add(call.metadata().name());
+			if (metadata.icon() != null)
+				string.add("<g-icon>" + metadata.icon() + "</g-icon>");
+			string.add(metadata.name());
 			string.add("</label>");
-		} else if (call.metadata().icon() != null)
-			string.add("<g-icon>" + call.metadata().icon() + "</g-icon>");
+		} else if (metadata.icon() != null)
+			string.add("<g-icon>" + metadata.icon() + "</g-icon>");
 
 		return string.length() != 0 ? Optional.of(string.toString()) : Optional.empty();
 	}

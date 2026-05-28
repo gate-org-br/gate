@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CallsTest
 {
@@ -17,22 +17,66 @@ public class CallsTest
 	@SuppressWarnings("unchecked")
 	public void testRegisterSupportsCanonicalInnerScreenName()
 	{
-		Calls calls = new Calls();
+		CallRegistry calls = new CallRegistry();
 		calls.register(List.of((Class<Screen>) (Class<?>) TestRegistryParentScreen.ChildScreen.class));
 
-		assertTrue(calls.get(new RequestCommand("gate", "TestRegistryParent.Child", null)).isPresent());
+		assertTrue(calls.contains(new RequestCommand("gate", "TestRegistryParent.Child", null)));
 	}
 
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testRegisterReadsAllowedHttpMethods()
 	{
-		Calls calls = new Calls();
+		CallRegistry calls = new CallRegistry();
 		calls.register(List.of((Class<Screen>) (Class<?>) MethodScreen.class));
 
-		Call call = calls.get(new RequestCommand("gate", "Method", null)).orElseThrow();
-		assertTrue(call.allowsHttpMethod("GET"));
-		assertTrue(call.allowsHttpMethod("POST"));
+		var command = new RequestCommand("gate", "Method", null);
+		assertTrue(calls.get("GET", command).isPresent());
+		assertTrue(calls.get("POST", command).isPresent());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testMetadataLookupDoesNotFallbackToAnyMethod()
+	{
+		CallRegistry calls = new CallRegistry();
+		calls.register(List.of((Class<Screen>) (Class<?>) TestRegistryParentScreen.ChildScreen.class));
+
+		var command = new RequestCommand("gate", "TestRegistryParent.Child", null);
+		assertTrue(calls.get("GET", command).isPresent());
+		assertFalse(calls.getMetadata(command).isPresent());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testRegisterAllowsSameActionWithDifferentHttpMethods()
+	{
+		CallRegistry calls = new CallRegistry();
+		calls.register(List.of((Class<Screen>) (Class<?>) OverloadedHttpMethodScreen.class));
+
+		var command = new RequestCommand("gate", "OverloadedHttpMethod", "Save");
+		assertTrue(calls.get("GET", command).isPresent());
+		assertTrue(calls.get("POST", command).isPresent());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testRegisterRejectsSameActionWithOverlappingHttpMethods()
+	{
+		CallRegistry calls = new CallRegistry();
+
+		assertThrows(IllegalStateException.class,
+				() -> calls.register(List.of((Class<Screen>) (Class<?>) DuplicatedHttpMethodScreen.class)));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testRegisterRejectsSameActionWhenAnyMethodOverlaps()
+	{
+		CallRegistry calls = new CallRegistry();
+
+		assertThrows(IllegalStateException.class,
+				() -> calls.register(List.of((Class<Screen>) (Class<?>) DuplicatedDefaultMethodScreen.class)));
 	}
 }
 
@@ -51,6 +95,44 @@ class MethodScreen extends Screen
 	@Get
 	@Post
 	public void call()
+	{
+	}
+}
+
+class OverloadedHttpMethodScreen extends Screen
+{
+	@Get
+	public void callSave()
+	{
+	}
+
+	@Post
+	public void callSave(String body)
+	{
+	}
+}
+
+class DuplicatedHttpMethodScreen extends Screen
+{
+	@Get
+	public void callSave()
+	{
+	}
+
+	@Get
+	public void callSave(String body)
+	{
+	}
+}
+
+class DuplicatedDefaultMethodScreen extends Screen
+{
+	public void callSave()
+	{
+	}
+
+	@Post
+	public void callSave(String body)
 	{
 	}
 }

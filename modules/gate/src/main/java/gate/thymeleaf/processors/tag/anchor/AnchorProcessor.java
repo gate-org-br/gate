@@ -1,7 +1,7 @@
 package gate.thymeleaf.processors.tag.anchor;
 
 import gate.Call;
-import gate.Calls;
+import gate.CallRegistry;
 import gate.annotation.Current;
 import gate.entity.User;
 import gate.thymeleaf.ELExpressionFactory;
@@ -25,7 +25,7 @@ import java.util.stream.Stream;
 public abstract class AnchorProcessor extends TagModelProcessor
 {
 	@Inject
-	Calls actionRegistry;
+	CallRegistry actionRegistry;
 
 	@Inject
 	@Current
@@ -76,7 +76,7 @@ public abstract class AnchorProcessor extends TagModelProcessor
 										.map(e -> e.substring("/Gate".length()))
 										.orElse(null))));
 
-		var call = actionRegistry.get(command)
+		var call = actionRegistry.get(resolveMethod(attributes), command)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid command: " + command));
 
 		var metadata = call.metadata();
@@ -112,6 +112,15 @@ public abstract class AnchorProcessor extends TagModelProcessor
 		if (!attributes.containsKey("method"))
 			return "GET";
 		String method = (String) attributes.remove("method");
+		method = (String) expression.create().evaluate(method);
+		return method;
+	}
+
+	private String resolveMethod(Attributes attributes)
+	{
+		if (!attributes.containsKey("method"))
+			return "GET";
+		String method = (String) attributes.get("method");
 		method = (String) expression.create().evaluate(method);
 		return method;
 	}

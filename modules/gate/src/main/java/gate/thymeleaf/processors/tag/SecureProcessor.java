@@ -1,6 +1,6 @@
 package gate.thymeleaf.processors.tag;
 
-import gate.Calls;
+import gate.CallRegistry;
 import gate.adapter.renderer.Renderer;
 import gate.annotation.Current;
 import gate.entity.User;
@@ -20,7 +20,7 @@ public class SecureProcessor extends TagProcessor
 {
 
 	@Inject
-	Calls actionRegistry;
+	CallRegistry actionRegistry;
 
 	@Inject
 	@Current

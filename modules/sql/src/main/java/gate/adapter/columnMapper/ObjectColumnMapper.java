@@ -1,7 +1,7 @@
 package gate.adapter.columnMapper;
 
-import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
+import gate.lang.json.JsonElement;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,13 +10,14 @@ import java.sql.Types;
 
 public class ObjectColumnMapper implements ColumnMapper
 {
-
 	@Override
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
 			throws SQLException, ConversionException
 	{
 		String value = rs.getString(index);
-		return rs.wasNull() ? null : Converter.getConverter(type).ofString(type, value);
+		if (rs.wasNull())
+			return null;
+		return JsonElement.parse(value).decode(type);
 	}
 
 	@Override
@@ -24,7 +25,9 @@ public class ObjectColumnMapper implements ColumnMapper
 			throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : Converter.getConverter(type).ofString(type, value);
+		if (rs.wasNull())
+			return null;
+		return JsonElement.parse(value).decode(type);
 	}
 
 	@Override
@@ -32,8 +35,7 @@ public class ObjectColumnMapper implements ColumnMapper
 			throws SQLException
 	{
 		if (value != null)
-			ps.setString(index++, Converter.getConverter(value.getClass())
-					.toString(value.getClass(), value));
+			ps.setString(index++, JsonElement.encode(value).toString());
 		else
 			ps.setNull(index++, Types.VARCHAR);
 		return index;

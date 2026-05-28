@@ -1,7 +1,10 @@
-package gate.lang.property;
+package gate.lang.constructionStrategy;
 
+import gate.error.ConstructionException;
 import gate.error.ConversionException;
 import gate.function.TriFunction;
+import gate.lang.property.Attribute;
+import gate.lang.property.Property;
 import mock.ContactMock;
 import mock.UserMock;
 import org.junit.jupiter.api.Assertions;
@@ -9,7 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static mock.ConstructionMocks.*;
@@ -22,7 +27,7 @@ class ConstructionStrategyTest
 	@BeforeEach
 	void clearCache()
 	{
-		ConstructionStrategy.CACHE.clear();
+		Cache.INSTANCE.clear();
 	}
 
 	@Test
@@ -69,6 +74,27 @@ class ConstructionStrategyTest
 
 		Assertions.assertSame(contact, result);
 		Assertions.assertSame(originalUser, result.getUser());
+	}
+
+	@Test
+	void shouldConstructCollectionTypeFromObjectFactory() throws ReflectiveOperationException
+	{
+		var attributes = new LinkedHashMap<Attribute, Object>();
+
+		var result = ConstructionStrategy.newInstance(List.class, attributes);
+
+		Assertions.assertInstanceOf(ArrayList.class, result);
+	}
+
+	@Test
+	void shouldFailWhenInterfaceTypeIsNotSupportedByObjectFactory()
+	{
+		var attributes = new LinkedHashMap<Attribute, Object>();
+
+		var exception = Assertions.assertThrows(ConstructionException.class,
+				() -> ConstructionStrategy.newInstance(Runnable.class, attributes));
+
+		Assertions.assertTrue(exception.getMessage().contains(Runnable.class.getName()));
 	}
 
 	@Test
@@ -178,8 +204,12 @@ class ConstructionStrategyTest
 		var attributes = new LinkedHashMap<Attribute, Object>();
 		attributes.put(Property.getProperty(PrimitiveFactoryMock.class, "field1").getLastAttribute(), "value1");
 
-		Assertions.assertThrows(IllegalArgumentException.class,
+		var exception = Assertions.assertThrows(ConstructionException.class,
 				() -> ConstructionStrategy.newInstance(PrimitiveFactoryMock.class, attributes));
+
+		Assertions.assertTrue(exception.getMessage().contains("missing value for primitive parameter"));
+		Assertions.assertTrue(exception.getMessage().contains("field1"));
+		Assertions.assertTrue(exception.getMessage().contains("int"));
 	}
 
 	@Test
@@ -188,8 +218,12 @@ class ConstructionStrategyTest
 		var attributes = new LinkedHashMap<Attribute, Object>();
 		attributes.put(Property.getProperty(PrimitiveConstructorMock.class, "field1").getLastAttribute(), "value1");
 
-		Assertions.assertThrows(IllegalArgumentException.class,
+		var exception = Assertions.assertThrows(ConstructionException.class,
 				() -> ConstructionStrategy.newInstance(PrimitiveConstructorMock.class, attributes));
+
+		Assertions.assertTrue(exception.getMessage().contains("missing value for primitive parameter"));
+		Assertions.assertTrue(exception.getMessage().contains("field1"));
+		Assertions.assertTrue(exception.getMessage().contains("int"));
 	}
 
 	@Test

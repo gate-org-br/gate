@@ -31,7 +31,7 @@ public class IDConverter implements Converter
 			return ID.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
-			throw new ConversionException(ex, string + " não é um número válido");
+			throw new ConversionException(string + " não é um número válido", ex);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package gate.adapter.converter;
 
-import gate.annotation.Description;
 import gate.constraint.Constraint;
 import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
@@ -11,7 +10,6 @@ import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 
-@Description("CPF ou CNPJ")
 public class BrasilianDocumentConverter implements Converter
 {
 	public List<Constraint.Implementation<?>> getConstraints()

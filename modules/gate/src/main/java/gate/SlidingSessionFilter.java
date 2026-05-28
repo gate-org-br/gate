@@ -2,8 +2,8 @@ package gate;
 
 import gate.catalog.SessionCatalog;
 import gate.error.UnauthorizedException;
-import gate.http.BearerAuthorization;
-import gate.http.CookieAuthorization;
+import gate.http.BearerAuthentication;
+import gate.http.CookieAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import gate.security.Credentials;
@@ -37,7 +37,7 @@ public class SlidingSessionFilter implements Filter
 			var request = new ScreenServletRequest(httpServletRequest);
 			if (!request.isStaticRequest())
 			{
-				var authorization = request.getAuthorization();
+				var authorization = request.getAuthentication();
 				if (authorization != null)
 				{
 					var token = authorization.token();
@@ -53,13 +53,13 @@ public class SlidingSessionFilter implements Filter
 							request.setAttribute(Credentials.class.getName(), credentials);
 
 							token = credentials.refresh().toString();
-							if (authorization instanceof CookieAuthorization)
+							if (authorization instanceof CookieAuthentication)
 								response.createSessionCookie(request, token);
-							else if (authorization instanceof BearerAuthorization)
+							else if (authorization instanceof BearerAuthentication)
 								httpServletResponse.addHeader("X-Access-Token", token);
 						} catch (UnauthorizedException ex)
 						{
-							if (authorization instanceof CookieAuthorization)
+							if (authorization instanceof CookieAuthentication)
 								response.revokeSessionCookie(request);
 							httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 							return;

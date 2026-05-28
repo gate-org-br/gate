@@ -207,13 +207,13 @@ public interface JsonElement extends Serializable
 			for (Map.Entry<?, ?> entry : map.entrySet())
 			{
 				if (!(entry.getKey() instanceof String key))
-					throw new ConversionException("Can't wrap map with non-string key: %s", entry.getKey());
+					throw new ConversionException("Can't wrap map with non-string key: %s".formatted(entry.getKey()));
 				result.set(key, wrap(entry.getValue()));
 			}
 			return result;
 		}
 
-		throw new ConversionException("Can't wrap %s as JsonElement", obj.getClass().getName());
+		throw new ConversionException("Can't wrap %s as JsonElement".formatted(obj.getClass().getName()));
 	}
 
 	/**

@@ -57,8 +57,6 @@ class PropertyGraphTest
 	@Test
 	public void testRecord()
 	{
-		record PointMock(int x, int y) {}
-		record LineMock(PointMock start, PointMock end) {}
 		var expected = new LineMock(new PointMock(1, 2), new PointMock(3, 4));
 
 		var request = Map
@@ -174,4 +172,9 @@ class PropertyGraphTest
 						.of(ConstructionMocks.AmbiguousConstructorMock.class, new ArrayList<>(request.keySet()))
 						.populate(null, prop -> request.get(prop.toString())));
 	}
+
+	public record PointMock(int x, int y) {}
+
+	public record LineMock(PointMock start, PointMock end) {}
+
 }

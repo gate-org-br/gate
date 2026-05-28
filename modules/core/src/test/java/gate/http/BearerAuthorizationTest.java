@@ -11,16 +11,16 @@ public class BearerAuthorizationTest
 	@Test
 	public void shouldSerializeAndParseBearerAuthorization()
 	{
-		BearerAuthorization authorization = BearerAuthorization.from("abc.def.ghi");
+		BearerAuthentication authorization = BearerAuthentication.of("abc.def.ghi");
 
 		assertEquals("Bearer abc.def.ghi", authorization.toString());
-		assertEquals(authorization, BearerAuthorization.valueOf(authorization.toString()));
+		assertEquals(authorization, BearerAuthentication.valueOf(authorization.toString()));
 	}
 
 	@Test
 	public void shouldAcceptCaseInsensitiveScheme()
 	{
-		BearerAuthorization authorization = BearerAuthorization.valueOf("bearer abc.def.ghi");
+		BearerAuthentication authorization = BearerAuthentication.valueOf("bearer abc.def.ghi");
 
 		assertEquals("abc.def.ghi", authorization.token());
 	}
@@ -28,14 +28,14 @@ public class BearerAuthorizationTest
 	@Test
 	public void shouldRejectInvalidHeaderFormat()
 	{
-		assertThrows(IllegalArgumentException.class, () -> BearerAuthorization.valueOf("Bearer "));
-		assertThrows(IllegalArgumentException.class, () -> BearerAuthorization.valueOf("Bearer  abc.def.ghi"));
-		assertThrows(IllegalArgumentException.class, () -> BearerAuthorization.valueOf("Basic abc.def.ghi"));
+		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.valueOf("Bearer "));
+		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.valueOf("Bearer  abc.def.ghi"));
+		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.valueOf("Basic abc.def.ghi"));
 	}
 
 	@Test
 	public void shouldRejectBlankToken()
 	{
-		assertThrows(IllegalArgumentException.class, () -> BearerAuthorization.from(" "));
+		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.of(" "));
 	}
 }

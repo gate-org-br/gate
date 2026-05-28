@@ -1,6 +1,6 @@
 package gate.adapter.catcher;
 
-import gate.http.CookieAuthorization;
+import gate.http.CookieAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,7 +19,7 @@ public class UnauthorizedExceptionCatcher implements Catcher
 	public void catches(ScreenServletRequest request,
 	                    ScreenServletResponse response, Throwable exception)
 	{
-		if (request.getAuthorization() instanceof CookieAuthorization)
+		if (request.getAuthentication() instanceof CookieAuthentication)
 			response.revokeSessionCookie(request);
 
 		if ("navigate".equalsIgnoreCase(request.getHeader("Sec-Fetch-Mode")))

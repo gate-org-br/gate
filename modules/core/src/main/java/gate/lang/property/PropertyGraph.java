@@ -1,10 +1,10 @@
 package gate.lang.property;
 
 import gate.error.ConversionException;
+import gate.error.PropertyError;
+import gate.lang.constructionStrategy.ConstructionStrategy;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -31,20 +31,21 @@ public class PropertyGraph<T>
 	private final Class<T> type;
 	private final Map<Attribute, Object> graph;
 
-	private static final Map<Map.Entry<Class<?>, List<String>>, PropertyGraph<?>> CACHE = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Map<List<String>, PropertyGraph<?>>> CACHE = new ConcurrentHashMap<>();
 
 
 	@SuppressWarnings("unchecked")
 	public static <T> PropertyGraph<T> of(Class<T> type, List<String> properties)
 	{
-		return (PropertyGraph<T>) CACHE.computeIfAbsent(Map.entry(type, properties),
-				entry ->
+		return (PropertyGraph<T>) CACHE
+				.computeIfAbsent(type, e -> new ConcurrentHashMap<>())
+				.computeIfAbsent(properties, key ->
 				{
 					Map<Attribute, Object> result = new LinkedHashMap<>();
 
-					for (var name : entry.getValue())
+					for (var name : key)
 					{
-						var property = Property.parse(entry.getKey(), name);
+						var property = findProperty(type, name);
 						if (property == null)
 							continue;
 
@@ -56,7 +57,7 @@ public class PropertyGraph<T>
 						value.put(attributes.get(attributes.size() - 1), property);
 					}
 
-					return new PropertyGraph<>(entry.getKey(), result);
+					return new PropertyGraph<>(type, result);
 				});
 	}
 
@@ -88,7 +89,37 @@ public class PropertyGraph<T>
 					(a, current, v) -> populate(a.getRawType(), current, v, getValue));
 		} catch (ReflectiveOperationException ex)
 		{
-			throw new ConversionException("Error trying to match", ex);
+			throw new ConversionException("Error trying to create a %s with properties %s: %s"
+					.formatted(type.getName(),
+							properties.toString()
+							, ex.getMessage()));
 		}
+	}
+
+	private static Property findProperty(Class<?> type, String name)
+	{
+		var property = Property.parse(type, name);
+		if (property != null)
+			return property;
+
+		if (!type.isSealed())
+			return null;
+
+		var properties = Arrays.stream(type.getPermittedSubclasses())
+				.map(e -> findProperty(e, name))
+				.filter(Objects::nonNull)
+				.toList();
+
+		if (properties.isEmpty())
+			return null;
+
+		if (properties.size() == 1)
+			return properties.get(0);
+
+		throw new PropertyError("Ambiguous sealed property %s on %s: found in %s"
+				.formatted(name, type.getName(), properties.stream()
+						.map(Property::getOwner)
+						.map(Class::getName)
+						.toList()));
 	}
 }

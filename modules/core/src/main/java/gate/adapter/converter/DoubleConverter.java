@@ -39,9 +39,9 @@ public class DoubleConverter implements Converter
 			return ISO_PATTERN.matcher(string).matches()
 					? Double.valueOf(string)
 					: Double.valueOf(CurrentLocale.getDecimalFormat().parse(string).doubleValue());
-		} catch (NumberFormatException | ParseException e)
+		} catch (NumberFormatException | ParseException ex)
 		{
-			throw new ConversionException(String.format("%s não é um decimal válido.", string));
+			throw new ConversionException(string + " is not a valid decimal number.", ex);
 		}
 	}
 

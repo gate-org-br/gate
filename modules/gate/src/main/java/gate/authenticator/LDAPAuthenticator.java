@@ -4,7 +4,7 @@ import gate.catalog.UserCatalog;
 import gate.entity.User;
 import gate.error.AuthenticatorException;
 import gate.error.InvalidUsernamePasswordException;
-import gate.http.BasicAuthorization;
+import gate.http.BasicAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.security.hash.BCrypt;
 import gate.security.hash.MD5;
@@ -51,7 +51,7 @@ public class LDAPAuthenticator implements Authenticator
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws gate.error.AuthenticationException
 	{
-		return request.getAuthorization() instanceof BasicAuthorization;
+		return request.getAuthentication() instanceof BasicAuthentication;
 	}
 
 	private DirContext getDirContext(String username, String password) throws NamingException
@@ -73,7 +73,7 @@ public class LDAPAuthenticator implements Authenticator
 	}
 
 	private String getUniqueID(String username, String password,
-	                           BasicAuthorization authorization) throws NamingException
+	                           BasicAuthentication authorization) throws NamingException
 	{
 		DirContext serverContext = getDirContext(username, password);
 		try
@@ -98,7 +98,7 @@ public class LDAPAuthenticator implements Authenticator
 	public User authenticate(ScreenServletRequest request,
 	                         HttpServletResponse response)
 	{
-		var authorization = (BasicAuthorization) request.getAuthorization();
+		var authorization = (BasicAuthentication) request.getAuthentication();
 
 		User user = userCatalog.select(authorization.username());
 

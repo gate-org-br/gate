@@ -11,16 +11,16 @@ public class BasicAuthorizationTest
 	@Test
 	public void shouldSerializeAndParseBasicAuthorization()
 	{
-		BasicAuthorization authorization = BasicAuthorization.from("john", "secret");
+		BasicAuthentication authorization = BasicAuthentication.of("john", "secret");
 
 		assertEquals("Basic am9objpzZWNyZXQ=", authorization.toString());
-		assertEquals(authorization, BasicAuthorization.valueOf(authorization.toString()));
+		assertEquals(authorization, BasicAuthentication.valueOf(authorization.toString()));
 	}
 
 	@Test
 	public void shouldAcceptCaseInsensitiveScheme()
 	{
-		BasicAuthorization authorization = BasicAuthorization.valueOf("basic am9objpzZWNyZXQ=");
+		BasicAuthentication authorization = BasicAuthentication.valueOf("basic am9objpzZWNyZXQ=");
 
 		assertEquals("john", authorization.username());
 		assertEquals("secret", authorization.password());
@@ -29,21 +29,21 @@ public class BasicAuthorizationTest
 	@Test
 	public void shouldRejectInvalidHeaderFormat()
 	{
-		assertThrows(IllegalArgumentException.class, () -> BasicAuthorization.valueOf("Basic "));
-		assertThrows(IllegalArgumentException.class, () -> BasicAuthorization.valueOf("Basic  am9objpzZWNyZXQ="));
-		assertThrows(IllegalArgumentException.class, () -> BasicAuthorization.valueOf("Bearer am9objpzZWNyZXQ="));
+		assertThrows(IllegalArgumentException.class, () -> BasicAuthentication.valueOf("Basic "));
+		assertThrows(IllegalArgumentException.class, () -> BasicAuthentication.valueOf("Basic  am9objpzZWNyZXQ="));
+		assertThrows(IllegalArgumentException.class, () -> BasicAuthentication.valueOf("Bearer am9objpzZWNyZXQ="));
 	}
 
 	@Test
 	public void shouldRejectInvalidBase64Payload()
 	{
-		assertThrows(IllegalArgumentException.class, () -> BasicAuthorization.valueOf("Basic abc"));
+		assertThrows(IllegalArgumentException.class, () -> BasicAuthentication.valueOf("Basic abc"));
 	}
 
 	@Test
 	public void shouldRejectBlankUsernameOrPassword()
 	{
-		assertThrows(IllegalArgumentException.class, () -> BasicAuthorization.from(" ", "secret"));
-		assertThrows(IllegalArgumentException.class, () -> BasicAuthorization.from("john", " "));
+		assertThrows(IllegalArgumentException.class, () -> BasicAuthentication.of(" ", "secret"));
+		assertThrows(IllegalArgumentException.class, () -> BasicAuthentication.of("john", " "));
 	}
 }

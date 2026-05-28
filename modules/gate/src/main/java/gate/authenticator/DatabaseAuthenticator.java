@@ -5,7 +5,7 @@ import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.BadRequestException;
 import gate.error.InvalidUsernamePasswordException;
-import gate.http.BasicAuthorization;
+import gate.http.BasicAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.security.hash.BCrypt;
 import gate.security.hash.MD5;
@@ -29,14 +29,14 @@ public class DatabaseAuthenticator implements Authenticator
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
-		return request.getAuthorization() instanceof BasicAuthorization;
+		return request.getAuthentication() instanceof BasicAuthentication;
 	}
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
 	                         HttpServletResponse response)
 	{
-		var authorization = (BasicAuthorization) request.getAuthorization();
+		var authorization = (BasicAuthentication) request.getAuthentication();
 		if (authorization == null)
 			throw new BadRequestException("Missing user credentials");
 

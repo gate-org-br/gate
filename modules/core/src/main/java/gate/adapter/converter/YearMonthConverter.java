@@ -64,7 +64,8 @@ public class YearMonthConverter implements Converter
 				throw new DateTimeParseException("Invalid year month format", string, 0);
 		} catch (DateTimeParseException ex)
 		{
-			throw new ConversionException(ex, "%s não é uma mês/ano válido.%n%s.", ex.getParsedString(), Metadata.getMetadata(Reflection.getRawType(type)).description());
+			throw new ConversionException("%s não é uma mês/ano válido.%n%s."
+					.formatted(ex.getParsedString(), Metadata.getMetadata(Reflection.getRawType(type)).description()), ex);
 		}
 	}
 

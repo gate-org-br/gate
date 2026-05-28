@@ -29,7 +29,7 @@ public class SafeNameConverter implements Converter
 			return SafeName.valueOf(string);
 		} catch (IllegalArgumentException ex)
 		{
-			throw new ConversionException(ex, ex.getMessage());
+			throw new ConversionException(ex.getMessage(), ex);
 		}
 	}
 
