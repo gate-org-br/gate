@@ -101,7 +101,6 @@ import anchor from './anchor.js';
 import DOM from './dom.js';
 import GMessageDialog from './g-message-dialog.js';
 import './g-trigger.js';
-import './mutation-events.js';
 import resolve from './resolve.js';
 import ResponseHandler from './response-handler.js';
 

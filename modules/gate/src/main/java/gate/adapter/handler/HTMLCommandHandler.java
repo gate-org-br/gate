@@ -13,8 +13,8 @@ import org.thymeleaf.context.IContext;
 import org.thymeleaf.web.servlet.JakartaServletWebApplication;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.UncheckedIOException;
-import java.io.Writer;
 
 @ApplicationScoped
 public class HTMLCommandHandler implements Handler
@@ -35,11 +35,12 @@ public class HTMLCommandHandler implements Handler
 		try
 		{
 			String filename = value.toString();
-			Writer writer = response.getWriter();
-			response.setContentType("text/html");
 			IContext context = new CDIWebContext(request.getLocale(),
 					jakartaServletWebApplication.buildExchange(request, response), beanManager);
-			engine.process(filename, context, writer);
+			StringWriter buffer = new StringWriter();
+			engine.process(filename, context, buffer);
+			response.setContentType("text/html");
+			response.getWriter().write(buffer.toString());
 		} catch (IOException ex)
 		{
 			throw new UncheckedIOException(ex);

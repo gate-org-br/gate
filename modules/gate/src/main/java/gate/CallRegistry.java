@@ -46,7 +46,8 @@ public class CallRegistry
 
 	public Optional<ActionMetadata> getMetadata(RequestCommand command)
 	{
-		return Optional.ofNullable(instances.getOrDefault("GET", Map.of()).get(command))
+		return Optional.ofNullable(instances.getOrDefault("GET", Map.of())
+						.get(command))
 				.map(Call::metadata);
 	}
 

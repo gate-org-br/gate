@@ -9,5 +9,5 @@ public class DurationJsonConverterTest extends AbstractSimpleJsonConverterTest<D
 {
 	@Override protected Class<Duration> getType() {return Duration.class;}
 	@Override protected Duration getValue() {return Duration.ofHours(2);}
-	@Override protected JsonElement getJson() {return JsonNumber.of(7200L);}
+	@Override protected JsonElement getJson() {return JsonNumber.wrap(7200L);}
 }

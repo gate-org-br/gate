@@ -31,9 +31,11 @@ public interface JsonCollection extends JsonElement
 	 * @throws IllegalArgumentException if the property path syntax is invalid or if attempting to access an array index
 	 *                                  on a non-array element, access an object property on a non-object element or use invalid property path syntax
 	 */
+	@Override
 	default Optional<JsonElement> getProperty(String property)
 	{
-		Pattern pattern = Pattern.compile("(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)|(?:\\[)(\\d+|([\"'])((?:(?!\\3).)*?)\\3)(?:\\])|(.+)");
+		Pattern pattern = Pattern.compile(
+				"(?:^|\\.)([_$a-zA-Z][_$a-zA-Z0-9]*)|\\[(\\d+|([\"'])((?:(?!\\3).)*?)\\3)]|(.+)");
 		Matcher matcher = pattern.matcher(property);
 
 		JsonElement element = this;

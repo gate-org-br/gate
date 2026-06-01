@@ -10,7 +10,8 @@ public class ObjectJsonRenderer implements JsonRenderer
 {
 	private final ThreadLocal<Deque<Object>> stack = ThreadLocal.withInitial(LinkedList::new);
 
-	@Override public JsonElement render(Class<?> type, Object object)
+	@Override
+	public JsonElement renderJson(Class<?> type, Object object)
 	{
 		if (object == null)
 			return null;
@@ -52,8 +53,8 @@ public class ObjectJsonRenderer implements JsonRenderer
 	private boolean shouldWrite(Object value)
 	{
 		return value != null
-		       && (!(value instanceof Collection<?> collection) || !collection.isEmpty())
-		       && (!(value instanceof Map<?, ?> map) || !map.isEmpty())
-		       && (!value.getClass().isArray() || java.lang.reflect.Array.getLength(value) > 0);
+				&& (!(value instanceof Collection<?> collection) || !collection.isEmpty())
+				&& (!(value instanceof Map<?, ?> map) || !map.isEmpty())
+				&& (!value.getClass().isArray() || java.lang.reflect.Array.getLength(value) > 0);
 	}
 }

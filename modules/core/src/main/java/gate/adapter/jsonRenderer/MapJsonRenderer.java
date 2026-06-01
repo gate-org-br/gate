@@ -9,7 +9,8 @@ import java.util.Map;
 
 public class MapJsonRenderer implements JsonRenderer
 {
-	@Override public JsonElement render(Class<?> type, Object object)
+	@Override
+	public JsonElement renderJson(Class<?> type, Object object)
 	{
 		if (object == null)
 			return null;

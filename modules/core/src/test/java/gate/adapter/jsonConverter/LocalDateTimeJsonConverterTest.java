@@ -9,5 +9,5 @@ public class LocalDateTimeJsonConverterTest extends AbstractSimpleJsonConverterT
 {
 	@Override protected Class<LocalDateTime> getType() {return LocalDateTime.class;}
 	@Override protected LocalDateTime getValue() {return LocalDateTime.of(2026, 4, 29, 14, 35);}
-	@Override protected JsonElement getJson() {return JsonString.of("2026-04-29T14:35");}
+	@Override protected JsonElement getJson() {return JsonString.wrap("2026-04-29T14:35");}
 }

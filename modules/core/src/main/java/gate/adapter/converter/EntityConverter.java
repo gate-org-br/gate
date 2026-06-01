@@ -2,11 +2,12 @@ package gate.adapter.converter;
 
 import gate.annotation.Entity;
 import gate.error.ConversionException;
+import gate.lang.constructionStrategy.ConstructionStrategy;
 import gate.lang.property.Property;
 import gate.util.Reflection;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 public class EntityConverter extends ObjectConverter
 {
@@ -19,27 +20,21 @@ public class EntityConverter extends ObjectConverter
 		if (string.isEmpty())
 			return null;
 
-		try
-		{
-			var rawType = Reflection.getRawType(type);
-			Property property = Property.getProperty(rawType, Entity
-					.Extractor.extract(rawType));
-			Object entity = rawType.getDeclaredConstructor().newInstance();
-			property.setConvertedValue(entity, string);
-			return entity;
-		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-		         | InvocationTargetException | RuntimeException e)
-		{
-			throw new ConversionException(String.format("%s não é uma entidade válida.", string));
-		}
+		var rawType = Reflection.getRawType(type);
+		var name = Entity.Extractor.extract(rawType);
+		var property = Property.getProperty(rawType, name);
+		var propertyType = property.getRawType();
+		var converter = Converter.getConverter(propertyType);
+		var value = converter.ofString(propertyType, string);
+		return ConstructionStrategy.newInstance(rawType, Map.of(property.getLastAttribute(), value));
 	}
 
 	@Override
 	public String toString(Class<?> type, Object object)
 	{
-		if (object == null)
-			return "";
-		return Converter.toString(Property.getProperty(type, Entity.Extractor.extract(type))
-				.getValue(object));
+		var name = Entity.Extractor.extract(type);
+		var property = Property.getProperty(type, name);
+		var value = property.getValue(object);
+		return Converter.toString(value);
 	}
 }

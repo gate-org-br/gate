@@ -31,7 +31,7 @@ public class JsonDatasetFetcher implements Fetcher<JsonArray>
 		JsonArray results = new JsonArray();
 
 		if (includeHeader)
-			results.add(cursor.getColumnNames().stream().map(JsonString::of)
+			results.add(cursor.getColumnNames().stream().map(JsonString::wrap)
 					.collect(Collectors.toCollection(JsonArray::new)));
 
 		while (cursor.next())

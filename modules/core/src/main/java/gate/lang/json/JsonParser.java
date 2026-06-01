@@ -190,7 +190,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 
 	private JsonNumber number() throws ConversionException
 	{
-		JsonNumber value = JsonNumber.of(scanner.getCurrent().toString());
+		JsonNumber value = JsonNumber.wrap(scanner.getCurrent().toString());
 		scanner.scan();
 		return value;
 	}
@@ -203,7 +203,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 
 	private JsonString string() throws ConversionException
 	{
-		JsonString value = JsonString.of(scanner.getCurrent().toString());
+		JsonString value = JsonString.wrap(scanner.getCurrent().toString());
 		scanner.scan();
 		return value;
 	}

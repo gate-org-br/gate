@@ -1,5 +1,6 @@
 package gate.adapter.registrar;
 
+
 import gate.adapter.jsonRenderer.JsonRenderer;
 
 import java.util.Map;

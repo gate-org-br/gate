@@ -9,5 +9,5 @@ public class EnumJsonConverterTest extends AbstractSimpleJsonConverterTest<DayOf
 {
 	@Override protected Class<DayOfWeek> getType() {return DayOfWeek.class;}
 	@Override protected DayOfWeek getValue() {return DayOfWeek.MONDAY;}
-	@Override protected JsonElement getJson() {return JsonString.of("MONDAY");}
+	@Override protected JsonElement getJson() {return JsonString.wrap("MONDAY");}
 }

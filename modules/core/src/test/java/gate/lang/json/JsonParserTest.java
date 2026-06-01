@@ -61,7 +61,7 @@ public class JsonParserTest
 	@Test
 	public void shouldPreserveEscapedCharacters()
 	{
-		JsonString string = JsonString.of("Line 1\nLine 2\tTabbed");
+		JsonString string = JsonString.wrap("Line 1\nLine 2\tTabbed");
 		String json = JsonElement.stringify(string);
 
 		assertEquals("Line 1\nLine 2\tTabbed", JsonElement.parse(json).unwrap());

@@ -13,14 +13,14 @@ public class ArrayJsonRendererTest
 	@Test
 	public void testShouldRenderArray()
 	{
-		var expected = JsonArray.of(JsonString.of("a"), JsonNull.INSTANCE, JsonString.of("b"));
-		Assertions.assertEquals(expected, renderer.render(String[].class, new String[] {"a", null, "b"}));
+		var expected = JsonArray.of(JsonString.wrap("a"), JsonNull.INSTANCE, JsonString.wrap("b"));
+		Assertions.assertEquals(expected, renderer.renderJson(String[].class, new String[]{"a", null, "b"}));
 	}
 
 	@Test
 	public void testShouldRenderPrimitiveArray()
 	{
-		var expected = JsonArray.of(JsonString.of("1"), JsonString.of("2"), JsonString.of("3"));
-		Assertions.assertEquals(expected, renderer.render(int[].class, new int[] {1, 2, 3}));
+		var expected = JsonArray.of(JsonString.wrap("1"), JsonString.wrap("2"), JsonString.wrap("3"));
+		Assertions.assertEquals(expected, renderer.renderJson(int[].class, new int[]{1, 2, 3}));
 	}
 }

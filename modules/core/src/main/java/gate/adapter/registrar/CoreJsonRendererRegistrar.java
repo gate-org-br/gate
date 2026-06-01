@@ -1,5 +1,6 @@
 package gate.adapter.registrar;
 
+
 import gate.adapter.jsonRenderer.*;
 import gate.lang.json.*;
 

@@ -21,6 +21,6 @@ public class DefaultJsonConverterTest
 	{
 		var valueOf = Integer.class.getMethod("valueOf", String.class);
 		var converter = new DefaultJsonConverter(valueOf);
-		Assertions.assertEquals(JsonString.of("42"), converter.toJson(Integer.class, 42));
+		Assertions.assertEquals(JsonString.wrap("42"), converter.toJson(Integer.class, 42));
 	}
 }

@@ -9,5 +9,5 @@ public class LocalTimeJsonConverterTest extends AbstractSimpleJsonConverterTest<
 {
 	@Override protected Class<LocalTime> getType() {return LocalTime.class;}
 	@Override protected LocalTime getValue() {return LocalTime.of(14, 35);}
-	@Override protected JsonElement getJson() {return JsonString.of("14:35");}
+	@Override protected JsonElement getJson() {return JsonString.wrap("14:35");}
 }

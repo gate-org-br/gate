@@ -7,5 +7,5 @@ public class CharacterJsonConverterTest extends AbstractSimpleJsonConverterTest<
 {
 	@Override protected Class<Character> getType() {return Character.class;}
 	@Override protected Character getValue() {return 'A';}
-	@Override protected JsonElement getJson() {return JsonString.of("A");}
+	@Override protected JsonElement getJson() {return JsonString.wrap("A");}
 }

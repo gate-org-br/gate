@@ -1,9 +1,11 @@
 package gate.lang.json;
 
 import gate.adapter.jsonConverter.JsonConverter;
+import gate.adapter.jsonRenderer.JsonRenderer;
 import gate.adapter.renderer.Renderer;
 import gate.error.AppError;
 import gate.error.ConversionException;
+import gate.util.Reflection;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -12,6 +14,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents any JSON element.
@@ -19,7 +22,7 @@ import java.util.Objects;
 public interface JsonElement extends Serializable
 {
 
-	JsonString UNDEFINED = JsonString.of("");
+	JsonString UNDEFINED = JsonString.wrap("");
 
 	/**
 	 * Gets the JSON element's type.
@@ -146,16 +149,18 @@ public interface JsonElement extends Serializable
 	/**
 	 * Converts this JSON element to a parameterized Java type.
 	 * <p>
-	 * This overload is primarily used for collection-like structures where the
-	 * raw type and the element type must both be provided.
+	 * This overload is primarily used for collection-like structures where
+	 * element type information is available from the generic type.
 	 *
-	 * @param <T>         the target Java type
-	 * @param type        the target raw Java type
-	 * @param elementType the generic element type associated with {@code type}
+	 * @param <T>  the target Java type
+	 * @param type the target generic Java type
 	 * @return the converted Java object
 	 */
-	<T> T decode(java.lang.reflect.Type type,
-	             java.lang.reflect.Type elementType);
+	@SuppressWarnings("unchecked")
+	default <T> T decode(java.lang.reflect.Type type)
+	{
+		return decode((Class<T>) Reflection.getRawType(type));
+	}
 
 	/**
 	 * Converts this JSON element to its natural Java representation.
@@ -192,11 +197,11 @@ public interface JsonElement extends Serializable
 			return jsonElement;
 
 		if (obj instanceof Boolean aBoolean)
-			return JsonBoolean.of(aBoolean);
+			return JsonBoolean.wrap(aBoolean);
 		if (obj instanceof Number number)
-			return JsonNumber.of(number);
+			return JsonNumber.wrap(number);
 		if (obj instanceof String string)
-			return JsonString.of(string);
+			return JsonString.wrap(string);
 		if (obj instanceof Collection<?> collection)
 			return JsonArray.wrap(collection);
 		if (obj instanceof Object[] objects)
@@ -272,11 +277,11 @@ public interface JsonElement extends Serializable
 			return JsonBoolean.render(bool);
 
 		if (obj instanceof Collection<?> collection)
-			return JsonArray.render(collection);
+			return JsonArray.format(collection);
 		if (obj instanceof Object[] objects)
-			return JsonArray.render(objects);
+			return JsonArray.format(objects);
 
-		return JsonString.of(Renderer.render(obj));
+		return JsonRenderer.render(obj);
 	}
 
 	/**
@@ -288,5 +293,12 @@ public interface JsonElement extends Serializable
 	static JsonElement valueOf(String string)
 	{
 		return parse(string);
+	}
+
+	default Optional<JsonElement> getProperty(String property)
+	{
+		if (!"this".equals(property))
+			throw new IllegalArgumentException(property + " is not a valid property");
+		return Optional.of(this);
 	}
 }

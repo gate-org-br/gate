@@ -19,7 +19,8 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 
 	private final BigDecimal value;
 
-	@Serial private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private JsonNumber(BigDecimal value)
 	{
@@ -81,7 +82,8 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 * @param type the target Java type
 	 * @return the numeric value converted to the requested type
 	 */
-	@SuppressWarnings("unchecked") @Override
+	@SuppressWarnings("unchecked")
+	@Override
 	public <T> T decode(Class<T> type)
 	{
 		if (type == short.class || type == Short.class)
@@ -106,29 +108,13 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	 *
 	 * @return the wrapped {@link BigDecimal} value
 	 */
-	@Override public BigDecimal unwrap() {return value;}
+	@Override
+	public BigDecimal unwrap() {return value;}
 
 	@Override
 	public Object getScalarValue()
 	{
 		return value;
-	}
-
-
-	/**
-	 * Converts this JSON number to the specified parameterized Java type.
-	 * <p>
-	 * For scalar numbers, this behaves the same as {@link #decode(Class)}.
-	 *
-	 * @param <T>         the target Java type
-	 * @param type        the target raw Java type
-	 * @param elementType ignored for scalar numbers
-	 * @return the numeric value converted to the requested type
-	 */
-	@SuppressWarnings("unchecked") @Override
-	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
-	{
-		return decode((Class<T>) type);
 	}
 
 	/**
@@ -151,220 +137,220 @@ public class JsonNumber extends Number implements JsonElement, JsonScalar
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified int value.
+	 * Returns a JsonNumber instance representing the specified int value.
 	 *
 	 * @param value an int value.
 	 * @return a JsonNumber instance representing value.
 	 */
-	public static JsonNumber of(long value)
+	public static JsonNumber wrap(long value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(long value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified double value.
+	 * Returns a JsonNumber instance representing the specified double value.
 	 *
 	 * @param value a double value.
 	 * @return a JsonNumber instance representing value.
 	 */
-	public static JsonNumber of(double value)
+	public static JsonNumber wrap(double value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(double value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified string value.
+	 * Returns a JsonNumber instance representing the specified string value.
 	 *
 	 * @param value a string value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(String value)
+	public static JsonNumber wrap(String value)
 	{
 		return new JsonNumber(new BigDecimal(value));
 	}
 
 	public static JsonNumber render(String value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Byte value.
+	 * Returns a JsonNumber instance representing the specified Byte value.
 	 *
 	 * @param value a Byte value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Byte value)
+	public static JsonNumber wrap(Byte value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(Byte value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Short value.
+	 * Returns a JsonNumber instance representing the specified Short value.
 	 *
 	 * @param value a Short value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Short value)
+	public static JsonNumber wrap(Short value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(Short value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Integer value.
+	 * Returns a JsonNumber instance representing the specified Integer value.
 	 *
-	 * @param value a Integer value.
+	 * @param value an Integer value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Integer value)
+	public static JsonNumber wrap(Integer value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(Integer value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Long value.
+	 * Returns a JsonNumber instance representing the specified Long value.
 	 *
 	 * @param value a Long value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Long value)
+	public static JsonNumber wrap(Long value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(Long value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Float value.
+	 * Returns a JsonNumber instance representing the specified Float value.
 	 *
 	 * @param value a Float value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Float value)
+	public static JsonNumber wrap(Float value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(Float value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Double value.
+	 * Returns a JsonNumber instance representing the specified Double value.
 	 *
 	 * @param value a Double value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Double value)
+	public static JsonNumber wrap(Double value)
 	{
 		return new JsonNumber(BigDecimal.valueOf(value));
 	}
 
 	public static JsonNumber render(Double value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified BigDecimal value.
+	 * Returns a JsonNumber instance representing the specified BigDecimal value.
 	 *
 	 * @param value a BigDecimal value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(BigDecimal value)
+	public static JsonNumber wrap(BigDecimal value)
 	{
 		return new JsonNumber(value);
 	}
 
 	public static JsonNumber render(BigDecimal value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Percentage value.
+	 * Returns a JsonNumber instance representing the specified Percentage value.
 	 *
 	 * @param value a Percentage value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Percentage value)
+	public static JsonNumber wrap(Percentage value)
 	{
 		return new JsonNumber(value.getValue());
 	}
 
 	public static JsonNumber render(Percentage value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Money value.
+	 * Returns a JsonNumber instance representing the specified Money value.
 	 *
-	 * @param value a Money value.
+	 * @param value money value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Money value)
+	public static JsonNumber wrap(Money value)
 	{
 		return new JsonNumber(value.getValue());
 	}
 
 	public static JsonNumber render(Money value)
 	{
-		return of(value);
+		return wrap(value);
 	}
 
 	/**
-	 * Returns an JsonNumber instance representing the specified Number value.
+	 * Returns a JsonNumber instance representing the specified Number value.
 	 *
 	 * @param value a Number value.
 	 * @return a JsonNumber instance representing value.
 	 * @throws NullPointerException if the specified value is null
 	 */
-	public static JsonNumber of(Number value)
+	public static JsonNumber wrap(Number value)
 	{
-		return JsonNumber.of(value.toString());
+		return JsonNumber.wrap(value.toString());
 	}
 
-	public static JsonNumber render(Number value) {return of(value);}
+	public static JsonNumber render(Number value) {return wrap(value);}
 
 	@Override
 	public boolean equals(Object obj)

@@ -13,7 +13,8 @@ public class RecordJsonRenderer implements JsonRenderer
 {
 	private static final Map<Class<?>, RecordComponent[]> COMPONENTS = new ConcurrentHashMap<>();
 
-	@Override public JsonElement render(Class<?> type, Object object)
+	@Override
+	public JsonElement renderJson(Class<?> type, Object object)
 	{
 		if (object == null)
 			return null;

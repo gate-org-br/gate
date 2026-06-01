@@ -18,7 +18,7 @@ template.innerHTML = `
 }
 
 :host::before {
-	content: '\\3073';
+	content: '\\2140';
 	font-family: 'gate';
 }
 
@@ -37,7 +37,7 @@ customElements.define('g-theme-selector', class extends HTMLElement
 	constructor()
 	{
 		super();
-		this.attachShadow({ mode: "open" });
+		this.attachShadow({mode: "open"});
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 
 		this.addEventListener("click", event =>
@@ -51,19 +51,22 @@ customElements.define('g-theme-selector', class extends HTMLElement
 					text: "Dark", icon: "2164", action: () => this.value = "dark"
 				},
 				{
-					text: "System", icon: "3073", action: () => this.value = "system"
+					text: "System", icon: "2140", action: () => this.value = "system"
 				});
 		});
 	}
+
 	get value()
 	{
 		return this.getAttribute("value") || "false";
 	}
+
 	set value(value)
 	{
 		this.setAttribute("value", value);
 		localStorage.setItem('theme', value);
 	}
+
 	connectedCallback()
 	{
 		this.setAttribute("title", "Change theme");

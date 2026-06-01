@@ -119,8 +119,8 @@ public class FieldAttribute extends AbstractFieldAttribute
 		{
 			Method method = Reflection.findGetter(field).orElse(null);
 			if (method == null
-				|| method.getReturnType().isPrimitive()
-				|| method.isAnnotationPresent(NullSafe.class))
+					|| method.getReturnType().isPrimitive()
+					|| method.isAnnotationPresent(NullSafe.class))
 				return null;
 			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn
 					(method.getDeclaringClass(), MethodHandles.lookup());
@@ -138,10 +138,12 @@ public class FieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getParameters()[0].getType().isPrimitive() || method.getReturnType() != void.class)
+			if (method == null || method.getParameters()[0].getType()
+					.isPrimitive() || method.getReturnType() != void.class)
 				return null;
 
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(),
+					MethodHandles.lookup());
 			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
@@ -180,7 +182,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 	public boolean equals(Object obj)
 	{
 		return obj instanceof FieldAttribute attribute
-			   && Objects.equals(field, attribute.field);
+				&& Objects.equals(field, attribute.field);
 	}
 
 	public static Map<String, FieldAttribute> getAttributes(Class<?> type)

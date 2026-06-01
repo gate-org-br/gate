@@ -1,9 +1,10 @@
 package gate.lang.json;
 
+import gate.adapter.jsonConverter.JsonConverter;
 import gate.error.ConversionException;
-import gate.util.Reflection;
 
 import java.io.Serial;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -79,46 +80,50 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * Converts this JsonArray to a Java object of the specified type.
 	 * <p>
 	 * This method cannot be used without specifying an element type. Use
-	 * {@link #decode(java.lang.reflect.Type, java.lang.reflect.Type)}
+	 * {@link #decode(java.lang.reflect.Type)}
 	 * instead.
 	 * </p>
 	 *
 	 * @param <T>  the type to convert to
 	 * @param type the class of the type to convert to
 	 * @return never returns normally
-	 * @throws UnsupportedOperationException always thrown as element type
+	 * @throws UnsupportedOperationException always thrown as an element type
 	 *                                       is required
 	 */
 	@Override
-	public <T> T decode(Class<T> type) {throw new UnsupportedOperationException("Can't create java object from json array without element type");}
+	@SuppressWarnings("unchecked")
+	public <T> T decode(Class<T> type)
+	{
+		if (type.getGenericSuperclass() instanceof ParameterizedType parameterizedType)
+			return (T) JsonConverter.fromJson(new ParameterizedType()
+			{
+				@Override
+				public java.lang.reflect.Type getRawType() {return type;}
+				@Override
+				public java.lang.reflect.Type getOwnerType() {return type;}
+				@Override
+				public java.lang.reflect.Type[] getActualTypeArguments() {return parameterizedType.getActualTypeArguments();}
+			}, this);
+		throw new UnsupportedOperationException("Can't create java object from json array without element type");
+	}
 
 	/**
-	 * Converts this JsonArray to a Java collection of the specified type
-	 * with element type information.
+	 * Converts this JsonArray to a Java collection of the specified generic type.
 	 * <p>
 	 * Supports conversion to {@link Set} or {@link List} based on the
 	 * specified type.
 	 * </p>
 	 *
-	 * @param <T>         the collection type to convert to
-	 * @param type        the collection type to convert to
-	 * @param elementType the element type for the collection
+	 * @param <T>  the collection type to convert to
+	 * @param type the generic collection type to convert to
 	 * @return a collection of the specified type populated with this
 	 * JsonArray's elements
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
+	public <T> T decode(java.lang.reflect.Type type)
 	{
-		Class<T> clazz = (Class<T>) type;
-		Class<?> elementClazz = Reflection.getRawType(elementType);
-
-		return clazz.isAssignableFrom(Set.class)
-				? (T) stream()
-					  .map(e -> e.decode(elementClazz, Reflection.getElementGenericType(elementType)))
-					  .collect(Collectors.toSet())
-				: (T) stream()
-					  .map(e -> e.decode(elementClazz, Reflection.getElementGenericType(elementType))).toList();
+		return (T) JsonConverter.fromJson(type, this);
 	}
 
 	/**
@@ -130,10 +135,11 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @return a {@link List} containing the natural Java representation of
 	 * each JSON element
 	 */
-	@Override public List<Object> unwrap() {return stream().map(JsonElement::unwrap).toList();}
+	@Override
+	public List<Object> unwrap() {return stream().map(JsonElement::unwrap).toList();}
 
 	/**
-	 * Parses a JSON formatted string into a JsonArray object.
+	 * Parses a JSON-formatted string into a JsonArray object.
 	 *
 	 * @param json the JSON formatted string to be parsed into a JsonArray
 	 *             object
@@ -332,7 +338,8 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 */
 	public Optional<String> getString(int index)
 	{
-		return index >= 0 && values.size() > index && values.get(index) instanceof JsonString string ? Optional.of(string.unwrap())
+		return index >= 0 && values.size() > index && values.get(index) instanceof JsonString string ? Optional.of(
+				string.unwrap())
 				: Optional.empty();
 	}
 
@@ -459,7 +466,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the collection of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray render(Collection<?> objects) {return render(objects.stream());}
+	public static JsonArray format(Collection<?> objects) {return render(objects.stream());}
 
 	/**
 	 * Creates a JsonArray from an array by converting each object to its
@@ -468,7 +475,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the array of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray render(Object... objects) {return render(Stream.of(objects));}
+	public static JsonArray format(Object... objects) {return render(Stream.of(objects));}
 
 	/**
 	 * Creates a JsonArray of formatted JsonObjects with label and value
@@ -480,7 +487,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param value   function to extract the value from each object
 	 * @return a JsonArray containing formatted JsonObjects
 	 */
-	public static <T> JsonArray render(List<T> objects, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonArray format(List<T> objects, Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.render(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));

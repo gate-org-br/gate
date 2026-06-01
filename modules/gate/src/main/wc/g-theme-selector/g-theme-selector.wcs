@@ -15,7 +15,7 @@
 }
 
 :host::before {
-	content: '\\3073';
+	content: '\\2140';
 	font-family: 'gate';
 }
 

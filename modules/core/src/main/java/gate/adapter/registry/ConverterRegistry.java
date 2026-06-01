@@ -1,10 +1,8 @@
 package gate.adapter.registry;
 
-import gate.adapter.converter.Converter;
-import gate.adapter.converter.DefaultConverter;
-import gate.adapter.converter.ObjectConverter;
-import gate.adapter.converter.RecordConverter;
+import gate.adapter.converter.*;
 import gate.adapter.registrar.ConverterRegistrar;
+import gate.annotation.Entity;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -27,7 +25,8 @@ public class ConverterRegistry extends Registry<Converter>
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b)));
 	}
 
-	@Override protected Converter extractor(Class<?> type)
+	@Override
+	protected Converter extractor(Class<?> type)
 	{
 		try
 		{
@@ -43,13 +42,17 @@ public class ConverterRegistry extends Registry<Converter>
 		}
 	}
 
-	@Override protected Converter fallback(Class<?> type)
+	@Override
+	protected Converter fallback(Class<?> type)
 	{
+		if (type.isAnnotationPresent(Entity.class))
+			return new EntityConverter();
+		
 		for (var method : type.getDeclaredMethods())
 			if ("valueOf".equals(method.getName())
-			    && method.getParameterCount() == 1
-			    && method.getParameterTypes()[0] == String.class
-			    && Modifier.isStatic(method.getModifiers()))
+					&& method.getParameterCount() == 1
+					&& method.getParameterTypes()[0] == String.class
+					&& Modifier.isStatic(method.getModifiers()))
 				return new DefaultConverter(method);
 
 		return type.isRecord() ? new RecordConverter() : new ObjectConverter();

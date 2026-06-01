@@ -11,7 +11,7 @@ public class ArrayJsonConverterTest
 	public void testShouldConvertToExpectedJson()
 	{
 		var json = JsonConverter.toJson(new String[]{"a", "b", "c"});
-		Assertions.assertEquals(JsonArray.of(JsonString.of("a"), JsonString.of("b"), JsonString.of("c")), json);
+		Assertions.assertEquals(JsonArray.of(JsonString.wrap("a"), JsonString.wrap("b"), JsonString.wrap("c")), json);
 	}
 
 	@Test

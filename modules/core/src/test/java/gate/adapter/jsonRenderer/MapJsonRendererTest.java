@@ -23,10 +23,10 @@ public class MapJsonRendererTest
 		value.put("missing", null);
 
 		var expected = new JsonObject();
-		expected.put("name", JsonString.of("gate"));
-		expected.put("42", JsonString.of("answer"));
+		expected.put("name", JsonString.wrap("gate"));
+		expected.put("42", JsonString.wrap("answer"));
 		expected.put("missing", JsonNull.INSTANCE);
 
-		Assertions.assertEquals(expected, renderer.render(Map.class, value));
+		Assertions.assertEquals(expected, renderer.renderJson(Map.class, value));
 	}
 }

@@ -1,18 +1,15 @@
 package gate.adapter.jsonConverter;
 
-import gate.error.ConversionException;
-import gate.lang.constructionStrategy.ConstructionStrategy;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
-import gate.lang.property.Attribute;
 import gate.lang.property.FieldAttribute;
+import gate.lang.property.PropertyGraph;
 import gate.util.Reflection;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 
 public class ObjectJsonConverter implements JsonConverter
 {
@@ -27,19 +24,9 @@ public class ObjectJsonConverter implements JsonConverter
 
 		Class<?> type = Reflection.getRawType(genericType);
 
-		Map<Attribute, Object> attributes = new HashMap<>();
-		for (var attribute : FieldAttribute.getAttributes(type).entrySet())
-			if (jsonObject.containsKey(attribute.getKey()))
-				attributes.put(attribute.getValue(),
-						JsonConverter.fromJson(attribute.getValue().getGenericType(),
-								jsonObject.get(attribute.getKey())));
-		try
-		{
-			return ConstructionStrategy.newInstance(type, attributes);
-		} catch (ReflectiveOperationException ex)
-		{
-			throw new ConversionException(ex.getMessage(), ex);
-		}
+		return PropertyGraph.of(type, new ArrayList<>(jsonObject.keySet()))
+				.populate(null, e -> JsonConverter.fromJson(e.getGenericType(),
+						jsonObject.get(e.getLastAttribute().toString())));
 	}
 
 	@Override

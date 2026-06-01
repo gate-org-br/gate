@@ -1,18 +1,19 @@
-import DOM from './dom.js';
 import Parser from './parser.js';
-import trigger from './trigger.js';
-import DataURL from './data-url.js';
 import CancelError from './cancel-error.js';
 import EventHandler from './event-handler.js';
+import GErrorDialog from './g-error-dialog.js';
 import GMessageDialog from './g-message-dialog.js';
 
 export default class TriggerEvent extends CustomEvent
 {
 	#pipeline;
+
 	constructor(name, cause, method, action, form, parameters, context, pipeline, signal)
 	{
-		super(name, {bubbles: true, composed: true, cancelable: false,
-			detail: {cause, method, action, form, parameters, context, signal}});
+		super(name, {
+			bubbles: true, composed: true, cancelable: false,
+			detail: {cause, method, action, form, parameters, context, signal}
+		});
 		this.#pipeline = pipeline;
 	}
 
@@ -70,7 +71,7 @@ export default class TriggerEvent extends CustomEvent
 		if (!label)
 			throw new Error("Attempt to create unamed log");
 
-		const {cause, method, action, form, parameters, context, signal} = this.detail;
+		const {method, action, parameters, context, signal} = this.detail;
 
 		const log = {
 			'@': this.type,
@@ -155,7 +156,10 @@ window.addEventListener("trigger-failure", function (event)
 	if (!event.defaultPrevented
 		&& event.detail.error.name !== "AbortError"
 		&& !(event.detail.error instanceof CancelError))
-		GMessageDialog.error(event.detail.error.message);
+		if (event.detail.error.detail?.errors)
+			GErrorDialog.error(event.detail.error.detail);
+		else
+			GMessageDialog.error(event.detail.error.message);
 
 	for (let element of event.composedPath())
 		call(event, element, "data-on:failure");

@@ -16,6 +16,6 @@ public class DurationJsonConverter implements JsonConverter
 	@Override public JsonElement toJson(Class<?> type, Object object)
 	{
 		return object instanceof Duration duration
-				? JsonNumber.of(duration.getSeconds()) : null;
+				? JsonNumber.wrap(duration.getSeconds()) : null;
 	}
 }

@@ -19,6 +19,6 @@ public class LocalDateJsonConverter implements JsonConverter
 	@Override public JsonElement toJson(Class<?> type, Object object)
 	{
 		return object != null
-				? JsonString.of(Converter.toISOString(object)) : null;
+				? JsonString.wrap(Converter.toISOString(object)) : null;
 	}
 }

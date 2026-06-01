@@ -93,7 +93,7 @@ table > thead > tr > * {
   color: inherit;
   font-weight: bold;
   border-color: var(--main3, #DDDDDD);
-  background-color: var(--main2, #F0F0F0);
+  background-color: var(--base4, #e8f1f6);
 }
 table > tbody > tr {
   outline: none;

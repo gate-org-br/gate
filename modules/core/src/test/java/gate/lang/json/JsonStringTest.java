@@ -4,7 +4,8 @@ import gate.error.ConversionException;
 import mock.IDMock;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsonStringTest
 {
@@ -12,14 +13,14 @@ public class JsonStringTest
 	@Test
 	public void shouldParseStringEscapesAndRoundTripThroughStringify()
 	{
-		JsonString string = JsonString.of("John\"s\nline");
+		JsonString string = JsonString.wrap("John\"s\nline");
 		String json = JsonElement.stringify(string);
 
 		assertEquals(string, JsonString.parse(json));
 		assertEquals("\"John\\\"s\"", JsonString.parse("\"John\\\"s\"").toString());
 		assertEquals("John\"s", JsonString.parse("\"John\\\"s\"").unwrap());
 		assertEquals("https://host/path", JsonString.parse("\"https:\\/\\/host\\/path\"").unwrap());
-		assertEquals(JsonString.of("String"), JsonString.parse(JsonString.of("String").toString()));
+		assertEquals(JsonString.wrap("String"), JsonString.parse(JsonString.wrap("String").toString()));
 	}
 
 	@Test
@@ -34,7 +35,7 @@ public class JsonStringTest
 		assertEquals("\"42\"", string.toString());
 		assertEquals("42", string.decode(String.class));
 		assertEquals(IDMock.valueOf(42), string.decode(IDMock.class));
-		assertEquals(IDMock.valueOf(42), string.decode(IDMock.class, null));
+		assertEquals(IDMock.valueOf(42), string.decode((java.lang.reflect.Type) IDMock.class));
 	}
 
 	@Test

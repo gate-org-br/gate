@@ -13,6 +13,6 @@ public class MonthJsonRendererTest
 	@Test
 	public void testShouldRenderMonth()
 	{
-		Assertions.assertEquals(JsonString.of("abril"), renderer.render(Month.class, Month.APRIL));
+		Assertions.assertEquals(JsonString.wrap("abril"), renderer.renderJson(Month.class, Month.APRIL));
 	}
 }

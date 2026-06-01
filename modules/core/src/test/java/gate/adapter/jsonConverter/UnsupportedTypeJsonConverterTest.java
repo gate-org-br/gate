@@ -19,6 +19,6 @@ public class UnsupportedTypeJsonConverterTest
 	public void testOfJsonThrows()
 	{
 		Assertions.assertThrows(UnsupportedOperationException.class,
-				() -> converter.ofJson(Object.class, JsonString.of("x")));
+				() -> converter.ofJson(Object.class, JsonString.wrap("x")));
 	}
 }

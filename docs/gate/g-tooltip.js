@@ -116,7 +116,6 @@ svg {
 /* global template */
 
 import DOM from './dom.js';
-import './mutation-events.js';
 import anchor from './anchor.js';
 import ResponseHandler from './response-handler.js';
 import GJsonHTMLElement from './g-json-html-element.js';

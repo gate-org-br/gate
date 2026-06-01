@@ -16,7 +16,7 @@ public class CollectionJsonRendererTest
 	@Test
 	public void testShouldRenderCollection()
 	{
-		var expected = JsonArray.of(JsonString.of("a"), JsonNull.INSTANCE, JsonString.of("1"));
-		Assertions.assertEquals(expected, renderer.render(List.class, Arrays.asList("a", null, 1)));
+		var expected = JsonArray.of(JsonString.wrap("a"), JsonNull.INSTANCE, JsonString.wrap("1"));
+		Assertions.assertEquals(expected, renderer.renderJson(List.class, Arrays.asList("a", null, 1)));
 	}
 }

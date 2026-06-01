@@ -15,6 +15,6 @@ public class BooleanJsonConverter implements JsonConverter
 
 	@Override public JsonElement toJson(Class<?> type, Object object)
 	{
-		return object != null ? JsonBoolean.of((Boolean) object) : null;
+		return object != null ? JsonBoolean.wrap((Boolean) object) : null;
 	}
 }

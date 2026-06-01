@@ -16,7 +16,8 @@ public record ConstructorStrategy(Constructor<?> constructor) implements Constru
 	{
 		try
 		{
-			if (attributes.values().stream().allMatch(Objects::isNull))
+			if (!attributes.isEmpty()
+			    && attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
 			var values = Arguments.getArguments(constructor, attributes);

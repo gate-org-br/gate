@@ -13,10 +13,10 @@ public class RecordJsonRendererTest
 	public void testShouldRenderRecord()
 	{
 		var expected = new JsonObject();
-		expected.put("name", JsonString.of("gate"));
-		expected.put("amount", JsonString.of("21"));
+		expected.put("name", JsonString.wrap("gate"));
+		expected.put("amount", JsonString.wrap("21"));
 
-		Assertions.assertEquals(expected, renderer.render(SampleRecord.class, new SampleRecord("gate", 21, null)));
+		Assertions.assertEquals(expected, renderer.renderJson(SampleRecord.class, new SampleRecord("gate", 21, null)));
 	}
 
 	private record SampleRecord(String name, Integer amount, String empty)

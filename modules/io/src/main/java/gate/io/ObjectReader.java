@@ -5,6 +5,8 @@ import gate.lang.json.JsonElement;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Optional;
 
 public class ObjectReader<T> implements Reader<Optional<T>>
@@ -46,8 +48,24 @@ public class ObjectReader<T> implements Reader<Optional<T>>
 	{
 		String string = StringReader.getInstance().read(is);
 		if ("application/json".equalsIgnoreCase(contentType))
-			return Optional.ofNullable(JsonElement.parse(string).decode(type, elementType));
+			return Optional.ofNullable(JsonElement.parse(string).decode(getGenericType()));
 		return Optional.ofNullable(Converter.fromString(type, string));
+	}
+
+	private Type getGenericType()
+	{
+		if (elementType == null)
+			return type;
+
+		return new ParameterizedType()
+		{
+			@Override
+			public Type getRawType() {return type;}
+			@Override
+			public Type getOwnerType() {return type;}
+			@Override
+			public Type[] getActualTypeArguments() {return new Type[]{elementType};}
+		};
 	}
 
 	@Override

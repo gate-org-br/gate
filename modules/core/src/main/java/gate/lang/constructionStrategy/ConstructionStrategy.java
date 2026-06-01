@@ -9,6 +9,7 @@ import gate.util.Reflection;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -27,6 +28,10 @@ import java.util.stream.Stream;
  *     factory exists with parameters, it is treated as canonical;</li>
  *     <li><b>Attribute match</b> — constructors or factories whose parameters match the provided
  *     attributes, with preference for an exact parameter count;</li>
+ *     <li><b>Sealed</b> — if the class is sealed, the non-null attributes determine which
+ *     subtype to instantiate; the subtype whose constructor or {@code of(...)} factory parameters
+ *     exactly match the non-null attributes is selected — ambiguity or no match throws an
+ *     exception;</li>
  *     <li><b>Bean</b> — a public no-argument constructor, with attributes applied via setters.</li>
  * </ol>
  * <p>
@@ -43,16 +48,6 @@ import java.util.stream.Stream;
  */
 public interface ConstructionStrategy
 {
-	Object construct(Class<?> type,
-	                 Map<Attribute, Object> attributes);
-
-	Object construct(Class<?> type,
-	                 Object value,
-	                 Map<Attribute, Object> propertyMap,
-	                 TriFunction<Attribute, Object, Object, Object> getValue)
-			throws ReflectiveOperationException;
-
-
 	static ConstructionStrategy of(Class<?> type, Set<Attribute> attributes)
 	{
 		return Cache.INSTANCE.compute(type, attributes, () ->
@@ -97,15 +92,7 @@ public interface ConstructionStrategy
 			if (type == BlockingDeque.class)
 				return new CollectionStrategy(LinkedBlockingDeque::new);
 
-
-			var candidates = Stream.concat(Arrays.stream(type.getConstructors())
-							.filter(c -> !c.isAnnotationPresent(Deprecated.class)),
-					Arrays.stream(type.getDeclaredMethods())
-							.filter(m -> Modifier.isPublic(m.getModifiers()))
-							.filter(m -> Modifier.isStatic(m.getModifiers()))
-							.filter(m -> !m.isAnnotationPresent(Deprecated.class))
-							.filter(m -> m.getName().equals("of"))).toList();
-
+			var candidates = getCandidates(type).toList();
 
 			var canonical = candidates.stream()
 					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
@@ -159,6 +146,29 @@ public interface ConstructionStrategy
 				else if (candidates.get(0) instanceof Method method)
 					return new FactoryMethodStrategy(method);
 
+
+			if (type.isSealed())
+			{
+				Map<Set<String>, Executable> executables = new HashMap<>();
+				getSubtypeCandidates(type).forEach(e ->
+				{
+					var key = Arrays.stream(e.getParameters())
+							.map(Parameter::getName)
+							.collect(Collectors.toSet());
+					var existing = executables.put(key, e);
+					if (existing != null)
+						throw new ConstructionException(type, Arrays.asList(existing, e));
+				});
+				if (!executables.isEmpty() &&
+				    executables.keySet().stream()
+							.flatMap(Set::stream)
+							.collect(Collectors.toSet())
+							.containsAll(attributes.stream()
+									.map(Object::toString)
+									.collect(Collectors.toSet())))
+					return new SealedConstructorStrategy(executables);
+			}
+
 			var defaultConstructor = Arrays.stream(type.getConstructors())
 					.filter(c -> c.getParameterCount() == 0)
 					.findFirst()
@@ -170,11 +180,29 @@ public interface ConstructionStrategy
 		});
 	}
 
+	private static Stream<Executable> getCandidates(Class<?> type)
+	{
+		return Stream.concat(Arrays.stream(type.getConstructors())
+						.filter(c -> !c.isAnnotationPresent(Deprecated.class)),
+				Arrays.stream(type.getDeclaredMethods())
+						.filter(m -> Modifier.isPublic(m.getModifiers()))
+						.filter(m -> Modifier.isStatic(m.getModifiers()))
+						.filter(m -> !m.isAnnotationPresent(Deprecated.class))
+						.filter(m -> m.getName().equals("of")));
+	}
+
+	private static Stream<Executable> getSubtypeCandidates(Class<?> type)
+	{
+		if (type.isSealed())
+			return Arrays.stream(type.getPermittedSubclasses())
+					.flatMap(ConstructionStrategy::getSubtypeCandidates);
+		return getCandidates(type);
+	}
+
 	private static boolean matchesAttributes(Set<Attribute> attributes, Parameter[] parameters)
 	{
 		return attributes.stream().allMatch(a -> Arrays.stream(parameters).anyMatch(a::matches));
 	}
-
 
 	static Object newInstance(Class<?> type,
 	                          Object value,
@@ -184,11 +212,23 @@ public interface ConstructionStrategy
 		return of(type, propertyMap.keySet())
 				.construct(type, value, propertyMap, getValue);
 	}
-
 	static Object newInstance(Class<?> type,
-	                          Map<Attribute, Object> attributes) throws ReflectiveOperationException
+	                          Map<Attribute, Object> attributes)
 	{
 		return of(type, attributes.keySet())
 				.construct(type, attributes);
 	}
+
+	static Object newInstance(Class<?> type)
+	{
+		return newInstance(type, Map.of());
+	}
+
+	Object construct(Class<?> type,
+	                 Map<Attribute, Object> attributes);
+	Object construct(Class<?> type,
+	                 Object value,
+	                 Map<Attribute, Object> propertyMap,
+	                 TriFunction<Attribute, Object, Object, Object> getValue)
+			throws ReflectiveOperationException;
 }

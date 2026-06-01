@@ -13,8 +13,8 @@ public class JsonBooleanTest
 	{
 		assertSame(JsonBoolean.TRUE, JsonBoolean.parse("true"));
 		assertSame(JsonBoolean.FALSE, JsonBoolean.parse("false"));
-		assertSame(JsonBoolean.TRUE, JsonBoolean.of(true));
-		assertSame(JsonBoolean.FALSE, JsonBoolean.of(Boolean.FALSE));
+		assertSame(JsonBoolean.TRUE, JsonBoolean.wrap(true));
+		assertSame(JsonBoolean.FALSE, JsonBoolean.wrap(Boolean.FALSE));
 		assertSame(JsonBoolean.TRUE, JsonBoolean.render(Boolean.TRUE));
 		assertSame(JsonBoolean.FALSE, JsonElement.render(Boolean.FALSE));
 	}
@@ -28,7 +28,7 @@ public class JsonBooleanTest
 		assertEquals(true, JsonBoolean.TRUE.unwrap());
 		assertEquals(true, JsonBoolean.TRUE.decode(Boolean.class));
 		assertEquals(true, JsonBoolean.TRUE.decode(boolean.class));
-		assertEquals(true, JsonBoolean.TRUE.decode(Boolean.class, null));
+		assertEquals(true, JsonBoolean.TRUE.decode((java.lang.reflect.Type) Boolean.class));
 		assertEquals("true", JsonBoolean.TRUE.toString());
 		assertEquals(1, JsonBoolean.TRUE.hashCode());
 		assertEquals(0, JsonBoolean.FALSE.hashCode());

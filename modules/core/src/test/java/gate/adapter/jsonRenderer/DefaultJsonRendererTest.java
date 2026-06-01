@@ -11,12 +11,12 @@ public class DefaultJsonRendererTest
 	@Test
 	public void testShouldRenderString()
 	{
-		Assertions.assertEquals(JsonString.of("text"), renderer.render(String.class, "text"));
+		Assertions.assertEquals(JsonString.wrap("text"), renderer.renderJson(String.class, "text"));
 	}
 
 	@Test
 	public void testShouldRenderNumber()
 	{
-		Assertions.assertEquals(JsonString.of("42"), renderer.render(Integer.class, 42));
+		Assertions.assertEquals(JsonString.wrap("42"), renderer.renderJson(Integer.class, 42));
 	}
 }

@@ -1,9 +1,11 @@
 package gate.adapter.registry;
 
 import gate.adapter.registrar.RendererRegistrar;
+import gate.adapter.renderer.EntityRenderer;
 import gate.adapter.renderer.ObjectRenderer;
 import gate.adapter.renderer.RecordRenderer;
 import gate.adapter.renderer.Renderer;
+import gate.annotation.Entity;
 
 import java.util.Collection;
 import java.util.Map;
@@ -25,7 +27,8 @@ public class RendererRegistry extends Registry<Renderer>
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b)));
 	}
 
-	@Override protected Renderer extractor(Class<?> type)
+	@Override
+	protected Renderer extractor(Class<?> type)
 	{
 		try
 		{
@@ -41,8 +44,11 @@ public class RendererRegistry extends Registry<Renderer>
 		}
 	}
 
-	@Override protected Renderer fallback(Class<?> type)
+	@Override
+	protected Renderer fallback(Class<?> type)
 	{
+		if (type.isAnnotationPresent(Entity.class))
+			return new EntityRenderer();
 		if (type.isRecord())
 			return new RecordRenderer();
 		return new ObjectRenderer();

@@ -9,5 +9,5 @@ public class YearMonthJsonConverterTest extends AbstractSimpleJsonConverterTest<
 {
 	@Override protected Class<YearMonth> getType() {return YearMonth.class;}
 	@Override protected YearMonth getValue() {return YearMonth.of(2026, 4);}
-	@Override protected JsonElement getJson() {return JsonString.of("2026-04");}
+	@Override protected JsonElement getJson() {return JsonString.wrap("2026-04");}
 }

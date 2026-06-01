@@ -1,16 +1,16 @@
 package gate.adapter.handler;
 
-import gate.adapter.renderer.Renderer;
+import gate.Progress;
+import gate.lang.contentType.ContentType;
+import gate.lang.json.JsonElement;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
-
-import gate.adapter.converter.Converter;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @ApplicationScoped
 public class JsonTextHandler implements Handler
@@ -21,7 +21,7 @@ public class JsonTextHandler implements Handler
 	{
 		try
 		{
-			String string = Renderer.toJsonText(value);
+			String string = JsonElement.render(value).toString();
 			byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
 
 			response.setCharacterEncoding("UTF-8");
@@ -37,5 +37,13 @@ public class JsonTextHandler implements Handler
 		{
 			throw new UncheckedIOException(ex);
 		}
+	}
+
+	@Override
+	public void handle(HttpServletRequest request, Progress progress, Object value)
+	{
+		progress.result(ContentType.APPLICATION_JSON.toString(),
+				null,
+				JsonElement.render(value).toString());
 	}
 }

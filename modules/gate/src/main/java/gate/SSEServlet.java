@@ -47,7 +47,9 @@ public class SSEServlet extends HttpServlet
 
 			response.setCharacterEncoding("UTF-8");
 			response.setContentType("text/event-stream");
-			listener.subscribe(user, request.startAsync());
+			var context = request.startAsync();
+			context.setTimeout(0);
+			listener.subscribe(user, context);
 		} catch (UnauthorizedException ex)
 		{
 			catcher.catches(request, response, ex);

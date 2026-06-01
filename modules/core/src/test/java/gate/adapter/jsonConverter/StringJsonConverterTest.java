@@ -7,5 +7,5 @@ public class StringJsonConverterTest extends AbstractSimpleJsonConverterTest<Str
 {
 	@Override protected Class<String> getType() {return String.class;}
 	@Override protected String getValue() {return "hello";}
-	@Override protected JsonElement getJson() {return JsonString.of("hello");}
+	@Override protected JsonElement getJson() {return JsonString.wrap("hello");}
 }

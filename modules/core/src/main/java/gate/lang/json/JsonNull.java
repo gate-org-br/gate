@@ -53,17 +53,6 @@ public class JsonNull implements JsonElement, JsonScalar
 	@Override
 	public <T> T decode(Class<T> type) {return null;}
 
-	/**
-	 * Converts this JSON null to the specified parameterized Java type.
-	 *
-	 * @param <T>         the target Java type
-	 * @param type        the target raw Java type
-	 * @param elementType ignored for JSON null
-	 * @return always {@code null}
-	 */
-	@Override
-	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType) {return null;}
-
 	@Override
 	public Object getScalarValue()
 	{

@@ -41,12 +41,12 @@ public class JsonElementTest
 	public void shouldWrapNaturalJavaValues()
 	{
 		assertSame(JsonNull.INSTANCE, JsonElement.wrap(null));
-		assertEquals(JsonString.of("value"), JsonElement.wrap("value"));
+		assertEquals(JsonString.wrap("value"), JsonElement.wrap("value"));
 		assertSame(JsonBoolean.TRUE, JsonElement.wrap(true));
-		assertEquals(JsonNumber.of(1), JsonElement.wrap(1));
-		assertEquals(JsonArray.of(JsonNumber.of(1), JsonString.of("two")),
+		assertEquals(JsonNumber.wrap(1), JsonElement.wrap(1));
+		assertEquals(JsonArray.of(JsonNumber.wrap(1), JsonString.wrap("two")),
 				JsonElement.wrap(List.of(1, "two")));
-		assertEquals(JsonArray.of(JsonString.of("a"), JsonString.of("b")),
+		assertEquals(JsonArray.of(JsonString.wrap("a"), JsonString.wrap("b")),
 				JsonElement.wrap(new String[]{"a", "b"}));
 		assertEquals(new JsonObject().setString("name", "Gate"),
 				JsonElement.wrap(Map.of("name", "Gate")));
@@ -83,10 +83,10 @@ public class JsonElementTest
 
 		assertSame(JsonElement.UNDEFINED, JsonElement.render(null));
 		assertSame(JsonBoolean.FALSE, JsonElement.render(false));
-		assertEquals(JsonNumber.of(42), JsonElement.render(42));
-		assertEquals(JsonString.of("User 1"), JsonElement.render(user.getName()));
-		assertEquals(JsonArray.of(JsonString.of("User 1"), JsonNumber.of(10)),
-				JsonArray.render(user.getName(), user.getLevel()));
+		assertEquals(JsonNumber.wrap(42), JsonElement.render(42));
+		assertEquals(JsonString.wrap("User 1"), JsonElement.render(user.getName()));
+		assertEquals(JsonArray.of(JsonString.wrap("User 1"), JsonNumber.wrap(10)),
+				JsonArray.format(user.getName(), user.getLevel()));
 	}
 
 	@Test
@@ -94,13 +94,13 @@ public class JsonElementTest
 	{
 		JsonObject object = new JsonObject().setString("name", "Gate").setInt("level", 10);
 		JsonArray array = JsonArray.wrap("first", "second");
-		JsonElement scalar = JsonString.of("value");
+		JsonElement scalar = JsonString.wrap("value");
 
-		assertEquals(JsonString.of("Gate"), object.path("name"));
-		assertEquals(JsonString.of("Gate"), object.path(0));
-		assertEquals(JsonNumber.of(10), object.path(-1));
-		assertEquals(JsonString.of("second"), array.path(1));
-		assertEquals(JsonString.of("second"), array.path(-1));
+		assertEquals(JsonString.wrap("Gate"), object.path("name"));
+		assertEquals(JsonString.wrap("Gate"), object.path(0));
+		assertEquals(JsonNumber.wrap(10), object.path(-1));
+		assertEquals(JsonString.wrap("second"), array.path(1));
+		assertEquals(JsonString.wrap("second"), array.path(-1));
 		assertSame(JsonNull.INSTANCE, array.path("1"));
 		assertSame(JsonNull.INSTANCE, scalar.path("name"));
 		assertSame(JsonNull.INSTANCE, scalar.path(0));

@@ -1,9 +1,7 @@
 package gate.thymeleaf.processors.tag.anchor;
 
-import gate.adapter.renderer.Renderer;
-
 import gate.Call;
-import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.entity.User;
 import gate.type.Attributes;
 import gate.util.Parameters;
@@ -126,7 +124,7 @@ public class LinkProcessor extends AnchorProcessor
 			body.add(meta.name());
 
 		if (meta.icon() != null)
-			body.add("<i>" + meta.icon() + "</i>");
+			body.add("<g-icon>" + meta.icon() + "</g-icon>");
 		else if (meta.emoji() != null)
 			body.add("<e>" + meta.emoji() + "</e>");
 

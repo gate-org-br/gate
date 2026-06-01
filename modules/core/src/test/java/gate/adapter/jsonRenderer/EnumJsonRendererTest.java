@@ -12,7 +12,7 @@ public class EnumJsonRendererTest
 	@Test
 	public void testShouldRenderEnum()
 	{
-		Assertions.assertEquals(JsonString.of("Active"), renderer.render(Status.class, Status.ACTIVE));
+		Assertions.assertEquals(JsonString.wrap("Active"), renderer.renderJson(Status.class, Status.ACTIVE));
 	}
 
 	private enum Status

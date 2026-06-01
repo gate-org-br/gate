@@ -145,7 +145,8 @@ export default class DOM
 			return new Optional(source);
 
 		if (!path.startsWith("this"))
-			return new Optional(source.getRootNode().querySelector(path) || document.querySelector(path));
+			return new Optional(source.getRootNode().querySelector(path)
+				|| document.querySelector(path));
 
 		for (let step of Parser.path(path.substring(4)))
 		{

@@ -16,7 +16,8 @@ public record FactoryMethodStrategy(Method method) implements ConstructionStrate
 	{
 		try
 		{
-			if (attributes.values().stream().allMatch(Objects::isNull))
+			if (!attributes.isEmpty()
+			    && attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
 			var values = Arguments.getArguments(method, attributes);

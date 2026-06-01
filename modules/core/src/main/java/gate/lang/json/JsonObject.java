@@ -33,7 +33,8 @@ import java.util.function.Function;
  */
 public class JsonObject implements Map<String, JsonElement>, JsonCollection
 {
-	@Serial private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private final Map<String, JsonElement> values = new LinkedHashMap<>();
 
@@ -108,7 +109,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.of(value));
+			set(key, JsonString.wrap(value));
 		return this;
 	}
 
@@ -121,7 +122,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setBoolean(String key, boolean value)
 	{
-		return set(key, JsonBoolean.of(value));
+		return set(key, JsonBoolean.wrap(value));
 	}
 
 	/**
@@ -137,7 +138,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonBoolean.of(value));
+			set(key, JsonBoolean.wrap(value));
 		return this;
 	}
 
@@ -150,7 +151,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setByte(String key, byte value)
 	{
-		return set(key, JsonNumber.of(value));
+		return set(key, JsonNumber.wrap(value));
 	}
 
 	/**
@@ -166,7 +167,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.of(value));
+			set(key, JsonNumber.wrap(value));
 		return this;
 	}
 
@@ -179,7 +180,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setShort(String key, short value)
 	{
-		return set(key, JsonNumber.of(value));
+		return set(key, JsonNumber.wrap(value));
 	}
 
 	/**
@@ -195,7 +196,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.of(value));
+			set(key, JsonNumber.wrap(value));
 		return this;
 	}
 
@@ -208,7 +209,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setInt(String key, int value)
 	{
-		return set(key, JsonNumber.of(value));
+		return set(key, JsonNumber.wrap(value));
 	}
 
 	/**
@@ -224,7 +225,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.of(value));
+			set(key, JsonNumber.wrap(value));
 		return this;
 	}
 
@@ -237,7 +238,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setLong(String key, long value)
 	{
-		return set(key, JsonNumber.of(value));
+		return set(key, JsonNumber.wrap(value));
 	}
 
 	/**
@@ -253,7 +254,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.of(value));
+			set(key, JsonNumber.wrap(value));
 		return this;
 	}
 
@@ -266,7 +267,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setFloat(String key, float value)
 	{
-		return set(key, JsonNumber.of(value));
+		return set(key, JsonNumber.wrap(value));
 	}
 
 	/**
@@ -282,7 +283,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.of(value));
+			set(key, JsonNumber.wrap(value));
 		return this;
 	}
 
@@ -295,7 +296,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public JsonObject setDouble(String key, double value)
 	{
-		return set(key, JsonNumber.of(value));
+		return set(key, JsonNumber.wrap(value));
 	}
 
 	/**
@@ -311,7 +312,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonNumber.of(value));
+			set(key, JsonNumber.wrap(value));
 		return this;
 	}
 
@@ -472,7 +473,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.of(Converter.toString(value)));
+			set(key, JsonString.wrap(Converter.toString(value)));
 		return this;
 	}
 
@@ -491,7 +492,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		if (value == null)
 			remove(key);
 		else
-			set(key, JsonString.of(Converter.toString(value)));
+			set(key, JsonString.wrap(Converter.toString(value)));
 		return this;
 	}
 
@@ -775,23 +776,6 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 		return JsonConverter.fromJson(type, this);
 	}
 
-	/**
-	 * Converts this JSON object to the specified parameterized Java type.
-	 * <p>
-	 * For JSON objects, this behaves the same as {@link #decode(Class)}.
-	 *
-	 * @param <T>         the target Java type
-	 * @param type        the target raw Java type
-	 * @param elementType ignored for object conversion
-	 * @return the converted Java object
-	 */
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T decode(java.lang.reflect.Type type, java.lang.reflect.Type elementType)
-	{
-		return decode((Class<T>) type);
-	}
-
 	@Override
 	public int size()
 	{
@@ -893,7 +877,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public static <T> JsonObject render(T obj, Function<T, String> label, Function<T, Object> value)
 	{
-		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
+		return new JsonObject().set("label", JsonString.wrap(label.apply(obj))).set("value",
 				JsonElement.encode(value.apply(obj)));
 	}
 
@@ -909,7 +893,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 */
 	public static <T> JsonObject entries(T obj, Function<T, String> label, Function<T, Object> value)
 	{
-		return new JsonObject().set("label", JsonString.of(label.apply(obj))).set("value",
+		return new JsonObject().set("label", JsonString.wrap(label.apply(obj))).set("value",
 				JsonElement.encode(value.apply(obj)));
 	}
 
@@ -928,7 +912,7 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	public static <T> JsonObject entries(T obj, Function<T, String> label, Function<T, Object> value,
 	                                     Function<T, JsonObject> properties)
 	{
-		return new JsonObject().set("label", JsonString.of(label.apply(obj)))
+		return new JsonObject().set("label", JsonString.wrap(label.apply(obj)))
 				.set("value", JsonElement.encode(value.apply(obj)))
 				.set("properties", properties.apply(obj));
 	}
@@ -983,7 +967,8 @@ public class JsonObject implements Map<String, JsonElement>, JsonCollection
 	 * @return the property value, or {@link JsonNull#INSTANCE} when the
 	 * property does not exist
 	 */
-	@Override public JsonElement path(String name) {return name != null ? values.getOrDefault(name, JsonNull.INSTANCE) : null;}
+	@Override
+	public JsonElement path(String name) {return name != null ? values.getOrDefault(name, JsonNull.INSTANCE) : null;}
 
 	@Override
 	public JsonElement path(int index)

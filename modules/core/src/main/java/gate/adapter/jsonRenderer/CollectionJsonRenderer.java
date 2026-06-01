@@ -6,7 +6,8 @@ import gate.lang.json.JsonNull;
 
 public class CollectionJsonRenderer implements JsonRenderer
 {
-	@Override public JsonElement render(Class<?> type, Object object)
+	@Override
+	public JsonElement renderJson(Class<?> type, Object object)
 	{
 		if (object == null)
 			return null;

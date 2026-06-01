@@ -19,6 +19,6 @@ public class PatternJsonConverter implements JsonConverter
 	@Override public JsonElement toJson(Class<?> type, Object object)
 	{
 		return object != null
-				? JsonString.of(Converter.toString(object)) : null;
+				? JsonString.wrap(Converter.toString(object)) : null;
 	}
 }

@@ -47,7 +47,7 @@ public class JsonObjectTest
 				.setInt("int", 3)
 				.setBoolean("boolean", true)
 				.set("object", new JsonObject().setString("name", "nested"))
-				.set("array", JsonArray.of(JsonString.of("item")));
+				.set("array", JsonArray.of(JsonString.wrap("item")));
 
 		assertEquals("value", object.getString(0).orElseThrow());
 		assertEquals(3, object.getInt(1).orElseThrow());
@@ -106,7 +106,7 @@ public class JsonObjectTest
 				.setObject("id", IDMock.valueOf(10))
 				.setObject("typed", IDMock.class, IDMock.valueOf(11));
 
-		assertEquals(JsonString.of("10"), object.get("id"));
+		assertEquals(JsonString.wrap("10"), object.get("id"));
 		assertEquals(IDMock.valueOf(10), object.getObject("id", IDMock.class).orElseThrow());
 		assertEquals(IDMock.valueOf(11), object.getObject("typed", IDMock.class).orElseThrow());
 		assertEquals(IDMock.valueOf(10), object.getObject(0, IDMock.class).orElseThrow());
@@ -147,7 +147,7 @@ public class JsonObjectTest
 				"{ \"active\": \r\n\t true, \"name\" :\n\t \"John\" }");
 
 		assertEquals(JsonBoolean.TRUE, object.get("active"));
-		assertEquals(JsonString.of("John"), object.get("name"));
+		assertEquals(JsonString.wrap("John"), object.get("name"));
 	}
 
 	@Test
@@ -192,11 +192,11 @@ public class JsonObjectTest
 				.setString("name", "User 1")
 				.setInt("level", 10);
 
-		assertEquals(JsonString.of("User 1"), object.path("name"));
-		assertEquals(JsonString.of("User 1"), object.path(0));
-		assertEquals(JsonNumber.of(10), object.path(1));
-		assertEquals(JsonNumber.of(10), object.path(-1));
-		assertEquals(JsonString.of("User 1"), object.path(-2));
+		assertEquals(JsonString.wrap("User 1"), object.path("name"));
+		assertEquals(JsonString.wrap("User 1"), object.path(0));
+		assertEquals(JsonNumber.wrap(10), object.path(1));
+		assertEquals(JsonNumber.wrap(10), object.path(-1));
+		assertEquals(JsonString.wrap("User 1"), object.path(-2));
 		assertSame(JsonNull.INSTANCE, object.path("missing"));
 		assertSame(JsonNull.INSTANCE, object.path(2));
 		assertSame(JsonNull.INSTANCE, object.path(-3));
@@ -252,20 +252,20 @@ public class JsonObjectTest
 	@Test
 	public void shouldExposeMapOperations()
 	{
-		JsonObject object = new JsonObject(Map.of("name", JsonString.of("User 1")));
+		JsonObject object = new JsonObject(Map.of("name", JsonString.wrap("User 1")));
 
 		assertEquals(1, object.size());
 		assertFalse(object.isEmpty());
 		assertTrue(object.containsKey("name"));
-		assertTrue(object.containsValue(JsonString.of("User 1")));
-		assertEquals(JsonString.of("User 1"), object.get("name"));
+		assertTrue(object.containsValue(JsonString.wrap("User 1")));
+		assertEquals(JsonString.wrap("User 1"), object.get("name"));
 
-		object.put("id", JsonNumber.of(1));
+		object.put("id", JsonNumber.wrap(1));
 		object.put("active", JsonBoolean.TRUE);
 
 		assertTrue(object.keySet().containsAll(List.of("name", "id", "active")));
 		assertEquals(3, object.size());
 		assertEquals(3, object.size());
-		assertEquals(JsonNumber.of(1), object.remove("id"));
+		assertEquals(JsonNumber.wrap(1), object.remove("id"));
 	}
 }

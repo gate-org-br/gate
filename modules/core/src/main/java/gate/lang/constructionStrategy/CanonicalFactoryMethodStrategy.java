@@ -16,7 +16,8 @@ public record CanonicalFactoryMethodStrategy(Method method) implements Construct
 	{
 		try
 		{
-			if (attributes.values().stream().allMatch(Objects::isNull))
+			if (!attributes.isEmpty()
+			    && attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
 			var constructorAttributes = Arguments.getConstructorAttributes(method, attributes.keySet());

@@ -1,9 +1,7 @@
 package gate.adapter.columnMapper;
 
-import gate.annotation.Entity;
-import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
-import gate.lang.property.Property;
+import gate.lang.json.JsonElement;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,40 +16,21 @@ public class EntityColumnMapper implements ColumnMapper
 	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException, ConversionException
 	{
 		String value = rs.getString(index);
-		return rs.wasNull() ? null : ofString(type, value);
+		return rs.wasNull() ? null : JsonElement.parse(value).decode(type);
 	}
 
 	@Override
 	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);
-		return rs.wasNull() ? null : ofString(type, value);
-	}
-
-	private Object ofString(Class<?> type, String string) throws ConversionException
-	{
-		try
-		{
-			if (string != null && !string.trim().isEmpty())
-			{
-				Property property = Property.getProperty(type, Entity.Extractor.extract(type));
-				Object entity = type.getDeclaredConstructor().newInstance();
-				property.setConvertedValue(entity, string);
-				return entity;
-			}
-			return null;
-		} catch (ReflectiveOperationException | RuntimeException e)
-		{
-			throw new ConversionException(String.format("%s não é uma entidade válida.", string));
-		}
+		return rs.wasNull() ? null : JsonElement.parse(value).decode(type);
 	}
 
 	@Override
 	public int writeToPreparedStatement(PreparedStatement ps, int index, Object value) throws SQLException
 	{
 		if (value != null)
-			ps.setString(index++, Converter.toString(Property.getProperty(value.getClass(),
-					Entity.Extractor.extract(value.getClass())).getValue(value)));
+			ps.setString(index++, JsonElement.encode(value).toString());
 		else
 			ps.setNull(index++, Types.VARCHAR);
 		return index;

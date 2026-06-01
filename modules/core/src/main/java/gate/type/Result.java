@@ -56,62 +56,62 @@ public class Result implements Serializable
 
 	public static Result success(String message, String data)
 	{
-		return new Result(Type.SUCCESS, message, JsonString.of(data));
+		return new Result(Type.SUCCESS, message, JsonString.wrap(data));
 	}
 
 	public static Result warning(String message, String data)
 	{
-		return new Result(Type.WARNING, message, JsonString.of(data));
+		return new Result(Type.WARNING, message, JsonString.wrap(data));
 	}
 
 	public static Result error(String message, String data)
 	{
-		return new Result(Type.ERROR, message, JsonString.of(data));
+		return new Result(Type.ERROR, message, JsonString.wrap(data));
 	}
 
 	public static Result success(String message, long data)
 	{
-		return new Result(Type.SUCCESS, message, JsonNumber.of(data));
+		return new Result(Type.SUCCESS, message, JsonNumber.wrap(data));
 	}
 
 	public static Result warning(String message, long data)
 	{
-		return new Result(Type.WARNING, message, JsonNumber.of(data));
+		return new Result(Type.WARNING, message, JsonNumber.wrap(data));
 	}
 
 	public static Result error(String message, long data)
 	{
-		return new Result(Type.ERROR, message, JsonNumber.of(data));
+		return new Result(Type.ERROR, message, JsonNumber.wrap(data));
 	}
 
 	public static Result success(String message, double data)
 	{
-		return new Result(Type.SUCCESS, message, JsonNumber.of(data));
+		return new Result(Type.SUCCESS, message, JsonNumber.wrap(data));
 	}
 
 	public static Result warning(String message, double data)
 	{
-		return new Result(Type.WARNING, message, JsonNumber.of(data));
+		return new Result(Type.WARNING, message, JsonNumber.wrap(data));
 	}
 
 	public static Result error(String message, double data)
 	{
-		return new Result(Type.ERROR, message, JsonNumber.of(data));
+		return new Result(Type.ERROR, message, JsonNumber.wrap(data));
 	}
 
 	public static Result success(String message, boolean data)
 	{
-		return new Result(Type.SUCCESS, message, JsonBoolean.of(data));
+		return new Result(Type.SUCCESS, message, JsonBoolean.wrap(data));
 	}
 
 	public static Result warning(String message, boolean data)
 	{
-		return new Result(Type.WARNING, message, JsonBoolean.of(data));
+		return new Result(Type.WARNING, message, JsonBoolean.wrap(data));
 	}
 
 	public static Result error(String message, boolean data)
 	{
-		return new Result(Type.ERROR, message, JsonBoolean.of(data));
+		return new Result(Type.ERROR, message, JsonBoolean.wrap(data));
 	}
 
 	public static Result success(String message, Object data)

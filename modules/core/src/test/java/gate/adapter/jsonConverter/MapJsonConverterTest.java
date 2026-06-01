@@ -1,7 +1,7 @@
 package gate.adapter.jsonConverter;
 
-import gate.lang.json.JsonObject;
 import gate.lang.json.JsonNumber;
+import gate.lang.json.JsonObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class MapJsonConverterTest
 	public void testShouldConvertToExpectedJson()
 	{
 		var expected = new JsonObject();
-		expected.put("key", JsonNumber.of(42L));
+		expected.put("key", JsonNumber.wrap(42L));
 		Assertions.assertEquals(expected, JsonConverter.toJson(Map.of("key", 42)));
 	}
 

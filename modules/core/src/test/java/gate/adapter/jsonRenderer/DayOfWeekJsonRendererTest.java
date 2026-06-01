@@ -13,6 +13,7 @@ public class DayOfWeekJsonRendererTest
 	@Test
 	public void testShouldRenderDayOfWeek()
 	{
-		Assertions.assertEquals(JsonString.of("quarta-feira"), renderer.render(DayOfWeek.class, DayOfWeek.WEDNESDAY));
+		Assertions.assertEquals(JsonString.wrap("quarta-feira"),
+				renderer.renderJson(DayOfWeek.class, DayOfWeek.WEDNESDAY));
 	}
 }

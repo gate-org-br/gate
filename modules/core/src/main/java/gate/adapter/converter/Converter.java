@@ -22,20 +22,6 @@ public interface Converter
 	}
 
 	/**
-	 * Converts the specified java object to a {@link java.lang.Number}.
-	 *
-	 * @param type   type of the object to be converted to a Number
-	 * @param object object to be converted to a Number
-	 * @return the specified object as a Number
-	 */
-	default Number toNumber(Class<?> type, Object object)
-	{
-		throw new UnsupportedOperationException(
-				String.format("Objects of type %s can't be converted to %s.", type.getName(),
-						Number.class.getName()));
-	}
-
-	/**
 	 * Converts the specified java object to a string.
 	 * <p>
 	 * The object to be converted must be of the converter-associated java type.
@@ -49,6 +35,18 @@ public interface Converter
 	 * @see Converter#ofString
 	 */
 	String toString(Class<?> type, Object object);
+
+	/**
+	 * Converts the specified string back to its original java object.
+	 *
+	 * @param type   type of the object that originated the specified string
+	 * @param string the string to be converted back to its original java object
+	 * @return the object that was previously converted to the specified string
+	 * @throws gate.error.ConversionException if the specified string can't be converted to its
+	 *                                        original java object
+	 * @see Converter#toString
+	 */
+	Object ofString(Type type, String string) throws ConversionException;
 
 	/**
 	 * Converts the specified java object to an ISO string.
@@ -69,16 +67,18 @@ public interface Converter
 	}
 
 	/**
-	 * Converts the specified string back to its original java object.
+	 * Converts the specified java object to a {@link java.lang.Number}.
 	 *
-	 * @param type   type of the object that originated the specified string
-	 * @param string the string to be converted back to its original java object
-	 * @return the object that was previously converted to the specified string
-	 * @throws gate.error.ConversionException if the specified string can't be converted to its
-	 *                                        original java object
-	 * @see Converter#toString
+	 * @param type   type of the object to be converted to a Number
+	 * @param object object to be converted to a Number
+	 * @return the specified object as a Number
 	 */
-	Object ofString(Type type, String string) throws ConversionException;
+	default Number toNumber(Class<?> type, Object object)
+	{
+		throw new UnsupportedOperationException(
+				String.format("Objects of type %s can't be converted to %s.", type.getName(),
+						Number.class.getName()));
+	}
 
 	/**
 	 * Gets the converter associated with the specified java class.

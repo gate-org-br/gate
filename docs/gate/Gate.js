@@ -75,8 +75,6 @@ import "./g-callout.js";
 
 import "./g-accordion.js";
 
-import './hateoas.js';
-
 import './g-table.js';
 import "./populator.js";
 
@@ -93,6 +91,8 @@ import './event-source.js';
 import './master-select.js';
 
 import './g-theme-selector.js';
+
+import './hateoas.js';
 
 Array.from(document.querySelectorAll("input.SELECTOR, input[type='checkbox'][data-target]")).forEach(function (element)
 {

@@ -1,4 +1,3 @@
-import './mutation-events.js';
 import './trigger-click.js';
 import './trigger-change.js';
 import './trigger-hover.js';

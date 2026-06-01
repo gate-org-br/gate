@@ -16,6 +16,6 @@ public class NumberJsonConverter implements JsonConverter
 
 	@Override public JsonElement toJson(Class<?> type, Object object)
 	{
-		return object != null ? JsonNumber.of(Converter.toISOString(object)) : null;
+		return object != null ? JsonNumber.wrap(Converter.toISOString(object)) : null;
 	}
 }

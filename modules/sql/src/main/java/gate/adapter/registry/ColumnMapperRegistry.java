@@ -26,7 +26,8 @@ public class ColumnMapperRegistry extends Registry<ColumnMapper>
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> b)));
 	}
 
-	@Override protected ColumnMapper extractor(Class<?> type)
+	@Override
+	protected ColumnMapper extractor(Class<?> type)
 	{
 		try
 		{
@@ -52,13 +53,17 @@ public class ColumnMapperRegistry extends Registry<ColumnMapper>
 		}
 	}
 
-	@Override protected ColumnMapper fallback(Class<?> type)
+	@Override
+	protected ColumnMapper fallback(Class<?> type)
 	{
+		if (type.isAnnotationPresent(Entity.class))
+			return new EntityColumnMapper();
+
 		for (var method : type.getDeclaredMethods())
 			if ("valueOf".equals(method.getName())
-			    && method.getParameterCount() == 1
-			    && method.getParameterTypes()[0] == String.class
-			    && Modifier.isStatic(method.getModifiers()))
+					&& method.getParameterCount() == 1
+					&& method.getParameterTypes()[0] == String.class
+					&& Modifier.isStatic(method.getModifiers()))
 				return new DefaultColumnMapper(method);
 
 		return type.isRecord() ? new RecordColumnMapper() : new ObjectColumnMapper();

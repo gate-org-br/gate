@@ -13,28 +13,29 @@ public class ObjectJsonRendererTest
 	public void testShouldRenderObject()
 	{
 		var expected = new JsonObject();
-		expected.put("name", JsonString.of("parent"));
-		expected.put("amount", JsonString.of("2"));
+		expected.put("name", JsonString.wrap("parent"));
+		expected.put("amount", JsonString.wrap("2"));
 		expected.put("child", child("child"));
 
-		Assertions.assertEquals(expected, renderer.render(Bean.class, new Bean("parent", 2, new Bean("child", 1, null))));
+		Assertions.assertEquals(expected,
+				renderer.renderJson(Bean.class, new Bean("parent", 2, new Bean("child", 1, null))));
 	}
 
 	@Test
 	public void testShouldSkipEmptyObjectAttributes()
 	{
 		var expected = new JsonObject();
-		expected.put("name", JsonString.of("parent"));
-		expected.put("amount", JsonString.of("2"));
+		expected.put("name", JsonString.wrap("parent"));
+		expected.put("amount", JsonString.wrap("2"));
 
-		Assertions.assertEquals(expected, renderer.render(Bean.class, new Bean("parent", 2, null)));
+		Assertions.assertEquals(expected, renderer.renderJson(Bean.class, new Bean("parent", 2, null)));
 	}
 
 	private JsonObject child(String name)
 	{
 		var child = new JsonObject();
-		child.put("name", JsonString.of(name));
-		child.put("amount", JsonString.of("1"));
+		child.put("name", JsonString.wrap(name));
+		child.put("amount", JsonString.wrap("1"));
 		return child;
 	}
 

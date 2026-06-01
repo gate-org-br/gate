@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsonNumberTest
 {
@@ -14,26 +15,26 @@ public class JsonNumberTest
 	@Test
 	public void shouldParseRegularAndScientificNumbers()
 	{
-		assertEquals(JsonNumber.of(30.0), JsonNumber.parse(JsonNumber.of(30.0).toString()));
-		assertEquals(JsonNumber.of(310), JsonNumber.parse("3.1e2"));
-		assertEquals(JsonNumber.of(300), JsonNumber.parse("3e2"));
-		assertEquals(JsonNumber.of(300), JsonNumber.parse("3e+2"));
-		assertEquals(JsonNumber.of(0.03), JsonNumber.parse("3e-2"));
-		assertEquals(JsonNumber.of("-42.5"), JsonNumber.parse("-42.5"));
+		assertEquals(JsonNumber.wrap(30.0), JsonNumber.parse(JsonNumber.wrap(30.0).toString()));
+		assertEquals(JsonNumber.wrap(310), JsonNumber.parse("3.1e2"));
+		assertEquals(JsonNumber.wrap(300), JsonNumber.parse("3e2"));
+		assertEquals(JsonNumber.wrap(300), JsonNumber.parse("3e+2"));
+		assertEquals(JsonNumber.wrap(0.03), JsonNumber.parse("3e-2"));
+		assertEquals(JsonNumber.wrap("-42.5"), JsonNumber.parse("-42.5"));
 	}
 
 	@Test
 	public void shouldRenderNumbersAndNumericStrings()
 	{
-		assertEquals(JsonNumber.of(30), JsonNumber.render(30));
-		assertEquals(JsonNumber.of(30.5), JsonNumber.render(30.5));
-		assertEquals(JsonNumber.of("42"), JsonNumber.render("42"));
+		assertEquals(JsonNumber.wrap(30), JsonNumber.render(30));
+		assertEquals(JsonNumber.wrap(30.5), JsonNumber.render(30.5));
+		assertEquals(JsonNumber.wrap("42"), JsonNumber.render("42"));
 	}
 
 	@Test
 	public void shouldDecodeToPrimitiveWrapperAndBigTypes()
 	{
-		JsonNumber number = JsonNumber.of(42);
+		JsonNumber number = JsonNumber.wrap(42);
 
 		assertEquals((byte) 42, number.decode(byte.class));
 		assertEquals((byte) 42, number.decode(Byte.class));
@@ -49,13 +50,13 @@ public class JsonNumberTest
 		assertEquals(42.0d, number.decode(Double.class));
 		assertEquals(BigInteger.valueOf(42), number.decode(BigInteger.class));
 		assertEquals(BigDecimal.valueOf(42), number.decode(BigDecimal.class));
-		assertEquals(Integer.valueOf(42), number.decode(Integer.class, null));
+		assertEquals(Integer.valueOf(42), number.decode((java.lang.reflect.Type) Integer.class));
 	}
 
 	@Test
 	public void shouldExposeNumberValuesAndNaturalRepresentation()
 	{
-		JsonNumber number = JsonNumber.of("42.5");
+		JsonNumber number = JsonNumber.wrap("42.5");
 
 		assertEquals(JsonElement.Type.NUMBER, number.getType());
 		assertEquals(42, number.intValue());

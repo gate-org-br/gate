@@ -34,13 +34,21 @@ public class Reflection
 
 	public static Type getElementGenericType(Type type)
 	{
-		Class<?> clazz = getRawType(type);
-		if (clazz.isAnnotationPresent(ElementType.class))
-			return clazz.getAnnotation(ElementType.class).value();
-		if (clazz.isArray())
-			return clazz.getComponentType();
-		if (Collection.class.isAssignableFrom(clazz))
-			return ((ParameterizedType) type).getActualTypeArguments()[0];
+		do
+		{
+			Class<?> clazz = getRawType(type);
+			if (clazz.isArray())
+				return clazz.getComponentType();
+			if (Collection.class.isAssignableFrom(clazz))
+			{
+				if (clazz.isAnnotationPresent(ElementType.class))
+					return clazz.getAnnotation(ElementType.class).value();
+				if (type instanceof ParameterizedType parameterizedType)
+					return parameterizedType.getActualTypeArguments()[0];
+			}
+			type = clazz.getGenericSuperclass();
+		} while (type != null);
+
 		return null;
 	}
 
@@ -92,6 +100,28 @@ public class Reflection
 		if (clazz.getSuperclass() != null)
 			fields.addAll(getFields(clazz.getSuperclass()));
 		return fields;
+	}
+
+	public static Optional<Field> findSealedField(Class<?> type, String name)
+	{
+		if (!type.isSealed())
+			return Optional.empty();
+
+		var fields = Stream.of(type.getPermittedSubclasses())
+				.flatMap(e -> Stream.concat(
+						Arrays.stream(e.getDeclaredFields())
+								.filter(f -> f.getName().equals(name)),
+						findSealedField(e, name).stream()))
+				.toList();
+
+		if (fields.isEmpty())
+			return Optional.empty();
+
+		if (fields.size() == 1)
+			return Optional.of(fields.get(0));
+
+		throw new IllegalArgumentException(
+				"Ambiguous sealed field " + name + " on " + type.getName());
 	}
 
 	/**
@@ -226,7 +256,7 @@ public class Reflection
 		Optional<Method> method = findMethod(field.getDeclaringClass(),
 				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		if (method.isEmpty()
-		    && (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
+				&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
 			method = findMethod(field.getDeclaringClass(),
 					"is" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
 		if (method.isEmpty())
@@ -338,7 +368,9 @@ public class Reflection
 
 		var name = field.getName();
 		var type = field.getType();
-		var method = findMethod(field.getDeclaringClass(), "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1), type);
+		var method = findMethod(field.getDeclaringClass(),
+				"set" + Character.toUpperCase(name.charAt(0)) + name.substring(1),
+				type);
 		if (method.isEmpty())
 			method = findMethod(field.getDeclaringClass(), name, type);
 		return method;

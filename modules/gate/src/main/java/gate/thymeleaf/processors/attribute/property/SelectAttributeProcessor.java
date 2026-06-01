@@ -1,8 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
-import gate.adapter.renderer.Renderer;
-
 import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.lang.property.Property;
 import gate.type.Attributes;
 import gate.util.Toolkit;
@@ -45,7 +44,9 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		else
 			options = List.of();
 
-		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e).map(expression::comparator).orElse(null);
+		var comparator = extract(element, handler, "g:sortby").map(e -> (String) e)
+				.map(expression::comparator)
+				.orElse(null);
 		if (comparator != null)
 			options = Toolkit
 					.collection(options)
@@ -55,7 +56,9 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 
 		var labels = extract(element, handler, "g:labels").map(expression::function).orElse(Function.identity());
 		var values = extract(element, handler, "g:values").map(expression::function).orElse(Function.identity());
-		var children = extract(element, handler, "g:children").map(e -> (String) e).map(expression::function).orElse(null);
+		var children = extract(element, handler, "g:children").map(e -> (String) e)
+				.map(expression::function)
+				.orElse(null);
 
 		if (value != null)
 			handler.setAttribute("data-value",
@@ -66,6 +69,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 		body.add(extract(element, handler, "g:empty")
 				.map(expression::evaluate)
 				.map(Renderer::render)
+				.map(e -> "<option disabled selected>" + e + "</option>")
 				.orElse("<option></option>"));
 
 		Function<Object, Object> groups
@@ -105,7 +109,7 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-			           + Renderer.render(labels.apply(object)) + "</option>");
+					+ Renderer.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

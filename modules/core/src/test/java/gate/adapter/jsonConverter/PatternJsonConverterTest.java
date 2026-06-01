@@ -11,7 +11,7 @@ public class PatternJsonConverterTest
 	@Test
 	public void testShouldConvertToExpectedJson()
 	{
-		Assertions.assertEquals(JsonString.of("[a-z]+"), JsonConverter.toJson(Pattern.compile("[a-z]+")));
+		Assertions.assertEquals(JsonString.wrap("[a-z]+"), JsonConverter.toJson(Pattern.compile("[a-z]+")));
 	}
 
 	@Test

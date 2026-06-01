@@ -1,0 +1,97 @@
+/* global customElements, template */
+
+import './g-icon.js';
+import './g-tree-grid.js';
+import GWindow from './g-window.js';
+
+function text(value)
+{
+	return value === null || value === undefined ? "" : String(value);
+}
+
+function appendCell(row, value, column)
+{
+	const cell = row.insertCell();
+	cell.innerText = text(value);
+	if (column)
+		cell.dataset.column = column;
+	return cell;
+}
+
+export default class GErrorDialog extends GWindow
+{
+	constructor()
+	{
+		super();
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		this.shadowRoot.getElementById("cancel").addEventListener("click", () => this.hide());
+	}
+
+	set detail(detail)
+	{
+		this.#render(detail || {});
+	}
+
+	#render(detail)
+	{
+		const errors = Array.isArray(detail.errors) ? detail.errors : [];
+
+		this.shadowRoot.getElementById("title").innerText = "Erro";
+
+		this.shadowRoot.getElementById("method").innerText = detail.method;
+		this.shadowRoot.getElementById("status").innerText = detail.status;
+		this.shadowRoot.getElementById("timestamp").innerText = new Date(detail.timestamp)
+			.toLocaleString("pt-BR", {
+				day: "2-digit",
+				month: "2-digit",
+				year: "numeric",
+				hour: "2-digit",
+				minute: "2-digit",
+				second: "2-digit",
+				hour12: false,
+			});
+		this.shadowRoot.getElementById("uri").innerText = `${detail.path}?${detail.queryString}`;
+
+		const oldTable = this.shadowRoot.querySelector("table");
+		const table = oldTable.cloneNode(true);
+		const body = table.querySelector("tbody");
+		body.innerHTML = "";
+
+		errors.forEach((error, index) =>
+		{
+			const frame = error?.stackTrace?.[0] || {};
+			const row = body.insertRow();
+			row.dataset.depth = 0;
+			row.toggleAttribute("data-expanded", index === 0);
+			appendCell(row, error.type || error.simpleType);
+			appendCell(row, error.message);
+			appendCell(row, frame.className);
+			appendCell(row, frame.methodName);
+			appendCell(row, frame.fileName);
+			appendCell(row, frame.lineNumber > 0 ? frame.lineNumber : "", "line");
+
+			(error.stackTrace || []).forEach(stackFrame =>
+			{
+				const stackRow = body.insertRow();
+				stackRow.dataset.depth = 1;
+				appendCell(stackRow, "");
+				appendCell(stackRow, stackFrame.text);
+				appendCell(stackRow, stackFrame.className);
+				appendCell(stackRow, stackFrame.methodName);
+				appendCell(stackRow, stackFrame.fileName);
+				appendCell(stackRow, stackFrame.lineNumber > 0 ? stackFrame.lineNumber : "", "line");
+			});
+		});
+
+		oldTable.replaceWith(table);
+	}
+
+	static error(detail)
+	{
+		const dialog = window.top.document.createElement("g-error-dialog");
+		dialog.detail = detail;
+		dialog.show();
+	}
+}
+
+customElements.define('g-error-dialog', GErrorDialog);

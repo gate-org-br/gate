@@ -2,11 +2,27 @@ import DataURL from './data-url.js';
 
 function reject(response)
 {
-	return response.text().then(error =>
+	if (response.status === 401)
+		window.top.window.location = "Gate";
+
+	const contentType = response.headers.get("content-type") || "";
+
+	if (contentType.startsWith("application/json"))
+		return response.json().then(body =>
+		{
+			const error = new Error(body.errors?.[0]?.message || response.statusText);
+			error.status = response.status;
+			error.detail = body;
+			error.contentType = contentType;
+			return Promise.reject(error);
+		});
+
+	return response.text().then(text =>
 	{
-		if (response.status === 401)
-			window.top.window.location = "Gate";
-		return Promise.reject(new Error(error));
+		const error = new Error(text || response.statusText);
+		error.status = response.status;
+		error.contentType = contentType;
+		return Promise.reject(error);
 	});
 }
 
@@ -175,29 +191,31 @@ export default class ResponseHandler
 		{
 			return Promise.all([response.blob(),
 				response.headers.get('content-disposition')])
-					.then(([blob, contentDisposition]) => {
-						return new Promise((resolve, reject) => {
-							const reader = new FileReader();
-							reader.onloadend = () =>
-							{
-								const matcher = contentDisposition
-										? contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-										: null;
-								const filename = matcher ? matcher[1].trim() : null;
+				.then(([blob, contentDisposition]) =>
+				{
+					return new Promise((resolve) =>
+					{
+						const reader = new FileReader();
+						reader.onloadend = () =>
+						{
+							const matcher = contentDisposition
+								? contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
+								: null;
+							const filename = matcher ? matcher[1].trim() : null;
 
-								if (!filename)
-									return resolve(reader.result);
+							if (!filename)
+								return resolve(reader.result);
 
-								const dataURL = DataURL.parse(reader.result);
-								if (dataURL.parameters.name)
-									return resolve(reader.result);
+							const dataURL = DataURL.parse(reader.result);
+							if (dataURL.parameters.name)
+								return resolve(reader.result);
 
-								dataURL.parameters.name = filename;
-								resolve(dataURL.toString());
-							};
-							reader.readAsDataURL(blob);
-						});
+							dataURL.parameters.name = filename;
+							resolve(dataURL.toString());
+						};
+						reader.readAsDataURL(blob);
 					});
+				});
 		}
 		return reject(response);
 	}

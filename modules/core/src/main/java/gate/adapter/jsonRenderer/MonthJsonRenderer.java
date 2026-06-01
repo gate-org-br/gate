@@ -6,8 +6,9 @@ import gate.lang.json.JsonString;
 
 public class MonthJsonRenderer implements JsonRenderer
 {
-	@Override public JsonElement render(Class<?> type, Object object)
+	@Override
+	public JsonElement renderJson(Class<?> type, Object object)
 	{
-		return object != null ? JsonString.of(Renderer.render(object)) : null;
+		return object != null ? JsonString.wrap(Renderer.render(object)) : null;
 	}
 }

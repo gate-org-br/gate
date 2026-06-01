@@ -7,5 +7,5 @@ public class NumberJsonConverterTest extends AbstractSimpleJsonConverterTest<Int
 {
 	@Override protected Class<Integer> getType() {return Integer.class;}
 	@Override protected Integer getValue() {return 42;}
-	@Override protected JsonElement getJson() {return JsonNumber.of(42L);}
+	@Override protected JsonElement getJson() {return JsonNumber.wrap(42L);}
 }

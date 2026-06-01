@@ -6,7 +6,7 @@ public class JsonElementConverterTest extends AbstractSimpleConverterTest<JsonNu
 {
 	@Override protected Class<JsonNumber> getType() {return JsonNumber.class;}
 
-	@Override protected JsonNumber getValue() {return JsonNumber.of(42L);}
+	@Override protected JsonNumber getValue() {return JsonNumber.wrap(42L);}
 
 	@Override protected String getString() {return "42";}
 }

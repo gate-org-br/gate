@@ -25,7 +25,7 @@ public class JsonNullTest
 	public void shouldDecodeAndUnwrapToNull()
 	{
 		assertNull(JsonNull.INSTANCE.decode(String.class));
-		assertNull(JsonNull.INSTANCE.decode(String.class, null));
+		assertNull(JsonNull.INSTANCE.decode((java.lang.reflect.Type) String.class));
 		assertNull(JsonNull.INSTANCE.getScalarValue());
 		assertNull(JsonNull.INSTANCE.unwrap());
 	}
