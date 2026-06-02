@@ -1,6 +1,8 @@
 package gate.lang.constructionStrategy;
 
 import gate.annotation.Canonical;
+import gate.annotation.Discriminator;
+import gate.annotation.Subtype;
 import gate.error.ConstructionException;
 import gate.error.ConversionException;
 import gate.function.TriFunction;
@@ -270,6 +272,87 @@ class ConstructionStrategyTest
 	}
 
 	@Test
+	void shouldUseDiscriminatorToSelectSubtype() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(DiscriminatedParentMock.class, "type").getLastAttribute(), DiscriminatedTypeMock.NAME,
+				Property.getProperty(DiscriminatedNameMock.class, "name").getLastAttribute(), "Ana");
+
+		var result = (DiscriminatedParentMock)
+				ConstructionStrategy.newInstance(DiscriminatedParentMock.class, attributes);
+
+		Assertions.assertInstanceOf(DiscriminatedNameMock.class, result);
+		Assertions.assertEquals(DiscriminatedTypeMock.NAME, result.getType());
+		Assertions.assertEquals("Ana", ((DiscriminatedNameMock) result).getName());
+	}
+
+	@Test
+	void shouldKeepDiscriminatorSetBySubtypeConstructor() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(ReadOnlyDiscriminatedParentMock.class, "type").getLastAttribute(),
+				ReadOnlyDiscriminatedTypeMock.NAME,
+				Property.getProperty(ReadOnlyDiscriminatedNameMock.class, "name").getLastAttribute(), "Ana");
+
+		var result = (ReadOnlyDiscriminatedParentMock)
+				ConstructionStrategy.newInstance(ReadOnlyDiscriminatedParentMock.class, attributes);
+
+		Assertions.assertInstanceOf(ReadOnlyDiscriminatedNameMock.class, result);
+		Assertions.assertEquals(ReadOnlyDiscriminatedTypeMock.NAME, result.getType());
+		Assertions.assertEquals("Ana", ((ReadOnlyDiscriminatedNameMock) result).getName());
+	}
+
+	@Test
+	void shouldRequireDiscriminatorWhenTypeHasDiscriminator() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(DiscriminatedNameMock.class, "name").getLastAttribute(), "Ana");
+
+		Assertions.assertThrows(ConstructionException.class,
+				() -> ConstructionStrategy.newInstance(DiscriminatedParentMock.class, attributes));
+	}
+
+	@Test
+	void shouldReturnNullWhenOnlyDiscriminatorIsProvided() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(DiscriminatedParentMock.class, "type").getLastAttribute(), DiscriminatedTypeMock.NAME);
+
+		var result = ConstructionStrategy.newInstance(DiscriminatedParentMock.class, attributes);
+
+		Assertions.assertNull(result);
+	}
+
+	@Test
+	void shouldFailWhenDiscriminatorSelectsSubtypeThatDoesNotKnowAttribute()
+			throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(DiscriminatedParentMock.class, "type").getLastAttribute(), DiscriminatedTypeMock.CODE,
+				Property.getProperty(DiscriminatedNameMock.class, "name").getLastAttribute(), "Ana");
+
+		Assertions.assertThrows(ConstructionException.class,
+				() -> ConstructionStrategy.newInstance(DiscriminatedParentMock.class, attributes));
+	}
+
+	@Test
+	void shouldReuseDiscriminatedSubtypeWhenUpdating() throws ReflectiveOperationException
+	{
+		var original = new DiscriminatedDescriptionMock();
+		original.setDescription("Old");
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(DiscriminatedParentMock.class, "type").getLastAttribute(), DiscriminatedTypeMock.DESCRIPTION,
+				Property.getProperty(DiscriminatedDescriptionMock.class, "description").getLastAttribute(), "New");
+
+		var result = (DiscriminatedDescriptionMock) ConstructionStrategy.newInstance(
+				DiscriminatedParentMock.class, original, attributes, (attribute, currentValue, sourceValue) -> sourceValue);
+
+		Assertions.assertSame(original, result);
+		Assertions.assertEquals(DiscriminatedTypeMock.DESCRIPTION, result.getType());
+		Assertions.assertEquals("New", result.getDescription());
+	}
+
+	@Test
 	void shouldUseCanonicalConstructorWhenRemainingAttributesAreBeanProperties() throws ReflectiveOperationException
 	{
 		var attributes = Map.<Attribute, Object>of(
@@ -315,29 +398,29 @@ class ConstructionStrategyTest
 	}
 
 	@Test
-	void shouldMatchSealedConstructorParameterAssignableFromSubtypeAttribute() throws ReflectiveOperationException
+	void shouldFailWhenSealedAttributeOwnerIsOutsideHierarchy() throws ReflectiveOperationException
 	{
 		var parent = new SealedChildMock(null, "Parent");
 		var attributes = Map.<Attribute, Object>of(
 				Property.getProperty(SealedSubtypeAttributeMock.class, "parent").getLastAttribute(), parent,
 				Property.getProperty(SealedChildMock.class, "name").getLastAttribute(), "Ana");
 
-		var result = (SealedParentMock) Assertions.assertDoesNotThrow(
+		Assertions.assertThrows(ConstructionException.class,
 				() -> ConstructionStrategy.newInstance(SealedParentMock.class, attributes));
-
-		Assertions.assertInstanceOf(SealedChildMock.class, result);
-		Assertions.assertSame(parent, result.getParent());
-		Assertions.assertEquals("Ana", ((SealedChildMock) result).getName());
 	}
 
 	@Test
-	void shouldFailWhenSealedSubtypeConstructorsHaveSameSignatureNotCoveredByParent()
+	void shouldUseSealedAttributeOwnerEvenWhenSubtypeConstructorsHaveSameSignature()
+			throws ReflectiveOperationException
 	{
 		var attributes = Map.<Attribute, Object>of(
 				Property.getProperty(DuplicateSealedChildMock.class, "name").getLastAttribute(), "Ana");
 
-		Assertions.assertThrows(ConstructionException.class,
+		var result = (DuplicateSealedParentMock) Assertions.assertDoesNotThrow(
 				() -> ConstructionStrategy.newInstance(DuplicateSealedParentMock.class, attributes));
+
+		Assertions.assertInstanceOf(DuplicateSealedChildMock.class, result);
+		Assertions.assertEquals("Ana", ((DuplicateSealedChildMock) result).getName());
 	}
 
 	@Test
@@ -490,6 +573,116 @@ class ConstructionStrategyTest
 		public void setDescription(String description)
 		{
 			this.description = description;
+		}
+	}
+
+	static class DiscriminatedParentMock
+	{
+		@Discriminator
+		private DiscriminatedTypeMock type;
+
+		public DiscriminatedTypeMock getType()
+		{
+			return type;
+		}
+	}
+
+	enum DiscriminatedTypeMock
+	{
+		@Subtype(DiscriminatedNameMock.class)
+		NAME,
+
+		@Subtype(DiscriminatedCodeMock.class)
+		CODE,
+
+		@Subtype(DiscriminatedDescriptionMock.class)
+		DESCRIPTION
+	}
+
+	static class DiscriminatedNameMock extends DiscriminatedParentMock
+	{
+		private final String name;
+
+		public DiscriminatedNameMock(String name)
+		{
+			this.name = name;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static class DiscriminatedCodeMock extends DiscriminatedParentMock
+	{
+		private final Integer code;
+
+		public DiscriminatedCodeMock(Integer code)
+		{
+			this.code = code;
+		}
+
+		public Integer getCode()
+		{
+			return code;
+		}
+	}
+
+	static class DiscriminatedDescriptionMock extends DiscriminatedParentMock
+	{
+		private String description;
+
+		public DiscriminatedDescriptionMock()
+		{
+		}
+
+		public String getDescription()
+		{
+			return description;
+		}
+
+		public void setDescription(String description)
+		{
+			this.description = description;
+		}
+	}
+
+	static class ReadOnlyDiscriminatedParentMock
+	{
+		@Discriminator
+		private final ReadOnlyDiscriminatedTypeMock type;
+
+		public ReadOnlyDiscriminatedParentMock(ReadOnlyDiscriminatedTypeMock type)
+		{
+			this.type = type;
+		}
+
+		public ReadOnlyDiscriminatedTypeMock getType()
+		{
+			return type;
+		}
+	}
+
+	enum ReadOnlyDiscriminatedTypeMock
+	{
+		@Subtype(ReadOnlyDiscriminatedNameMock.class)
+		NAME
+	}
+
+	static class ReadOnlyDiscriminatedNameMock extends ReadOnlyDiscriminatedParentMock
+	{
+		private final String name;
+
+		public ReadOnlyDiscriminatedNameMock(String name)
+		{
+			super(ReadOnlyDiscriminatedTypeMock.NAME);
+			this.name = name;
+		}
+
+		public String getName()
+		{
+			return name;
 		}
 	}
 

@@ -4,6 +4,7 @@ import gate.annotation.Canonical;
 import gate.error.ConstructionException;
 import gate.function.TriFunction;
 import gate.lang.property.Attribute;
+import gate.lang.property.PropertyGraph;
 import gate.util.Reflection;
 
 import java.lang.reflect.*;
@@ -29,14 +30,23 @@ import java.util.stream.Stream;
  *     <li><b>Single {@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
  *     annotated with {@link Canonical}, used when regular attribute matching cannot select a
  *     unique candidate;</li>
- *     <li><b>Sealed</b> — if the class is sealed, the non-null attributes determine which
- *     subtype to instantiate; a single compatible hierarchy candidate wins, otherwise a single
- *     exact match wins, otherwise a single compatible {@code @Canonical} candidate wins;</li>
+ *     <li><b>Discriminator</b> — a field annotated with {@code @Discriminator} requires an
+ *     explicit discriminator value and delegates construction to the subtype declared by that
+ *     enum constant;</li>
+ *     <li><b>Sealed</b> — if the class is sealed, the owner of the non-null attributes determines
+ *     which immediate subtype to instantiate; construction is delegated to that subtype's regular
+ *     strategy;</li>
  *     <li><b>Bean</b> — a public no-argument constructor, with attributes applied via setters.</li>
  * </ol>
  * <p>
- * Candidate selection is strict: ambiguity throws an exception unless it can be resolved by a
- * single compatible candidate, a single exact match, or a single {@code @Canonical} candidate.
+ * For non-sealed classes, candidate selection is strict: ambiguity throws an exception unless it
+ * can be resolved by a single compatible candidate, a single exact match, or a single
+ * {@code @Canonical} candidate.
+ * <p>
+ * For sealed classes, non-null attributes must point to exactly one immediate subtype through
+ * {@link Attribute#getOwner()}. Attributes declared by the sealed root are neutral, attributes
+ * declared outside the sealed hierarchy are invalid, and construction is delegated to the
+ * selected subtype.
  * <p>
  * Missing attributes are handled according to the resolved strategy:
  * <ul>
@@ -142,21 +152,30 @@ public interface ConstructionStrategy
 
 			if (candidates.isEmpty())
 			{
+				var discriminator = PropertyGraph.getDiscriminator(type);
+				if (discriminator != null)
+					return new DiscriminatorConstructorStrategy(discriminator);
+
 				if (type.isSealed())
 				{
-					Map<Set<ParameterKey>, Executable> executables = new HashMap<>();
-					getSubtypeCandidates(type).forEach(e ->
+					var owners = new LinkedHashMap<Attribute, Class<?>>();
+					for (var attribute : attributes)
 					{
-						var key = ParameterKey.of(e);
-						var existing = executables.put(key, e);
-						if (existing != null)
-							throw new ConstructionException(type, Arrays.asList(existing, e));
-					});
-					if (!executables.isEmpty() &&
-							attributes.stream().allMatch(attribute -> executables.values().stream()
-									.flatMap(e -> Arrays.stream(e.getParameters()))
-									.anyMatch(attribute::matches)))
-						return new SealedConstructorStrategy(executables);
+						var owner = attribute.getOwner();
+						if (owner == null || !type.isAssignableFrom(owner))
+							throw new ConstructionException(type, attributes);
+						if (owner != type)
+						{
+							var subtypes = Arrays.stream(type.getPermittedSubclasses())
+									.filter(e -> e.isAssignableFrom(owner))
+									.toList();
+							if (subtypes.size() != 1)
+								throw new ConstructionException(type, attributes);
+							owners.put(attribute, subtypes.getFirst());
+						} else
+							owners.put(attribute, type);
+					}
+					return new SealedConstructorStrategy(type, owners);
 				}
 
 				var defaultConstructor = Arrays.stream(type.getConstructors())
@@ -182,21 +201,6 @@ public interface ConstructionStrategy
 						.filter(m -> Modifier.isStatic(m.getModifiers()))
 						.filter(m -> !m.isAnnotationPresent(Deprecated.class))
 						.filter(m -> m.getName().equals("of")));
-	}
-
-	private static Stream<Executable> getSubtypeCandidates(Class<?> type)
-	{
-		if (!type.isSealed())
-			return getCandidates(type);
-
-		var candidates = getCandidates(type).toList();
-		var keys = candidates.stream()
-				.map(ParameterKey::of)
-				.collect(Collectors.toSet());
-		return Stream.concat(candidates.stream(),
-				Arrays.stream(type.getPermittedSubclasses())
-						.flatMap(ConstructionStrategy::getSubtypeCandidates)
-						.filter(e -> !keys.contains(ParameterKey.of(e))));
 	}
 
 	private static boolean matchesAttributes(Set<Attribute> attributes, Parameter[] parameters)

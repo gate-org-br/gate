@@ -1,6 +1,9 @@
 package gate.lang.property;
 
+import gate.annotation.Discriminator;
+import gate.annotation.Subtype;
 import gate.error.ConversionException;
+import gate.error.PropertyError;
 import mock.ConstructionMocks;
 import mock.IDMock;
 import mock.RoleMock;
@@ -173,8 +176,178 @@ class PropertyGraphTest
 						.populate(null, prop -> request.get(prop.toString())));
 	}
 
+	@Test
+	public void testAmbiguousSealedProperty()
+	{
+		Assertions.assertThrows(PropertyError.class,
+				() -> PropertyGraph.of(AmbiguousSealedParentMock.class, List.of("name")));
+	}
+
+	@Test
+	public void testSharedSealedPropertyDeclaredByIntermediateSubtype()
+	{
+		Assertions.assertDoesNotThrow(
+				() -> PropertyGraph.of(SharedSealedParentMock.class, List.of("name")));
+	}
+
+	@Test
+	public void testDiscriminatorProperty()
+	{
+		Assertions.assertDoesNotThrow(
+				() -> PropertyGraph.of(DiscriminatedParentMock.class, List.of("name")));
+	}
+
+	@Test
+	public void testAmbiguousDiscriminatorProperty()
+	{
+		Assertions.assertThrows(PropertyError.class,
+				() -> PropertyGraph.of(AmbiguousDiscriminatedParentMock.class, List.of("name")));
+	}
+
+	@Test
+	public void testInvalidDiscriminatorSubtype()
+	{
+		Assertions.assertThrows(PropertyError.class,
+				() -> PropertyGraph.of(InvalidDiscriminatedParentMock.class, List.of("name")));
+	}
+
 	public record PointMock(int x, int y) {}
 
 	public record LineMock(PointMock start, PointMock end) {}
+
+	static sealed class AmbiguousSealedParentMock
+			permits AmbiguousSealedChildMock, AmbiguousSealedSiblingMock
+	{
+	}
+
+	static final class AmbiguousSealedChildMock extends AmbiguousSealedParentMock
+	{
+		private String name;
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static final class AmbiguousSealedSiblingMock extends AmbiguousSealedParentMock
+	{
+		private String name;
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static sealed class SharedSealedParentMock
+			permits SharedSealedNamedMock, SharedSealedOtherMock
+	{
+	}
+
+	static sealed class SharedSealedNamedMock extends SharedSealedParentMock
+			permits SharedSealedChildMock, SharedSealedSiblingMock
+	{
+		private String name;
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static final class SharedSealedChildMock extends SharedSealedNamedMock
+	{
+	}
+
+	static final class SharedSealedSiblingMock extends SharedSealedNamedMock
+	{
+	}
+
+	static final class SharedSealedOtherMock extends SharedSealedParentMock
+	{
+	}
+
+	static class DiscriminatedParentMock
+	{
+		@Discriminator
+		private DiscriminatedTypeMock type;
+	}
+
+	enum DiscriminatedTypeMock
+	{
+		@Subtype(DiscriminatedNameMock.class)
+		NAME,
+
+		@Subtype(DiscriminatedCodeMock.class)
+		CODE
+	}
+
+	static class DiscriminatedNameMock extends DiscriminatedParentMock
+	{
+		private String name;
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static class DiscriminatedCodeMock extends DiscriminatedParentMock
+	{
+		private String code;
+
+		public String getCode()
+		{
+			return code;
+		}
+	}
+
+	static class AmbiguousDiscriminatedParentMock
+	{
+		@Discriminator
+		private AmbiguousDiscriminatedTypeMock type;
+	}
+
+	enum AmbiguousDiscriminatedTypeMock
+	{
+		@Subtype(AmbiguousDiscriminatedNameMock.class)
+		NAME,
+
+		@Subtype(AmbiguousDiscriminatedSiblingMock.class)
+		SIBLING
+	}
+
+	static class AmbiguousDiscriminatedNameMock extends AmbiguousDiscriminatedParentMock
+	{
+		private String name;
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static class AmbiguousDiscriminatedSiblingMock extends AmbiguousDiscriminatedParentMock
+	{
+		private String name;
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static class InvalidDiscriminatedParentMock
+	{
+		@Discriminator
+		private InvalidDiscriminatedTypeMock type;
+	}
+
+	enum InvalidDiscriminatedTypeMock
+	{
+		@Subtype(DiscriminatedNameMock.class)
+		NAME
+	}
 
 }

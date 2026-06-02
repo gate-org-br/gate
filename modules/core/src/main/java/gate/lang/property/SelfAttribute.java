@@ -27,6 +27,12 @@ public class SelfAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
+	public Class<?> getOwner()
+	{
+		return type;
+	}
+
+	@Override
 	public Type getElementType()
 	{
 		return Object.class;

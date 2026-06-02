@@ -1,9 +1,12 @@
 package gate.lang.property;
 
+import gate.annotation.Discriminator;
+import gate.annotation.Subtype;
 import gate.error.ConversionException;
 import gate.error.PropertyError;
 import gate.lang.constructionStrategy.ConstructionStrategy;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -53,7 +56,8 @@ public class PropertyGraph<T>
 
 						Map<Attribute, Object> value = result;
 						for (var attribute : attributes.subList(0, attributes.size() - 1))
-							value = (Map<Attribute, Object>) value.computeIfAbsent(attribute, e -> new LinkedHashMap<>());
+							value = (Map<Attribute, Object>) value.computeIfAbsent(attribute,
+									e -> new LinkedHashMap<>());
 						value.put(attributes.get(attributes.size() - 1), property);
 					}
 
@@ -102,24 +106,107 @@ public class PropertyGraph<T>
 		if (property != null)
 			return property;
 
-		if (!type.isSealed())
-			return null;
+		var discriminator = getDiscriminator(type);
+		if (discriminator != null)
+		{
+			var properties = Arrays.stream(discriminator.getRawType().getEnumConstants())
+					.map(Enum.class::cast)
+					.map(constant ->
+					{
+						try
+						{
+							var field = discriminator.getRawType().getField(constant.name());
+							return field.getAnnotation(Subtype.class).value();
+						} catch (NoSuchFieldException ex)
+						{
+							throw new PropertyError("Invalid discriminator constant %s.%s"
+									.formatted(discriminator.toString(), constant.name()));
+						}
+					})
+					.map(e -> findProperty(e, name))
+					.filter(Objects::nonNull)
+					.toList();
 
-		var properties = Arrays.stream(type.getPermittedSubclasses())
-				.map(e -> findProperty(e, name))
-				.filter(Objects::nonNull)
+			if (properties.isEmpty())
+				return null;
+
+			if (properties.size() == 1)
+				return properties.get(0);
+
+			throw new PropertyError("Ambiguous discriminator property %s on %s: found in %s"
+					.formatted(name, type.getName(), properties.stream()
+							.map(Property::getOwner)
+							.map(Class::getName)
+							.toList()));
+		}
+
+
+		if (type.isSealed())
+		{
+			var properties = Arrays.stream(type.getPermittedSubclasses())
+					.map(e -> findProperty(e, name))
+					.filter(Objects::nonNull)
+					.toList();
+
+			if (properties.isEmpty())
+				return null;
+
+			if (properties.size() == 1)
+				return properties.get(0);
+
+			throw new PropertyError("Ambiguous sealed property %s on %s: found in %s"
+					.formatted(name, type.getName(), properties.stream()
+							.map(Property::getOwner)
+							.map(Class::getName)
+							.toList()));
+		}
+
+		return null;
+	}
+
+	public static FieldAttribute getDiscriminator(Class<?> type)
+	{
+		var discriminators = Arrays.stream(type.getDeclaredFields())
+				.filter(e -> e.isAnnotationPresent(Discriminator.class))
 				.toList();
 
-		if (properties.isEmpty())
+		if (discriminators.isEmpty())
 			return null;
 
-		if (properties.size() == 1)
-			return properties.get(0);
+		if (discriminators.size() > 1)
+			throw new PropertyError("Ambiguous discriminator properties found on %s: %s"
+					.formatted(type.getName(), discriminators.stream()
+							.map(Field::getName)
+							.toList()));
 
-		throw new PropertyError("Ambiguous sealed property %s on %s: found in %s"
-				.formatted(name, type.getName(), properties.stream()
-						.map(Property::getOwner)
-						.map(Class::getName)
-						.toList()));
+		var discriminator = discriminators.getFirst();
+
+		if (!discriminator.getType().isEnum())
+			throw new PropertyError("Invalid discriminator property %s on %s"
+					.formatted(discriminator.getName(), type.getName()));
+
+		for (var constant : discriminator.getType().getEnumConstants())
+		{
+			var value = (Enum<?>) constant;
+			try
+			{
+				var field = discriminator.getType().getField(value.name());
+				if (!field.isAnnotationPresent(Subtype.class))
+					throw new PropertyError("Missing subtype on discriminator constant %s.%s"
+							.formatted(discriminator.getName(), value.name()));
+
+				var subtype = field.getAnnotation(Subtype.class).value();
+				if (!type.isAssignableFrom(subtype))
+					throw new PropertyError("Invalid subtype %s on discriminator constant %s.%s"
+							.formatted(subtype.getName(), discriminator.getName(), value.name()));
+			} catch (NoSuchFieldException ex)
+			{
+				throw new PropertyError("Invalid discriminator constant %s.%s"
+						.formatted(discriminator.getName(), value.name()));
+			}
+		}
+
+		return FieldAttribute.of(discriminator);
 	}
+
 }

@@ -54,6 +54,12 @@ class MethodAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
+	public Class<?> getOwner()
+	{
+		return method.getDeclaringClass();
+	}
+
+	@Override
 	public Object getValue(Object object)
 	{
 		try

@@ -20,6 +20,21 @@ public interface Attribute
 
 	Class<?> getRawType();
 
+	/**
+	 * Gets the class that declares this attribute.
+	 * <p>
+	 * Field and method attributes return their declaring class. Synthetic attributes
+	 * that are not declared by a Java type, such as list, map, or array indexes, return
+	 * {@code null}.
+	 *
+	 * @return the class that declares this attribute, or {@code null} if there is no
+	 * declaring class
+	 */
+	default Class<?> getOwner()
+	{
+		return null;
+	}
+
 	Object getValue(Object object);
 
 	void setValue(Object object, Object value);

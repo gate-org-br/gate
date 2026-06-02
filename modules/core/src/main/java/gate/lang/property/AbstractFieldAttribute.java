@@ -109,6 +109,12 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
+	public Class<?> getOwner()
+	{
+		return field.getDeclaringClass();
+	}
+
+	@Override
 	public Collection<Constraint.Implementation<?>> getConstraints()
 	{
 		return constraints;
