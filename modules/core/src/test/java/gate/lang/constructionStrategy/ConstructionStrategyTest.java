@@ -355,17 +355,14 @@ class ConstructionStrategyTest
 	}
 
 	@Test
-	void shouldSelectMostSpecificSealedConstructorParameter() throws ReflectiveOperationException
+	void shouldFailWhenSealedConstructorsDifferOnlyBySpecificity() throws ReflectiveOperationException
 	{
 		var parent = new SpecificSealedChildMock(null);
 		var attributes = Map.<Attribute, Object>of(
 				Property.getProperty(SpecificSealedAttributeMock.class, "parent").getLastAttribute(), parent);
 
-		var result = (SpecificSealedParentMock) Assertions.assertDoesNotThrow(
+		Assertions.assertThrows(ConstructionException.class,
 				() -> ConstructionStrategy.newInstance(SpecificSealedParentMock.class, attributes));
-
-		Assertions.assertInstanceOf(SpecificSealedChildMock.class, result);
-		Assertions.assertSame(parent, result.getParent());
 	}
 
 	@Test
@@ -392,6 +389,34 @@ class ConstructionStrategyTest
 		Assertions.assertInstanceOf(CanonicalSealedChildMock.class, result);
 		Assertions.assertEquals("Ana", ((CanonicalSealedChildMock) result).getName());
 		Assertions.assertNull(((CanonicalSealedChildMock) result).getDescription());
+	}
+
+	@Test
+	void shouldUseSingleCompatibleSealedConstructor()
+			throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(SupersetSealedChildMock.class, "name").getLastAttribute(), "Ana");
+
+		var result = (SupersetSealedParentMock) Assertions.assertDoesNotThrow(
+				() -> ConstructionStrategy.newInstance(SupersetSealedParentMock.class, attributes));
+
+		Assertions.assertInstanceOf(SupersetSealedChildMock.class, result);
+		Assertions.assertEquals("Ana", ((SupersetSealedChildMock) result).getName());
+	}
+
+	@Test
+	void shouldPreferExactSealedConstructorOverCanonical()
+			throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(ExactOverCanonicalSealedChildMock.class, "name").getLastAttribute(), "Ana");
+
+		var result = (ExactOverCanonicalSealedParentMock) ConstructionStrategy
+				.newInstance(ExactOverCanonicalSealedParentMock.class, attributes);
+
+		Assertions.assertInstanceOf(ExactOverCanonicalSealedChildMock.class, result);
+		Assertions.assertEquals("exact", ((ExactOverCanonicalSealedChildMock) result).getSource());
 	}
 
 	static class SealedSubtypeAttributeMock
@@ -640,6 +665,60 @@ class ConstructionStrategyTest
 	{
 		public CanonicalSealedSiblingMock(Integer code)
 		{
+		}
+	}
+
+	static sealed class SupersetSealedParentMock permits SupersetSealedChildMock
+	{
+	}
+
+	static final class SupersetSealedChildMock extends SupersetSealedParentMock
+	{
+		private String name;
+
+		public SupersetSealedChildMock(String name, String description)
+		{
+			this.name = name;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+	}
+
+	static sealed class ExactOverCanonicalSealedParentMock
+			permits ExactOverCanonicalSealedChildMock
+	{
+	}
+
+	static final class ExactOverCanonicalSealedChildMock
+			extends ExactOverCanonicalSealedParentMock
+	{
+		private final String name;
+		private final String source;
+
+		public ExactOverCanonicalSealedChildMock(String name)
+		{
+			this.name = name;
+			source = "exact";
+		}
+
+		@Canonical
+		public ExactOverCanonicalSealedChildMock(String name, String description)
+		{
+			this.name = name;
+			source = "canonical";
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public String getSource()
+		{
+			return source;
 		}
 	}
 

@@ -22,22 +22,21 @@ import java.util.stream.Stream;
  *     created using a default implementation;</li>
  *     <li><b>Builder</b> — a public static {@code builder()} method whose return type has a
  *     {@code build()} method;</li>
- *     <li><b>Single candidate</b> — if exactly one non-deprecated constructor or {@code of(...)}
- *     factory exists with parameters, it is treated as canonical;</li>
- *     <li><b>Attribute match</b> — constructors or factories whose parameters match the provided
- *     attributes, with preference for an exact parameter count;</li>
- *     <li><b>{@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
+ *     <li><b>Single compatible candidate</b> — if exactly one constructor or {@code of(...)}
+ *     factory can consume the provided attributes, it is treated as canonical;</li>
+ *     <li><b>Single exact match</b> — if multiple candidates are compatible, but exactly one has
+ *     the same parameter count as the provided attribute count, it is selected;</li>
+ *     <li><b>Single {@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
  *     annotated with {@link Canonical}, used when regular attribute matching cannot select a
  *     unique candidate;</li>
  *     <li><b>Sealed</b> — if the class is sealed, the non-null attributes determine which
- *     subtype to instantiate; the subtype whose constructor or {@code of(...)} factory parameters
- *     exactly match the non-null attributes is selected — ambiguity or no match throws an
- *     exception;</li>
+ *     subtype to instantiate; a single compatible hierarchy candidate wins, otherwise a single
+ *     exact match wins, otherwise a single compatible {@code @Canonical} candidate wins;</li>
  *     <li><b>Bean</b> — a public no-argument constructor, with attributes applied via setters.</li>
  * </ol>
  * <p>
- * When multiple attribute-matching candidates exist, the selection is strict: ambiguity throws
- * an exception unless a single exact match (parameter count equal to attribute count) can be found.
+ * Candidate selection is strict: ambiguity throws an exception unless it can be resolved by a
+ * single compatible candidate, a single exact match, or a single {@code @Canonical} candidate.
  * <p>
  * Missing attributes are handled according to the resolved strategy:
  * <ul>

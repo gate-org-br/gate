@@ -8,8 +8,10 @@ import gate.lang.property.Attribute;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public record SealedConstructorStrategy(Map<Set<ConstructionStrategy.ParameterKey>, Executable> candidates)
@@ -50,17 +52,27 @@ public record SealedConstructorStrategy(Map<Set<ConstructionStrategy.ParameterKe
 				.filter(e -> attributes.keySet().stream()
 						.allMatch(a -> Arrays.stream(e.getParameters()).anyMatch(a::matches)))
 				.toList();
-
-		var selected = compatible.size() == 1 ? compatible.getFirst() : null;
+		if (compatible.isEmpty())
+			throw new ConstructionException(type, attributes.keySet());
+		
+		Executable selected = compatible.size() == 1 ? compatible.getFirst() : null;
 
 		if (selected == null)
-			selected = select(type, attributes.keySet(), compatible.stream()
+		{
+			var exact = compatible.stream()
 					.filter(e -> e.getParameterCount() == attributes.size())
-					.toList());
+					.toList();
+			selected = exact.size() == 1 ? exact.getFirst() : null;
+		}
+
 		if (selected == null)
-			selected = select(type, attributes.keySet(), compatible.stream()
+		{
+			var canonical = compatible.stream()
 					.filter(e -> e.isAnnotationPresent(Canonical.class))
-					.toList());
+					.toList();
+			selected = canonical.size() == 1 ? canonical.getFirst() : null;
+		}
+
 		if (selected == null)
 			throw new ConstructionException(type, attributes.keySet());
 
@@ -76,52 +88,5 @@ public record SealedConstructorStrategy(Map<Set<ConstructionStrategy.ParameterKe
 		{
 			throw new ConstructionException(type, selected, attributes.keySet(), ex);
 		}
-	}
-
-	private Executable select(Class<?> type,
-	                          Set<Attribute> attributes,
-	                          List<Executable> executables)
-	{
-		if (executables.isEmpty())
-			return null;
-
-		return executables.stream()
-				.reduce((a, b) ->
-				{
-					boolean aIsMoreSpecificSomewhere = false;
-					boolean bIsMoreSpecificSomewhere = false;
-
-					for (var attribute : attributes)
-					{
-						var aType = Arrays.stream(a.getParameters())
-								.filter(attribute::matches)
-								.map(Parameter::getType)
-								.findFirst()
-								.orElseThrow();
-						var bType = Arrays.stream(b.getParameters())
-								.filter(attribute::matches)
-								.map(Parameter::getType)
-								.findFirst()
-								.orElseThrow();
-
-						if (aType == bType)
-							continue;
-						if (bType.isAssignableFrom(aType))
-							aIsMoreSpecificSomewhere = true;
-						else if (aType.isAssignableFrom(bType))
-							bIsMoreSpecificSomewhere = true;
-						else
-							throw new ConstructionException(type, attributes, List.of(a, b));
-					}
-
-					if (aIsMoreSpecificSomewhere && !bIsMoreSpecificSomewhere)
-						return a;
-
-					if (bIsMoreSpecificSomewhere && !aIsMoreSpecificSomewhere)
-						return b;
-
-					throw new ConstructionException(type, attributes, List.of(a, b));
-				})
-				.orElseThrow();
 	}
 }
