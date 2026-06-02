@@ -256,6 +256,34 @@ class ConstructionStrategyTest
 	}
 
 	@Test
+	void shouldPreferExactConstructorOverCanonicalConstructor() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(ExactOverCanonicalMock.class, "name").getLastAttribute(), "Ana");
+
+		var result = (ExactOverCanonicalMock)
+				ConstructionStrategy.newInstance(ExactOverCanonicalMock.class, attributes);
+
+		Assertions.assertEquals("Ana", result.getName());
+		Assertions.assertEquals("exact", result.getSource());
+		Assertions.assertNull(result.getDescription());
+	}
+
+	@Test
+	void shouldUseCanonicalConstructorWhenRemainingAttributesAreBeanProperties() throws ReflectiveOperationException
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(CanonicalWithBeanAttributeMock.class, "name").getLastAttribute(), "Ana",
+				Property.getProperty(CanonicalWithBeanAttributeMock.class, "description").getLastAttribute(), "Root");
+
+		var result = (CanonicalWithBeanAttributeMock)
+				ConstructionStrategy.newInstance(CanonicalWithBeanAttributeMock.class, attributes);
+
+		Assertions.assertEquals("Ana", result.getName());
+		Assertions.assertEquals("Root", result.getDescription());
+	}
+
+	@Test
 	void shouldIgnoreConstructorThatDoesNotConsumeAllAttributes() throws ReflectiveOperationException
 	{
 		var attributes = Map.<Attribute, Object>of(
@@ -373,6 +401,70 @@ class ConstructionStrategyTest
 		public SealedChildMock getParent()
 		{
 			return parent;
+		}
+	}
+
+	static class ExactOverCanonicalMock
+	{
+		private final String name;
+		private final String description;
+		private final String source;
+
+		public ExactOverCanonicalMock(String name)
+		{
+			this.name = name;
+			this.description = null;
+			this.source = "exact";
+		}
+
+		@Canonical
+		public ExactOverCanonicalMock(String name, String description)
+		{
+			this.name = name;
+			this.description = description;
+			this.source = "canonical";
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public String getDescription()
+		{
+			return description;
+		}
+
+		public String getSource()
+		{
+			return source;
+		}
+	}
+
+	static class CanonicalWithBeanAttributeMock
+	{
+		private final String name;
+		private String description;
+
+		@Canonical
+		public CanonicalWithBeanAttributeMock(String name)
+		{
+			this.name = name;
+		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public String getDescription()
+		{
+			return description;
+		}
+
+		public void setDescription(String description)
+		{
+			this.description = description;
 		}
 	}
 

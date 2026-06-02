@@ -51,9 +51,12 @@ public record SealedConstructorStrategy(Map<Set<ConstructionStrategy.ParameterKe
 						.allMatch(a -> Arrays.stream(e.getParameters()).anyMatch(a::matches)))
 				.toList();
 
-		var selected = select(type, attributes.keySet(), compatible.stream()
-				.filter(e -> e.getParameterCount() == attributes.size())
-				.toList());
+		var selected = compatible.size() == 1 ? compatible.getFirst() : null;
+
+		if (selected == null)
+			selected = select(type, attributes.keySet(), compatible.stream()
+					.filter(e -> e.getParameterCount() == attributes.size())
+					.toList());
 		if (selected == null)
 			selected = select(type, attributes.keySet(), compatible.stream()
 					.filter(e -> e.isAnnotationPresent(Canonical.class))

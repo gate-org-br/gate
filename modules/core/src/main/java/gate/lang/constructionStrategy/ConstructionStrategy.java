@@ -20,14 +20,15 @@ import java.util.stream.Stream;
  *     <li><b>Records</b> — always use the canonical constructor;</li>
  *     <li><b>Known collection interfaces</b> ({@code List}, {@code Set}, {@code Map}, etc.) —
  *     created using a default implementation;</li>
- *     <li><b>{@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
- *     annotated with {@link Canonical};</li>
  *     <li><b>Builder</b> — a public static {@code builder()} method whose return type has a
  *     {@code build()} method;</li>
  *     <li><b>Single candidate</b> — if exactly one non-deprecated constructor or {@code of(...)}
  *     factory exists with parameters, it is treated as canonical;</li>
  *     <li><b>Attribute match</b> — constructors or factories whose parameters match the provided
  *     attributes, with preference for an exact parameter count;</li>
+ *     <li><b>{@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
+ *     annotated with {@link Canonical}, used when regular attribute matching cannot select a
+ *     unique candidate;</li>
  *     <li><b>Sealed</b> — if the class is sealed, the non-null attributes determine which
  *     subtype to instantiate; the subtype whose constructor or {@code of(...)} factory parameters
  *     exactly match the non-null attributes is selected — ambiguity or no match throws an
@@ -92,18 +93,6 @@ public interface ConstructionStrategy
 			if (type == BlockingDeque.class)
 				return new CollectionStrategy(LinkedBlockingDeque::new);
 
-			var candidates = getCandidates(type).toList();
-
-			var canonical = candidates.stream()
-					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
-			if (canonical.size() > 1)
-				throw new ConstructionException(type, canonical);
-			if (!canonical.isEmpty())
-				if (canonical.get(0) instanceof Constructor<?> constructor)
-					return new CanonicalConstructorStrategy(constructor);
-				else if (canonical.get(0) instanceof Method method)
-					return new CanonicalFactoryMethodStrategy(method);
-
 			var builderFactory = Arrays.stream(type.getDeclaredMethods())
 					.filter(m -> Modifier.isPublic(m.getModifiers()))
 					.filter(m -> Modifier.isStatic(m.getModifiers()))
@@ -117,61 +106,71 @@ public interface ConstructionStrategy
 					return new BuilderStrategy(builderFactory, build);
 			}
 
-			if (candidates.size() == 1
-					&& candidates.get(0).getParameters().length > 0)
+			var candidates = getCandidates(type).toList();
+			var canonical = candidates.stream()
+					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
+			if (canonical.size() > 1)
+				throw new ConstructionException(type, canonical);
+
+			candidates = candidates.stream()
+					.filter(c -> matchesAttributes(attributes, c.getParameters()))
+					.toList();
+
+			if (candidates.size() == 1)
 				if (candidates.get(0) instanceof Constructor<?> constructor)
 					return new CanonicalConstructorStrategy(constructor);
 				else if (candidates.get(0) instanceof Method method)
 					return new CanonicalFactoryMethodStrategy(method);
 
-			candidates = candidates.stream()
-					.filter(c -> matchesAttributes(attributes, c.getParameters()))
-					.toList();
-			if (candidates.size() > 1)
-			{
-				var exact = candidates.stream().filter(c -> c.getParameterCount() == attributes.size()).toList();
-
-				if (exact.size() == 1)
-					if (exact.get(0) instanceof Constructor<?> constructor)
+			var exact = candidates.stream().filter(c -> c.getParameterCount() == attributes.size()).toList();
+			if (exact.size() == 1)
+				if (exact.get(0) instanceof Constructor<?> constructor)
+					if (exact.getFirst().isAnnotationPresent(Canonical.class))
+						return new CanonicalConstructorStrategy(constructor);
+					else
 						return new ConstructorStrategy(constructor);
-					else if (exact.get(0) instanceof Method method)
+				else if (exact.get(0) instanceof Method method)
+					if (exact.getFirst().isAnnotationPresent(Canonical.class))
+						return new CanonicalFactoryMethodStrategy(method);
+					else
 						return new FactoryMethodStrategy(method);
 
-				throw new ConstructionException(type, attributes, candidates);
-			}
+			if (canonical.size() == 1)
+				if (canonical.get(0) instanceof Constructor<?> constructor)
+					return new CanonicalConstructorStrategy(constructor);
+				else if (canonical.get(0) instanceof Method method)
+					return new CanonicalFactoryMethodStrategy(method);
 
-			if (!candidates.isEmpty())
-				if (candidates.get(0) instanceof Constructor<?> constructor)
-					return new ConstructorStrategy(constructor);
-				else if (candidates.get(0) instanceof Method method)
-					return new FactoryMethodStrategy(method);
-
-
-			if (type.isSealed())
+			if (candidates.isEmpty())
 			{
-				Map<Set<ParameterKey>, Executable> executables = new HashMap<>();
-				getSubtypeCandidates(type).forEach(e ->
+				if (type.isSealed())
 				{
-					var key = ParameterKey.of(e);
-					var existing = executables.put(key, e);
-					if (existing != null)
-						throw new ConstructionException(type, Arrays.asList(existing, e));
-				});
-				if (!executables.isEmpty() &&
-						attributes.stream().allMatch(attribute -> executables.values().stream()
-								.flatMap(e -> Arrays.stream(e.getParameters()))
-								.anyMatch(attribute::matches)))
-					return new SealedConstructorStrategy(executables);
+					Map<Set<ParameterKey>, Executable> executables = new HashMap<>();
+					getSubtypeCandidates(type).forEach(e ->
+					{
+						var key = ParameterKey.of(e);
+						var existing = executables.put(key, e);
+						if (existing != null)
+							throw new ConstructionException(type, Arrays.asList(existing, e));
+					});
+					if (!executables.isEmpty() &&
+							attributes.stream().allMatch(attribute -> executables.values().stream()
+									.flatMap(e -> Arrays.stream(e.getParameters()))
+									.anyMatch(attribute::matches)))
+						return new SealedConstructorStrategy(executables);
+				}
+
+				var defaultConstructor = Arrays.stream(type.getConstructors())
+						.filter(c -> c.getParameterCount() == 0)
+						.findFirst()
+						.orElse(null);
+				if (defaultConstructor != null)
+					return new BeanStrategy(defaultConstructor);
+
+				throw new ConstructionException(type, attributes);
 			}
 
-			var defaultConstructor = Arrays.stream(type.getConstructors())
-					.filter(c -> c.getParameterCount() == 0)
-					.findFirst()
-					.orElse(null);
-			if (defaultConstructor != null)
-				return new BeanStrategy(defaultConstructor);
-
-			throw new ConstructionException(type, attributes);
+			throw new ConstructionException(type, attributes, candidates);
 		});
 	}
 
