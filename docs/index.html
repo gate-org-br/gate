@@ -9,7 +9,6 @@
 		<link rel="stylesheet" type="text/css" href="./gate/Gate.css"/>
 		<script type="module" src="./gate/g-html-viewer.js"></script>
 		<script type="module" src="./gate/Gate.js"></script>
-		<script type="module" src="./gate/form-coleta.js"></script>
 	</head>
 
 	<body data-loading onload="document.body.removeAttribute('data-loading')">
@@ -63,7 +62,24 @@
 			</nav>
 
 			<section id="content">
-				<form-coleta></form-coleta>
+				<fieldset>
+					<g-collection legend="Campos">
+						<fieldset>
+							<label>
+								Campo
+								<span>
+						<input type="text">
+							</span>
+							</label>
+						</fieldset>
+					</g-collection>
+				</fieldset>
+				<g-coolbar>
+					<a href="data:application/json,@VALUE(g-collection)"
+					   target="@message">
+						asfasdfad
+					</a>
+				</g-coolbar>
 			</section>
 
 			<footer>

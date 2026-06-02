@@ -1,7 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<input type="checkbox"><slot></slot>
-<style data-element="g-selectn">* {
+	<slot></slot>
+<style data-element="g-select1">* {
 	box-sizing: border-box
 }
 
@@ -72,7 +72,7 @@ input {
 /* global customElements */
 import GMessageDialog from './g-message-dialog.js';
 
-customElements.define('g-selectn', class extends HTMLElement
+customElements.define('g-select1', class extends HTMLElement
 {
 	#options;
 	#internals;
@@ -92,13 +92,6 @@ customElements.define('g-selectn', class extends HTMLElement
 		});
 
 		this.addEventListener("change", () => this.connectedCallback());
-
-		let checker = this.shadowRoot.querySelector("input");
-		checker.addEventListener("change", () =>
-		{
-			Array.from(this.querySelectorAll("input")).forEach(e => e.checked = checker.checked);
-			this.connectedCallback();
-		});
 	}
 
 	focus()
@@ -115,7 +108,7 @@ customElements.define('g-selectn', class extends HTMLElement
 		{
 			let cb = this.appendChild(document.createElement("input"));
 			cb.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change")));
-			cb.type = "checkbox";
+			cb.type = "radio";
 			cb.name = this.name;
 			cb.value = option.value;
 			let label = this.appendChild(document.createElement("label"));
@@ -130,15 +123,14 @@ customElements.define('g-selectn', class extends HTMLElement
 
 	get value()
 	{
-		return Array.from(this.querySelectorAll("input"))
-			.filter(cb => cb.checked)
-			.map(cb => cb.value);
+		let checked = Array.from(this.querySelectorAll("input")).find(cb => cb.checked);
+		return checked ? checked.value : null;
 	}
 
 	set value(value)
 	{
 		Array.from(this.querySelectorAll("input"))
-			.forEach(cb => cb.checked = value.includes(cb.value));
+			.forEach(cb => cb.checked = cb.value === value);
 	}
 
 	get name()
@@ -164,43 +156,20 @@ customElements.define('g-selectn', class extends HTMLElement
 			this.removeAttribute("required");
 	}
 
-	get max()
-	{
-		return this.hasAttribute("max") ? Number(this.getAttribute("max")) : null;
-	}
-
-	set max(max)
-	{
-		this.setAttribute("max", max);
-	}
-
-	get min()
-	{
-		return this.hasAttribute("min") ? Number(this.getAttribute("min")) : null;
-	}
-
-	set min(min)
-	{
-		this.setAttribute("min", min);
-	}
-
 	get selected()
 	{
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-		return count >= (this.min ?? 1);
+		return Array.from(this.querySelectorAll("input"))
+			.some(cb => cb.checked);
 	}
 
 	connectedCallback()
 	{
-		this.#internals.setFormValue(JSON.stringify(this.value));
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-		let input = this.shadowRoot.querySelector("input");
-		if (this.required && !count)
-			this.#internals.setValidity({valueMissing: true}, "Selecione ao menos uma opção", input);
-		else if (this.min && count < this.min)
-			this.#internals.setValidity({rangeUnderflow: true}, `Selecione ao menos ${this.min} opções`, input);
-		else if (this.max && count > this.max)
-			this.#internals.setValidity({rangeOverflow: true}, `Selecione no máximo ${this.max} opções`, input);
+		this.#internals.setFormValue(this.value);
+		if (this.required && !this.selected)
+			this.#internals.setValidity(
+				{valueMissing: true},
+				"Selecione ao menos uma opção",
+				this.shadowRoot.querySelector("input"));
 		else
 			this.#internals.setValidity({});
 	}
@@ -211,44 +180,22 @@ customElements.define('g-selectn', class extends HTMLElement
 			Array.from(this.querySelectorAll("input"))
 				.forEach(cb => cb.name = this.name);
 		else if (attribute === "value")
-			this.value = JSON.parse(this.getAttribute("value"));
+			this.value = this.getAttribute("value");
 		else
 			this.options = JSON.parse(this.getAttribute("options"));
 	}
 
-	checkValidity()
-	{
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-		if (this.required && !count) return false;
-		if (this.min && count < this.min) return false;
-		if (this.max && count > this.max) return false;
-		return true;
-	}
+	checkValidity() { return !this.required || this.selected; }
 
 	reportValidity()
 	{
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-
-		if (this.required && !count)
+		if (this.required && !this.selected)
 		{
 			GMessageDialog.error("Selecione ao menos uma opção");
 			return false;
 		}
-		if (this.min && count < this.min)
-		{
-			GMessageDialog.error(`Selecione ao menos ${this.min} opções`);
-			return false;
-		}
-		if (this.max && count > this.max)
-		{
-			GMessageDialog.error(`Selecione no máximo ${this.max} opções`);
-			return false;
-		}
 		return true;
 	}
 
-	static get observedAttributes()
-	{
-		return ['name', 'value', 'options'];
-	}
+	static get observedAttributes() { return ['name', 'value', 'options']; }
 });

@@ -118,7 +118,7 @@ public interface ConstructionStrategy
 			}
 
 			if (candidates.size() == 1
-			    && candidates.get(0).getParameters().length > 0)
+					&& candidates.get(0).getParameters().length > 0)
 				if (candidates.get(0) instanceof Constructor<?> constructor)
 					return new CanonicalConstructorStrategy(constructor);
 				else if (candidates.get(0) instanceof Method method)
@@ -149,23 +149,18 @@ public interface ConstructionStrategy
 
 			if (type.isSealed())
 			{
-				Map<Set<String>, Executable> executables = new HashMap<>();
+				Map<Set<ParameterKey>, Executable> executables = new HashMap<>();
 				getSubtypeCandidates(type).forEach(e ->
 				{
-					var key = Arrays.stream(e.getParameters())
-							.map(Parameter::getName)
-							.collect(Collectors.toSet());
+					var key = ParameterKey.of(e);
 					var existing = executables.put(key, e);
 					if (existing != null)
 						throw new ConstructionException(type, Arrays.asList(existing, e));
 				});
 				if (!executables.isEmpty() &&
-				    executables.keySet().stream()
-							.flatMap(Set::stream)
-							.collect(Collectors.toSet())
-							.containsAll(attributes.stream()
-									.map(Object::toString)
-									.collect(Collectors.toSet())))
+						attributes.stream().allMatch(attribute -> executables.values().stream()
+								.flatMap(e -> Arrays.stream(e.getParameters()))
+								.anyMatch(attribute::matches)))
 					return new SealedConstructorStrategy(executables);
 			}
 
@@ -193,15 +188,42 @@ public interface ConstructionStrategy
 
 	private static Stream<Executable> getSubtypeCandidates(Class<?> type)
 	{
-		if (type.isSealed())
-			return Arrays.stream(type.getPermittedSubclasses())
-					.flatMap(ConstructionStrategy::getSubtypeCandidates);
-		return getCandidates(type);
+		if (!type.isSealed())
+			return getCandidates(type);
+
+		var candidates = getCandidates(type).toList();
+		var keys = candidates.stream()
+				.map(ParameterKey::of)
+				.collect(Collectors.toSet());
+		return Stream.concat(candidates.stream(),
+				Arrays.stream(type.getPermittedSubclasses())
+						.flatMap(ConstructionStrategy::getSubtypeCandidates)
+						.filter(e -> !keys.contains(ParameterKey.of(e))));
 	}
 
 	private static boolean matchesAttributes(Set<Attribute> attributes, Parameter[] parameters)
 	{
 		return attributes.stream().allMatch(a -> Arrays.stream(parameters).anyMatch(a::matches));
+	}
+
+	record ParameterKey(String name, Class<?> type)
+	{
+		static ParameterKey of(Attribute attribute)
+		{
+			return new ParameterKey(attribute.toString(), attribute.getRawType());
+		}
+
+		static ParameterKey of(Parameter parameter)
+		{
+			return new ParameterKey(parameter.getName(), parameter.getType());
+		}
+
+		static Set<ParameterKey> of(Executable executable)
+		{
+			return Arrays.stream(executable.getParameters())
+					.map(ParameterKey::of)
+					.collect(Collectors.toSet());
+		}
 	}
 
 	static Object newInstance(Class<?> type,
@@ -212,6 +234,7 @@ public interface ConstructionStrategy
 		return of(type, propertyMap.keySet())
 				.construct(type, value, propertyMap, getValue);
 	}
+
 	static Object newInstance(Class<?> type,
 	                          Map<Attribute, Object> attributes)
 	{
@@ -226,6 +249,7 @@ public interface ConstructionStrategy
 
 	Object construct(Class<?> type,
 	                 Map<Attribute, Object> attributes);
+
 	Object construct(Class<?> type,
 	                 Object value,
 	                 Map<Attribute, Object> propertyMap,

@@ -5,8 +5,8 @@ fieldset {
   display: grid;
   align-items: start;
   border-radius: 3px;
+  border: 1px solid transparent;
   grid-template-columns: repeat(16, 1fr);
-  border: 1px solid var(--main2, #F0F0F0);
 }
 fieldset > * {
   grid-column: span 16;
@@ -192,6 +192,7 @@ fieldset > label > form[data-icon]::after {
 }
 fieldset > fieldset {
   margin: 0;
+  border: 1px solid var(--main2, #F0F0F0);
 }
 @media only screen and (min-width: 600px) {
   fieldset > *[data-size="1"] {

@@ -20,15 +20,11 @@ public record CanonicalConstructorStrategy(Constructor<?> constructor) implement
 			    && attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
-			var constructorAttributes = Arguments.getConstructorAttributes(constructor, attributes.keySet());
+			var arguments = Arguments.of(type, constructor, attributes);
 
-			var values = Arguments.getArguments(constructor, attributes);
-
-			Arguments.checkPrimitiveArguments(type, constructor, attributes.keySet(), values);
-
-			var value = constructor.newInstance(values);
+			var value = constructor.newInstance(arguments.values());
 			for (var entry : attributes.entrySet())
-				if (!constructorAttributes.contains(entry.getKey()))
+				if (!arguments.contains(entry.getKey()))
 					entry.getKey().setValue(value, entry.getValue());
 			return value;
 		} catch (ReflectiveOperationException | IllegalArgumentException ex)
@@ -53,15 +49,13 @@ public record CanonicalConstructorStrategy(Constructor<?> constructor) implement
 			if (attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
-			var constructorAttributes = Arguments.getConstructorAttributes(constructor, attributes.keySet());
-			var values = Arguments.getArguments(constructor, attributes);
-			Arguments.checkPrimitiveArguments(type, constructor, attributes.keySet(), values);
+			var arguments = Arguments.of(type, constructor, attributes);
 
-			value = constructor.newInstance(values);
+			value = constructor.newInstance(arguments.values());
 			for (var entry : attributes.entrySet())
 			{
 				var attribute = entry.getKey();
-				if (!constructorAttributes.contains(attribute))
+				if (!arguments.contains(attribute))
 					attribute.setValue(value, entry.getValue());
 			}
 

@@ -9,6 +9,7 @@ import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
 @ApplicationScoped
@@ -16,7 +17,7 @@ public class CharacterHandler implements Handler
 {
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		try (var is = part.getInputStream())
 		{

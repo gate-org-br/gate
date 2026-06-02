@@ -1,17 +1,19 @@
 package gate.adapter.converter;
 
+
 import gate.error.ConversionException;
 import gate.lang.json.JsonElement;
 
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 public abstract class Encoder<T>
 {
 
-	protected final Class<T> type;
+	protected final Type type;
 
-	private Encoder(Class<T> type)
+	private Encoder(Type type)
 	{
 		this.type = type;
 	}
@@ -20,7 +22,7 @@ public abstract class Encoder<T>
 
 	public abstract T decode(String string) throws ConversionException;
 
-	public static <T> Encoder<T> of(Class<T> type)
+	public static <T> Encoder<T> of(Type type)
 	{
 		return new NormalEncoder<>(type);
 	}
@@ -28,7 +30,7 @@ public abstract class Encoder<T>
 	private static class NormalEncoder<T> extends Encoder<T>
 	{
 
-		private NormalEncoder(Class<T> type)
+		private NormalEncoder(Type type)
 		{
 			super(type);
 		}
@@ -60,7 +62,7 @@ public abstract class Encoder<T>
 			} catch (Exception ex)
 			{
 				throw new ConversionException("%s is not a valid encoded %s"
-						.formatted(string, type.getName()), ex);
+						.formatted(string, type.getTypeName()), ex);
 			}
 		}
 	}

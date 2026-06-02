@@ -1,0 +1,6 @@
+<template>
+	<button type="button" class="alternative">
+		<g-icon>&#x1002;</g-icon>
+	</button>
+	<slot></slot>
+</template>

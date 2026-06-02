@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,7 +21,7 @@ public class PathHandler implements Handler
 {
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		try
 		{

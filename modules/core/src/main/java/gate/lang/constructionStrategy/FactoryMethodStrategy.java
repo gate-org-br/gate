@@ -20,9 +20,7 @@ public record FactoryMethodStrategy(Method method) implements ConstructionStrate
 			    && attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
-			var values = Arguments.getArguments(method, attributes);
-			Arguments.checkPrimitiveArguments(type, method, attributes.keySet(), values);
-			return method.invoke(null, values);
+			return method.invoke(null, Arguments.of(type, method, attributes).values());
 		} catch (ReflectiveOperationException | IllegalArgumentException ex)
 		{
 			throw new ConstructionException(type, method, attributes.keySet(), ex);
@@ -44,9 +42,7 @@ public record FactoryMethodStrategy(Method method) implements ConstructionStrate
 			if (attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
-			var args = Arguments.getArguments(method, attributes);
-			Arguments.checkPrimitiveArguments(type, method, attributes.keySet(), args);
-			return method.invoke(null, args);
+			return method.invoke(null, Arguments.of(type, method, attributes).values());
 		} catch (ReflectiveOperationException | IllegalArgumentException ex)
 		{
 			throw new ConstructionException(type, method, propertyMap.keySet(), ex);

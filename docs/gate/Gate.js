@@ -64,6 +64,8 @@ import "./g-form.js";
 import "./g-job.js";
 import "./g-icon.js";
 import "./g-selectn.js";
+import "./g-select1.js";
+import './g-collection.js';
 
 import "./g-select-menu.js";
 

@@ -3,6 +3,7 @@ package gate.policonverter;
 import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +12,7 @@ public class SetPoliconverter implements Policonverter
 {
 
 	@Override
-	public Object getObject(Class<?> type, String[] value) throws ConversionException
+	public Object getObject(Type type, String[] value) throws ConversionException
 	{
 		Set<Object> objects = new HashSet<>();
 		for (String string : value)
@@ -29,7 +30,7 @@ public class SetPoliconverter implements Policonverter
 	}
 
 	@Override
-	public Object toCollection(Class<?> type, Object[] objects)
+	public Object toCollection(Type type, Object[] objects)
 	{
 		return new HashSet<>(Arrays.asList(objects));
 	}

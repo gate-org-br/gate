@@ -7,6 +7,7 @@ import jakarta.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 
 public class StringMatrixHandler implements Handler
 {
@@ -19,10 +20,10 @@ public class StringMatrixHandler implements Handler
 
 	@Override
 	@SuppressWarnings("resource")
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		try (CSVParser reader =
-				CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
+					 CSVParser.of(new BufferedReader(new InputStreamReader(part.getInputStream()))))
 		{
 			return reader.stream().map(e -> e.toArray(new String[0])).toArray(String[][]::new);
 		} catch (IOException ex)

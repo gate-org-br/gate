@@ -7,21 +7,19 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UncheckedIOException;
+
+import java.io.*;
+import java.lang.reflect.Type;
 
 @ApplicationScoped
 public class DataFileHandler implements Handler
 {
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		if (part == null
-		    || part.getSubmittedFileName().isEmpty())
+				|| part.getSubmittedFileName().isEmpty())
 			return null;
 
 		try (InputStream is = part.getInputStream())

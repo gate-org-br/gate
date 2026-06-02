@@ -1,12 +1,16 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.adapter.renderer.Renderer;
-
 import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
 import gate.util.Toolkit;
+import jakarta.inject.Inject;
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.exceptions.TemplateInputException;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -14,12 +18,6 @@ import java.util.Optional;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import jakarta.inject.Inject;
-import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.exceptions.TemplateInputException;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.processor.element.IElementTagStructureHandler;
 
 public abstract class CheckableProcessor extends PropertyProcessor
 {
@@ -66,14 +64,24 @@ public abstract class CheckableProcessor extends PropertyProcessor
 
 		Object value = property.getValue(screen);
 
-		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression.create()::function).orElse(Function.identity());
-		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression.create()::function).orElse(Function.identity());
-		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression.create()::function).orElse(null);
+		var labels = Optional.ofNullable(attributes.remove("labels"))
+				.map(e -> (String) e)
+				.map(expression.create()::function)
+				.orElse(Function.identity());
+		var values = Optional.ofNullable(attributes.remove("values"))
+				.map(e -> (String) e)
+				.map(expression.create()::function)
+				.orElse(Function.identity());
+		var children = Optional.ofNullable(attributes.remove("children"))
+				.map(e -> (String) e)
+				.map(expression.create()::function)
+				.orElse(null);
 
 		StringJoiner string = new StringJoiner(System.lineSeparator());
-		string.add("<g-selectn " + attributes + ">");
+		string.add("<g-%s %s>".formatted(getElement(), attributes));
 
-		Function<Object, Object> groups = extract(element, handler, "groups").map(expression.create()::function).orElse(null);
+		Function<Object, Object> groups = extract(element, handler, "groups").map(expression.create()::function)
+				.orElse(null);
 		if (groups != null)
 		{
 			Toolkit.stream(options)
@@ -81,11 +89,18 @@ public abstract class CheckableProcessor extends PropertyProcessor
 							LinkedHashMap::new,
 							Collectors.toList()))
 					.entrySet()
-					.forEach(group -> print(string, group.getValue(), labels, values, children, property.toString(), value, 0));
+					.forEach(group -> print(string,
+							group.getValue(),
+							labels,
+							values,
+							children,
+							property.toString(),
+							value,
+							0));
 		} else
 			print(string, Toolkit.iterable(options), labels, values, children, property.toString(), value, 0);
 
-		string.add("</g-selectn>");
+		string.add("</g-%s>".formatted(getElement()));
 		handler.replaceWith(string.toString(), false);
 	}
 

@@ -5,23 +5,23 @@ import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeData;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-
 import java.io.Writer;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.servlet.http.HttpServletResponse;
+import java.lang.reflect.Type;
 
 @ApplicationScoped
 public class MimeDataHandler implements Handler
 {
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		if (part == null)
 			return null;
@@ -42,7 +42,7 @@ public class MimeDataHandler implements Handler
 		String string = value.toString();
 		response.setContentType("text/plain");
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 			writer.flush();

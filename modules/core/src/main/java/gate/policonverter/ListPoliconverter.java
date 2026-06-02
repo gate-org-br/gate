@@ -3,6 +3,7 @@ package gate.policonverter;
 import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,7 +13,7 @@ public class ListPoliconverter implements Policonverter
 {
 
 	@Override
-	public Object getObject(Class<?> type, String[] value) throws ConversionException
+	public Object getObject(Type type, String[] value) throws ConversionException
 	{
 		List<Object> objects = new ArrayList<>();
 		for (String string : value)
@@ -30,7 +31,7 @@ public class ListPoliconverter implements Policonverter
 	}
 
 	@Override
-	public Object toCollection(Class<?> type, Object[] objects)
+	public Object toCollection(Type type, Object[] objects)
 	{
 		Collection<Object> result = new ArrayList<>();
 		Collections.addAll(result, objects);

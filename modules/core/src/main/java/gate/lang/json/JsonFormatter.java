@@ -1,6 +1,7 @@
 package gate.lang.json;
 
 import gate.error.ConversionException;
+
 import java.util.Map;
 
 public class JsonFormatter implements AutoCloseable
@@ -15,26 +16,28 @@ public class JsonFormatter implements AutoCloseable
 
 	public void format(JsonElement element) throws ConversionException
 	{
-		switch (element.getType())
-		{
-			case NUMBER:
-				format((JsonNumber) element);
-				break;
-			case ARRAY:
-				format((JsonArray) element);
-				break;
-			case BOOLEAN:
-				format((JsonBoolean) element);
-				break;
-			case OBJECT:
-				format((JsonObject) element);
-				break;
-			case STRING:
-				format((JsonString) element);
-				break;
-			case NULL:
-				format((JsonNull) element);
-		}
+		if (element != null)
+			switch (element.getType())
+			{
+				case NUMBER:
+					format((JsonNumber) element);
+					break;
+				case ARRAY:
+					format((JsonArray) element);
+					break;
+				case BOOLEAN:
+					format((JsonBoolean) element);
+					break;
+				case OBJECT:
+					format((JsonObject) element);
+					break;
+				case STRING:
+					format((JsonString) element);
+					break;
+				case NULL:
+					format((JsonNull) element);
+			}
+		else format(JsonNull.INSTANCE);
 	}
 
 	public void format(JsonNumber value) throws ConversionException
@@ -45,7 +48,7 @@ public class JsonFormatter implements AutoCloseable
 	public void format(JsonString value) throws ConversionException
 	{
 		writer.write(JsonToken.Type.STRING,
-			value.unwrap());
+				value.unwrap());
 	}
 
 	public void format(JsonBoolean value) throws ConversionException

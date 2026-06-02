@@ -5,7 +5,9 @@ import gate.function.TriFunction;
 import gate.lang.property.Attribute;
 
 import java.lang.reflect.Constructor;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 record BeanStrategy(Constructor<?> constructor) implements ConstructionStrategy
 {
@@ -14,6 +16,9 @@ record BeanStrategy(Constructor<?> constructor) implements ConstructionStrategy
 	{
 		try
 		{
+			if (attributes.values().stream().allMatch(Objects::isNull))
+				return null;
+
 			var value = constructor.newInstance();
 			for (var attribute : attributes.entrySet())
 				attribute.getKey().setValue(value, attribute.getValue());
@@ -30,8 +35,15 @@ record BeanStrategy(Constructor<?> constructor) implements ConstructionStrategy
 	{
 		try
 		{
+			var attributes = new LinkedHashMap<Attribute, Object>();
+			for (var entry : propertyMap.entrySet())
+				attributes.put(entry.getKey(), getValue.apply(entry.getKey(), null, entry.getValue()));
+			if (value == null && attributes.values().stream().allMatch(Objects::isNull))
+				return null;
+
 			if (value == null)
 				value = constructor.newInstance();
+
 			for (var entry : propertyMap.entrySet())
 			{
 				var attribute = entry.getKey();

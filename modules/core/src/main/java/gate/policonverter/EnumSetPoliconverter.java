@@ -5,6 +5,7 @@ import gate.error.AppError;
 import gate.error.ConversionException;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -13,15 +14,21 @@ public class EnumSetPoliconverter implements Policonverter
 {
 
 	@Override
-	public Object getObject(Class<?> type, String[] value)
+	public Object getObject(Type type, String[] value)
 	{
 		try
 		{
-			EnumSet<?> objects = (EnumSet<?>) EnumSet.class.getMethod("noneOf", Class.class).invoke(EnumSet.class, type);
+			EnumSet<?> objects = (EnumSet<?>) EnumSet.class.getMethod("noneOf", Class.class)
+					.invoke(EnumSet.class, type);
 			for (String string : value)
-				EnumSet.class.getMethod("add", Object.class).invoke(objects, Converter.getConverter(type).ofString(type, string));
+				EnumSet.class.getMethod("add", Object.class)
+						.invoke(objects, Converter.getConverter(type).ofString(type, string));
 			return objects;
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException |
+		} catch (NoSuchMethodException |
+		         SecurityException |
+		         IllegalAccessException |
+		         IllegalArgumentException |
+		         InvocationTargetException |
 		         ConversionException e)
 		{
 			throw new AppError(e);
@@ -38,7 +45,7 @@ public class EnumSetPoliconverter implements Policonverter
 	}
 
 	@Override
-	public Object toCollection(Class<?> type, Object[] objects)
+	public Object toCollection(Type type, Object[] objects)
 	{
 		try
 		{
@@ -46,7 +53,11 @@ public class EnumSetPoliconverter implements Policonverter
 			for (Object obj : objects)
 				EnumSet.class.getMethod("add", Object.class).invoke(result, obj);
 			return result;
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+		} catch (NoSuchMethodException |
+		         SecurityException |
+		         IllegalAccessException |
+		         IllegalArgumentException |
+		         InvocationTargetException e)
 		{
 			throw new AppError(e);
 		}

@@ -2,16 +2,18 @@ package gate.policonverter;
 
 import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
+import gate.util.Reflection;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 
 public class ArrayPoliconverter implements Policonverter
 {
 
 	@Override
-	public Object getObject(Class<?> type, String[] value) throws ConversionException
+	public Object getObject(Type type, String[] value) throws ConversionException
 	{
-		Object[] objects = (Object[]) Array.newInstance(type, value.length);
+		Object[] objects = (Object[]) Array.newInstance(Reflection.getRawType(type), value.length);
 		for (int i = 0; i < value.length; i++)
 			objects[i] = Converter.getConverter(type).ofString(type, value[i]);
 		return objects;
@@ -28,7 +30,7 @@ public class ArrayPoliconverter implements Policonverter
 	}
 
 	@Override
-	public Object toCollection(Class<?> type, Object[] objects)
+	public Object toCollection(Type type, Object[] objects)
 	{
 		return objects;
 	}

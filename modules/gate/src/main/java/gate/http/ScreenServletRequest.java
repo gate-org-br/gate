@@ -12,6 +12,7 @@ import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
 import gate.policonverter.Policonverter;
 import gate.type.RequestCommand;
+import gate.util.Reflection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.Part;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -46,7 +48,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		try
 		{
 			return contentType != null
-			       && contentType.toLowerCase().startsWith("multipart/") ? getParts()
+					&& contentType.toLowerCase().startsWith("multipart/") ? getParts()
 					: Collections.emptyList();
 		} catch (IOException | ServletException e)
 		{
@@ -68,13 +70,15 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return new ArrayList<>(parameters);
 	}
 
-	public Object getParameterValues(Class<?> type, Class<?> elementType, String name)
+	public Object getParameterValues(Type type, String name)
 	{
 		try
 		{
+			Class<?> rawType = Reflection.getRawType(type);
+			Type elementType = Reflection.getElementGenericType(type);
 			String[] strings = getParameterValues(name);
 			if (strings != null)
-				return Policonverter.getPoliconverter(type).getObject(elementType, strings);
+				return Policonverter.getPoliconverter(rawType).getObject(elementType, strings);
 
 			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
 			{
@@ -91,7 +95,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public Object getParameter(Class<?> type, String name)
+	public Object getParameter(Type type, String name)
 	{
 		try
 		{
@@ -104,7 +108,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			{
 				try
 				{
-					return Handler.fromPart(type, part);
+					return Handler.fromPart(Reflection.getRawType(type), part);
 				} finally
 				{
 					part.delete();
@@ -138,7 +142,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			if (string != null)
 				return (T) Converter.getConverter(type).ofString(type, URLDecoder.decode(getParameter(name), charset));
 			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
-				return Handler.fromPart(type, parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
+				return Handler.fromPart(type,
+						parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
 			return null;
 		} catch (UnsupportedEncodingException e)
 		{
@@ -183,9 +188,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		if (property.getLastAttribute() instanceof CollectionAttribute)
 		{
 			var previous = property.getPreviousProperty();
-			return getParameterValues(previous.getRawType(), previous.getElementRawType(), property.toString());
+			return getParameterValues(previous.getType(), property.toString());
 		}
-		return getParameter(property.getRawType(), property.toString());
+		return getParameter(property.getType(), property.toString());
 	}
 
 	public Authentication getAuthentication() throws AuthenticationException

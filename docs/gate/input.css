@@ -5,7 +5,8 @@ select {
 input,
 select,
 textarea,
-g-selectn {
+g-selectn,
+g-select1 {
   width: 100%;
   height: 38px;
   color: inherit;
@@ -15,25 +16,29 @@ g-selectn {
   background-color: var(--main1, #FFFFFF);
 }
 textarea,
-g-selectn {
+g-selectn,
+g-select1 {
   height: 100%;
 }
 input:first-child,
 select:first-child,
 textarea:first-child,
-g-selectn:first-child {
+g-selectn:first-child,
+g-select1:first-child {
   border-radius: 3px 0 0 3px;
 }
 input:last-child,
 select:last-child,
 textarea:last-child,
-g-selectn:last-child {
+g-selectn:last-child,
+g-select1:last-child {
   border-radius: 0 3px 3px 0;
 }
 input:only-child,
 select:only-child,
 textarea:only-child,
-g-selectn:only-child {
+g-selectn:only-child,
+g-select1:only-child {
   border-radius: 3px;
 }
 textarea {

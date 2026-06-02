@@ -6,6 +6,7 @@ import jakarta.servlet.http.Part;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 
 public class ByteArrayHandler implements Handler
 {
@@ -17,7 +18,7 @@ public class ByteArrayHandler implements Handler
 	}
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		try (BufferedInputStream stream = new BufferedInputStream(part.getInputStream());
 		     ByteArrayOutputStream bytes = new ByteArrayOutputStream())

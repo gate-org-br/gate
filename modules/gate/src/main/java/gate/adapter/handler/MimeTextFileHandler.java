@@ -5,22 +5,23 @@ import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.lang.contentType.ContentType;
 import gate.type.mime.MimeTextFile;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
+import java.lang.reflect.Type;
 
 @ApplicationScoped
 public class MimeTextFileHandler implements Handler
 {
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		if (part == null)
 			return null;

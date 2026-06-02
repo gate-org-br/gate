@@ -20,9 +20,7 @@ public record ConstructorStrategy(Constructor<?> constructor) implements Constru
 			    && attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
-			var values = Arguments.getArguments(constructor, attributes);
-			Arguments.checkPrimitiveArguments(type, constructor, attributes.keySet(), values);
-			return constructor.newInstance(values);
+			return constructor.newInstance(Arguments.of(type, constructor, attributes).values());
 		} catch (ReflectiveOperationException | IllegalArgumentException ex)
 		{
 			throw new ConstructionException(type, constructor, attributes.keySet(), ex);
@@ -45,9 +43,7 @@ public record ConstructorStrategy(Constructor<?> constructor) implements Constru
 			if (attributes.values().stream().allMatch(Objects::isNull))
 				return null;
 
-			var args = Arguments.getArguments(constructor, attributes);
-			Arguments.checkPrimitiveArguments(type, constructor, attributes.keySet(), args);
-			return constructor.newInstance(args);
+			return constructor.newInstance(Arguments.of(type, constructor, attributes).values());
 		} catch (ReflectiveOperationException | IllegalArgumentException ex)
 		{
 			throw new ConstructionException(type, constructor, propertyMap.keySet(), ex);

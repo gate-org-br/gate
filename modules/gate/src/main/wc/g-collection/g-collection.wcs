@@ -1,0 +1,44 @@
+:host {
+	display: grid;
+	grid-template-columns: 1fr auto;
+	gap: 0.5rem;
+	align-items: start;
+}
+
+:host::before {
+	content: "";
+
+	gap: 12px;
+	height: 100%;
+	display: flex;
+	font-size: 16px;
+	padding-left: 8px;
+	border: 1px solid;
+	text-align: justify;
+	align-items: stretch;
+	flex-direction: column;
+	border-left: 6px solid;
+	justify-content: center;
+	border-radius: 0 3px 3px 0;
+	border-color: var(--main3, #DDDDDD);
+	background-color: var(--main1, #FFFFFF);
+}
+
+:host([legend])::before { content: attr(legend);}
+
+button {
+	grid-column: 2;
+	width: 44px;
+	color: white;
+	height: 44px;
+	padding: 8px;
+	border: none;
+	display: flex;
+	cursor: pointer;
+	font-size: 12px;
+	border-radius: 3px;
+	align-items: center;
+	text-decoration: none;
+	justify-content: center;
+	background-color: var(--g2, #009E60);
+}

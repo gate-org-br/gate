@@ -10,6 +10,7 @@ import jakarta.servlet.http.Part;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 
 @ApplicationScoped
@@ -25,7 +26,7 @@ public class StringHandler implements Handler
 	private JavaScriptHandler jsHandler;
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		try (var is = part.getInputStream())
 		{
@@ -43,7 +44,7 @@ public class StringHandler implements Handler
 		if (string.endsWith(".html"))
 			htmlHandler.handle(request, response, string);
 		else if (string.endsWith(".js")
-		         || string.endsWith(".mjs"))
+				|| string.endsWith(".mjs"))
 			jsHandler.handle(request, response, string);
 		else
 			textHandler.handle(request, response, string);
@@ -58,7 +59,7 @@ public class StringHandler implements Handler
 		if (string.endsWith(".html"))
 			htmlHandler.handle(request, progress, string);
 		else if (string.endsWith(".js")
-		         || string.endsWith(".mjs"))
+				|| string.endsWith(".mjs"))
 			jsHandler.handle(request, progress, string);
 		else
 			textHandler.handle(request, progress, string);

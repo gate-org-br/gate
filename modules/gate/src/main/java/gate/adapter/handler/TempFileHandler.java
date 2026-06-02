@@ -2,21 +2,23 @@ package gate.adapter.handler;
 
 import gate.error.ConversionException;
 import gate.type.TempFile;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.lang.reflect.Type;
 
 @ApplicationScoped
 public class TempFileHandler implements Handler
 {
 
 	@Override
-	public Object ofPart(Class<?> type, Part part) throws ConversionException
+	public Object ofPart(Type type, Part part) throws ConversionException
 	{
 		if (part == null)
 			return null;
@@ -40,15 +42,15 @@ public class TempFileHandler implements Handler
 	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 
-		try ( TempFile tempFile = (TempFile) value)
+		try (TempFile tempFile = (TempFile) value)
 		{
 
 			response.setContentLength((int) tempFile.length());
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", "attachment; filename=\"file.dat\"");
 
-			try ( InputStream inputStream = tempFile.getInputStream();
-				 OutputStream outputStream = response.getOutputStream())
+			try (InputStream inputStream = tempFile.getInputStream();
+			     OutputStream outputStream = response.getOutputStream())
 			{
 				inputStream.transferTo(outputStream);
 			}
