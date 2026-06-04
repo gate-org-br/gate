@@ -10,7 +10,6 @@ import gate.error.InvalidUsernamePasswordException;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
-import gate.policonverter.Policonverter;
 import gate.type.RequestCommand;
 import gate.util.Reflection;
 import jakarta.servlet.ServletException;
@@ -72,27 +71,21 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public Object getParameterValues(Type type, String name)
 	{
-		try
-		{
-			Class<?> rawType = Reflection.getRawType(type);
-			Type elementType = Reflection.getElementGenericType(type);
-			String[] strings = getParameterValues(name);
-			if (strings != null)
-				return Policonverter.getPoliconverter(rawType).getObject(elementType, strings);
+		String[] strings = getParameterValues(name);
+		if (strings != null)
+			return Arrays.stream(strings)
+					.map(e -> Converter.getConverter(type).ofString(type, e))
+					.toList();
 
-			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
-			{
-				Object[] objects = parts().stream()
-						.filter(e -> e.getName().equals(name))
-						.map(part -> Handler.fromPart(elementType, part))
-						.toArray();
-				return Policonverter.getPoliconverter(type).toCollection(elementType, objects);
-			}
-			return null;
-		} catch (ConversionException e)
-		{
-			throw new RuntimeException(e);
-		}
+		var parts = parts().stream()
+				.filter(e -> e.getName().equals(name))
+				.toList();
+		if (!parts.isEmpty())
+			return parts.stream()
+					.map(e -> Handler.fromPart(type, e))
+					.toList();
+
+		return null;
 	}
 
 	public Object getParameter(Type type, String name)
@@ -188,7 +181,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		if (property.getLastAttribute() instanceof CollectionAttribute)
 		{
 			var previous = property.getPreviousProperty();
-			return getParameterValues(previous.getType(), property.toString());
+			return getParameterValues(previous.getElementType(), property.toString());
 		}
 		return getParameter(property.getType(), property.toString());
 	}

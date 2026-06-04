@@ -12,11 +12,13 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public final class TestServletSupport
 {
@@ -35,6 +37,17 @@ public final class TestServletSupport
 	                                   String method,
 	                                   String requestUri)
 	{
+		return requestValues(parameters.entrySet().stream()
+				.collect(Collectors.toMap(Map.Entry::getKey, e -> new String[]{e.getValue()})),
+				headers, cookies, method, requestUri);
+	}
+
+	public static RequestState requestValues(Map<String, String[]> parameters,
+	                                        Map<String, String> headers,
+	                                        Cookie[] cookies,
+	                                        String method,
+	                                        String requestUri)
+	{
 		Map<String, Object> attributes = new HashMap<>();
 		HttpServletRequest request = (HttpServletRequest) Proxy.newProxyInstance(
 				TestServletSupport.class.getClassLoader(),
@@ -45,12 +58,10 @@ public final class TestServletSupport
 
 					return switch (name)
 					{
-						case "getParameter" -> parameters.get((String) args[0]);
-						case "getParameterValues" ->
-						{
-							String value = parameters.get((String) args[0]);
-							yield value != null ? new String[]{value} : null;
-						}
+						case "getParameter" -> Arrays.stream(parameters.getOrDefault((String) args[0], new String[0]))
+								.findFirst()
+								.orElse(null);
+						case "getParameterValues" -> parameters.get((String) args[0]);
 						case "getParameterNames" -> enumeration(parameters.keySet());
 						case "getHeader" -> headers.get((String) args[0]);
 						case "getCookies" -> cookies;
