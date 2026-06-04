@@ -1,9 +1,10 @@
 package gate.lang.property;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Objects;
 
-class ArrayAttribute implements Attribute
+public class ArrayAttribute implements Attribute
 {
 
 	private final int index;
@@ -13,6 +14,11 @@ class ArrayAttribute implements Attribute
 	{
 		this.type = type;
 		this.index = index;
+	}
+
+	public int getIndex()
+	{
+		return index;
 	}
 
 	@Override
@@ -36,27 +42,29 @@ class ArrayAttribute implements Attribute
 	@Override
 	public Object getValue(Object object)
 	{
-		if (object == null)
-			return null;
-		return ((Object[]) object)[index];
+		return object != null && Array.getLength(object) > index
+		       ? Array.get(object, index) : null;
 	}
 
 	@Override
 	public Object forceValue(Object object)
 	{
-		if (object == null)
+		if (object == null || Array.getLength(object) <= index)
 			return null;
-		Object[] array = ((Object[]) object);
-		if (array.length > index
-			&& array[index] == null)
-			array[index] = createInstance(getElementRawType());
-		return array[index];
+
+		Object value = Array.get(object, index);
+		if (value == null && !getRawType().isPrimitive())
+		{
+			value = createInstance(getRawType());
+			Array.set(object, index, value);
+		}
+		return value;
 	}
 
 	@Override
 	public void setValue(Object object, Object value)
 	{
-		((Object[]) object)[index] = value;
+		Array.set(object, index, value);
 	}
 
 	@Override

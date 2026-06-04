@@ -283,6 +283,9 @@ class PropertyParser
 		}
 
 		// Collection access (no index)
+		if (clazz.isArray())
+			return new ArrayElementsAttribute(attribute.getElementType());
+
 		if (Collection.class.isAssignableFrom(clazz))
 			return new CollectionAttribute(attribute.getElementType());
 

@@ -58,6 +58,9 @@ public interface ConstructionStrategy
 	{
 		return Cache.INSTANCE.compute(type, attributes, () ->
 		{
+			if (type.isArray())
+				return new ArrayStrategy();
+
 			if (type.isRecord())
 			{
 				var types = Arrays.stream(type.getRecordComponents())

@@ -7,6 +7,7 @@ import gate.entity.User;
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
 import gate.error.InvalidUsernamePasswordException;
+import gate.lang.property.ArrayElementsAttribute;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
@@ -178,7 +179,8 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	public Object getParameter(Property property)
 	{
-		if (property.getLastAttribute() instanceof CollectionAttribute)
+		if (property.getLastAttribute() instanceof CollectionAttribute
+				|| property.getLastAttribute() instanceof ArrayElementsAttribute)
 		{
 			var previous = property.getPreviousProperty();
 			return getParameterValues(previous.getElementType(), property.toString());
