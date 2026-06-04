@@ -3,7 +3,7 @@ package gate.http;
 import gate.adapter.converter.Converter;
 import gate.adapter.handler.Handler;
 import gate.entity.User;
-import gate.error.AppError;
+
 import gate.error.AuthenticationException;
 import gate.error.ConversionException;
 import gate.error.InvalidUsernamePasswordException;
@@ -91,7 +91,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			return null;
 		} catch (ConversionException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			return null;
 		} catch (UnsupportedEncodingException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 

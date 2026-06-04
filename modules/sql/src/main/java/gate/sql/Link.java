@@ -1,6 +1,6 @@
 package gate.sql;
 
-import gate.error.AppError;
+
 import gate.sql.condition.CompiledCondition;
 import gate.sql.statement.Query;
 import gate.sql.statement.Sentence;
@@ -51,7 +51,7 @@ public class Link implements AutoCloseable
 			return new Link(datasource.getConnection());
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -72,7 +72,7 @@ public class Link implements AutoCloseable
 			return new Link(DriverManager.getConnection(url, username, password));
 		} catch (SQLException | ClassNotFoundException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -102,7 +102,7 @@ public class Link implements AutoCloseable
 					.getDatabaseProductName().toUpperCase(Locale.ROOT);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class Link implements AutoCloseable
 					connection.prepareStatement(sql, java.sql.Statement.RETURN_GENERATED_KEYS));
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -150,7 +150,7 @@ public class Link implements AutoCloseable
 			return this;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -167,7 +167,7 @@ public class Link implements AutoCloseable
 			return !connection.getAutoCommit();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -188,7 +188,7 @@ public class Link implements AutoCloseable
 			return this;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -209,7 +209,7 @@ public class Link implements AutoCloseable
 			return this;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -225,7 +225,7 @@ public class Link implements AutoCloseable
 			return connection.isClosed();
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -248,7 +248,7 @@ public class Link implements AutoCloseable
 			}
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -303,7 +303,10 @@ public class Link implements AutoCloseable
 	 * @param <T>      type of the entities to be compiled with the sentence
 	 * @return a compiled and connected sentence ready for execution
 	 */
-	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled<T> sentence) {return sentence.connect(this);}
+	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled<T> sentence)
+	{
+		return sentence.connect(this);
+	}
 
 	/**
 	 * Prepares a sentence to be executed.

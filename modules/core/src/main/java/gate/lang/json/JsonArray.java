@@ -466,7 +466,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the collection of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray format(Collection<?> objects) {return render(objects.stream());}
+	public static JsonArray render(Collection<?> objects) {return render(objects.stream());}
 
 	/**
 	 * Creates a JsonArray from an array by converting each object to its
@@ -475,7 +475,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param objects the array of objects to format
 	 * @return a JsonArray containing the text representations
 	 */
-	public static JsonArray format(Object... objects) {return render(Stream.of(objects));}
+	public static JsonArray render(Object... objects) {return render(Stream.of(objects));}
 
 	/**
 	 * Creates a JsonArray of formatted JsonObjects with label and value
@@ -487,7 +487,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	 * @param value   function to extract the value from each object
 	 * @return a JsonArray containing formatted JsonObjects
 	 */
-	public static <T> JsonArray format(List<T> objects, Function<T, String> label, Function<T, Object> value)
+	public static <T> JsonArray render(List<T> objects, Function<T, String> label, Function<T, Object> value)
 	{
 		return objects.stream().map(e -> JsonObject.render(e, label, value))
 				.collect(Collectors.toCollection(JsonArray::new));

@@ -25,7 +25,7 @@ public class ObjectJsonConverter implements JsonConverter
 		Class<?> type = Reflection.getRawType(genericType);
 
 		return PropertyGraph.of(type, new ArrayList<>(jsonObject.keySet()))
-				.populate(null, e -> JsonConverter.fromJson(e.getGenericType(),
+				.populate(e -> JsonConverter.fromJson(e.getGenericType(),
 						jsonObject.get(e.getLastAttribute().toString())));
 	}
 

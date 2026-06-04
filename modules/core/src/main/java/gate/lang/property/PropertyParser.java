@@ -55,7 +55,7 @@ class PropertyParser
 	private Attribute self(PropertyScanner scanner)
 	{
 		if (!"this".equals(token))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected 'this'", token);
 
 		token = scanner.next();
 		return new SelfAttribute(type);
@@ -72,7 +72,7 @@ class PropertyParser
 		if (token.equals('['))
 			return collection(scanner);
 
-		throw new PropertyError("Invalid property name: %s.", property);
+		throw new PropertyError(type, property, "Expected property name, 'this' or collection access", token);
 	}
 
 	private Attribute dottedAttribute(PropertyScanner scanner)
@@ -88,13 +88,13 @@ class PropertyParser
 		if (token instanceof String)
 			return attribute(scanner);
 
-		throw new PropertyError("Invalid property name: %s.", property);
+		throw new PropertyError(type, property, "Expected property name after '.'", token);
 	}
 
 	private Attribute javaIdentifier(PropertyScanner scanner)
 	{
 		if (!(token instanceof String name))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected Java identifier", token);
 
 		token = scanner.next();
 		Attribute attribute = attributes.get(attributes.size() - 1);
@@ -132,8 +132,8 @@ class PropertyParser
 							Converter.getConverter(keyType).ofString(keyType, name));
 				} catch (ConversionException ex)
 				{
-					throw new PropertyError("Error on trying to parse property: %s",
-							ex.getMessage());
+					throw new PropertyError(type, property, "Could not convert map key '%s' to %s: %s"
+							.formatted(name, keyType.getName(), ex.getMessage()));
 				}
 			}
 
@@ -178,7 +178,7 @@ class PropertyParser
 	private List<Object> parameters(PropertyScanner scanner)
 	{
 		if (!Objects.equals(token, '('))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected '(' to start method parameters", token);
 
 		token = scanner.next();
 		List<Object> parameters = new ArrayList<>();
@@ -195,7 +195,7 @@ class PropertyParser
 		}
 
 		if (!Objects.equals(token, ')'))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected ')' to close method parameters", token);
 
 		token = scanner.next();
 		return parameters;
@@ -210,13 +210,13 @@ class PropertyParser
 			return result;
 		}
 
-		throw new PropertyError("Invalid property name: %s.", property);
+		throw new PropertyError(type, property, "Expected literal method parameter", token);
 	}
 
 	private Attribute collection(PropertyScanner scanner)
 	{
 		if (!token.equals('['))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected '[' to start collection access", token);
 
 		token = scanner.next();
 		Object name = null;
@@ -227,7 +227,7 @@ class PropertyParser
 			token = scanner.next();
 
 			if (!token.equals(']'))
-				throw new PropertyError("Invalid property name: %s.", property);
+				throw new PropertyError(type, property, "Expected ']' to close collection access", token);
 		}
 
 		token = scanner.next();
@@ -245,7 +245,6 @@ class PropertyParser
 				return null;
 			}
 
-			// List access
 			if (List.class.isAssignableFrom(clazz))
 			{
 				if (name instanceof Number number)
@@ -254,13 +253,12 @@ class PropertyParser
 				return null;
 			}
 
-			// Map access
 			if (Map.class.isAssignableFrom(clazz))
 			{
 				if (name instanceof Number || name instanceof Boolean || name instanceof String)
 				{
 					if (name instanceof String
-					    && attribute.getGenericType() instanceof ParameterizedType paramType)
+							&& attribute.getGenericType() instanceof ParameterizedType paramType)
 					{
 						Class<?> keyType = Reflection.getRawType(
 								paramType.getActualTypeArguments()[0]);
@@ -270,8 +268,8 @@ class PropertyParser
 							name = Converter.getConverter(keyType).ofString(keyType, (String) name);
 						} catch (ConversionException ex)
 						{
-							throw new PropertyError("Error on trying to parse property: %s",
-									ex.getMessage());
+							throw new PropertyError(type, property, "Could not convert map key '%s' to %s: %s"
+									.formatted(name, keyType.getName(), ex.getMessage()));
 						}
 					}
 
@@ -290,4 +288,5 @@ class PropertyParser
 
 		return null;
 	}
+
 }

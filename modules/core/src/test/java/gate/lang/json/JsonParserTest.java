@@ -1,6 +1,5 @@
 package gate.lang.json;
 
-import gate.error.AppError;
 import gate.error.ConversionException;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +39,7 @@ public class JsonParserTest
 		}
 
 		assertEquals(List.of(JsonElement.Type.OBJECT, JsonElement.Type.ARRAY,
-				JsonElement.Type.BOOLEAN, JsonElement.Type.STRING),
+						JsonElement.Type.BOOLEAN, JsonElement.Type.STRING),
 				elements.stream().map(JsonElement::getType).toList());
 	}
 
@@ -79,11 +78,11 @@ public class JsonParserTest
 	}
 
 	@Test
-	public void shouldWrapStreamParsingErrorsAsAppError() throws Exception
+	public void shouldWrapStreamParsingErrorsAsRuntimeException() throws Exception
 	{
 		try (JsonParser parser = new JsonParser(new StringReader("[1, 2")))
 		{
-			assertThrows(AppError.class, () -> parser.stream().toList());
+			assertThrows(RuntimeException.class, () -> parser.stream().toList());
 		}
 	}
 }

@@ -20,6 +20,8 @@ public interface Attribute
 
 	Class<?> getRawType();
 
+	default boolean isDiscriminator() {return false;}
+
 	/**
 	 * Gets the class that declares this attribute.
 	 * <p>
@@ -194,6 +196,6 @@ public interface Attribute
 	default boolean matches(Parameter parameter)
 	{
 		return toString().equals(parameter.getName())
-		       && parameter.getType().isAssignableFrom(getRawType());
+				&& parameter.getType().isAssignableFrom(getRawType());
 	}
 }

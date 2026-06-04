@@ -1,28 +1,26 @@
 package gate.adapter.handler;
 
-import gate.error.AppError;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-
-import java.io.Writer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
-
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
 @ApplicationScoped
 public class EnumHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object object) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object object)
 	{
 		Enum<?> value = (Enum<?>) object;
 		String string = value != null ? String.valueOf(value.ordinal()) : "";
 		response.setContentType("text/plain");
 		response.setContentLength(string.length());
 
-		try ( Writer writer = response.getWriter())
+		try (Writer writer = response.getWriter())
 		{
 			writer.write(string);
 		} catch (IOException ex)

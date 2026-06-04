@@ -1,7 +1,7 @@
 package gate.doc.printer;
 
 import gate.adapter.renderer.Renderer;
-import gate.error.AppError;
+
 import gate.error.ConversionException;
 import gate.lang.csv.CSVFormatter;
 import gate.report.Column;
@@ -36,7 +36,7 @@ public class CSVPrinter implements Printer
 					printGrid(grid, grid.getData());
 		} catch (ConversionException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		} finally
 		{
 			this.writer = null;

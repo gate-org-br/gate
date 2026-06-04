@@ -1,11 +1,10 @@
 package gate.sql.fetcher;
 
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-
-import gate.error.AppError;
 import gate.sql.Cursor;
 import gate.type.PivotTable;
+
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 
 /**
  * Fetches a Cursor as a PivotTable of the specified type.
@@ -21,7 +20,7 @@ public class PivotTableFetcher<T> implements Fetcher<PivotTable<T>>
 	/**
 	 * Creates a new PivotFetcher with the specified type.
 	 *
-	 * @param type type of the java object to be fetched
+	 * @param type         type of the java object to be fetched
 	 * @param defaultValue value to be used as default
 	 */
 	public PivotTableFetcher(Class<T> type, T defaultValue)
@@ -34,7 +33,6 @@ public class PivotTableFetcher<T> implements Fetcher<PivotTable<T>>
 	 * Fetches result as a PivotTable of the specified type.
 	 *
 	 * @param cursor the cursor to be fetched
-	 *
 	 * @return the result as a PivotTable of the specified type
 	 */
 	@Override
@@ -55,7 +53,7 @@ public class PivotTableFetcher<T> implements Fetcher<PivotTable<T>>
 			return result;
 		} catch (SQLException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -1,16 +1,14 @@
 package gate.lang.constructionStrategy;
 
 import gate.annotation.Canonical;
+import gate.annotation.Discriminator;
 import gate.error.ConstructionException;
-import gate.function.TriFunction;
 import gate.lang.property.Attribute;
-import gate.lang.property.PropertyGraph;
 import gate.util.Reflection;
 
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -21,15 +19,14 @@ import java.util.stream.Stream;
  *     <li><b>Records</b> — always use the canonical constructor;</li>
  *     <li><b>Known collection interfaces</b> ({@code List}, {@code Set}, {@code Map}, etc.) —
  *     created using a default implementation;</li>
+ *     <li><b>Single {@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
+ *     annotated with {@link Canonical} is selected immediately, before any attribute matching;</li>
  *     <li><b>Builder</b> — a public static {@code builder()} method whose return type has a
  *     {@code build()} method;</li>
  *     <li><b>Single compatible candidate</b> — if exactly one constructor or {@code of(...)}
  *     factory can consume the provided attributes, it is treated as canonical;</li>
  *     <li><b>Single exact match</b> — if multiple candidates are compatible, but exactly one has
  *     the same parameter count as the provided attribute count, it is selected;</li>
- *     <li><b>Single {@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
- *     annotated with {@link Canonical}, used when regular attribute matching cannot select a
- *     unique candidate;</li>
  *     <li><b>Discriminator</b> — a field annotated with {@code @Discriminator} requires an
  *     explicit discriminator value and delegates construction to the subtype declared by that
  *     enum constant;</li>
@@ -43,10 +40,9 @@ import java.util.stream.Stream;
  * can be resolved by a single compatible candidate, a single exact match, or a single
  * {@code @Canonical} candidate.
  * <p>
- * For sealed classes, non-null attributes must point to exactly one immediate subtype through
- * {@link Attribute#getOwner()}. Attributes declared by the sealed root are neutral, attributes
- * declared outside the sealed hierarchy are invalid, and construction is delegated to the
- * selected subtype.
+ * For sealed classes, the single subtype that owns all non-null attributes is selected;
+ * if none or more than one subtype qualifies, an exception is thrown. Construction is
+ * then delegated to that subtype's regular strategy.
  * <p>
  * Missing attributes are handled according to the resolved strategy:
  * <ul>
@@ -102,6 +98,25 @@ public interface ConstructionStrategy
 			if (type == BlockingDeque.class)
 				return new CollectionStrategy(LinkedBlockingDeque::new);
 
+			var candidates = Stream.concat(Arrays.stream(type.getConstructors())
+									.filter(c -> !c.isAnnotationPresent(Deprecated.class)),
+							Arrays.stream(type.getDeclaredMethods())
+									.filter(m -> Modifier.isPublic(m.getModifiers()))
+									.filter(m -> Modifier.isStatic(m.getModifiers()))
+									.filter(m -> !m.isAnnotationPresent(Deprecated.class))
+									.filter(m -> m.getName().equals("of")))
+					.toList();
+
+			var canonical = candidates.stream()
+					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
+			if (canonical.size() > 1)
+				throw new ConstructionException(type, canonical);
+			if (canonical.size() == 1)
+				if (canonical.get(0) instanceof Constructor<?> constructor)
+					return new CanonicalConstructorStrategy(constructor);
+				else if (canonical.get(0) instanceof Method method)
+					return new CanonicalFactoryMethodStrategy(method);
+
 			var builderFactory = Arrays.stream(type.getDeclaredMethods())
 					.filter(m -> Modifier.isPublic(m.getModifiers()))
 					.filter(m -> Modifier.isStatic(m.getModifiers()))
@@ -115,16 +130,9 @@ public interface ConstructionStrategy
 					return new BuilderStrategy(builderFactory, build);
 			}
 
-			var candidates = getCandidates(type).toList();
-			var canonical = candidates.stream()
-					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
-			if (canonical.size() > 1)
-				throw new ConstructionException(type, canonical);
-
 			candidates = candidates.stream()
 					.filter(c -> matchesAttributes(attributes, c.getParameters()))
 					.toList();
-
 			if (candidates.size() == 1)
 				if (candidates.get(0) instanceof Constructor<?> constructor)
 					return new CanonicalConstructorStrategy(constructor);
@@ -134,25 +142,13 @@ public interface ConstructionStrategy
 			var exact = candidates.stream().filter(c -> c.getParameterCount() == attributes.size()).toList();
 			if (exact.size() == 1)
 				if (exact.get(0) instanceof Constructor<?> constructor)
-					if (exact.getFirst().isAnnotationPresent(Canonical.class))
-						return new CanonicalConstructorStrategy(constructor);
-					else
-						return new ConstructorStrategy(constructor);
+					return new ConstructorStrategy(constructor);
 				else if (exact.get(0) instanceof Method method)
-					if (exact.getFirst().isAnnotationPresent(Canonical.class))
-						return new CanonicalFactoryMethodStrategy(method);
-					else
-						return new FactoryMethodStrategy(method);
-
-			if (canonical.size() == 1)
-				if (canonical.get(0) instanceof Constructor<?> constructor)
-					return new CanonicalConstructorStrategy(constructor);
-				else if (canonical.get(0) instanceof Method method)
-					return new CanonicalFactoryMethodStrategy(method);
+					return new FactoryMethodStrategy(method);
 
 			if (candidates.isEmpty())
 			{
-				var discriminator = PropertyGraph.getDiscriminator(type);
+				var discriminator = Discriminator.Extractor.extract(type);
 				if (discriminator != null)
 					return new DiscriminatorConstructorStrategy(discriminator);
 
@@ -171,7 +167,7 @@ public interface ConstructionStrategy
 									.toList();
 							if (subtypes.size() != 1)
 								throw new ConstructionException(type, attributes);
-							owners.put(attribute, subtypes.getFirst());
+							owners.put(attribute, subtypes.get(0));
 						} else
 							owners.put(attribute, type);
 					}
@@ -192,49 +188,9 @@ public interface ConstructionStrategy
 		});
 	}
 
-	private static Stream<Executable> getCandidates(Class<?> type)
-	{
-		return Stream.concat(Arrays.stream(type.getConstructors())
-						.filter(c -> !c.isAnnotationPresent(Deprecated.class)),
-				Arrays.stream(type.getDeclaredMethods())
-						.filter(m -> Modifier.isPublic(m.getModifiers()))
-						.filter(m -> Modifier.isStatic(m.getModifiers()))
-						.filter(m -> !m.isAnnotationPresent(Deprecated.class))
-						.filter(m -> m.getName().equals("of")));
-	}
-
 	private static boolean matchesAttributes(Set<Attribute> attributes, Parameter[] parameters)
 	{
 		return attributes.stream().allMatch(a -> Arrays.stream(parameters).anyMatch(a::matches));
-	}
-
-	record ParameterKey(String name, Class<?> type)
-	{
-		static ParameterKey of(Attribute attribute)
-		{
-			return new ParameterKey(attribute.toString(), attribute.getRawType());
-		}
-
-		static ParameterKey of(Parameter parameter)
-		{
-			return new ParameterKey(parameter.getName(), parameter.getType());
-		}
-
-		static Set<ParameterKey> of(Executable executable)
-		{
-			return Arrays.stream(executable.getParameters())
-					.map(ParameterKey::of)
-					.collect(Collectors.toSet());
-		}
-	}
-
-	static Object newInstance(Class<?> type,
-	                          Object value,
-	                          Map<Attribute, Object> propertyMap,
-	                          TriFunction<Attribute, Object, Object, Object> getValue) throws ReflectiveOperationException
-	{
-		return of(type, propertyMap.keySet())
-				.construct(type, value, propertyMap, getValue);
 	}
 
 	static Object newInstance(Class<?> type,
@@ -251,10 +207,4 @@ public interface ConstructionStrategy
 
 	Object construct(Class<?> type,
 	                 Map<Attribute, Object> attributes);
-
-	Object construct(Class<?> type,
-	                 Object value,
-	                 Map<Attribute, Object> propertyMap,
-	                 TriFunction<Attribute, Object, Object, Object> getValue)
-			throws ReflectiveOperationException;
 }

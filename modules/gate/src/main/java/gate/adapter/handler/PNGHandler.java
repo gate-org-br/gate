@@ -1,6 +1,5 @@
 package gate.adapter.handler;
 
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.type.PNG;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -41,7 +40,7 @@ public class PNGHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		String string = value.toString();
 		response.setContentType("image/png");

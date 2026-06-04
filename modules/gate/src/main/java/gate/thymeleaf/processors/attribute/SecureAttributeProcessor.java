@@ -4,7 +4,7 @@ import gate.CallRegistry;
 import gate.adapter.renderer.Renderer;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.error.AppError;
+
 import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.type.RequestCommand;
@@ -70,7 +70,7 @@ public class SecureAttributeProcessor extends AttributeProcessor
 
 		} catch (RuntimeException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 

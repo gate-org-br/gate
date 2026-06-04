@@ -1,6 +1,5 @@
 package gate.adapter.handler;
 
-import gate.error.AppError;
 import gate.error.ConversionException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +37,7 @@ public class FileHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		try
 		{

@@ -86,7 +86,7 @@ public class JsonElementTest
 		assertEquals(JsonNumber.wrap(42), JsonElement.render(42));
 		assertEquals(JsonString.wrap("User 1"), JsonElement.render(user.getName()));
 		assertEquals(JsonArray.of(JsonString.wrap("User 1"), JsonNumber.wrap(10)),
-				JsonArray.format(user.getName(), user.getLevel()));
+				JsonArray.render(user.getName(), user.getLevel()));
 	}
 
 	@Test

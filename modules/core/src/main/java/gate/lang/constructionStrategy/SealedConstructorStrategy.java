@@ -1,10 +1,8 @@
 package gate.lang.constructionStrategy;
 
 import gate.error.ConstructionException;
-import gate.function.TriFunction;
 import gate.lang.property.Attribute;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,28 +22,6 @@ public record SealedConstructorStrategy(Class<?> root, Map<Attribute, Class<?>> 
 				.filter(e -> e.getValue() != null)
 				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-		return instantiate(type, attributes);
-	}
-
-	@Override
-	public Object construct(Class<?> type,
-	                        Object value,
-	                        Map<Attribute, Object> propertyMap,
-	                        TriFunction<Attribute, Object, Object, Object> getValue)
-	{
-		var attributes = new LinkedHashMap<Attribute, Object>();
-		for (var entry : propertyMap.entrySet())
-		{
-			var argument = getValue.apply(entry.getKey(), null, entry.getValue());
-			if (argument != null)
-				attributes.put(entry.getKey(), argument);
-		}
-
-		return instantiate(type, attributes);
-	}
-
-	private Object instantiate(Class<?> type, Map<Attribute, Object> attributes)
-	{
 		if (attributes.isEmpty())
 			return null;
 

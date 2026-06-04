@@ -1,4 +1,5 @@
 /* global customElements */
+
 import GMessageDialog from './g-message-dialog.js';
 
 customElements.define('g-select1', class extends HTMLElement
@@ -32,34 +33,32 @@ customElements.define('g-select1', class extends HTMLElement
 	set options(options)
 	{
 		this.#options = options;
-		Array.from(this.querySelectorAll("input, label")).forEach(e => e.remove());
+		Array.from(this.querySelectorAll("input, label"))
+			.forEach(e => e.remove());
 		options.forEach(option =>
 		{
-			let cb = this.appendChild(document.createElement("input"));
-			cb.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change")));
-			cb.type = "radio";
-			cb.name = this.name;
-			cb.value = option.value;
+			let checkbox = this.appendChild(document.createElement("input"));
+			checkbox.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change")));
+			checkbox.type = "radio";
+			checkbox.name = this.name;
+			checkbox.value = option.value;
 			let label = this.appendChild(document.createElement("label"));
 			label.innerText = option.label;
 		});
 	}
 
-	get options()
-	{
-		return this.#options;
-	}
+	get options() { return this.#options; }
 
 	get value()
 	{
-		let checked = Array.from(this.querySelectorAll("input")).find(cb => cb.checked);
-		return checked ? checked.value : null;
+		return Array.from(this.querySelectorAll("input"))
+			.find(radio => radio.checked)?.value;
 	}
 
 	set value(value)
 	{
 		Array.from(this.querySelectorAll("input"))
-			.forEach(cb => cb.checked = cb.value === value);
+			.forEach(radio => radio.checked = radio.value === value);
 	}
 
 	get name()
@@ -85,46 +84,56 @@ customElements.define('g-select1', class extends HTMLElement
 			this.removeAttribute("required");
 	}
 
-	get selected()
-	{
-		return Array.from(this.querySelectorAll("input"))
-			.some(cb => cb.checked);
-	}
-
 	connectedCallback()
 	{
-		this.#internals.setFormValue(this.value);
-		if (this.required && !this.selected)
-			this.#internals.setValidity(
-				{valueMissing: true},
-				"Selecione ao menos uma opção",
-				this.shadowRoot.querySelector("input"));
-		else
-			this.#internals.setValidity({});
+		let checked =
+			Array.from(this.querySelectorAll("input"))
+				.filter(checkbox => checkbox.checked)
+				.length;
+
+		if (this.required && !checked)
+			this.#internals.setValidity({valueMissing: true}, "Selecione ao menos uma opção", this.shadowRoot.querySelector("input"));
 	}
 
 	attributeChangedCallback(attribute)
 	{
 		if (attribute === "name")
 			Array.from(this.querySelectorAll("input"))
-				.forEach(cb => cb.name = this.name);
+				.forEach(checkbox => checkbox.name = this.name);
 		else if (attribute === "value")
-			this.value = this.getAttribute("value");
+			this.value = JSON.parse(this.getAttribute("value"));
 		else
 			this.options = JSON.parse(this.getAttribute("options"));
 	}
 
-	checkValidity() { return !this.required || this.selected; }
-
-	reportValidity()
+	checkValidity()
 	{
-		if (this.required && !this.selected)
-		{
-			GMessageDialog.error("Selecione ao menos uma opção");
+		let checked =
+			Array.from(this.querySelectorAll("input"))
+				.filter(checkbox => checkbox.checked)
+				.length;
+
+		if (this.required && !checked)
 			return false;
-		}
+
 		return true;
 	}
 
-	static get observedAttributes() { return ['name', 'value', 'options']; }
+	reportValidity()
+	{
+		let checked =
+			Array.from(this.querySelectorAll("input"))
+				.filter(checkbox => checkbox.checked)
+				.length;
+
+		if (this.required && !checked)
+			return false & GMessageDialog.error("Selecione ao menos uma opção");
+
+		return true;
+	}
+
+	static get observedAttributes()
+	{
+		return ['name', 'value', "options"];
+	}
 });

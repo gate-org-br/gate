@@ -1,6 +1,5 @@
 package gate.security.hash;
 
-import gate.error.AppError;
 
 import java.io.Serial;
 import java.math.BigInteger;
@@ -11,7 +10,8 @@ import java.util.Objects;
 public class MD5 implements Hash
 {
 
-	@Serial private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private final String value;
 
@@ -47,7 +47,7 @@ public class MD5 implements Hash
 			return new MD5(hash.toString());
 		} catch (NoSuchAlgorithmException ex)
 		{
-			throw new AppError(ex.getMessage(), ex);
+			throw new RuntimeException(ex.getMessage(), ex);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class MD5 implements Hash
 	public boolean equals(Object obj)
 	{
 		return obj instanceof MD5
-		       && Objects.equals(((MD5) obj).value, value);
+				&& Objects.equals(((MD5) obj).value, value);
 	}
 
 	@Override

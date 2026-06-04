@@ -1,6 +1,6 @@
 package gate.type.mime;
 
-import gate.error.AppError;
+
 import gate.error.ConversionException;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
@@ -83,7 +83,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 			}
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class MimeTextFile extends MimeText implements MimeFile
 					URLEncoder.encode(getText(), getCharset())).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 

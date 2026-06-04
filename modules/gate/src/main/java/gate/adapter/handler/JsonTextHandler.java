@@ -1,8 +1,8 @@
 package gate.adapter.handler;
 
 import gate.Progress;
+import gate.adapter.jsonRenderer.JsonRenderer;
 import gate.lang.contentType.ContentType;
-import gate.lang.json.JsonElement;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,7 +21,7 @@ public class JsonTextHandler implements Handler
 	{
 		try
 		{
-			String string = JsonElement.render(value).toString();
+			String string = JsonRenderer.render(value).toString();
 			byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
 
 			response.setCharacterEncoding("UTF-8");
@@ -44,6 +44,6 @@ public class JsonTextHandler implements Handler
 	{
 		progress.result(ContentType.APPLICATION_JSON.toString(),
 				null,
-				JsonElement.render(value).toString());
+				JsonRenderer.render(value).toString());
 	}
 }

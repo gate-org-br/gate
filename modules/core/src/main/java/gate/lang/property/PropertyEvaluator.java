@@ -14,6 +14,7 @@ class PropertyEvaluator
 {
 
 	private Object token;
+	private Class<?> type;
 	private final String property;
 
 	public PropertyEvaluator(String property)
@@ -25,6 +26,7 @@ class PropertyEvaluator
 	{
 		try
 		{
+			type = object != null ? object.getClass() : Object.class;
 			PropertyScanner scanner = new PropertyScanner(property);
 			token = scanner.next();
 
@@ -38,7 +40,7 @@ class PropertyEvaluator
 			return object;
 		} catch (ReflectiveOperationException ex)
 		{
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Could not evaluate property: %s".formatted(ex.getMessage()));
 		}
 	}
 
@@ -50,13 +52,14 @@ class PropertyEvaluator
 			return javaIdentifier(scanner, object);
 		else if (token.equals('['))
 			return collection(scanner, object);
-		throw new PropertyError("Invalid property name: %s.", property);
+		throw new PropertyError(type, property,
+				"Expected property name, 'this' or collection access", token);
 	}
 
 	private Object self(PropertyScanner scanner, Object object)
 	{
 		if (!"this".equals(token))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected 'this'", token);
 		token = scanner.next();
 		return object;
 	}
@@ -71,7 +74,7 @@ class PropertyEvaluator
 			else if (token instanceof String)
 				return attribute(scanner, object);
 			else
-				throw new PropertyError("Invalid property name: %s.", property);
+				throw new PropertyError(type, property, "Expected property name after '.'", token);
 		}
 		return attribute(scanner, object);
 	}
@@ -79,7 +82,7 @@ class PropertyEvaluator
 	private Object javaIdentifier(PropertyScanner scanner, Object object) throws ReflectiveOperationException
 	{
 		if (!(token instanceof String name))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected Java identifier", token);
 
 		token = scanner.next();
 
@@ -134,7 +137,7 @@ class PropertyEvaluator
 	private List<Object> parameters(PropertyScanner scanner)
 	{
 		if (!Objects.equals(token, '('))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected '(' to start method parameters", token);
 		token = scanner.next();
 
 		List<Object> parameters = new ArrayList<>();
@@ -149,7 +152,7 @@ class PropertyEvaluator
 		}
 
 		if (!Objects.equals(token, ')'))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected ')' to close method parameters", token);
 		token = scanner.next();
 
 		return parameters;
@@ -166,13 +169,13 @@ class PropertyEvaluator
 			return result;
 		}
 
-		throw new PropertyError("Invalid property name: %s.", property);
+		throw new PropertyError(type, property, "Expected literal method parameter", token);
 	}
 
 	private Object collection(PropertyScanner scanner, Object object)
 	{
 		if (!token.equals('['))
-			throw new PropertyError("Invalid property name: %s.", property);
+			throw new PropertyError(type, property, "Expected '[' to start collection access", token);
 		token = scanner.next();
 
 		Object name = null;
@@ -183,7 +186,7 @@ class PropertyEvaluator
 			token = scanner.next();
 
 			if (!token.equals(']'))
-				throw new PropertyError("Invalid property name: %s.", property);
+				throw new PropertyError(type, property, "Expected ']' to close collection access", token);
 		}
 
 		token = scanner.next();

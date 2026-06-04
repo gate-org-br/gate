@@ -30,7 +30,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.populate(null, prop -> request.get(prop.toString()));
+				.populate(prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(1, result.getId());
 		Assertions.assertEquals("Ana", result.getName());
@@ -49,7 +49,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.populate(null, prop -> request.get(prop.toString()));
+				.populate(prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals("Ana", result.getName());
 		Assertions.assertEquals("Admin", result.getRole().getName());
@@ -70,7 +70,7 @@ class PropertyGraphTest
 
 		var result = PropertyGraph
 				.of(LineMock.class, new ArrayList<>(request.keySet()))
-				.populate(null, prop -> request.get(prop.toString()));
+				.populate(prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(expected, result);
 	}
@@ -83,7 +83,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.populate(null, prop -> request.get(prop.toString()));
+				.populate(prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(1, result.getContacts().size());
 		Assertions.assertEquals("module1", result.getContacts().get(0).getValue());
@@ -97,7 +97,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.populate(null, prop -> request.get(prop.toString()));
+				.populate(prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals(1, result.getContacts().size());
 		Assertions.assertEquals("module1", result.getContacts().get(0).getValue());
@@ -113,7 +113,7 @@ class PropertyGraphTest
 
 		var result = (UserMock) PropertyGraph
 				.of(UserMock.class, properties)
-				.populate(null, prop -> request.get(prop.toString()));
+				.populate(prop -> request.get(prop.toString()));
 
 		Assertions.assertEquals("Ana", result.getName());
 	}
@@ -121,21 +121,38 @@ class PropertyGraphTest
 	@Test
 	public void testUpdateExistingAnemicInstance()
 	{
-		var originalRole = new RoleMock().setName("Old Role");
-		var original = new UserMock()
+		var role = new RoleMock().setName("Old Role");
+		var user = new UserMock()
 				.setName("Old")
-				.setRole(originalRole);
+				.setRole(role);
 
-		var request = Map
-				.of("name", "New");
+		var request = Map.of("name", "New");
 
-		var result = (UserMock) PropertyGraph
+		PropertyGraph
 				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.populate(original, prop -> request.get(prop.toString()));
+				.populate(user, prop -> request.get(prop.toString()));
 
-		Assertions.assertSame(original, result);
-		Assertions.assertEquals("New", result.getName());
-		Assertions.assertSame(originalRole, result.getRole());
+		Assertions.assertEquals("New", user.getName());
+		Assertions.assertSame(role, user.getRole());
+	}
+
+	@Test
+	public void testUpdateExistingNestedAnemicInstance()
+	{
+		var role = new RoleMock()
+				.setId(IDMock.valueOf(1))
+				.setName("Old Role");
+		var user = new UserMock().setRole(role);
+
+		var request = Map.of("role.name", "New Role");
+
+		PropertyGraph
+				.of(UserMock.class, new ArrayList<>(request.keySet()))
+				.populate(user, prop -> request.get(prop.toString()));
+
+		Assertions.assertSame(role, user.getRole());
+		Assertions.assertEquals(IDMock.valueOf(1), user.getRole().getId());
+		Assertions.assertEquals("New Role", user.getRole().getName());
 	}
 
 	@Test
@@ -149,7 +166,7 @@ class PropertyGraphTest
 
 		var result = (ConstructionMocks.BuilderMock) PropertyGraph.of(ConstructionMocks.BuilderMock.class,
 						List.of("field1", "field2", "field3"))
-				.populate(null, e -> switch (e.toString())
+				.populate(e -> switch (e.toString())
 				{
 					case "field1" -> "value1";
 					case "field2" -> LocalDate.of(2, 2, 2);
@@ -173,7 +190,7 @@ class PropertyGraphTest
 		Assertions.assertThrows(ConversionException.class, () ->
 				PropertyGraph
 						.of(ConstructionMocks.AmbiguousConstructorMock.class, new ArrayList<>(request.keySet()))
-						.populate(null, prop -> request.get(prop.toString())));
+						.populate(prop -> request.get(prop.toString())));
 	}
 
 	@Test

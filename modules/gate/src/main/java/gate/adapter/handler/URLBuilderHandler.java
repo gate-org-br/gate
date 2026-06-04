@@ -1,7 +1,6 @@
 package gate.adapter.handler;
 
 import gate.Progress;
-import gate.error.AppError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +13,7 @@ public class URLBuilderHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		try
 		{
@@ -27,7 +26,7 @@ public class URLBuilderHandler implements Handler
 
 	@Override
 	public void handle(HttpServletRequest request,
-	                   Progress progress, Object value) throws AppError
+	                   Progress progress, Object value)
 	{
 		progress.result("text/plain",
 				null, value.toString());

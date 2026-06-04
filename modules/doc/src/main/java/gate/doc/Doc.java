@@ -2,7 +2,7 @@ package gate.doc;
 
 import gate.annotation.Icon;
 import gate.doc.printer.Printer;
-import gate.error.AppError;
+
 import gate.lang.contentType.ContentType;
 import gate.report.Report;
 import gate.type.mime.MimeDataFile;
@@ -74,7 +74,7 @@ public abstract class Doc implements Printer
 			return MimeDataFile.of(getContentType(), os.toByteArray(), getFileName());
 		} catch (IOException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 

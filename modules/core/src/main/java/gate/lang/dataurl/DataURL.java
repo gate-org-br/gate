@@ -1,6 +1,6 @@
 package gate.lang.dataurl;
 
-import gate.error.AppError;
+
 import gate.lang.contentType.ContentType;
 
 import java.io.IOException;
@@ -100,7 +100,7 @@ public class DataURL
 				return parser.parse();
 			} catch (IOException ex)
 			{
-				throw new AppError(ex);
+				throw new RuntimeException(ex);
 			}
 		}
 	}

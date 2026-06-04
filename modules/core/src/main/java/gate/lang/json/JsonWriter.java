@@ -1,6 +1,6 @@
 package gate.lang.json;
 
-import gate.error.AppError;
+
 import gate.error.ConversionException;
 
 import java.io.IOException;
@@ -105,7 +105,7 @@ public class JsonWriter implements AutoCloseable
 			writer.close();
 		} catch (IOException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -4,7 +4,7 @@ import gate.CallRegistry;
 import gate.adapter.renderer.Renderer;
 import gate.annotation.Current;
 import gate.entity.User;
-import gate.error.AppError;
+
 import gate.error.BadRequestException;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.RequestCommand;
@@ -59,7 +59,7 @@ public class SecureProcessor extends TagProcessor
 
 		} catch (BadRequestException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 }

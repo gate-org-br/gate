@@ -1,6 +1,6 @@
 package gate.constraint;
 
-import gate.error.AppError;
+
 import gate.error.AppException;
 import gate.lang.property.Property;
 
@@ -16,7 +16,8 @@ public @interface Constraint
 	abstract class Implementation<T> implements Serializable
 	{
 
-		@Serial private static final long serialVersionUID = 1L;
+		@Serial
+		private static final long serialVersionUID = 1L;
 
 		private final T value;
 
@@ -46,7 +47,7 @@ public @interface Constraint
 						.newInstance(constraint.getClass().getMethod("value").invoke(constraint));
 			} catch (ReflectiveOperationException e)
 			{
-				throw new AppError(e);
+				throw new RuntimeException(e);
 			}
 		}
 

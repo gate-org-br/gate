@@ -1,6 +1,6 @@
 package gate.lang.json;
 
-import gate.error.AppError;
+
 import gate.error.ConversionException;
 
 import java.io.Reader;
@@ -87,7 +87,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 			scanner.close();
 		} catch (Exception ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -130,8 +130,9 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 			case OPEN_OBJECT -> object();
 			case NULL -> jsonNull();
 			case OPEN_ARRAY -> array();
-			default -> throw new ConversionException("Expected boolean, number, string, array or object and found " + scanner
-					.getCurrent());
+			default ->
+					throw new ConversionException("Expected boolean, number, string, array or object and found " + scanner
+							.getCurrent());
 		};
 	}
 
@@ -237,7 +238,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 				return true;
 			} catch (ConversionException ex)
 			{
-				throw new AppError(ex);
+				throw new RuntimeException(ex);
 			}
 		}
 
@@ -245,13 +246,13 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-			       != JsonToken.Type.EOF)
+					!= JsonToken.Type.EOF)
 				try
 				{
 					parse().ifPresent(action);
 				} catch (ConversionException ex)
 				{
-					throw new AppError(ex);
+					throw new RuntimeException(ex);
 				}
 		}
 
@@ -281,20 +282,20 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 		public boolean hasNext()
 		{
 			return scanner.getCurrent().getType()
-			       != JsonToken.Type.EOF;
+					!= JsonToken.Type.EOF;
 		}
 
 		@Override
 		public void forEachRemaining(Consumer<? super JsonElement> action)
 		{
 			while (scanner.getCurrent().getType()
-			       != JsonToken.Type.EOF)
+					!= JsonToken.Type.EOF)
 				try
 				{
 					parse().ifPresent(action);
 				} catch (ConversionException ex)
 				{
-					throw new AppError(ex);
+					throw new RuntimeException(ex);
 				}
 		}
 
@@ -306,7 +307,7 @@ public class JsonParser implements AutoCloseable, Iterable<JsonElement>
 				return parse().orElseThrow();
 			} catch (ConversionException ex)
 			{
-				throw new AppError(ex);
+				throw new RuntimeException(ex);
 			}
 		}
 	}

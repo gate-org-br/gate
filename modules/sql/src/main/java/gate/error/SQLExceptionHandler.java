@@ -109,20 +109,21 @@ public abstract class SQLExceptionHandler
 				{
 					case SQL_STATE_UNIQUE_VIOLATION -> throw new UKViolationException(cause);
 					case SQL_STATE_FOREIGN_KEY_VIOLATION -> throw new FKViolationException(cause);
-					case SQL_STATE_NOT_NULL_VIOLATION -> throw new AppError("NOT NULL constraint violation", cause);
-					case SQL_STATE_CHECK_VIOLATION -> throw new AppError("CHECK constraint violation", cause);
+					case SQL_STATE_NOT_NULL_VIOLATION ->
+							throw new RuntimeException("NOT NULL constraint violation", cause);
+					case SQL_STATE_CHECK_VIOLATION -> throw new RuntimeException("CHECK constraint violation", cause);
 					default ->
 					{
 						if (sqlState.startsWith(SQL_STATE_INTEGRITY_CLASS))
-							throw new AppError("Integrity constraint violation", cause);
+							throw new RuntimeException("Integrity constraint violation", cause);
 					}
 				}
 			if (cause instanceof SQLIntegrityConstraintViolationException)
-				throw new AppError("Integrity constraint violation", cause);
-			throw new AppError(cause);
+				throw new RuntimeException("Integrity constraint violation", cause);
+			throw new RuntimeException(cause);
 		} catch (SQLException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 }

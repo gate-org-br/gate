@@ -2,10 +2,9 @@
 import './g-collection-item.js';
 import Base64 from "./base64.js";
 import GMessageDialog from './g-message-dialog.js';
-import StyledHTMLElement from './styled-html-element.js';
 
 
-customElements.define('g-collection', class extends StyledHTMLElement
+customElements.define('g-collection', class extends HTMLElement
 {
 	#template;
 	#internals;
@@ -14,10 +13,11 @@ customElements.define('g-collection', class extends StyledHTMLElement
 	constructor()
 	{
 		super();
+		this.attachShadow({mode: "open"})
 		this.#internals = this.attachInternals();
 		this.shadowRoot.innerHTML += template.innerHTML;
 
-		let slot = this.shadowRoot.querySelector("slot");
+		let slot = this.shadowRoot.getElementById("template");
 		slot.addEventListener("slotchange", () =>
 		{
 			if (slot.parentNode)
@@ -45,7 +45,8 @@ customElements.define('g-collection', class extends StyledHTMLElement
 		item.template = this.#template;
 		if (data)
 			item.value = data;
-		this.shadowRoot.appendChild(item);
+		this.shadowRoot.querySelector("section")
+			.appendChild(item);
 		this.connectedCallback();
 	}
 

@@ -1,7 +1,7 @@
 package gate.policonverter;
 
 import gate.adapter.converter.Converter;
-import gate.error.AppError;
+
 import gate.error.ConversionException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +31,7 @@ public class EnumSetPoliconverter implements Policonverter
 		         InvocationTargetException |
 		         ConversionException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class EnumSetPoliconverter implements Policonverter
 		         IllegalArgumentException |
 		         InvocationTargetException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 }

@@ -13,6 +13,7 @@ import gate.sql.LinkSource;
 import gate.sql.condition.Condition;
 import gate.sql.delete.Delete;
 import gate.sql.insert.Insert;
+import gate.util.SystemProperty;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
@@ -20,13 +21,11 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.servlet.ServletContext;
 import org.slf4j.Logger;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Modifier;
-import java.util.Objects;
 
 /**
  *
@@ -42,18 +41,16 @@ import java.util.Objects;
 public class AppProducer implements Serializable
 {
 
-	@Serial private static final long serialVersionUID = 1L;
-
-	@Inject
-	private ServletContext servletContext;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	private App app;
 
 	@Inject
-	private Instance<Screen> instances;
+	private Logger logger;
 
 	@Inject
-	private Logger logger;
+	private Instance<Screen> instances;
 
 	@Inject
 	AppControl control;
@@ -61,11 +58,14 @@ public class AppProducer implements Serializable
 	@Inject
 	CallRegistry actionRegistry;
 
+	private static final String ID = SystemProperty.get("gate.app.id").orElse("default");
+	private static final String NAME = SystemProperty.get("gate.app.name").orElse("No app name provided");
+	private static final String DESCRIPTION = SystemProperty.get("gate.app.description")
+			.orElse("No description provided");
+
 	@PostConstruct
 	public void prepare()
 	{
-		String id = Objects.requireNonNullElse(servletContext.getServletContextName(),
-				servletContext.getInitParameter("id"));
 
 		@SuppressWarnings("unchecked")
 		var types = instances.stream().map(e -> (Class<Screen>) e.getClass())
@@ -76,8 +76,7 @@ public class AppProducer implements Serializable
 				.map(e -> (Class<Screen>) e)
 				.toList();
 
-		app = App.getInstance(id, servletContext.getInitParameter("name"),
-				servletContext.getInitParameter("description"), types);
+		app = App.getInstance(ID, NAME, DESCRIPTION, types);
 
 		try
 		{

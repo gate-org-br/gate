@@ -1,20 +1,19 @@
 package gate.adapter.handler;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.io.Writer;
-
-import gate.error.AppError;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.io.Writer;
 
 @ApplicationScoped
 public class ResultHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		String string = value.toString();
 		response.setContentType("application/json");

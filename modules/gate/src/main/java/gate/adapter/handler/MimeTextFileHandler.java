@@ -1,6 +1,5 @@
 package gate.adapter.handler;
 
-import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.io.ByteArrayReader;
 import gate.lang.contentType.ContentType;
@@ -43,7 +42,7 @@ public class MimeTextFileHandler implements Handler
 	}
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
 	{
 		try
 		{

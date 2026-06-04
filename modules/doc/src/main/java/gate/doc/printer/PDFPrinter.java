@@ -1,45 +1,17 @@
 package gate.doc.printer;
 
-import com.lowagie.text.BadElementException;
-import com.lowagie.text.Chunk;
-import com.lowagie.text.Document;
-import com.lowagie.text.DocumentException;
+import com.lowagie.text.*;
 import com.lowagie.text.Font;
-import com.lowagie.text.ListItem;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Phrase;
 import com.lowagie.text.Rectangle;
-import com.lowagie.text.pdf.BaseFont;
-import com.lowagie.text.pdf.PdfContentByte;
-import com.lowagie.text.pdf.PdfGraphics2D;
-import com.lowagie.text.pdf.PdfPCell;
-import com.lowagie.text.pdf.PdfPTable;
-import com.lowagie.text.pdf.PdfPageEventHelper;
-import com.lowagie.text.pdf.PdfTemplate;
-import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.*;
 import gate.adapter.renderer.Renderer;
-import gate.error.AppError;
-import gate.report.Chart;
-import gate.report.ChartGenerator;
-import gate.report.Column;
-import gate.report.Dictionary;
-import gate.report.Field;
-import gate.report.Footer;
-import gate.report.Form;
-import gate.report.Grid;
+import gate.report.*;
 import gate.report.Header;
 import gate.report.Image;
-import gate.report.LineBreak;
-import gate.report.PageBreak;
 import gate.report.Paragraph;
-import gate.report.Report;
-import gate.report.ReportElement;
-import gate.report.ReportList;
-import gate.report.Style;
 import gate.util.Toolkit;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -119,7 +91,7 @@ public class PDFPrinter implements Printer
 			document.close();
 		} catch (DocumentException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		} finally
 		{
 			this.document = null;
@@ -170,7 +142,7 @@ public class PDFPrinter implements Printer
 			add(element);
 		} catch (BadElementException | IOException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -225,7 +197,7 @@ public class PDFPrinter implements Printer
 			add(element);
 		} catch (DocumentException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -260,7 +232,7 @@ public class PDFPrinter implements Printer
 			return cell;
 		} catch (DocumentException e)
 		{
-			throw new AppError(e);
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -310,7 +282,7 @@ public class PDFPrinter implements Printer
 			add(table);
 		} catch (DocumentException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -478,7 +450,7 @@ public class PDFPrinter implements Printer
 			add(table);
 		} catch (DocumentException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -489,7 +461,7 @@ public class PDFPrinter implements Printer
 			document.add(element);
 		} catch (DocumentException ex)
 		{
-			throw new AppError(ex);
+			throw new RuntimeException(ex);
 		}
 	}
 
@@ -541,7 +513,7 @@ public class PDFPrinter implements Printer
 				pages.setBoundingBox(new Rectangle(-20, -20, 100, 100));
 			} catch (DocumentException | IOException e)
 			{
-				throw new AppError(e);
+				throw new RuntimeException(e);
 			}
 		}
 

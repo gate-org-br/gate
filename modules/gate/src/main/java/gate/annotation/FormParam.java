@@ -35,14 +35,14 @@ public @interface FormParam
 		public static Object extract(ScreenServletRequest request, Parameter parameter) throws BadRequestException
 		{
 			if (!parameter.isAnnotationPresent(FormParam.class)
-			    && !parameter.isAnnotationPresent(jakarta.ws.rs.FormParam.class))
+					&& !parameter.isAnnotationPresent(jakarta.ws.rs.FormParam.class))
 				throw new BadRequestException("Missing parameter name");
 
 			String name = getName(parameter);
 
 			Object value = request.getParameterValue(name);
 			if (DefaultValue.Extractor.isPresent(parameter)
-			    && (value == null || value instanceof String s && s.isBlank()))
+					&& (value == null || value instanceof String s && s.isBlank()))
 				value = DefaultValue.Extractor.extract(parameter);
 
 			try
@@ -63,7 +63,7 @@ public @interface FormParam
 				var properties = getPrefixedProperties(request, name);
 				if (!properties.isEmpty())
 					return PropertyGraph.of(parameter.getType(), properties)
-							.populate(null, property -> request.getParameter(property.getRawType(),
+							.populate(property -> request.getParameter(property.getRawType(),
 									name + "." + property));
 
 				if (value == null && parameter.isAnnotationPresent(Required.class))

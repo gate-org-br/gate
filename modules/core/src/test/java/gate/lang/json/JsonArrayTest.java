@@ -5,9 +5,9 @@ import mock.MockFactory;
 import mock.UserMock;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -58,12 +58,12 @@ public class JsonArrayTest
 	@Test
 	public void shouldFormatValuesAsTextElements()
 	{
-		JsonArray array = JsonArray.format(List.of(true, false, 1));
+		JsonArray array = JsonArray.render(List.of(true, false, 1));
 
 		assertEquals(JsonBoolean.TRUE, array.get(0));
 		assertEquals(JsonBoolean.FALSE, array.get(1));
 		assertEquals(JsonNumber.wrap(1), array.get(2));
-		assertEquals(JsonArray.format("a", "b"), JsonArray.of(JsonString.wrap("a"), JsonString.wrap("b")));
+		assertEquals(JsonArray.render("a", "b"), JsonArray.of(JsonString.wrap("a"), JsonString.wrap("b")));
 	}
 
 	@Test
@@ -74,7 +74,7 @@ public class JsonArrayTest
 		JsonArray entries = JsonArray.entries(users, UserMock::getName, UserMock::getId);
 		JsonArray withProperties = JsonArray.entries(users, UserMock::getName, UserMock::getId,
 				user -> new JsonObject().setString("role", user.getRole().getName()));
-		JsonArray rendered = JsonArray.format(users, UserMock::getName, UserMock::getLevel);
+		JsonArray rendered = JsonArray.render(users, UserMock::getName, UserMock::getLevel);
 
 		assertEquals("User 1", ((JsonObject) entries.get(0)).getString("label").orElseThrow());
 		assertEquals(2, ((JsonObject) entries.get(1)).getInt("value").orElseThrow());
