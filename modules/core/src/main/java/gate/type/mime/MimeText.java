@@ -1,6 +1,6 @@
 package gate.type.mime;
 
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
@@ -84,7 +84,7 @@ public class MimeText implements Mime
 			return DataURL.of(getContentType(), false, map, URLEncoder.encode(getText(), charset)).toString();
 		} catch (UnsupportedEncodingException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 

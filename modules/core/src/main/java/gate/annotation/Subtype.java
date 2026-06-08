@@ -19,8 +19,7 @@ public @interface Subtype
 	{
 		private Extractor() {}
 
-		public static List<? extends Class<?>>
-		extract(FieldAttribute discriminator)
+		public static List<? extends Class<?>> extract(FieldAttribute discriminator)
 		{
 			return Arrays.stream(discriminator.getRawType().getEnumConstants())
 					.map(Enum.class::cast)
@@ -38,8 +37,7 @@ public @interface Subtype
 					}).toList();
 		}
 
-		public static Class<?>
-		extract(FieldAttribute discriminator, Enum<?> constant)
+		public static Class<?> extract(FieldAttribute discriminator, Enum<?> constant)
 		{
 			try
 			{

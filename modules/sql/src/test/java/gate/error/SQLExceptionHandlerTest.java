@@ -67,18 +67,18 @@ public class SQLExceptionHandlerTest
 		RuntimeException thrown = assertThrows(RuntimeException.class,
 				() -> SQLExceptionHandler.handle(link("H2"), exception));
 
-		assertInstanceOf(RuntimeException.class, thrown);
+		assertInstanceOf(AppError.class, thrown);
 	}
 
 	@Test
-	void shouldFallbackToRuntimeExceptionForUnknownDatabaseError()
+	void shouldFallbackToAppErrorForUnknownDatabaseError()
 	{
 		SQLException exception = new SQLException("Unexpected failure", null, 9999);
 
 		RuntimeException thrown = assertThrows(RuntimeException.class,
 				() -> SQLExceptionHandler.handle(link("UnknownDB"), exception));
 
-		assertInstanceOf(RuntimeException.class, thrown);
+		assertInstanceOf(AppError.class, thrown);
 	}
 
 	private static Link link(String databaseProductName)

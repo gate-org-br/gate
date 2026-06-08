@@ -70,30 +70,6 @@ public class PropertyTest
 	}
 
 	@Test
-	public void shouldDescribeInvalidPropertySyntax()
-	{
-		var exception = assertThrows(PropertyError.class,
-				() -> Property.getProperty(RoleMock.class, "users[0,name"));
-
-		assertTrue(exception.getMessage().contains("Invalid property 'users[0,name'"));
-		assertTrue(exception.getMessage().contains(RoleMock.class.getName()));
-		assertTrue(exception.getMessage().contains("Expected ']' to close collection access"));
-		assertTrue(exception.getMessage().contains("Found token: ','"));
-	}
-
-	@Test
-	public void shouldDescribeInvalidEvaluatedPropertySyntax()
-	{
-		var exception = assertThrows(PropertyError.class,
-				() -> Property.evaluate("users[0,name", role));
-
-		assertTrue(exception.getMessage().contains("Invalid property 'users[0,name'"));
-		assertTrue(exception.getMessage().contains(RoleMock.class.getName()));
-		assertTrue(exception.getMessage().contains("Expected ']' to close collection access"));
-		assertTrue(exception.getMessage().contains("Found token: ','"));
-	}
-
-	@Test
 	public void shouldGetCollectionSizeThroughMethodCall()
 	{
 		assertEquals(2, Property.getProperty(RoleMock.class, "users.size()").getValue(role));

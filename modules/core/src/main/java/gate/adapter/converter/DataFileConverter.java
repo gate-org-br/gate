@@ -1,7 +1,7 @@
 package gate.adapter.converter;
 
 import gate.constraint.Constraint;
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 
 import java.io.*;
@@ -63,7 +63,7 @@ public class DataFileConverter implements Converter
 
 		} catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 }

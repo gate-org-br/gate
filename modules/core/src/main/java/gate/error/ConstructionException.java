@@ -13,6 +13,11 @@ import java.util.stream.Stream;
  */
 public class ConstructionException extends ConversionException
 {
+	public ConstructionException(String message, Throwable cause)
+	{
+		super(message, cause);
+	}
+	
 	public ConstructionException(Class<?> type, Set<?> attributes)
 	{
 		super("Could not find construction strategy for %s with attributes %s".formatted(

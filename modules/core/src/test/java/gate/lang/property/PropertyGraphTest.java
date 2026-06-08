@@ -137,25 +137,6 @@ class PropertyGraphTest
 	}
 
 	@Test
-	public void testUpdateExistingNestedAnemicInstance()
-	{
-		var role = new RoleMock()
-				.setId(IDMock.valueOf(1))
-				.setName("Old Role");
-		var user = new UserMock().setRole(role);
-
-		var request = Map.of("role.name", "New Role");
-
-		PropertyGraph
-				.of(UserMock.class, new ArrayList<>(request.keySet()))
-				.populate(user, prop -> request.get(prop.toString()));
-
-		Assertions.assertSame(role, user.getRole());
-		Assertions.assertEquals(IDMock.valueOf(1), user.getRole().getId());
-		Assertions.assertEquals("New Role", user.getRole().getName());
-	}
-
-	@Test
 	public void testBuilderType()
 	{
 		var expected = ConstructionMocks.BuilderMock.builder()

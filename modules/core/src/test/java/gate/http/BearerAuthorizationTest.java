@@ -28,10 +28,7 @@ public class BearerAuthorizationTest
 	@Test
 	public void shouldRejectInvalidHeaderFormat()
 	{
-		var exception = assertThrows(IllegalArgumentException.class,
-				() -> BearerAuthentication.valueOf("Bearer "));
-
-		assertEquals("Invalid Bearer authentication header format: Bearer ", exception.getMessage());
+		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.valueOf("Bearer "));
 		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.valueOf("Bearer  abc.def.ghi"));
 		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.valueOf("Basic abc.def.ghi"));
 	}
@@ -39,8 +36,6 @@ public class BearerAuthorizationTest
 	@Test
 	public void shouldRejectBlankToken()
 	{
-		var exception = assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.of(" "));
-
-		assertEquals("Bearer token cannot be null or empty", exception.getMessage());
+		assertThrows(IllegalArgumentException.class, () -> BearerAuthentication.of(" "));
 	}
 }

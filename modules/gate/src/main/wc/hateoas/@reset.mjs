@@ -9,12 +9,12 @@ import './trigger.js';
 window.addEventListener("@reset", function (event)
 {
 	let path = event.composedPath();
-	let { method, action, form, parameters: [selector], signal } = event.detail;
+	let {method, action, form, parameters: [selector], signal} = event.detail;
 
 	let target = DOM.navigate(event, selector)
 		.orElseThrow(`${selector} is not a valid selector`);
 
-	fetch(RequestBuilder.build(method, action, form), { signal })
+	fetch(RequestBuilder.build(method, action, form), {signal})
 		.then(response =>
 		{
 			const contentType = response.headers.get('content-type')

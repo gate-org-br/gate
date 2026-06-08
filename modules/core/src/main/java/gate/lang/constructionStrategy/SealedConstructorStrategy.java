@@ -30,16 +30,22 @@ public record SealedConstructorStrategy(Class<?> root, Map<Attribute, Class<?>> 
 		{
 			var owner = owners.get(attribute);
 			if (owner == null)
-				throw new ConstructionException(type, attributes.keySet());
+				throw new ConstructionException("Attribute '%s' does not belong to the hierarchy of sealed '%s'"
+						.formatted(attribute, root.getName()));
 			if (owner == root)
 				continue;
 			if (selected != null && selected != owner)
-				throw new ConstructionException(type, attributes.keySet());
+				throw new ConstructionException(
+						"Ambiguous subtype resolution for sealed '%s': attributes point to both '%s' and '%s'"
+								.formatted(root.getName(), selected.getName(), owner.getName()));
 			selected = owner;
 		}
 
 		if (selected == null)
-			throw new ConstructionException(type, attributes.keySet());
+			throw new ConstructionException("""
+					Cannot resolve subtype of sealed '%s': all provided attributes belong to the root
+					type and none discriminates a single subtype"""
+					.formatted(root.getName()));
 
 		return ConstructionStrategy.newInstance(selected, attributes);
 	}

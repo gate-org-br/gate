@@ -3,7 +3,7 @@ package gate.lang.json;
 import gate.adapter.jsonConverter.JsonConverter;
 import gate.adapter.jsonRenderer.JsonRenderer;
 import gate.adapter.renderer.Renderer;
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.util.Reflection;
 
@@ -101,7 +101,7 @@ public interface JsonElement extends Serializable
 			return stringWriter.toString();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 

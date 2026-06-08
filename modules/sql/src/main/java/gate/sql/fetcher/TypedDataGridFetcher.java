@@ -1,9 +1,8 @@
 package gate.sql.fetcher;
 
 import gate.sql.Cursor;
-
+import gate.error.AppError;
 import gate.type.DataGrid;
-
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
@@ -40,7 +39,7 @@ public class TypedDataGridFetcher implements Fetcher<DataGrid>
 			return dataSet;
 		} catch (SQLException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 
 	}

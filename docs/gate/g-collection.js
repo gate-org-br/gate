@@ -1,39 +1,41 @@
 let template = document.createElement("template");
 template.innerHTML = `
-	<button type="button" class="alternative"><g-icon>&#x1002;</g-icon></button><slot></slot>
-<style data-element="g-collection">:host {
-	display: grid;
-	grid-template-columns: 1fr auto;
+	<header><slot name="header"></slot></header><button type="button" class="alternative"><g-icon>&#x1002;</g-icon></button><section><slot id="template"></slot></section>
+<style data-element="g-collection">* {
+	box-sizing: border-box;
+}
+:host {
 	gap: 0.5rem;
+	display: grid;
 	align-items: start;
+	grid-template-columns: 1fr auto;
 }
 
-:host::before {
-	content: "";
-
-	gap: 12px;
+header {
+	width: 100%;
 	height: 100%;
 	display: flex;
-	font-size: 16px;
-	padding-left: 8px;
-	border: 1px solid;
-	text-align: justify;
 	align-items: stretch;
-	flex-direction: column;
-	border-left: 6px solid;
-	justify-content: center;
-	border-radius: 0 3px 3px 0;
-	border-color: var(--main3, #DDDDDD);
-	background-color: var(--main1, #FFFFFF);
+	justify-content: stretch;
 }
 
-:host([legend])::before { content: attr(legend);}
+section {
+	display: grid;
+	height: 100%;
+	gap: 0.5rem;
+	grid-row: 2;
+	overflow: auto;
+	grid-column: span 2;
+	align-items: start;
+	grid-template-columns: 1fr auto;
+}
 
 button {
 	grid-column: 2;
 	width: 44px;
 	color: white;
-	height: 44px;
+	height: 100%;
+	min-height: 44px;
 	padding: 8px;
 	border: none;
 	display: flex;
@@ -49,10 +51,9 @@ button {
 import './g-collection-item.js';
 import Base64 from "./base64.js";
 import GMessageDialog from './g-message-dialog.js';
-import StyledHTMLElement from './styled-html-element.js';
 
 
-customElements.define('g-collection', class extends StyledHTMLElement
+customElements.define('g-collection', class extends HTMLElement
 {
 	#template;
 	#internals;
@@ -61,10 +62,11 @@ customElements.define('g-collection', class extends StyledHTMLElement
 	constructor()
 	{
 		super();
+		this.attachShadow({mode: "open"})
 		this.#internals = this.attachInternals();
 		this.shadowRoot.innerHTML += template.innerHTML;
 
-		let slot = this.shadowRoot.querySelector("slot");
+		let slot = this.shadowRoot.getElementById("template");
 		slot.addEventListener("slotchange", () =>
 		{
 			if (slot.parentNode)
@@ -92,7 +94,8 @@ customElements.define('g-collection', class extends StyledHTMLElement
 		item.template = this.#template;
 		if (data)
 			item.value = data;
-		this.shadowRoot.appendChild(item);
+		this.shadowRoot.querySelector("section")
+			.appendChild(item);
 		this.connectedCallback();
 	}
 

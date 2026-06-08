@@ -1,6 +1,7 @@
 package gate.lang.constructionStrategy;
 
 import gate.annotation.Canonical;
+import gate.annotation.Default;
 import gate.annotation.Discriminator;
 import gate.error.ConstructionException;
 import gate.lang.property.Attribute;
@@ -9,6 +10,7 @@ import gate.util.Reflection;
 import java.lang.reflect.*;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -21,12 +23,15 @@ import java.util.stream.Stream;
  *     created using a default implementation;</li>
  *     <li><b>Single {@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
  *     annotated with {@link Canonical} is selected immediately, before any attribute matching;</li>
+ *     <li><b>Single candidate</b> — if there is exactly one constructor or {@code of(...)} factory
+ *     (regardless of the provided attributes), it is treated as canonical;</li>
+ *     <li><b>Single compatible candidate</b> — if exactly one constructor or {@code of(...)}
+ *     factory can consume the provided attributes, it is selected without canonical semantics
+ *     (i.e., no extra attributes are applied via setters after construction);</li>
+ *     <li><b>Least parameter count</b> — if multiple candidates are compatible, the single one
+ *     with the fewest parameters is selected; throws an exception if multiple share that count;</li>
  *     <li><b>Builder</b> — a public static {@code builder()} method whose return type has a
  *     {@code build()} method;</li>
- *     <li><b>Single compatible candidate</b> — if exactly one constructor or {@code of(...)}
- *     factory can consume the provided attributes, it is treated as canonical;</li>
- *     <li><b>Single exact match</b> — if multiple candidates are compatible, but exactly one has
- *     the same parameter count as the provided attribute count, it is selected;</li>
  *     <li><b>Discriminator</b> — a field annotated with {@code @Discriminator} requires an
  *     explicit discriminator value and delegates construction to the subtype declared by that
  *     enum constant;</li>
@@ -37,12 +42,10 @@ import java.util.stream.Stream;
  * </ol>
  * <p>
  * For non-sealed classes, candidate selection is strict: ambiguity throws an exception unless it
- * can be resolved by a single compatible candidate, a single exact match, or a single
- * {@code @Canonical} candidate.
+ * can be resolved by a single compatible or {@code @Canonical} candidate.
  * <p>
- * For sealed classes, the single subtype that owns all non-null attributes is selected;
- * if none or more than one subtype qualifies, an exception is thrown. Construction is
- * then delegated to that subtype's regular strategy.
+ * For sealed classes, the single subclass that has all the non-null attributes is created or an
+ * exception is thrown if multiple ones are found.
  * <p>
  * Missing attributes are handled according to the resolved strategy:
  * <ul>
@@ -101,93 +104,139 @@ public interface ConstructionStrategy
 			if (type == BlockingDeque.class)
 				return new CollectionStrategy(LinkedBlockingDeque::new);
 
-			var candidates = Stream.concat(Arrays.stream(type.getConstructors())
-									.filter(c -> !c.isAnnotationPresent(Deprecated.class)),
-							Arrays.stream(type.getDeclaredMethods())
-									.filter(m -> Modifier.isPublic(m.getModifiers()))
-									.filter(m -> Modifier.isStatic(m.getModifiers()))
-									.filter(m -> !m.isAnnotationPresent(Deprecated.class))
-									.filter(m -> m.getName().equals("of")))
-					.toList();
+			var candidates =
+					Stream.concat(Modifier.isAbstract(type.getModifiers()) ? Stream.of()
+											: Arrays.stream(type.getConstructors())
+											  .filter(c -> !c.isAnnotationPresent(Deprecated.class)),
+									Arrays.stream(type.getDeclaredMethods())
+											.filter(m -> Modifier.isPublic(m.getModifiers()))
+											.filter(m -> Modifier.isStatic(m.getModifiers()))
+											.filter(m -> !m.isAnnotationPresent(Deprecated.class))
+											.filter(m -> m.getName().equals("of")))
+							.toList();
 
 			var canonical = candidates.stream()
 					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
 			if (canonical.size() > 1)
-				throw new ConstructionException(type, canonical);
+				throw new ConstructionException(
+						"Multiple @Canonical found on %s: %s"
+								.formatted(
+										type.getName(),
+										canonical.stream()
+												.map(Object::toString)
+												.collect(Collectors.joining("; "))));
+
 			if (canonical.size() == 1)
 				if (canonical.get(0) instanceof Constructor<?> constructor)
 					return new CanonicalConstructorStrategy(constructor);
 				else if (canonical.get(0) instanceof Method method)
 					return new CanonicalFactoryMethodStrategy(method);
 
-			var builderFactory = Arrays.stream(type.getDeclaredMethods())
-					.filter(m -> Modifier.isPublic(m.getModifiers()))
-					.filter(m -> Modifier.isStatic(m.getModifiers()))
-					.filter(m -> !m.isAnnotationPresent(Deprecated.class))
-					.filter(m -> m.getName().equals("builder"))
-					.findAny().orElse(null);
-			if (builderFactory != null)
-			{
-				var build = Reflection.findMethod(builderFactory.getReturnType(), "build").orElse(null);
-				if (build != null)
-					return new BuilderStrategy(builderFactory, build);
-			}
-
-			candidates = candidates.stream()
-					.filter(c -> matchesAttributes(attributes, c.getParameters()))
-					.toList();
 			if (candidates.size() == 1)
 				if (candidates.get(0) instanceof Constructor<?> constructor)
 					return new CanonicalConstructorStrategy(constructor);
 				else if (candidates.get(0) instanceof Method method)
 					return new CanonicalFactoryMethodStrategy(method);
 
-			var exact = candidates.stream().filter(c -> c.getParameterCount() == attributes.size()).toList();
-			if (exact.size() == 1)
-				if (exact.get(0) instanceof Constructor<?> constructor)
-					return new ConstructorStrategy(constructor);
-				else if (exact.get(0) instanceof Method method)
-					return new FactoryMethodStrategy(method);
-
-			if (candidates.isEmpty())
+			candidates = candidates.stream()
+					.filter(c -> matchesAttributes(attributes, c.getParameters()))
+					.toList();
+			switch (candidates.size())
 			{
-				var discriminator = Discriminator.Extractor.extract(type);
-				if (discriminator != null)
-					return new DiscriminatorConstructorStrategy(discriminator);
-
-				if (type.isSealed())
+				case 0 ->
 				{
-					var owners = new LinkedHashMap<Attribute, Class<?>>();
-					for (var attribute : attributes)
+					var builderFactory = Arrays.stream(type.getDeclaredMethods())
+							.filter(m -> Modifier.isPublic(m.getModifiers()))
+							.filter(m -> Modifier.isStatic(m.getModifiers()))
+							.filter(m -> !m.isAnnotationPresent(Deprecated.class))
+							.filter(m -> m.getName().equals("builder"))
+							.findAny().orElse(null);
+					if (builderFactory != null)
 					{
-						var owner = attribute.getOwner();
-						if (owner == null || !type.isAssignableFrom(owner))
-							throw new ConstructionException(type, attributes);
-						if (owner != type)
-						{
-							var subtypes = Arrays.stream(type.getPermittedSubclasses())
-									.filter(e -> e.isAssignableFrom(owner))
-									.toList();
-							if (subtypes.size() != 1)
-								throw new ConstructionException(type, attributes);
-							owners.put(attribute, subtypes.get(0));
-						} else
-							owners.put(attribute, type);
+						var build = Reflection.findMethod(builderFactory.getReturnType(), "build").orElse(null);
+						if (build != null)
+							return new BuilderStrategy(builderFactory, build);
 					}
-					return new SealedConstructorStrategy(type, owners);
+
+					var discriminator = Discriminator.Extractor.extract(type);
+					if (discriminator != null)
+						return new DiscriminatorConstructorStrategy(discriminator,
+								Default.Extractor.extract(discriminator));
+
+					if (type.isSealed())
+					{
+						var owners = new LinkedHashMap<Attribute, Class<?>>();
+						for (var attribute : attributes)
+						{
+							var owner = attribute.getOwner();
+							if (owner == null || !type.isAssignableFrom(owner))
+								throw new ConstructionException(
+										"Attribute '%s' has owner '%s' which is not a subtype of sealed root '%s'"
+												.formatted(attribute,
+														owner == null ? "null" : owner.getName(),
+														type.getName()));
+							if (owner != type)
+							{
+								var subtypes = Arrays.stream(type.getPermittedSubclasses())
+										.filter(e -> e.isAssignableFrom(owner))
+										.toList();
+								if (subtypes.isEmpty())
+									throw new ConstructionException(
+											"Attribute '%s' owner '%s' is not a direct subtype of sealed root '%s'"
+													.formatted(attribute, owner.getName(), type.getName()));
+								if (subtypes.size() > 1)
+									throw new ConstructionException(
+											"Attribute '%s' owner '%s' matches multiple subtypes of sealed root '%s': %s"
+													.formatted(attribute,
+															owner.getName(),
+															type.getName(),
+															subtypes.stream()
+																	.map(Class::getName)
+																	.collect(Collectors.joining("; "))));
+								owners.put(attribute, subtypes.get(0));
+							} else
+								owners.put(attribute, type);
+						}
+						return new SealedConstructorStrategy(type, owners);
+					}
+
+					var defaultConstructor = Arrays.stream(type.getConstructors())
+							.filter(c -> c.getParameterCount() == 0)
+							.findFirst()
+							.orElse(null);
+					if (defaultConstructor != null)
+						return new BeanStrategy(defaultConstructor);
+
+					throw new ConstructionException(type, attributes);
 				}
 
-				var defaultConstructor = Arrays.stream(type.getConstructors())
-						.filter(c -> c.getParameterCount() == 0)
-						.findFirst()
-						.orElse(null);
-				if (defaultConstructor != null)
-					return new BeanStrategy(defaultConstructor);
+				case 1 ->
+				{
+					if (candidates.get(0) instanceof Constructor<?> constructor)
+						return new ConstructorStrategy(constructor);
+					else if (candidates.get(0) instanceof Method method)
+						return new FactoryMethodStrategy(method);
+					else
+						throw new ConstructionException(type, attributes);
+				}
 
-				throw new ConstructionException(type, attributes);
+				default ->
+				{
+					candidates = candidates.stream().collect(Collectors.groupingBy(Executable::getParameterCount))
+							.entrySet().stream()
+							.min(Map.Entry.comparingByKey())
+							.map(Map.Entry::getValue)
+							.orElseThrow();
+
+					if (candidates.size() == 1)
+						if (candidates.get(0) instanceof Constructor<?> constructor)
+							return new ConstructorStrategy(constructor);
+						else if (candidates.get(0) instanceof Method method)
+							return new FactoryMethodStrategy(method);
+
+					throw new ConstructionException(type, attributes, candidates);
+				}
 			}
-
-			throw new ConstructionException(type, attributes, candidates);
 		});
 	}
 

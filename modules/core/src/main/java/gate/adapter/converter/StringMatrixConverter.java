@@ -3,7 +3,7 @@ package gate.adapter.converter;
 import gate.annotation.Description;
 
 import gate.constraint.Constraint;
-
+import gate.error.AppError;
 import gate.lang.csv.CSVFormatter;
 import gate.lang.csv.CSVParser;
 
@@ -37,7 +37,7 @@ public class StringMatrixConverter implements Converter
 			return writer.toString();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 

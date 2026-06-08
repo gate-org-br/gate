@@ -1,7 +1,7 @@
 package gate.util;
 
 import gate.adapter.converter.Converter;
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 
 import javax.naming.*;
@@ -32,7 +32,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			}
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -51,7 +51,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return i;
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 
 	}
@@ -65,7 +65,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return list.hasMoreElements();
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -81,7 +81,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return false;
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -97,7 +97,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return false;
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -117,7 +117,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return null;
 		} catch (NamingException | ConversionException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -143,7 +143,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			}
 		} catch (NamingException | ConversionException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -162,7 +162,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return (T) value;
 		} catch (NamingException | ConversionException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -184,7 +184,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 				context.unbind(list.next().getName());
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -200,7 +200,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return keys;
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -216,7 +216,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return values;
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -236,7 +236,7 @@ public class JNDIContextMap<T> extends AbstractMap<String, T>
 			return entries;
 		} catch (NamingException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 }

@@ -2,7 +2,7 @@ package gate.adapter.converter;
 
 import gate.adapter.registry.ConverterRegistry;
 import gate.constraint.Constraint;
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.util.Reflection;
 
@@ -183,7 +183,7 @@ public interface Converter
 					: Converter.getConverter(parameter.getType());
 		} catch (ReflectiveOperationException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 }

@@ -1,7 +1,8 @@
 package gate.adapter.handler;
 
-import gate.adapter.converter.Converter;
 import gate.annotation.Entity;
+import gate.adapter.converter.Converter;
+import gate.error.AppError;
 import gate.lang.property.Property;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,7 +21,7 @@ public class OptionHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
 		Objects.requireNonNull(value);
 

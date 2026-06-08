@@ -1,5 +1,6 @@
 package gate.security.hash;
 
+import gate.error.AppError;
 
 import java.io.Serial;
 import java.util.Objects;
@@ -8,8 +9,7 @@ public class BCrypt implements Hash
 {
 
 	private static final int ROUNDS = 12;
-	@Serial
-	private static final long serialVersionUID = 1L;
+	@Serial private static final long serialVersionUID = 1L;
 
 	private final String value;
 
@@ -38,7 +38,7 @@ public class BCrypt implements Hash
 			return new BCrypt(hash);
 		} catch (Exception ex)
 		{
-			throw new RuntimeException(ex.getMessage(), ex);
+			throw new AppError(ex.getMessage(), ex);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class BCrypt implements Hash
 			return result.verified;
 		} catch (Exception ex)
 		{
-			throw new RuntimeException(ex.getMessage(), ex);
+			throw new AppError(ex.getMessage(), ex);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class BCrypt implements Hash
 	public boolean equals(Object obj)
 	{
 		return obj instanceof BCrypt
-				&& Objects.equals(((BCrypt) obj).value, value);
+		       && Objects.equals(((BCrypt) obj).value, value);
 	}
 
 	@Override

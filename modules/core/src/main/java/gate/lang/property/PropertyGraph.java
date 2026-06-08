@@ -33,7 +33,6 @@ public class PropertyGraph<T>
 	private final Class<T> type;
 	private final Map<Attribute, Object> graph;
 
-
 	public PropertyGraph(Class<T> type, Map<Attribute, Object> graph)
 	{
 		this.type = type;
@@ -137,18 +136,7 @@ public class PropertyGraph<T>
 			{
 				var attribute = entry.getKey();
 				var property = entry.getValue();
-				if (property instanceof Map<?, ?>)
-				{
-					var current = attribute.getValue(object);
-					if (current != null)
-						populate(current, property, getValue);
-					else
-						attribute.setValue(object, populate(attribute.getRawType(), property, getValue));
-				} else
-				{
-					var parameter = populate(attribute.getRawType(), property, getValue);
-					attribute.setValue(object, parameter);
-				}
+				attribute.setValue(object, populate(attribute.getRawType(), property, getValue));
 			}
 		} else if (properties instanceof Property property)
 			property.setValue(object, getValue.apply(property));

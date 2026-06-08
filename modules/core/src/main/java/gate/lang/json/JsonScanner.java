@@ -1,6 +1,6 @@
 package gate.lang.json;
 
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 
 import java.io.IOException;
@@ -233,7 +233,7 @@ public final class JsonScanner implements AutoCloseable
 			reader.close();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 }

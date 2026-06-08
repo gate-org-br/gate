@@ -1,4 +1,5 @@
 import Base64 from './base64.js';
+
 export default class DataURL
 {
 	static parse(string)
@@ -10,7 +11,8 @@ export default class DataURL
 		const contentType = match.groups.contentType;
 		const parameters = match.groups.parameters ? match.groups.parameters.split(";")
 			.filter(e => e)
-			.reduce((acc, string) => {
+			.reduce((acc, string) =>
+			{
 				const [key, value] = string.split("=");
 				acc[key.trim()] = decodeURIComponent(value).trim();
 				return acc;
@@ -34,7 +36,7 @@ export default class DataURL
 	constructor(contentType, data, parameters, base64 = true)
 	{
 		this.contentType = contentType;
-		this.data = data;
+		this.data = typeof data === "object" ? JSON.stringify(data) : data;
 		this.base64 = base64;
 		this.parameters = parameters || {};
 	}

@@ -39,6 +39,7 @@ public @interface Discriminator
 				throw new PropertyError("Invalid discriminator property %s on %s"
 						.formatted(discriminator.getName(), type.getName()));
 
+			boolean _default = false;
 			for (var constant : discriminator.getType().getEnumConstants())
 			{
 				var value = (Enum<?>) constant;
@@ -53,6 +54,12 @@ public @interface Discriminator
 					if (!type.isAssignableFrom(subtype))
 						throw new PropertyError("Invalid subtype %s on discriminator constant %s.%s"
 								.formatted(subtype.getName(), discriminator.getName(), value.name()));
+
+					if (subtype.isAnnotationPresent(Default.class))
+						if (_default)
+							throw new PropertyError("Multiple default discriminators found on %s.%s"
+									.formatted(discriminator.getName(), value.name()));
+						else _default = true;
 				} catch (NoSuchFieldException ex)
 				{
 					throw new PropertyError("Invalid discriminator constant %s.%s"
@@ -61,6 +68,26 @@ public @interface Discriminator
 			}
 
 			return FieldAttribute.of(discriminator);
+		}
+
+		public static Enum<?> extract(FieldAttribute discriminator)
+		{
+			return Arrays.stream(discriminator.getRawType().getEnumConstants())
+					.map(e -> (Enum<?>) e)
+					.filter(constant ->
+					{
+						try
+						{
+							return discriminator.getRawType().getField(constant.name())
+									.isAnnotationPresent(Default.class);
+						} catch (NoSuchFieldException ex)
+						{
+							throw new PropertyError("Invalid discriminator constant %s.%s"
+									.formatted(discriminator.toString(), constant.name()));
+						}
+					})
+					.findAny()
+					.orElse(null);
 		}
 	}
 }

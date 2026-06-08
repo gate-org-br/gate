@@ -30,7 +30,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 	}
 
 	@Test
-	void shouldKeepDiscriminatorSetBySubtypeConstructor() throws ReflectiveOperationException
+	void shouldKeepDiscriminatorSetBySubtypeConstructor()
 	{
 		var attributes = Map.<Attribute, Object>of(
 				Property.getProperty(ReadOnlyDiscriminatedParentMock.class, "type").getLastAttribute(),
@@ -46,7 +46,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 	}
 
 	@Test
-	void shouldRequireDiscriminatorWhenTypeHasDiscriminator() throws ReflectiveOperationException
+	void shouldRequireDiscriminatorWhenTypeHasDiscriminator()
 	{
 		var attributes = Map.<Attribute, Object>of(
 				Property.getProperty(DiscriminatedNameMock.class, "name").getLastAttribute(), "Ana");
@@ -157,7 +157,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		@Discriminator
 		private final ReadOnlyDiscriminatedTypeMock type;
 
-		public ReadOnlyDiscriminatedParentMock(ReadOnlyDiscriminatedTypeMock type)
+		protected ReadOnlyDiscriminatedParentMock(ReadOnlyDiscriminatedTypeMock type)
 		{
 			this.type = type;
 		}

@@ -1,6 +1,7 @@
 package gate.adapter.handler;
 
 import gate.Progress;
+import gate.error.AppError;
 import gate.lang.json.JsonElement;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +16,7 @@ public class JsonElementHandler implements Handler
 {
 
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, Object value)
+	public void handle(HttpServletRequest request, HttpServletResponse response, Object value) throws AppError
 	{
 		String string = JsonElement.stringify((JsonElement) value);
 		response.setContentType("application/json");

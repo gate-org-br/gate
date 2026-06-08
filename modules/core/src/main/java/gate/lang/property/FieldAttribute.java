@@ -57,7 +57,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 		{
 			if (ex instanceof RuntimeException)
 				throw (RuntimeException) ex;
-			throw new IllegalStateException("Failed to access field attribute", ex);
+			throw new IllegalStateException(
+					"Failed to read field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 
@@ -75,7 +77,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 		{
 			if (ex instanceof RuntimeException)
 				throw (RuntimeException) ex;
-			throw new IllegalStateException("Failed to access field attribute", ex);
+			throw new IllegalStateException(
+					"Failed to read field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 
@@ -97,7 +101,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 		{
 			if (ex instanceof RuntimeException)
 				throw (RuntimeException) ex;
-			throw new IllegalStateException("Failed to access field attribute", ex);
+			throw new IllegalStateException(
+					"Failed to write field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 
@@ -122,14 +128,16 @@ public class FieldAttribute extends AbstractFieldAttribute
 					|| method.getReturnType().isPrimitive()
 					|| method.isAnnotationPresent(NullSafe.class))
 				return null;
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn
-					(method.getDeclaringClass(), MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+					method.getDeclaringClass(), MethodHandles.lookup());
 			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
 			if (ex instanceof RuntimeException runtimeException)
 				throw runtimeException;
-			throw new IllegalStateException("Failed to access getter method", ex);
+			throw new IllegalStateException(
+					"Failed to create getter handle for field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 
@@ -138,18 +146,20 @@ public class FieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null || method.getParameters()[0].getType()
-					.isPrimitive() || method.getReturnType() != void.class)
+			if (method == null
+					|| method.getParameters()[0].getType().isPrimitive()
+					|| method.getReturnType() != void.class)
 				return null;
-
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(),
-					MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
+					method.getDeclaringClass(), MethodHandles.lookup());
 			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
 			if (ex instanceof RuntimeException runtimeException)
 				throw runtimeException;
-			throw new IllegalStateException("Failed to access setter method", ex);
+			throw new IllegalStateException(
+					"Failed to create setter handle for field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 
@@ -158,9 +168,13 @@ public class FieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			return Reflection.findVarHandle(field);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw new IllegalStateException("Failed to create field getter handle", ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException(
+					"Failed to create field getter handle for '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 
@@ -170,11 +184,14 @@ public class FieldAttribute extends AbstractFieldAttribute
 		{
 			if (setter != null || Modifier.isFinal(field.getModifiers()))
 				return null;
-
 			return Reflection.findVarHandle(field);
-		} catch (RuntimeException ex)
+		} catch (Throwable ex)
 		{
-			throw new IllegalStateException("Failed to create field setter handle", ex);
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException(
+					"Failed to create field setter handle for '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
 		}
 	}
 

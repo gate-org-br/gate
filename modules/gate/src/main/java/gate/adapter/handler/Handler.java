@@ -3,7 +3,7 @@ package gate.adapter.handler;
 import gate.Progress;
 import gate.adapter.converter.Converter;
 import gate.adapter.registry.HandlerRegistry;
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.util.Reflection;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,7 +51,7 @@ public interface Handler
 					.ofPart(type, part);
 		} catch (ReflectiveOperationException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 

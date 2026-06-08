@@ -1,6 +1,6 @@
 package gate.util;
 
-
+import gate.error.AppError;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -25,7 +25,7 @@ public final class Resource
 			return new String(inputStream.readAllBytes(), charset);
 		} catch (IOException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 
@@ -36,7 +36,7 @@ public final class Resource
 			return inputStream.readAllBytes();
 		} catch (IOException ex)
 		{
-			throw new RuntimeException(ex);
+			throw new AppError(ex);
 		}
 	}
 }

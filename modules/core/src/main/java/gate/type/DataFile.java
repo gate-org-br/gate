@@ -1,6 +1,6 @@
 package gate.type;
 
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.lang.contentType.ContentType;
 import gate.lang.dataurl.DataURL;
@@ -58,13 +58,12 @@ public class DataFile implements Serializable
 
 	public List<String> getLines(String charset)
 	{
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(getData()),
-				charset)))
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(getData()), charset)))
 		{
 			return reader.lines().toList();
 		} catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -75,13 +74,12 @@ public class DataFile implements Serializable
 
 	public void getLines(String charset, Consumer<String> consumer)
 	{
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(getData()),
-				charset)))
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(getData()), charset)))
 		{
 			reader.lines().forEach(consumer);
 		} catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
@@ -112,7 +110,7 @@ public class DataFile implements Serializable
 					reader.lines().forEach(consumer);
 		} catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 

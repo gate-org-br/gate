@@ -70,6 +70,7 @@ input {
 	position: absolute;
 }</style>`;
 /* global customElements */
+
 import GMessageDialog from './g-message-dialog.js';
 
 customElements.define('g-selectn', class extends HTMLElement
@@ -94,11 +95,7 @@ customElements.define('g-selectn', class extends HTMLElement
 		this.addEventListener("change", () => this.connectedCallback());
 
 		let checker = this.shadowRoot.querySelector("input");
-		checker.addEventListener("change", () =>
-		{
-			Array.from(this.querySelectorAll("input")).forEach(e => e.checked = checker.checked);
-			this.connectedCallback();
-		});
+		checker.addEventListener("change", () => Array.from(this.querySelectorAll("input")).forEach(e => e.checked = checker.checked));
 	}
 
 	focus()
@@ -110,14 +107,15 @@ customElements.define('g-selectn', class extends HTMLElement
 	set options(options)
 	{
 		this.#options = options;
-		Array.from(this.querySelectorAll("input, label")).forEach(e => e.remove());
+		Array.from(this.querySelectorAll("input, label"))
+			.forEach(e => e.remove());
 		options.forEach(option =>
 		{
-			let cb = this.appendChild(document.createElement("input"));
-			cb.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change")));
-			cb.type = "checkbox";
-			cb.name = this.name;
-			cb.value = option.value;
+			let checkbox = this.appendChild(document.createElement("input"));
+			checkbox.addEventListener("change", () => this.dispatchEvent(new CustomEvent("change")));
+			checkbox.type = "checkbox";
+			checkbox.name = this.name;
+			checkbox.value = option.value;
 			let label = this.appendChild(document.createElement("label"));
 			label.innerText = option.label;
 		});
@@ -131,14 +129,14 @@ customElements.define('g-selectn', class extends HTMLElement
 	get value()
 	{
 		return Array.from(this.querySelectorAll("input"))
-			.filter(cb => cb.checked)
-			.map(cb => cb.value);
+			.filter(checkbox => checkbox.checked)
+			.map(checkbox => checkbox.value);
 	}
 
 	set value(value)
 	{
 		Array.from(this.querySelectorAll("input"))
-			.forEach(cb => cb.checked = value.includes(cb.value));
+			.forEach(checkbox => checkbox.checked = value.includes(checkbox.value));
 	}
 
 	get name()
@@ -164,14 +162,19 @@ customElements.define('g-selectn', class extends HTMLElement
 			this.removeAttribute("required");
 	}
 
+	set max(max)
+	{
+		this.setAttribute("max", "max");
+	}
+
 	get max()
 	{
 		return this.hasAttribute("max") ? Number(this.getAttribute("max")) : null;
 	}
 
-	set max(max)
+	set min(min)
 	{
-		this.setAttribute("max", max);
+		this.setAttribute("min", "min");
 	}
 
 	get min()
@@ -179,28 +182,21 @@ customElements.define('g-selectn', class extends HTMLElement
 		return this.hasAttribute("min") ? Number(this.getAttribute("min")) : null;
 	}
 
-	set min(min)
-	{
-		this.setAttribute("min", min);
-	}
-
-	get selected()
-	{
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-		return count >= (this.min ?? 1);
-	}
-
 	connectedCallback()
 	{
-		this.#internals.setFormValue(JSON.stringify(this.value));
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-		let input = this.shadowRoot.querySelector("input");
-		if (this.required && !count)
-			this.#internals.setValidity({valueMissing: true}, "Selecione ao menos uma opção", input);
-		else if (this.min && count < this.min)
-			this.#internals.setValidity({rangeUnderflow: true}, `Selecione ao menos ${this.min} opções`, input);
-		else if (this.max && count > this.max)
-			this.#internals.setValidity({rangeOverflow: true}, `Selecione no máximo ${this.max} opções`, input);
+		let checked =
+			Array.from(this.querySelectorAll("input"))
+				.filter(checkbox => checkbox.checked)
+				.length;
+
+		if (this.required && !checked)
+			this.#internals.setValidity({valueMissing: true}, "Selecione ao menos uma opção", this.shadowRoot.querySelector("input"));
+
+		else if (this.min && checked < this.min)
+			this.#internals.setValidity({rangeUnderflow: true}, `Selecione ao menos ${this.min} opções`, this.shadowRoot.querySelector("input"));
+
+		else if (this.max && checked > this.max)
+			this.#internals.setValidity({rangeOverflow: true}, `Selecione no máximo ${this.max} opções`, this.shadowRoot.querySelector("input"));
 		else
 			this.#internals.setValidity({});
 	}
@@ -209,7 +205,7 @@ customElements.define('g-selectn', class extends HTMLElement
 	{
 		if (attribute === "name")
 			Array.from(this.querySelectorAll("input"))
-				.forEach(cb => cb.name = this.name);
+				.forEach(checkbox => checkbox.name = this.name);
 		else if (attribute === "value")
 			this.value = JSON.parse(this.getAttribute("value"));
 		else
@@ -218,37 +214,44 @@ customElements.define('g-selectn', class extends HTMLElement
 
 	checkValidity()
 	{
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
-		if (this.required && !count) return false;
-		if (this.min && count < this.min) return false;
-		if (this.max && count > this.max) return false;
+		let checked =
+			Array.from(this.querySelectorAll("input"))
+				.filter(checkbox => checkbox.checked)
+				.length;
+
+		if (this.required && !checked)
+			return false;
+
+		if (this.min && checked < min)
+			return false;
+
+		if (this.max && checked > max)
+			return false;
+
 		return true;
 	}
 
 	reportValidity()
 	{
-		let count = Array.from(this.querySelectorAll("input")).filter(cb => cb.checked).length;
+		let checked =
+			Array.from(this.querySelectorAll("input"))
+				.filter(checkbox => checkbox.checked)
+				.length;
 
-		if (this.required && !count)
-		{
-			GMessageDialog.error("Selecione ao menos uma opção");
-			return false;
-		}
-		if (this.min && count < this.min)
-		{
-			GMessageDialog.error(`Selecione ao menos ${this.min} opções`);
-			return false;
-		}
-		if (this.max && count > this.max)
-		{
-			GMessageDialog.error(`Selecione no máximo ${this.max} opções`);
-			return false;
-		}
+		if (this.required && !checked)
+			return false & GMessageDialog.error("Selecione ao menos uma opção");
+
+		if (this.min && checked < min)
+			return false & GMessageDialog.error(`Selecione ao menos ${min} opções`);
+
+		if (this.max && checked > max)
+			return false & GMessageDialog.error(`Selecione no máximo ${max} opções`);
+
 		return true;
 	}
 
 	static get observedAttributes()
 	{
-		return ['name', 'value', 'options'];
+		return ['name', 'value', "options"];
 	}
 });

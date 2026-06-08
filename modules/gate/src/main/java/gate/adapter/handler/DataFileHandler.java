@@ -1,6 +1,6 @@
 package gate.adapter.handler;
 
-
+import gate.error.AppError;
 import gate.error.ConversionException;
 import gate.type.DataFile;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -32,7 +32,7 @@ public class DataFileHandler implements Handler
 			}
 		} catch (IOException e)
 		{
-			throw new RuntimeException(e);
+			throw new AppError(e);
 		}
 	}
 
