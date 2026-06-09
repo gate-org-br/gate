@@ -17,3 +17,7 @@ nav > a {
 nav > a:hover {
   background-color: var(--main2, #F0F0F0);
 }
+th > nav,
+td > nav {
+  justify-content: center;
+}
