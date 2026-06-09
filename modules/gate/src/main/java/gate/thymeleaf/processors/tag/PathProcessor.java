@@ -40,21 +40,17 @@ public class PathProcessor extends TagProcessor
 
 		var request = ((IWebContext) context).getExchange().getRequest();
 
-		if (command.isDefault())
-			command = new RequestCommand(
-					request.getParameterValue("MODULE"),
-					request.getParameterValue("SCREEN"),
-					request.getParameterValue("ACTION"));
-		else
-			command = command
-					.with(new RequestCommand(request.getParameterValue("MODULE"),
-							request.getParameterValue("SCREEN"),
-							request.getParameterValue("ACTION"))
-							.or(RequestCommand
-									.ofPath(Optional.ofNullable(request.getPathWithinApplication())
-											.filter(e -> e.startsWith("/Gate/"))
-											.map(e -> e.substring("/Gate".length()))
-											.orElse(null))));
+		var current = new RequestCommand(
+				request.getParameterValue("MODULE"),
+				request.getParameterValue("SCREEN"),
+				request.getParameterValue("ACTION"))
+				.or(RequestCommand
+						.ofPath(Optional.ofNullable(request.getPathWithinApplication())
+								.filter(e -> e.startsWith("/Gate/"))
+								.map(e -> e.substring("/Gate".length()))
+								.orElse(null)));
+
+		command = command.isDefault() ? current : command.with(current);
 
 		StringJoiner string = new StringJoiner("");
 

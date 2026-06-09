@@ -37,14 +37,14 @@ public class CallsTest
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void testMetadataLookupDoesNotFallbackToAnyMethod()
+	public void testMetadataLookupFallbacksToAnyMethod()
 	{
 		CallRegistry calls = new CallRegistry();
 		calls.register(List.of((Class<Screen>) (Class<?>) TestRegistryParentScreen.ChildScreen.class));
 
 		var command = new RequestCommand("gate", "TestRegistryParent.Child", null);
 		assertTrue(calls.get("GET", command).isPresent());
-		assertFalse(calls.getMetadata(command).isPresent());
+		assertTrue(calls.getMetadata(command).isPresent());
 	}
 
 	@Test

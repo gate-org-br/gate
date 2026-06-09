@@ -46,8 +46,8 @@ public class CallRegistry
 
 	public Optional<ActionMetadata> getMetadata(RequestCommand command)
 	{
-		return Optional.ofNullable(instances.getOrDefault("GET", Map.of())
-						.get(command))
+		return Optional.ofNullable(instances.getOrDefault("GET", Map.of()).get(command))
+				.or(() -> Optional.ofNullable(instances.getOrDefault(ANY, Map.of()).get(command)))
 				.map(Call::metadata);
 	}
 
@@ -129,7 +129,7 @@ public class CallRegistry
 		}
 
 		if (instances.getOrDefault(ANY, Map.of()).containsKey(command)
-		    || instances.getOrDefault(method, Map.of()).containsKey(command))
+				|| instances.getOrDefault(method, Map.of()).containsKey(command))
 			throw new IllegalStateException("Duplicated action: " + command);
 	}
 }
