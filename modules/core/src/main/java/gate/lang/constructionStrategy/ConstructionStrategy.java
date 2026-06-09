@@ -23,8 +23,6 @@ import java.util.stream.Stream;
  *     created using a default implementation;</li>
  *     <li><b>Single {@code @Canonical}</b> — a constructor or {@code of(...)} factory explicitly
  *     annotated with {@link Canonical} is selected immediately, before any attribute matching;</li>
- *     <li><b>Single candidate</b> — if there is exactly one constructor or {@code of(...)} factory
- *     (regardless of the provided attributes), it is treated as canonical;</li>
  *     <li><b>Single compatible candidate</b> — if exactly one constructor or {@code of(...)}
  *     factory can consume the provided attributes, it is selected without canonical semantics
  *     (i.e., no extra attributes are applied via setters after construction);</li>
@@ -132,12 +130,6 @@ public interface ConstructionStrategy
 				else if (canonical.get(0) instanceof Method method)
 					return new CanonicalFactoryMethodStrategy(method);
 
-			if (candidates.size() == 1)
-				if (candidates.get(0) instanceof Constructor<?> constructor)
-					return new CanonicalConstructorStrategy(constructor);
-				else if (candidates.get(0) instanceof Method method)
-					return new CanonicalFactoryMethodStrategy(method);
-
 			candidates = candidates.stream()
 					.filter(c -> matchesAttributes(attributes, c.getParameters()))
 					.toList();
@@ -150,7 +142,9 @@ public interface ConstructionStrategy
 							.filter(m -> Modifier.isStatic(m.getModifiers()))
 							.filter(m -> !m.isAnnotationPresent(Deprecated.class))
 							.filter(m -> m.getName().equals("builder"))
-							.findAny().orElse(null);
+							.findAny()
+							.orElse(null);
+
 					if (builderFactory != null)
 					{
 						var build = Reflection.findMethod(builderFactory.getReturnType(), "build").orElse(null);
