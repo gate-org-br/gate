@@ -76,6 +76,10 @@ fieldset {
 	  background-color: var(--main2, #F0F0F0);
 	  border: 1px solid var(--main3, #DDDDDD);
 
+	  &:has(> g-select-menu) {
+		overflow: visible;
+	  }
+
 	  * {
 		border: none;
 	  }

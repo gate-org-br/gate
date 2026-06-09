@@ -7,7 +7,8 @@ input,
 select,
 textarea,
 g-selectn,
-g-select1 {
+g-select1,
+g-select-menu {
   width: 100%;
   height: 38px;
   color: inherit;
@@ -27,7 +28,8 @@ input:first-child,
 select:first-child,
 textarea:first-child,
 g-selectn:first-child,
-g-select1:first-child {
+g-select1:first-child,
+g-select-menu:first-child {
   border-radius: 3px 0 0 3px;
 }
 
@@ -35,7 +37,8 @@ input:last-child,
 select:last-child,
 textarea:last-child,
 g-selectn:last-child,
-g-select1:last-child {
+g-select1:last-child,
+g-select-menu:last-child {
   border-radius: 0 3px 3px 0;
 }
 
@@ -43,7 +46,8 @@ input:only-child,
 select:only-child,
 textarea:only-child,
 g-selectn:only-child,
-g-select1:only-child {
+g-select1:only-child,
+g-select-menu:only-child {
   border-radius: 3px;
 }
 
@@ -56,13 +60,15 @@ textarea {
 
 input:hover,
 textarea:hover,
-select:hover {
+select:hover,
+g-select-menu:hover {
   outline: none;
 }
 
 input:focus,
 textarea:focus,
-select:focus {
+select:focus,
+g-select-menu:focus {
   outline: none;
   background-color: var(--hovered, #FFFACD);
 

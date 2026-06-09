@@ -70,6 +70,10 @@ fieldset > label > form {
   background-color: var(--main2, #F0F0F0);
   border: 1px solid var(--main3, #DDDDDD);
 }
+fieldset > label > span:has(> g-select-menu),
+fieldset > label > form:has(> g-select-menu) {
+  overflow: visible;
+}
 fieldset > label > span *,
 fieldset > label > form * {
   border: none;

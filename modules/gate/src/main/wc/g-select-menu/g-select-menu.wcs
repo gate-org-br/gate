@@ -3,30 +3,47 @@
 }
 
 :host(*) {
+	padding: 0;
+	width: 100%;
+	height: 38px;
 	display: flex;
-	font-size: 12px;
+	color: inherit;
+	font-size: 14px;
 	cursor: pointer;
+	min-height: 38px;
 	position: relative;
 	align-items: stretch;
 	flex-direction: column;
-	border: 1px solid var(--main3, #DDDDDD);
-	background-color: var(--main2, #F0F0F0);
+	border: 1px solid var(--main2, #F0F0F0);
+	background-color: var(--main1, #FFFFFF);
 }
 
 header {
 	gap: 8px;
-	padding: 8px;
-	height: 32px;
+	margin: 0;
+	border: 0;
+	height: 100%;
 	display: grid;
+	padding: 0 4px;
+	text-indent: 0;
+	line-height: 38px;
 	user-select: none;
 	font-size: inherit;
 	align-items: center;
 	font-family: inherit;
-	grid-template-columns: 1fr 24px;
+	justify-items: stretch;
+	grid-template-columns: 1fr 32px;
 }
 
 header::before {
+	overflow: hidden;
+	white-space: nowrap;
 	content: attr(title);
+	text-overflow: ellipsis;
+}
+
+:host(:not([selected])) header::before {
+	color: var(--text3, #777777);
 }
 
 header::after {
@@ -39,47 +56,68 @@ header::after {
 }
 
 main {
-	left: -1px;
 	top: 100%;
-	display: none;
-	width: inherit;
+	left: -1px;
 	right: -1px;
+	display: none;
 	z-index: 1000;
+	color: inherit;
 	font-size: inherit;
 	position: absolute;
 	flex-direction: column;
-	background-color: var(--main2, #F0F0F0);
-	border: 1px solid var(--main3, #DDDDDD);
+	background-color: var(--main1, #FFFFFF);
+	border: 1px solid var(--main2, #F0F0F0);
+	box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.25);
+	max-height: min(304px, 50vh);
+	overflow-y: auto;
 }
 
-a,
-.g-command {
+::slotted(a),
+::slotted(button),
+::slotted(.g-command) {
 	gap: 8px;
-	padding: 8px;
-	height: 32px;
+	text-indent: 0;
+	margin: 0;
+	border: 0;
+	padding: 0 4px;
+	height: 38px;
 	display: grid;
-	color: #000066;
+	cursor: pointer;
+	color: inherit;
 	font-size: inherit;
+	min-height: 38px;
+	font-family: inherit;
 	align-items: center;
+	font-style: normal;
+	line-height: 38px;
 	text-decoration: none;
-	grid-template-columns: 1fr 24px;
+	background-color: transparent;
+	grid-template-columns: 1fr 32px;
+	justify-items: stretch;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
-g-icon,
-i {
-	order: 1;
-	font-size: 1.5em;
-}
 
-a:hover,
-.g-command:hover {
+:host(:hover) header,
+:host(:focus) header,
+:host([opened]) header,
+::slotted(:hover),
+::slotted(:focus) {
+	outline: none;
 	background-color: var(--hovered, #FFFACD);
 }
 
-:host([opened])>main {
-	display: block;
+::slotted([data-active]) {
+	color: HighlightText;
+	background-color: Highlight;
 }
 
-:host([opened])>header::after {
+:host([opened]) > main {
+	display: flex;
+}
+
+:host([opened]) > header::after {
 	content: '\\2278';
 }
