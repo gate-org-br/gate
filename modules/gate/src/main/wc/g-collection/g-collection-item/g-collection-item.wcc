@@ -27,31 +27,23 @@ customElements.define('g-collection-item', class extends StyledHTMLElement
 		});
 	}
 
-	#checkable(input)
-	{
-		return input.tagName === "INPUT"
-			&& ["checkbox", "radio"].includes(input.type);
-	}
-
-	#appendValue(obj, name, value)
-	{
-		if (obj[name] === undefined)
-			obj[name] = value;
-		else if (Array.isArray(obj[name]))
-			obj[name].push(value);
-		else
-			obj[name] = [obj[name], value];
-	}
-
 	get value()
 	{
 		return Array.from(this.shadowRoot.querySelectorAll("[name]"))
 			.reduce((obj, input) =>
 			{
-				if (this.#checkable(input))
+				if (input.tagName === "INPUT"
+					&& ["checkbox", "radio"].includes(input.type))
 				{
 					if (input.checked)
-						this.#appendValue(obj, input.name, input.value);
+					{
+						if (obj[input.name] === undefined)
+							obj[input.name] = input.value;
+						else if (Array.isArray(obj[input.name]))
+							obj[input.name].push(input.value);
+						else
+							obj[input.name] = [obj[input.name], input.value];
+					}
 				} else
 					obj[input.name] = input.value;
 				return obj;
@@ -64,7 +56,8 @@ customElements.define('g-collection-item', class extends StyledHTMLElement
 			.forEach(input =>
 			{
 				let value = data[input.name];
-				if (this.#checkable(input))
+				if (input.tagName === "INPUT"
+					&& ["checkbox", "radio"].includes(input.type))
 				{
 					let values = value == null ? [] : Array.isArray(value) ? value : [value];
 					input.checked = values.map(String).includes(input.value);
