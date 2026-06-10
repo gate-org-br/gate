@@ -164,12 +164,15 @@ public class Toolkit
 
 	public static boolean sleep(int value)
 	{
+		if (value <= 0)
+			return true;
 		try
 		{
 			Thread.sleep(value);
 			return true;
 		} catch (InterruptedException ex)
 		{
+			Thread.currentThread().interrupt();
 			return false;
 		}
 	}
