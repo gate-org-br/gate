@@ -4,6 +4,7 @@ import gate.error.HierarchyException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -108,7 +109,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
-		return getParent().getId() != null
+		return getParent() != null && getParent().getId() != null
 				&& (getParent().equals(entity) || getParent().isChildOf(entity));
 	}
 
@@ -164,14 +165,14 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * Searches for the element with the specified id within this element and its descendants.
 	 *
 	 * @param id the id to search for
-	 * @return the element whose id equals the specified id, or null if not found
+	 * @return an Optional containing the element whose id equals the specified id,
+	 * or an empty Optional if not found
 	 */
 	@SuppressWarnings("unchecked")
-	default T select(ID id)
+	default Optional<T> select(ID id)
 	{
-		return getId().equals(id) ? (T) this
-				: getChildren().stream().map(e -> e.select(id)).filter(Objects::nonNull).findFirst()
-				  .orElse(null);
+		return getId().equals(id) ? Optional.of((T) this)
+				: getChildren().stream().map(e -> e.select(id)).flatMap(Optional::stream).findFirst();
 	}
 
 	/**
@@ -204,7 +205,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	@SuppressWarnings("unchecked")
 	default Stream<T> parentStream()
 	{
-		return getParent().getId() == null ? Stream.of((T) this)
+		return getParent() == null || getParent().getId() == null ? Stream.of((T) this)
 				: Stream.concat(Stream.of((T) this), getParent().parentStream());
 	}
 
@@ -218,16 +219,23 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	String toString();
 
 	/**
-	 * Assembles a flat list of elements into a proper hierarchy by wiring parent-child
-	 * relationships and validates the result for duplicates and circular references.
+	 * Assembles a flat list of elements into a proper hierarchy and validates the result.
 	 * <p>
-	 * Each element's parent reference is resolved against the list, and children are
-	 * populated accordingly. Direct and indirect circular references are both detected.
+	 * For each element, the parent stub (which typically contains only the id) is replaced
+	 * with the full parent object found in the list, and each element's children list is
+	 * populated with its direct children. <strong>This method mutates the elements in the list.</strong>
+	 * <p>
+	 * Validation is performed before assembly:
+	 * <ul>
+	 *   <li>Duplicate elements cause a {@link HierarchyException}</li>
+	 *   <li>Direct and indirect circular references cause a {@link HierarchyException}</li>
+	 *   <li>A parent reference pointing to an element not present in the list causes a {@link HierarchyException}</li>
+	 * </ul>
 	 *
 	 * @param <T>  the concrete hierarchy type
-	 * @param list the flat list of elements to assemble
+	 * @param list the flat list of elements to assemble; its elements will be mutated
 	 * @return a list containing only the root elements of the assembled hierarchy
-	 * @throws HierarchyException   if the list contains duplicate elements or a circular reference
+	 * @throws HierarchyException   if the list contains duplicates, a circular reference, or an unknown parent
 	 * @throws NullPointerException if the list is null or contains any element with a null id
 	 */
 	static <T extends Hierarchy<T>> List<T> setup(List<T> list) throws HierarchyException
@@ -237,7 +245,7 @@ public interface Hierarchy<T extends Hierarchy<T>>
 		for (int i = 0; i < list.size(); i++)
 			for (int j = i + 1; j < list.size(); j++)
 				if (list.get(i).equals(list.get(j)))
-					throw new HierarchyException("Registro duplicado: " + list.get(i));
+					throw new HierarchyException("Duplicate entry: " + list.get(i));
 
 		for (T object : list)
 		{
@@ -248,13 +256,13 @@ public interface Hierarchy<T extends Hierarchy<T>>
 			{
 				if (parent.equals(object))
 					throw new HierarchyException(
-							String.format("Relação circular encontrada entre %s and %s",
+							String.format("Circular reference detected between %s and %s",
 									parent.getId(), object.getId()));
 
 				final T _parent = parent;
 				parent = list.stream().filter(e -> e.equals(_parent)).findAny()
 						.orElseThrow(() -> new HierarchyException(
-								"Registro inexistente encontrado ao montar hierarquia: "
+								"Unknown parent reference found while assembling hierarchy: "
 										+ _parent.getId()));
 			}
 		}
