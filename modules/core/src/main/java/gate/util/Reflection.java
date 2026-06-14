@@ -19,6 +19,21 @@ public class Reflection
 	private static final Pattern PATTERN = Pattern.compile(
 			"^([a-zA-Z_$][a-zA-Z0-9_$]*([.][a-zA-Z_$][a-zA-Z0-9_$]*)+([$][a-zA-Z_$][a-zA-Z0-9_$]*)*)(:(([a-zA-Z_$][a-zA-Z0-9_$]*)([(][)])?))?$");
 
+	public static Type parameterizedType(Class<?> rawType, Type... typeArguments)
+	{
+		return new ParameterizedType()
+		{
+			@Override
+			public Type[] getActualTypeArguments() {return typeArguments;}
+
+			@Override
+			public Type getRawType() {return rawType;}
+
+			@Override
+			public Type getOwnerType() {return null;}
+		};
+	}
+
 	public static Class<?> getRawType(Type type)
 	{
 		if (type instanceof Class<?>)

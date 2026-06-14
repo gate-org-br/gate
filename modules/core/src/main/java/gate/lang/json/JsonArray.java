@@ -1,6 +1,7 @@
 package gate.lang.json;
 
 import gate.adapter.jsonConverter.JsonConverter;
+import gate.util.Reflection;
 import gate.error.ConversionException;
 
 import java.io.Serial;
@@ -95,15 +96,7 @@ public class JsonArray implements List<JsonElement>, JsonCollection
 	public <T> T decode(Class<T> type)
 	{
 		if (type.getGenericSuperclass() instanceof ParameterizedType parameterizedType)
-			return (T) JsonConverter.fromJson(new ParameterizedType()
-			{
-				@Override
-				public java.lang.reflect.Type getRawType() {return type;}
-				@Override
-				public java.lang.reflect.Type getOwnerType() {return type;}
-				@Override
-				public java.lang.reflect.Type[] getActualTypeArguments() {return parameterizedType.getActualTypeArguments();}
-			}, this);
+			return (T) JsonConverter.fromJson(Reflection.parameterizedType(type, parameterizedType.getActualTypeArguments()), this);
 		throw new UnsupportedOperationException("Can't create java object from json array without element type");
 	}
 

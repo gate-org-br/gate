@@ -4,8 +4,8 @@ import gate.error.ConversionException;
 import mock.MockFactory;
 import mock.UserMock;
 import org.junit.jupiter.api.Test;
+import gate.util.Reflection;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -127,15 +127,7 @@ public class JsonArrayTest
 
 	private static Type type(Class<?> rawType, Type elementType)
 	{
-		return new ParameterizedType()
-		{
-			@Override
-			public Type getRawType() {return rawType;}
-			@Override
-			public Type getOwnerType() {return rawType;}
-			@Override
-			public Type[] getActualTypeArguments() {return new Type[]{elementType};}
-		};
+		return Reflection.parameterizedType(rawType, elementType);
 	}
 
 	@Test
