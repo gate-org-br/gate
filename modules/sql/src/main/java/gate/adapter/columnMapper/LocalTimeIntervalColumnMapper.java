@@ -5,6 +5,7 @@ import gate.type.LocalDateTimeInterval;
 import gate.type.LocalTimeInterval;
 import gate.type.YearMonthInterval;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ import java.util.List;
 public class LocalTimeIntervalColumnMapper extends IntervalColumnMapper
 {
 	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, int index, Type type) throws SQLException
 	{
 		LocalTime min = rs.getObject(index, LocalTime.class);
 		if (rs.wasNull())
@@ -32,7 +33,7 @@ public class LocalTimeIntervalColumnMapper extends IntervalColumnMapper
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, String fields, Type type) throws SQLException
 	{
 		LocalTime min = rs.getObject(fields + ColumnMapper.SEPARATOR + SUFIXES.get(0), LocalTime.class);
 		if (rs.wasNull())

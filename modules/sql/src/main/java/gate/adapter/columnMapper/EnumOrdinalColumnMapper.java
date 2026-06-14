@@ -1,7 +1,9 @@
 package gate.adapter.columnMapper;
 
 import gate.error.ConversionException;
+import gate.util.Reflection;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,26 +13,26 @@ public class EnumOrdinalColumnMapper implements ColumnMapper
 {
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, int index, Type type) throws SQLException
 	{
 		int value = rs.getInt(index);
 		if (rs.wasNull())
 			return null;
 
-		var constants = type.getEnumConstants();
+		var constants = Reflection.getRawType(type).getEnumConstants();
 		if (value < 0 || value >= constants.length)
 			throw new ConversionException(value + " is not a valid enum ordinal");
 		return constants[value];
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, String fields, Type type) throws SQLException
 	{
 		int value = rs.getInt(fields);
 		if (rs.wasNull())
 			return null;
 
-		var constants = type.getEnumConstants();
+		var constants = Reflection.getRawType(type).getEnumConstants();
 		if (value < 0 || value >= constants.length)
 			throw new ConversionException(value + " is not a valid enum ordinal");
 		return constants[value];

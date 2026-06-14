@@ -5,6 +5,7 @@ import gate.type.TempFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ public class TempFileColumnMapper implements ColumnMapper
 {
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
+	public Object readFromResultSet(ResultSet rs, int index, Type type)
 			throws SQLException
 	{
 		try (InputStream inputStream = rs.getBinaryStream(index))
@@ -27,7 +28,7 @@ public class TempFileColumnMapper implements ColumnMapper
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+	public Object readFromResultSet(ResultSet rs, String fields, Type type)
 			throws SQLException
 	{
 		try (InputStream inputStream = rs.getBinaryStream(fields))

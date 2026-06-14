@@ -3,6 +3,7 @@ package gate.adapter.columnMapper;
 import gate.adapter.registry.ColumnMapperRegistry;
 import gate.error.ConversionException;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +41,7 @@ public interface ColumnMapper
 	 *                             JDBC ResultSet
 	 * @throws ConversionException if the specified type can't be retrieved from a JDBC ResultSet
 	 */
-	Object readFromResultSet(ResultSet rs, int index, Class<?> type)
+	Object readFromResultSet(ResultSet rs, int index, Type type)
 			throws SQLException, ConversionException;
 
 	/**
@@ -54,7 +55,7 @@ public interface ColumnMapper
 	 *                             JDBC ResultSet
 	 * @throws ConversionException if the specified type can't be retrieved from a JDBC ResultSet
 	 */
-	Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+	Object readFromResultSet(ResultSet rs, String fields, Type type)
 			throws SQLException, ConversionException;
 
 	/**

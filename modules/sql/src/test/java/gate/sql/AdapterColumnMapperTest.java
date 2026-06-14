@@ -6,6 +6,7 @@ import gate.annotation.Adapter;
 import gate.error.ConversionException;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,13 +40,13 @@ public class AdapterColumnMapperTest
 	public static class TypeAdapter implements ColumnMapper
 	{
 		@Override
-		public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, int index, Type type) throws SQLException, ConversionException
 		{
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, String fields, Type type) throws SQLException, ConversionException
 		{
 			throw new UnsupportedOperationException();
 		}
@@ -60,13 +61,13 @@ public class AdapterColumnMapperTest
 	public static class RegisteredTypeAdapter implements ColumnMapper
 	{
 		@Override
-		public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, int index, Type type) throws SQLException, ConversionException
 		{
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException, ConversionException
+		public Object readFromResultSet(ResultSet rs, String fields, Type type) throws SQLException, ConversionException
 		{
 			throw new UnsupportedOperationException();
 		}

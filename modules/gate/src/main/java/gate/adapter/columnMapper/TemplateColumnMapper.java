@@ -4,6 +4,7 @@ package gate.adapter.columnMapper;
 import gate.error.ConversionException;
 import gate.lang.template.Template;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +14,7 @@ public class TemplateColumnMapper implements ColumnMapper
 {
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
+	public Object readFromResultSet(ResultSet rs, int index, Type type)
 			throws SQLException, ConversionException
 	{
 		String value = rs.getString(index);
@@ -21,7 +22,7 @@ public class TemplateColumnMapper implements ColumnMapper
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+	public Object readFromResultSet(ResultSet rs, String fields, Type type)
 			throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);

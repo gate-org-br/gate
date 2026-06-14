@@ -5,6 +5,7 @@ import gate.type.LocalDateTimeInterval;
 import gate.type.LocalTimeInterval;
 import gate.type.YearMonthInterval;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -3,6 +3,7 @@ package gate.adapter.columnMapper;
 import gate.adapter.jsonConverter.JsonConverter;
 import gate.lang.json.JsonElement;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,14 +12,14 @@ import java.sql.Types;
 public class RecordColumnMapper implements ColumnMapper
 {
 	@Override
-	public Object readFromResultSet(ResultSet rs, int fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, int fields, Type type) throws SQLException
 	{
 		var json = rs.getString(fields);
 		return rs.wasNull() ? null : JsonConverter.fromJson(type, JsonElement.parse(json));
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, String fields, Type type) throws SQLException
 	{
 		var json = rs.getString(fields);
 		return rs.wasNull() ? null : JsonConverter.fromJson(type, JsonElement.parse(json));

@@ -6,6 +6,7 @@ import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
 import gate.sql.fetcher.Fetcher;
 import gate.sql.mapper.Mapper;
+import gate.util.Reflection;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -583,7 +584,7 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return (T) ColumnMapper.getColumnMapper(type).readFromResultSet(getResultSet(), columnIndex,
-					elementType);
+					Reflection.parameterizedType(type, elementType));
 		} catch (ConversionException | SQLException e)
 		{
 			throw new IllegalStateException("Failed to read value from cursor", e);
@@ -626,7 +627,7 @@ public class Cursor implements AutoCloseable, Fetchable
 		try
 		{
 			return (T) ColumnMapper.getColumnMapper(type).readFromResultSet(getResultSet(), columnName,
-					elementType);
+					Reflection.parameterizedType(type, elementType));
 		} catch (ConversionException | SQLException e)
 		{
 			throw new IllegalStateException("Failed to read value from cursor", e);

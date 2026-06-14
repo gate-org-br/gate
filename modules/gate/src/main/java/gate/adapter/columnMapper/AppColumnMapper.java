@@ -3,8 +3,8 @@ package gate.adapter.columnMapper;
 
 import gate.adapter.converter.Converter;
 import gate.error.ConversionException;
-import gate.adapter.columnMapper.ColumnMapper;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ public class AppColumnMapper implements ColumnMapper
 {
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type)
+	public Object readFromResultSet(ResultSet rs, int index, Type type)
 			throws SQLException, ConversionException
 	{
 		String value = rs.getString(index);
@@ -22,7 +22,7 @@ public class AppColumnMapper implements ColumnMapper
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type)
+	public Object readFromResultSet(ResultSet rs, String fields, Type type)
 			throws SQLException, ConversionException
 	{
 		String value = rs.getString(fields);

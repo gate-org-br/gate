@@ -1,7 +1,9 @@
 package gate.adapter.columnMapper;
 
 import gate.error.ConversionException;
+import gate.util.Reflection;
 
+import java.lang.reflect.Type;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,15 +14,15 @@ import java.util.stream.Stream;
 public class EnumColumnMapper implements ColumnMapper
 {
 	@Override
-	public Object readFromResultSet(ResultSet rs, int index, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, int index, Type type) throws SQLException
 	{
-		return parse(rs.getString(index), type);
+		return parse(rs.getString(index), Reflection.getRawType(type));
 	}
 
 	@Override
-	public Object readFromResultSet(ResultSet rs, String fields, Class<?> type) throws SQLException
+	public Object readFromResultSet(ResultSet rs, String fields, Type type) throws SQLException
 	{
-		return parse(rs.getString(fields), type);
+		return parse(rs.getString(fields), Reflection.getRawType(type));
 	}
 
 	private Object parse(String string, Class<?> type)
