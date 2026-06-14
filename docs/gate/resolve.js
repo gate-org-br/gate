@@ -3,6 +3,7 @@ import property from './property.js';
 
 const REQUIRED = new Error("__REQUIRED__");
 const RESOLVE_REGEX = /(@attr|@ATTR|@prop|@PROP|@input|@INPUT|@value|@VALUE)\(\s*(?:"([^"]*)"|'([^']*)'|`([^`]*)`|([^)"'`?]*))(?:\?\?([^)]*))?\s*\)/g;
+const ENCODED_RESOLVE_REGEX = /%40(?:attr|ATTR|prop|PROP|input|INPUT|value|VALUE)%28(?:[^%]|%(?!29))*%29/g;
 
 function value(trigger, selector)
 {
@@ -36,7 +37,8 @@ function coalesce(value, fallback)
 
 export default function resolve(trigger, context, action)
 {
-	let result = action;
+	let result = action.replace(ENCODED_RESOLVE_REGEX,
+		e => decodeURIComponent(e.replace(/\+/g, "%20")));
 	try
 	{
 		result = result.replace(RESOLVE_REGEX, function (_, method, dq, sq, bq, uq, fb)
