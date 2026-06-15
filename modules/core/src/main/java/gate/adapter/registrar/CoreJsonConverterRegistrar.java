@@ -50,8 +50,6 @@ public class CoreJsonConverterRegistrar implements JsonConverterRegistrar
 
 		registry.put(Object[].class, new ArrayJsonConverter());
 		registry.put(Collection.class, new CollectionJsonConverter());
-		registry.put(List.class, new CollectionJsonConverter());
-		registry.put(Set.class, new CollectionJsonConverter());
 		registry.put(Map.class, new MapJsonConverter());
 
 		registry.put(JsonElement.class, new JsonElementJsonConverter());

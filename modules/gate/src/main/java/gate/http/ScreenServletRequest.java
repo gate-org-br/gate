@@ -185,7 +185,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 			var previous = property.getPreviousProperty();
 			return getParameterValues(previous.getElementType(), property.toString());
 		}
-		return getParameter(property.getType(), property.toString());
+		return getParameter(property.getGenericType(), property.toString());
 	}
 
 	public Authentication getAuthentication() throws AuthenticationException

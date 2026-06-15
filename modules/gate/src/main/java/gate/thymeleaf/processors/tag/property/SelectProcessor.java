@@ -1,29 +1,21 @@
 package gate.thymeleaf.processors.tag.property;
 
-import gate.adapter.renderer.Renderer;
-
 import gate.adapter.converter.Converter;
+import gate.adapter.renderer.Renderer;
+import gate.annotation.Default;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpression;
 import gate.type.Attributes;
 import gate.util.Toolkit;
-
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-
-import java.util.List;
-
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SelectProcessor extends PropertyProcessor
@@ -65,13 +57,25 @@ public class SelectProcessor extends PropertyProcessor
 					.collect(Collectors.toList());
 		}
 
-		var labels = Optional.ofNullable(attributes.remove("labels")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
-		var values = Optional.ofNullable(attributes.remove("values")).map(e -> (String) e).map(expression::function).orElse(Function.identity());
-		var children = Optional.ofNullable(attributes.remove("children")).map(e -> (String) e).map(expression::function).orElse(null);
+		var labels = Optional.ofNullable(attributes.remove("labels"))
+				.map(e -> (String) e)
+				.map(expression::function)
+				.orElse(Function.identity());
+		var values = Optional.ofNullable(attributes.remove("values"))
+				.map(e -> (String) e)
+				.map(expression::function)
+				.orElse(Function.identity());
+		var children = Optional.ofNullable(attributes.remove("children"))
+				.map(e -> (String) e)
+				.map(expression::function)
+				.orElse(null);
 
 		Object value = property.getValue(screen);
-		if (value != null)
-			attributes.put("data-value", Converter.toString(value));
+		var selected = value == null && Enum.class.isAssignableFrom(property.getRawType())
+				? Default.Extractor.extract(property.getRawType())
+				: value;
+		if (selected != null)
+			attributes.put("data-value", Converter.toString(selected));
 
 		Object empty = Optional.ofNullable(attributes.remove("empty"))
 				.filter(e -> e instanceof String)
@@ -92,15 +96,14 @@ public class SelectProcessor extends PropertyProcessor
 					.collect(Collectors.groupingBy(groups,
 							LinkedHashMap::new,
 							Collectors.toList()))
-					.entrySet()
-					.forEach(group ->
+					.forEach((key, value1) ->
 					{
-						string.add("<optgroup label='" + Renderer.render(group.getKey()) + "'>");
-						print(0, string, group.getValue(), labels, values, children, value);
+						string.add("<optgroup label='" + Renderer.render(key) + "'>");
+						print(0, string, value1, labels, values, children, selected);
 						string.add("</optgroup>");
 					});
 		} else
-			print(0, string, Toolkit.iterable(options), labels, values, children, property.getValue(screen));
+			print(0, string, Toolkit.iterable(options), labels, values, children, selected);
 
 		string.add("</select>");
 		handler.replaceWith(string.toString(), false);
@@ -121,7 +124,7 @@ public class SelectProcessor extends PropertyProcessor
 			attributes.put("value", Converter.toString(option));
 
 			string.add("<option " + attributes + ">" + "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp".repeat(level)
-			           + Renderer.render(labels.apply(object)) + "</option>");
+					+ Renderer.render(labels.apply(object)) + "</option>");
 
 			if (children != null)
 			{

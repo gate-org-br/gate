@@ -1,11 +1,7 @@
 <template>
-	<header>
-		<slot name="header"></slot>
-	</header>
+	<section></section>
 	<button type="button" class="alternative">
 		<g-icon>&#x1002;</g-icon>
+		<span></span>
 	</button>
-	<section>
-		<slot id="template"></slot>
-	</section>
 </template>

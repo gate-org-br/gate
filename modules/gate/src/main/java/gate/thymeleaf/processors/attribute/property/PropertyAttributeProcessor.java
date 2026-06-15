@@ -1,8 +1,10 @@
 package gate.thymeleaf.processors.attribute.property;
 
+import gate.adapter.converter.Converter;
 import gate.adapter.renderer.Renderer;
 
 import gate.lang.property.Property;
+import gate.thymeleaf.DynamicAttributes;
 import gate.thymeleaf.Precedence;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.thymeleaf.context.ITemplateContext;
@@ -13,46 +15,38 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 public class PropertyAttributeProcessor extends AbstractPropertyAttributeProcessor
 {
 
-	public PropertyAttributeProcessor()
-	{
-		super(null);
-
-	}
+	public PropertyAttributeProcessor() {super(null);}
 
 	@Override
 	public void process(ITemplateContext context,
 	                    IProcessableElementTag element,
 	                    IElementTagStructureHandler handler, Object screen, Property property)
 	{
+		DynamicAttributes.setInfoAttributes(property, element::hasAttribute, handler::setAttribute);
 
-		if (!element.hasAttribute("title"))
-		{
-			String description = property.getMetadata().description();
-			if (description == null || description.isEmpty())
-			{
-				String displayName = property.getMetadata().name();
-				if (displayName != null && !displayName.isEmpty())
-					handler.setAttribute("title", displayName);
-			} else
-				handler.setAttribute("title", description);
-		}
-
-		if (!element.hasAttribute("data-tooltip"))
-		{
-			String tooltip = property.getMetadata().tooltip();
-			if (tooltip != null && !tooltip.isEmpty())
-				handler.setAttribute("data-tooltip", tooltip);
-		}
+		var webComponent = element.getElementCompleteName().contains("-");
+		if (webComponent)
+			DynamicAttributes.setFormAttributes(property,
+					element::hasAttribute, handler::setAttribute);
 
 		if (!property.toString().endsWith("[]"))
 		{
 			Object value = property.getValue(screen);
-			if (value == null && element.hasAttribute("g:empty"))
-				handler.setBody(Renderer.render(expression.evaluate(element
-						.getAttributeValue("g:empty"))), false);
+			var empty = extract(element, handler, "g:empty")
+					.map(expression::evaluate)
+					.map(Renderer::render)
+					.orElse(null);
+			if (value == null)
+				value = empty;
+
+			if (webComponent)
+				handler.setAttribute("value", Converter.toString(value));
 			else
-				handler.setBody(property.getRenderedValue(screen), false);
-		} else
+				handler.setBody(property.getRenderer()
+						.render(property.getRawType(), value), false);
+		} else if (webComponent)
+			handler.setAttribute("value", "");
+		else
 			handler.setBody("", false);
 	}
 

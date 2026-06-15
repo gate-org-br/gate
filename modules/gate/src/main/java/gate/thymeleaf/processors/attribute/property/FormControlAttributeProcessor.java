@@ -1,6 +1,7 @@
 package gate.thymeleaf.processors.attribute.property;
 
 import gate.lang.property.Property;
+import gate.thymeleaf.DynamicAttributes;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
@@ -15,46 +16,10 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 
 	@Override
 	public void process(ITemplateContext context, IProcessableElementTag element,
-						IElementTagStructureHandler handler, Object screen, Property property)
+	                    IElementTagStructureHandler handler, Object screen, Property property)
 	{
-		handler.setAttribute("name", property.toString());
-
-		property.getConstraints().stream()
-				.filter(e -> !element.hasAttribute(e.getName()))
-				.forEachOrdered(e -> handler.setAttribute(e.getName(), e.getValue().toString()));
-
-		if (!element.hasAttribute("title"))
-		{
-			String description = property.getMetadata().description();
-			if (description == null || description.isEmpty())
-			{
-				String displayName = property.getMetadata().name();
-				if (displayName != null && !displayName.isEmpty())
-					handler.setAttribute("title", displayName);
-			} else
-				handler.setAttribute("title", description);
-		}
-
-		if (!element.hasAttribute("data-tooltip"))
-		{
-			String tooltip = property.getMetadata().tooltip();
-			if (tooltip != null && !tooltip.isEmpty())
-				handler.setAttribute("data-tooltip", tooltip);
-		}
-
-		if (!element.hasAttribute("data-confirm"))
-		{
-			String tooltip = property.getMetadata().tooltip();
-			if (tooltip != null && !tooltip.isEmpty())
-				handler.setAttribute("data-tooltip", tooltip);
-		}
-
-		if (!element.hasAttribute("placeholder"))
-		{
-			String placeholder = property.getMetadata().placeholder();
-			if (placeholder != null && !placeholder.isEmpty())
-				handler.setAttribute("placeholder", placeholder);
-		}
+		DynamicAttributes.setInfoAttributes(property, element::hasAttribute, handler::setAttribute);
+		DynamicAttributes.setFormAttributes(property, element::hasAttribute, handler::setAttribute);
 
 		Object value = null;
 		if (element.hasAttribute("value"))
@@ -68,5 +33,5 @@ public abstract class FormControlAttributeProcessor extends AbstractPropertyAttr
 	}
 
 	public abstract void process(ITemplateContext context, IProcessableElementTag element,
-								 IElementTagStructureHandler handler, Object screen, Property property, Object value);
+	                             IElementTagStructureHandler handler, Object screen, Property property, Object value);
 }

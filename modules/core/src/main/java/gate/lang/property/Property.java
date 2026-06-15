@@ -2,6 +2,7 @@ package gate.lang.property;
 
 import gate.adapter.converter.Converter;
 import gate.adapter.metadata.Metadata;
+import gate.adapter.renderer.Renderer;
 import gate.constraint.Constraint;
 import gate.error.NoSuchPropertyError;
 
@@ -75,7 +76,7 @@ public class Property
 		{
 			for (Field field : type.getDeclaredFields())
 				if (!Modifier.isTransient(field.getModifiers())
-				    && !Modifier.isStatic(field.getModifiers()))
+						&& !Modifier.isStatic(field.getModifiers()))
 					properties.add(Property.getProperty(type, field.getName()));
 			type = type.getSuperclass();
 		}
@@ -368,10 +369,7 @@ public class Property
 	 * @param object object to be checked
 	 * @return true if there is a value for this property or false otherwise
 	 */
-	public boolean isEmpty(Object object)
-	{
-		return getValue(object) == null;
-	}
+	public boolean isEmpty(Object object) {return getValue(object) == null;}
 
 	/**
 	 * Gets a list of all constraints defined for this property.
@@ -379,88 +377,46 @@ public class Property
 	 * @return a list of all constraints defined for this property
 	 * @see gate.constraint.Constraint
 	 */
-	public Collection<Constraint.Implementation<?>> getConstraints()
-	{
-		return lastAttribute.getConstraints();
-	}
+	public Collection<Constraint.Implementation<?>> getConstraints() {return lastAttribute.getConstraints();}
 
 	public Metadata getMetadata() {return lastAttribute.getMetadata();}
 
-	public Class<?> getRawType()
-	{
-		return lastAttribute.getRawType();
-	}
+	public Class<?> getRawType() {return lastAttribute.getRawType();}
 
-	public Type getType()
-	{
-		return lastAttribute.getGenericType();
-	}
+	public Type getType() {return lastAttribute.getGenericType();}
 
-	public Class<?> getOwner()
-	{
-		return owner;
-	}
+	public Class<?> getOwner() {return owner;}
 
-	public Type getElementType()
-	{
-		return lastAttribute.getElementType();
-	}
+	public Type getElementType() {return lastAttribute.getElementType();}
 
-	public Class<?> getElementRawType()
-	{
-		return lastAttribute.getElementRawType();
-	}
+	public Class<?> getElementRawType() {return lastAttribute.getElementRawType();}
 
-	public List<Attribute> getAttributes()
-	{
-		return attributes;
-	}
-
-	public boolean isEntityId()
-	{
-		return getAttributes().size() == 2
-		       && getAttributes().get(1).isEntityId();
-	}
+	public List<Attribute> getAttributes() {return attributes;}
 
 	public static Object getValue(Object object, String name)
 	{
 		return object != null
 				? Property.getProperty(object.getClass(), name)
-				  .getValue(object) : null;
+				.getValue(object) : null;
 	}
 
-	public Type getGenericType()
-	{
-		return lastAttribute.getGenericType();
-	}
+	public Type getGenericType() {return lastAttribute.getGenericType();}
 
-	public Converter getConverter()
-	{
-		return lastAttribute.getConverter();
-	}
+	public Converter getConverter() {return lastAttribute.getConverter();}
 
-	public String getRenderedValue(Object object)
-	{
-		return lastAttribute.getRenderer()
-				.render(getRawType(), getValue(object));
-	}
+	public Renderer getRenderer() {return lastAttribute.getRenderer();}
 
 	public String getConvertedValue(Object object)
 	{
-		return lastAttribute.getConverter()
-				.toString(getRawType(), getValue(object));
+		return lastAttribute.getConverter().toString(getRawType(), getValue(object));
 	}
 
 	public void setConvertedValue(Object object, String value)
 	{
-		setValue(object, lastAttribute.getConverter()
-				.ofString(getGenericType(), value));
+		setValue(object, lastAttribute.getConverter().ofString(getGenericType(), value));
 	}
 
-	public Attribute getLastAttribute()
-	{
-		return lastAttribute;
-	}
+	public Attribute getLastAttribute() {return lastAttribute;}
 
 	public Property getPreviousProperty()
 	{
@@ -470,7 +426,7 @@ public class Property
 			if (!(attributes.get(i) instanceof SelfAttribute))
 			{
 				if (!builder.isEmpty()
-				    && attributes.get(i) instanceof JavaIdentifierAttribute)
+						&& attributes.get(i) instanceof JavaIdentifierAttribute)
 					builder.append(".");
 				builder.append(attributes.get(i).toString());
 			}
@@ -484,15 +440,8 @@ public class Property
 	}
 
 	@Override
-	public int hashCode()
-	{
-		return toString().hashCode();
-	}
+	public int hashCode() {return toString().hashCode();}
 
 	@Override
-	public String toString()
-	{
-		return string;
-	}
-
+	public String toString() {return string;}
 }

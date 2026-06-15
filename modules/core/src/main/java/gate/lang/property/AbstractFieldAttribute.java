@@ -1,11 +1,10 @@
 package gate.lang.property;
 
-import gate.annotation.*;
-import gate.constraint.Constraint;
 import gate.adapter.converter.Converter;
-import gate.annotation.Entity;
 import gate.adapter.metadata.Metadata;
 import gate.adapter.metadata.SimpleMetadata;
+import gate.annotation.*;
+import gate.constraint.Constraint;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +21,7 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	private final Type elementType;
 	private final boolean isEntityId;
 	private final Converter converter;
+	private final boolean isDiscriminator;
 	private final List<Constraint.Implementation<?>> constraints;
 	private final Metadata metadata;
 
@@ -31,6 +31,8 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 		{
 			this.field = field;
 			field.setAccessible(true);
+
+			isDiscriminator = field.isAnnotationPresent(Discriminator.class);
 
 			rawType = field.getType();
 			genericType = field.getGenericType();
@@ -44,20 +46,20 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 			else if (rawType.isArray())
 				elementType = rawType.getComponentType();
 			else if (List.class.isAssignableFrom(rawType)
-			         && genericType instanceof ParameterizedType)
+					&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Set.class.isAssignableFrom(rawType)
-			         && genericType instanceof ParameterizedType)
+					&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
 			else if (Map.class.isAssignableFrom(rawType)
-			         && genericType instanceof ParameterizedType)
+					&& genericType instanceof ParameterizedType)
 				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[1];
 			else
 				elementType = Object.class;
 
 			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
 					? field.getAnnotation(gate.annotation.Converter.class).value()
-					  .getDeclaredConstructor().newInstance()
+					.getDeclaredConstructor().newInstance()
 					: Converter.getConverter(rawType);
 
 			List<Constraint.Implementation<?>> cons = new ArrayList<>();
@@ -120,7 +122,8 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 		return constraints;
 	}
 
-	@Override public Metadata getMetadata() {return metadata;}
+	@Override
+	public Metadata getMetadata() {return metadata;}
 
 	@Override
 	public Converter getConverter()
@@ -141,14 +144,19 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	}
 
 	@Override
+	public boolean isDiscriminator() {return isDiscriminator;}
+	
+	@Override
 	public boolean equals(Object o) {return o instanceof AbstractFieldAttribute a && Objects.equals(field, a.field);}
 
-	@Override public int hashCode()
+	@Override
+	public int hashCode()
 	{
 		return field.hashCode();
 	}
 
-	@Override public String toString()
+	@Override
+	public String toString()
 	{
 		return field.getName();
 	}

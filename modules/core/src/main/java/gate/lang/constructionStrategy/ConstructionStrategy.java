@@ -102,10 +102,10 @@ public interface ConstructionStrategy
 			if (type == BlockingDeque.class)
 				return new CollectionStrategy(LinkedBlockingDeque::new);
 
-			var candidates =
+			var constructors =
 					Stream.concat(Modifier.isAbstract(type.getModifiers()) ? Stream.of()
 											: Arrays.stream(type.getConstructors())
-											  .filter(c -> !c.isAnnotationPresent(Deprecated.class)),
+											.filter(c -> !c.isAnnotationPresent(Deprecated.class)),
 									Arrays.stream(type.getDeclaredMethods())
 											.filter(m -> Modifier.isPublic(m.getModifiers()))
 											.filter(m -> Modifier.isStatic(m.getModifiers()))
@@ -113,7 +113,7 @@ public interface ConstructionStrategy
 											.filter(m -> m.getName().equals("of")))
 							.toList();
 
-			var canonical = candidates.stream()
+			var canonical = constructors.stream()
 					.filter(c -> c.isAnnotationPresent(Canonical.class)).toList();
 			if (canonical.size() > 1)
 				throw new ConstructionException(
@@ -130,9 +130,18 @@ public interface ConstructionStrategy
 				else if (canonical.get(0) instanceof Method method)
 					return new CanonicalFactoryMethodStrategy(method);
 
-			candidates = candidates.stream()
+			var candidates = constructors.stream()
 					.filter(c -> matchesAttributes(attributes, c.getParameters()))
 					.toList();
+			if (candidates.isEmpty())
+				candidates = attributes.stream()
+						.filter(Attribute::isDiscriminator)
+						.filter(a -> a.getOwner() != type)
+						.findAny()
+						.map(a -> attributes.stream().filter(b -> b != a).collect(Collectors.toSet()))
+						.map(a -> constructors.stream().filter(c -> matchesAttributes(a, c.getParameters())).toList())
+						.orElse(candidates);
+
 			switch (candidates.size())
 			{
 				case 0 ->

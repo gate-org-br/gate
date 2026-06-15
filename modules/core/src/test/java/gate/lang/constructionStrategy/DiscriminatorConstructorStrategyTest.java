@@ -30,6 +30,22 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 	}
 
 	@Test
+	void shouldIgnoreInheritedDiscriminatorWhenInstantiatingSubtypeDirectly()
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(DiscriminatedParentMock.class, "type").getLastAttribute(),
+				DiscriminatedTypeMock.NAME,
+				Property.getProperty(DiscriminatedNameMock.class, "name").getLastAttribute(),
+				"Ana");
+
+		var result = (DiscriminatedNameMock)
+				ConstructionStrategy.newInstance(DiscriminatedNameMock.class, attributes);
+
+		Assertions.assertEquals("Ana", result.getName());
+		Assertions.assertNull(result.getType());
+	}
+
+	@Test
 	void shouldKeepDiscriminatorSetBySubtypeConstructor()
 	{
 		var attributes = Map.<Attribute, Object>of(

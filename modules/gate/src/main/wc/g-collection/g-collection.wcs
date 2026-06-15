@@ -2,37 +2,47 @@
 	box-sizing: border-box;
 }
 :host {
-	gap: 0.5rem;
+	gap: 0;
 	display: grid;
+	padding: 0.5rem;
 	align-items: start;
-	grid-template-columns: 1fr auto;
-}
-
-header {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: stretch;
-	justify-content: stretch;
+	border-radius: 3px;
+	border: 1px solid var(--main3, #DDDDDD);
+	background-color: var(--main1, #FFFFFF);
 }
 
 section {
 	display: grid;
 	height: 100%;
 	gap: 0.5rem;
-	grid-row: 2;
 	overflow: auto;
-	grid-column: span 2;
 	align-items: start;
 	grid-template-columns: 1fr auto;
 }
 
-button {
-	grid-column: 2;
-	width: 44px;
-	color: white;
-	height: 100%;
+section::after {
+	content: attr(data-placeholder);
+	padding: 1rem;
+	display: none;
+	color: var(--main4);
 	min-height: 44px;
+	border-radius: 3px;
+	grid-column: 1 / -1;
+	align-items: center;
+	justify-content: center;
+	border: 1px dashed var(--main3);
+}
+
+section[empty]::after {
+	display: flex;
+}
+
+button {
+	gap: 0.5rem;
+	width: 100%;
+	color: white;
+	min-height: 44px;
+	margin-top: 0.5rem;
 	padding: 8px;
 	border: none;
 	display: flex;

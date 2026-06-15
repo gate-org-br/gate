@@ -1,0 +1,160 @@
+<g-callout class="fill">
+	<h1>&lt;g-collection&gt;</h1>
+	<p>
+		The <strong>&lt;g-collection&gt;</strong> custom element manages repeated form
+		groups. Its light DOM <strong>&lt;template&gt;</strong> is used as a live
+		template for new items, while the rendered items stay inside the component
+		shadow DOM.
+	</p>
+	<p>
+		The <strong>value</strong> property is a form string made of Base64 encoded
+		JSON entries separated by semicolons. The <strong>entries</strong> property
+		exposes the same data as an array for JavaScript usage.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Form</a>
+	<div>
+		<g-callout>
+			<p>
+				This example shows placeholder text, a localized add button label,
+				and validation with <strong>required</strong> and <strong>min</strong>.
+			</p>
+		</g-callout>
+
+		<g-html-viewer ignore="<a.*/a>">
+			<form method="post" action="#"
+			      onsubmit='return this.querySelector("g-collection").reportValidity()'>
+				<fieldset>
+					<label>
+						Contacts
+						<span>
+							<g-collection style="flex-grow:1"
+							              name="contacts" required min="2"
+							              placeholder="No contacts added"
+							              label="Add contact">
+								<template>
+									<fieldset style="padding: 0">
+										<label data-size="8">
+											Name
+											<span>
+												<input type="text" name="name" required>
+											</span>
+										</label>
+										<label data-size="8">
+											E-mail
+											<span>
+												<input type="email" name="email">
+											</span>
+										</label>
+									</fieldset>
+								</template>
+							</g-collection>
+						</span>
+					</label>
+				</fieldset>
+
+				<g-coolbar>
+					<button type="submit" formtarget="_blank">Post</button>
+				</g-coolbar>
+			</form>
+		</g-html-viewer>
+	</div>
+
+	<a href="#">API</a>
+	<div>
+		<g-callout>
+			<p>
+				This example uses <strong>entries</strong> for JavaScript data and
+				<strong>value</strong> for the serialized form value.
+			</p>
+		</g-callout>
+
+		<g-html-viewer ignore="<a.*/a>|value=&quot;[^&quot;]*&quot;">
+			<g-collection id="api-collection" name="people"
+			              placeholder="No people added"
+			              label="Add person">
+				<template>
+					<fieldset style="padding: 0">
+						<label data-size="8">
+							Name
+							<span>
+								<input type="text" name="name">
+							</span>
+						</label>
+						<label data-size="4">
+							Role
+							<span>
+								<select name="role">
+									<option>Admin</option>
+									<option>User</option>
+									<option>Guest</option>
+								</select>
+							</span>
+						</label>
+						<label data-size="4">
+							Active
+							<span>
+								<input type="checkbox" name="active" value="true">
+							</span>
+						</label>
+					</fieldset>
+				</template>
+			</g-collection>
+
+			<g-coolbar>
+				<button type="button"
+				        onclick='document.getElementById("api-collection").entries = [{name: "Alice", role: "Admin", active: "true"}, {name: "Bob", role: "User"}]'>
+					Set entries
+				</button>
+				<button type="button"
+				        onclick='alert(JSON.stringify(document.getElementById("api-collection").entries, null, "\t"))'>
+					Show entries
+				</button>
+				<button type="button"
+				        onclick='alert(document.getElementById("api-collection").value)'>
+					Show value
+				</button>
+			</g-coolbar>
+		</g-html-viewer>
+	</div>
+
+	<a href="#">Template</a>
+	<div>
+		<g-callout>
+			<p>
+				New items clone the current light DOM template. Changing the template
+				content changes the template used by the next items without changing
+				existing ones.
+			</p>
+		</g-callout>
+
+		<g-html-viewer ignore="<a.*/a>">
+			<g-collection id="template-collection" label="Add item"
+			              placeholder="No items added">
+				<template>
+					<fieldset style="padding: 0">
+						<label data-size="8">
+							Text
+							<span>
+								<input type="text" name="text">
+							</span>
+						</label>
+					</fieldset>
+				</template>
+			</g-collection>
+
+			<g-coolbar>
+				<button type="button"
+				        onclick='document.getElementById("template-collection").querySelector("template").innerHTML = `<fieldset style="padding: 0"><label data-size="8">Number<span><input type="number" name="number"></span></label></fieldset>`'>
+					Use number template
+				</button>
+				<button type="button"
+				        onclick='document.getElementById("template-collection").querySelector("template").innerHTML = `<fieldset style="padding: 0"><label data-size="8">Text<span><input type="text" name="text"></span></label></fieldset>`'>
+					Use text template
+				</button>
+			</g-coolbar>
+		</g-html-viewer>
+	</div>
+</g-tab-control>

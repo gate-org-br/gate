@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.*;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,6 +59,7 @@ public class CoreConverterRegistrar implements ConverterRegistrar
 		registry.put(YearMonth.class, new YearMonthConverter());
 		registry.put(String[][].class, new StringMatrixConverter());
 		registry.put(byte[].class, new ByteArrayConverter());
+		registry.put(Collection.class, new CollectionConverter());
 		registry.put(DayOfWeek.class, new DayOfWeekConverter());
 		registry.put(File.class, new FileConverter());
 		registry.put(Month.class, new MonthConverter());

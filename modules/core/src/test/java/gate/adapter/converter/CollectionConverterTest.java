@@ -12,6 +12,10 @@ public class CollectionConverterTest
 {
 	@SuppressWarnings("unused")
 	private List<String> strings;
+	@SuppressWarnings("unused")
+	private List<Entry> entries;
+
+	public record Entry(String name, int value) {}
 
 	private static class Bean
 	{
@@ -68,5 +72,18 @@ public class CollectionConverterTest
 		property.setConvertedValue(bean, "one, two;three\none");
 
 		Assertions.assertEquals(Set.of("one", "two", "three"), bean.strings);
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testShouldConvertGenericListWithoutAnnotation() throws NoSuchFieldException
+	{
+		var type = CollectionConverterTest.class.getDeclaredField("entries").getGenericType();
+		var string = Converter.toString(new Entry("one", 1)) + ";"
+		             + Converter.toString(new Entry("two", 2));
+
+		var entries = (List<Entry>) Converter.fromString(type, string);
+
+		Assertions.assertEquals(List.of(new Entry("one", 1), new Entry("two", 2)), entries);
 	}
 }

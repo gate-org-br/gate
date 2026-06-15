@@ -10,8 +10,8 @@ function expands(tr)
 	if (tr.children[0].innerHTML === '+')
 		tr.children[0].innerHTML = '-';
 	for (var next = tr.nextElementSibling;
-		next && depth(next) > depth(tr);
-		next = next.nextElementSibling)
+	     next && depth(next) > depth(tr);
+	     next = next.nextElementSibling)
 		if (depth(tr) === depth(next) - 1)
 			next.style.display = 'table-row';
 }
@@ -22,8 +22,8 @@ function colapse(tr)
 		tr.children[0].innerHTML = '+';
 
 	for (var next = tr.nextElementSibling;
-		next && depth(next) > depth(tr);
-		next = next.nextElementSibling)
+	     next && depth(next) > depth(tr);
+	     next = next.nextElementSibling)
 	{
 		next.style.display = 'none';
 		if (next.children[0].innerHTML === '-')
@@ -33,7 +33,7 @@ function colapse(tr)
 
 function parent(tr)
 {
-	for (var p = tr; p; p = p.previousSibling)
+	for (var p = tr.previousElementSibling; p; p = p.previousElementSibling)
 		if (depth(p) < depth(tr))
 			return p;
 }
@@ -115,14 +115,16 @@ customElements.define('g-tree-grid', class extends HTMLTableElement
 				};
 			} else
 				tr.children[0].innerHTML = ' ';
-
-			if (tr.getAttribute("data-expanded"))
-			{
-				for (var p = tr; p; p = parent(p))
-					expands(p);
-				setTimeout(() => tr.scrollIntoView(), 0);
-			}
 		});
+
+		const expanded = rows.filter(e => e.hasAttribute("data-expanded"));
+		expanded.forEach(tr =>
+		{
+			for (let p = tr; p; p = parent(p))
+				expands(p);
+		});
+		if (expanded.length === 1)
+			setTimeout(() => expanded[0].scrollIntoView(), 0);
 
 		colorize(rows);
 	}

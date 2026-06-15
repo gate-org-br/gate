@@ -2,6 +2,7 @@ package gate.thymeleaf.processors.attribute.property;
 
 import gate.adapter.converter.Converter;
 import gate.adapter.renderer.Renderer;
+import gate.annotation.Default;
 import gate.lang.property.Property;
 import gate.type.Attributes;
 import gate.util.Toolkit;
@@ -60,16 +61,21 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 				.map(expression::function)
 				.orElse(null);
 
-		if (value != null)
+		var selected =
+				value == null && Enum.class.isAssignableFrom(property.getRawType())
+						? Default.Extractor.extract(property.getRawType())
+						: value;
+
+		if (selected != null)
 			handler.setAttribute("data-value",
-					Converter.toString(value));
+					Converter.toString(selected));
 
 		StringJoiner body = new StringJoiner("\n");
 
 		body.add(extract(element, handler, "g:empty")
 				.map(expression::evaluate)
 				.map(Renderer::render)
-				.map(e -> "<option disabled selected>" + e + "</option>")
+				.map(e -> "<option disabled" + (selected == null ? " selected" : "") + ">" + e + "</option>")
 				.orElse("<option></option>"));
 
 		Function<Object, Object> groups
@@ -85,11 +91,11 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 					.forEach(group ->
 					{
 						body.add("<optgroup label='" + Renderer.render(group.getKey()) + "'>");
-						print(0, body, group.getValue(), labels, values, children, value);
+						print(0, body, group.getValue(), labels, values, children, selected);
 						body.add("</optgroup>");
 					});
 		} else
-			print(0, body, Toolkit.iterable(options), labels, values, children, value);
+			print(0, body, Toolkit.iterable(options), labels, values, children, selected);
 
 		handler.setBody(body.toString(), false);
 	}
@@ -98,7 +104,6 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 	{
 		for (Object object : options)
 		{
-
 			var option = values.apply(object);
 
 			Attributes attributes = new Attributes();

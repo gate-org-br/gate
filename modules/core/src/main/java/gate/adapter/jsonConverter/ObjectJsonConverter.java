@@ -1,7 +1,9 @@
 package gate.adapter.jsonConverter;
 
+import gate.adapter.converter.Converter;
 import gate.lang.json.JsonElement;
 import gate.lang.json.JsonObject;
+import gate.lang.json.JsonString;
 import gate.lang.property.FieldAttribute;
 import gate.lang.property.PropertyGraph;
 import gate.util.Reflection;
@@ -19,11 +21,12 @@ public class ObjectJsonConverter implements JsonConverter
 	public Object ofJson(Type genericType,
 	                     JsonElement element)
 	{
+		if (element instanceof JsonString string)
+			return Converter.fromString(genericType, string.unwrap());
 		if (!(element instanceof JsonObject jsonObject))
 			return null;
 
 		Class<?> type = Reflection.getRawType(genericType);
-
 		return PropertyGraph.of(type, new ArrayList<>(jsonObject.keySet()))
 				.populate(e -> JsonConverter.fromJson(e.getGenericType(),
 						jsonObject.get(e.getLastAttribute().toString())));

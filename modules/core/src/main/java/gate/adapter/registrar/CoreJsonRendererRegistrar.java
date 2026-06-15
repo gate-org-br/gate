@@ -32,8 +32,6 @@ public class CoreJsonRendererRegistrar implements JsonRendererRegistrar
 		registry.put(YearMonth.class, defaultRenderer);
 
 		registry.put(Collection.class, new CollectionJsonRenderer());
-		registry.put(List.class, new CollectionJsonRenderer());
-		registry.put(Set.class, new CollectionJsonRenderer());
 		registry.put(Map.class, new MapJsonRenderer());
 
 		registry.put(JsonElement.class, defaultRenderer);

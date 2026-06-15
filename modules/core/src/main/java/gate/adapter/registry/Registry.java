@@ -1,9 +1,11 @@
 package gate.adapter.registry;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public abstract class Registry<T>
 {
@@ -27,28 +29,45 @@ public abstract class Registry<T>
 			for (Class<?> clazz = e; clazz != null; clazz = clazz.getSuperclass())
 			{
 				T target = extractor(clazz);
+				if (target == null)
+					target = defaults.get(clazz);
 				if (target != null)
 					return target;
+			}
 
-				var candidates = new ArrayList<T>();
-				for (Class<?> interfaceClazz : clazz.getInterfaces())
-				{
-					target = extractor(interfaceClazz);
-					if (target == null)
-						target = defaults.get(interfaceClazz);
-					if (target != null)
-						candidates.add(target);
-				}
-
-				if (candidates.size() == 1)
-					return candidates.get(0);
-
-				target = defaults.get(clazz);
+			for (Class<?> clazz = e; clazz != null; clazz = clazz.getSuperclass())
+			{
+				T target = getInterfaceTarget(type, Arrays.stream(clazz.getInterfaces())
+						.collect(Collectors.toSet()));
 				if (target != null)
 					return target;
 			}
 
 			return fallback(e);
 		});
+	}
+
+	private T getInterfaceTarget(Class<?> type, Set<Class<?>> interfaces)
+	{
+		if (interfaces.isEmpty())
+			return null;
+		var candidates = interfaces.stream().map(e ->
+				{
+					T target = extractor(e);
+					if (target == null)
+						target = defaults.get(e);
+					return target;
+				}).filter(Objects::nonNull)
+				.collect(Collectors.toSet());
+
+		return switch (candidates.size())
+		{
+			case 0 -> getInterfaceTarget(type, interfaces.stream()
+					.flatMap(e -> Arrays.stream(e.getInterfaces()))
+					.collect(Collectors.toSet()));
+			case 1 -> candidates.stream().findFirst().get();
+			default -> throw new IllegalStateException("Ambiguous adapters found for %s: %s".formatted(type.getName(),
+					candidates));
+		};
 	}
 }
