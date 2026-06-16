@@ -406,14 +406,25 @@ public class Property
 
 	public Renderer getRenderer() {return lastAttribute.getRenderer();}
 
+	public String getRenderedValue(Object object)
+	{
+		for (int i = 0; i < attributes.size() - 1 && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return lastAttribute.getRenderedValue(object);
+	}
+
 	public String getConvertedValue(Object object)
 	{
-		return lastAttribute.getConverter().toString(getRawType(), getValue(object));
+		for (int i = 0; i < attributes.size() - 1 && object != null; i++)
+			object = attributes.get(i).getValue(object);
+		return lastAttribute.getConvertedValue(object);
 	}
 
 	public void setConvertedValue(Object object, String value)
 	{
-		setValue(object, lastAttribute.getConverter().ofString(getGenericType(), value));
+		for (int i = 0; i < attributes.size() - 1; i++)
+			object = attributes.get(i).forceValue(object);
+		lastAttribute.setConvertedValue(object, value);
 	}
 
 	public Attribute getLastAttribute() {return lastAttribute;}

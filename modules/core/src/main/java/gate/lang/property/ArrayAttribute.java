@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.util.Instance;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.Objects;
@@ -55,7 +56,7 @@ public class ArrayAttribute implements Attribute
 		Object value = Array.get(object, index);
 		if (value == null && !getRawType().isPrimitive())
 		{
-			value = createInstance(getRawType());
+			value = Instance.create(getRawType());
 			Array.set(object, index, value);
 		}
 		return value;

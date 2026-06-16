@@ -282,12 +282,17 @@ class PropertyParser
 			return null;
 		}
 
-		// Collection access (no index)
 		if (clazz.isArray())
-			return new ArrayElementsAttribute(attribute.getElementType());
+		{
+			attributes.remove(attributes.size() - 1);
+			return new ArrayElementsAttribute(attribute);
+		}
 
 		if (Collection.class.isAssignableFrom(clazz))
-			return new CollectionAttribute(attribute.getElementType());
+		{
+			attributes.remove(attributes.size() - 1);
+			return new CollectionAttribute(attribute);
+		}
 
 		return null;
 	}

@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.util.Instance;
 import gate.annotation.ElementType;
 
 import java.lang.reflect.ParameterizedType;
@@ -85,7 +86,7 @@ class ListAttribute implements Attribute
 		{
 			Class<?> clazz = getRawType();
 			while (list.size() <= index)
-				list.add(createInstance(clazz));
+				list.add(Instance.create(clazz));
 		}
 		return list.get(index);
 	}

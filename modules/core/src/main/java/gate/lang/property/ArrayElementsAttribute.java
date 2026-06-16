@@ -1,17 +1,22 @@
 package gate.lang.property;
 
 import gate.util.Reflection;
+import gate.util.Toolkit;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
+import java.util.Collection;
 import java.util.Objects;
 
 public class ArrayElementsAttribute implements Attribute
 {
 	private final Type type;
+	private final Attribute attribute;
 
-	ArrayElementsAttribute(Type type)
+	ArrayElementsAttribute(Attribute attribute)
 	{
-		this.type = type;
+		this.attribute = attribute;
+		this.type = attribute.getElementType();
 	}
 
 	@Override
@@ -35,37 +40,48 @@ public class ArrayElementsAttribute implements Attribute
 	@Override
 	public Object getValue(Object object)
 	{
-		return null;
+		return attribute.getValue(object);
 	}
 
 	@Override
 	public void setValue(Object object, Object value)
 	{
-		throw new UnsupportedOperationException("Array elements must be set while constructing the array");
+		attribute.setValue(object, array(value));
+	}
+
+	private Object array(Object value)
+	{
+		Collection<?> collection = Toolkit.collection(value);
+		Object array = Array.newInstance(getRawType(), collection.size());
+		int index = 0;
+		for (Object element : collection)
+			Array.set(array, index++, element);
+		return array;
 	}
 
 	@Override
 	public Object forceValue(Object object)
 	{
-		return null;
+		return attribute.forceValue(object);
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof ArrayElementsAttribute attribute
-		       && Objects.equals(type, attribute.type);
+		return obj instanceof ArrayElementsAttribute other
+		       && Objects.equals(attribute, other.attribute)
+		       && Objects.equals(type, other.type);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return Objects.hashCode(type);
+		return Objects.hash(attribute, type);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[]";
+		return attribute + "[]";
 	}
 }

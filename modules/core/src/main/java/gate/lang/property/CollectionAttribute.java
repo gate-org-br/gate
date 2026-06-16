@@ -1,25 +1,25 @@
 package gate.lang.property;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import gate.util.Instance;
 import gate.annotation.ElementType;
 import gate.util.Toolkit;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class CollectionAttribute implements Attribute
 {
 
 	private final Type type;
+	private final Attribute attribute;
 	private final Class<?> rawType;
 	private final Type elementType;
 
-	CollectionAttribute(Type type)
+	CollectionAttribute(Attribute attribute)
 	{
-		this.type = type;
+		this.attribute = attribute;
+		this.type = attribute.getElementType();
 
 		if (type instanceof Class<?>)
 		{
@@ -49,7 +49,6 @@ public class CollectionAttribute implements Attribute
 			rawType = Object.class;
 			elementType = Object.class;
 		}
-
 	}
 
 	@Override
@@ -73,41 +72,50 @@ public class CollectionAttribute implements Attribute
 	@Override
 	public Object getValue(Object object)
 	{
-		return null;
+		return attribute.getValue(object);
 	}
 
 	@Override
 	public Object forceValue(Object object)
 	{
-		return null;
+		return attribute.forceValue(object);
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public void setValue(Object object, Object value)
 	{
-		var collection = ((Collection<Object>) object);
-		collection.clear();
-		collection.addAll(Toolkit.collection(value));
+		attribute.setValue(object, collection(value));
+	}
+
+	private Object collection(Object value)
+	{
+		Collection<?> collection = Toolkit.collection(value);
+		if (attribute.getRawType().isAssignableFrom(collection.getClass()))
+			return collection;
+
+		Collection<Object> result = Instance.createCollection(attribute.getRawType());
+		result.addAll(collection);
+		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj)
 	{
-		return obj instanceof CollectionAttribute
-				&& Objects.equals(type, ((CollectionAttribute) obj).type);
+		return obj instanceof CollectionAttribute other
+				&& Objects.equals(attribute, other.attribute)
+				&& Objects.equals(type, other.type);
 	}
 
 	@Override
 	public int hashCode()
 	{
-		return type.hashCode();
+		return Objects.hash(attribute, type);
 	}
 
 	@Override
 	public String toString()
 	{
-		return "[]";
+		return attribute + "[]";
 	}
 
 }

@@ -267,10 +267,32 @@ public interface Hierarchy<T extends Hierarchy<T>>
 			}
 		}
 
-		list.forEach(p -> p.setChildren(list.stream().filter(c -> Objects.equals(c.getParent(), p))
-				.peek(c -> c.setParent(p)).collect(Collectors.toList())));
+		list.stream()
+				.filter(c -> c.getParent() != null
+						&& c.getParent().getId() != null)
+				.forEach(c ->
+				{
+					T parent = list.stream()
+							.filter(p -> Objects.equals(c.getParent(), p))
+							.findAny()
+							.orElseThrow();
 
-		return list.stream().filter(e -> e.getParent() == null || e.getParent().getId() == null)
+					if (c.getParent() != parent)
+						c.setParent(parent);
+				});
+
+		list.forEach(p ->
+		{
+			List<T> children = list.stream()
+					.filter(c -> Objects.equals(c.getParent(), p))
+					.toList();
+
+			if (!Objects.equals(p.getChildren(), children))
+				p.setChildren(children);
+		});
+
+		return list.stream()
+				.filter(e -> e.getParent() == null || e.getParent().getId() == null)
 				.collect(Collectors.toList());
 	}
 

@@ -1,5 +1,6 @@
 package gate.lang.constructionStrategy;
 
+import gate.util.Instance;
 import gate.annotation.Canonical;
 import gate.annotation.Default;
 import gate.annotation.Discriminator;
@@ -77,30 +78,10 @@ public interface ConstructionStrategy
 				}
 			}
 
-			if (type == List.class)
-				return new CollectionStrategy(ArrayList::new);
-			if (type == Set.class)
-				return new CollectionStrategy(HashSet::new);
-			if (type == Map.class)
-				return new CollectionStrategy(HashMap::new);
-			if (type == ConcurrentMap.class)
-				return new CollectionStrategy(ConcurrentHashMap::new);
-			if (type == Queue.class)
-				return new CollectionStrategy(LinkedList::new);
-			if (type == Deque.class)
-				return new CollectionStrategy(ArrayDeque::new);
-			if (type == SortedSet.class)
-				return new CollectionStrategy(TreeSet::new);
-			if (type == NavigableSet.class)
-				return new CollectionStrategy(TreeSet::new);
-			if (type == SortedMap.class)
-				return new CollectionStrategy(TreeMap::new);
-			if (type == NavigableMap.class)
-				return new CollectionStrategy(TreeMap::new);
-			if (type == BlockingQueue.class)
-				return new CollectionStrategy(LinkedBlockingQueue::new);
-			if (type == BlockingDeque.class)
-				return new CollectionStrategy(LinkedBlockingDeque::new);
+			if (Collection.class.isAssignableFrom(type))
+				return new CollectionStrategy(() -> Instance.createCollection(type));
+			if (Map.class.isAssignableFrom(type))
+				return new CollectionStrategy(() -> Instance.createMap(type));
 
 			var constructors =
 					Stream.concat(Modifier.isAbstract(type.getModifiers()) ? Stream.of()

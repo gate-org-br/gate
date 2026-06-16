@@ -1,8 +1,6 @@
 package gate.util;
 
 import gate.annotation.ElementType;
-import gate.error.PropertyError;
-
 import java.beans.Introspector;
 import java.lang.invoke.*;
 import java.lang.reflect.*;
@@ -83,32 +81,6 @@ public class Reflection
 		return null;
 	}
 
-	public static Object createInstance(Class<?> type)
-	{
-		try
-		{
-			if (type == List.class || type == Collection.class)
-				return new ArrayList<>();
-			if (type == Set.class)
-				return new HashSet<>();
-			if (type == Map.class)
-				return new HashMap<>();
-
-			Constructor<?> constructor = Stream.of(type.getConstructors())
-					.filter(e -> e.getParameterCount() == 0)
-					.findAny()
-					.orElse(null);
-			if (constructor == null)
-				throw new PropertyError("No default constructor found in %s.", type.getName());
-			constructor.setAccessible(true);
-			return constructor.newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-		         | InvocationTargetException ex)
-		{
-			throw new PropertyError("Error trying to create a instance of %s.", type.getName());
-		}
-	}
-
 	public static List<Field> getFields(Class<?> clazz)
 	{
 		List<Field> fields = Stream.of(clazz.getDeclaredFields()).collect(Collectors.toList());
@@ -117,27 +89,6 @@ public class Reflection
 		return fields;
 	}
 
-	public static Optional<Field> findSealedField(Class<?> type, String name)
-	{
-		if (!type.isSealed())
-			return Optional.empty();
-
-		var fields = Stream.of(type.getPermittedSubclasses())
-				.flatMap(e -> Stream.concat(
-						Arrays.stream(e.getDeclaredFields())
-								.filter(f -> f.getName().equals(name)),
-						findSealedField(e, name).stream()))
-				.toList();
-
-		if (fields.isEmpty())
-			return Optional.empty();
-
-		if (fields.size() == 1)
-			return Optional.of(fields.get(0));
-
-		throw new IllegalArgumentException(
-				"Ambiguous sealed field " + name + " on " + type.getName());
-	}
 
 	/**
 	 * Finds the specified field on the specified type, and it's super types.

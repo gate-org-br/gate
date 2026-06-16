@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.util.Instance;
 import gate.annotation.NullSafe;
 import gate.util.Reflection;
 
@@ -114,7 +115,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 		if (value != null)
 			return value;
 
-		value = createInstance(getRawType());
+		value = Instance.create(getRawType());
 		setValue(object, value);
 		return value;
 	}

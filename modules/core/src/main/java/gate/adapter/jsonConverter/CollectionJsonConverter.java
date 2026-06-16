@@ -1,5 +1,6 @@
 package gate.adapter.jsonConverter;
 
+import gate.util.Instance;
 import gate.adapter.registry.JsonConverterRegistry;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
@@ -23,7 +24,7 @@ public class CollectionJsonConverter implements JsonConverter
 
 		var rawType = Reflection.getRawType(genericType);
 		var elementType = Reflection.getElementGenericType(genericType);
-		var result = (Collection) Reflection.createInstance(rawType);
+		var result = (Collection) Instance.create(rawType);
 		for (var item : jsonArray)
 			result.add(JsonConverter.fromJson(elementType, item));
 		return result;

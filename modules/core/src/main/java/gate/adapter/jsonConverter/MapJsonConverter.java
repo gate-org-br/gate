@@ -1,5 +1,6 @@
 package gate.adapter.jsonConverter;
 
+import gate.util.Instance;
 import gate.adapter.converter.Converter;
 import gate.adapter.registry.JsonConverterRegistry;
 import gate.lang.json.JsonElement;
@@ -25,7 +26,7 @@ public class MapJsonConverter implements JsonConverter
 		var rawType = Reflection.getRawType(genericType);
 		var keyType = Reflection.getKeyType(genericType);
 		var elementType = Reflection.getValueGenericType(genericType);
-		var result = (Map) Reflection.createInstance(rawType);
+		var result = (Map) Instance.create(rawType);
 		for (var item : jsonObject.entrySet())
 		{
 			var key = Converter.getConverter(keyType).ofString(keyType, item.getKey());

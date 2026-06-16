@@ -1,5 +1,6 @@
 package gate.adapter.converter;
 
+import gate.util.Instance;
 import gate.constraint.Constraint;
 import gate.error.ConversionException;
 import gate.util.Reflection;
@@ -46,7 +47,7 @@ public class CollectionConverter implements Converter
 			throw new ConversionException("Type %s is not a collection.".formatted(type));
 
 		Type elementType = getElementType(type, rawType);
-		Collection<Object> collection = (Collection<Object>) Reflection.createInstance(rawType);
+		Collection<Object> collection = (Collection<Object>) Instance.create(rawType);
 
 		for (String item : string.split("\\s*(?:,|;|\\R)\\s*"))
 			if (!item.isBlank())

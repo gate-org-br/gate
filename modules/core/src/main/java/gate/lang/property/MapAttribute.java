@@ -1,5 +1,6 @@
 package gate.lang.property;
 
+import gate.util.Instance;
 import gate.annotation.ElementType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -86,7 +87,7 @@ class MapAttribute implements Attribute
 			return null;
 		var map = (Map<Object, Object>) object;
 		if (!map.containsKey(key))
-			map.put(key, createInstance(getElementRawType()));
+			map.put(key, Instance.create(getElementRawType()));
 		return map.get(key);
 	}
 
