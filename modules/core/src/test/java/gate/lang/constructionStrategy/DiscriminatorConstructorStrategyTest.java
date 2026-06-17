@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSupport
+public class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSupport
 {
 	@Test
 	void shouldUseDiscriminatorToSelectSubtype()
@@ -96,7 +96,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 				() -> ConstructionStrategy.newInstance(DiscriminatedParentMock.class, attributes));
 	}
 
-	static class DiscriminatedParentMock
+	public static class DiscriminatedParentMock
 	{
 		@Discriminator
 		private DiscriminatedTypeMock type;
@@ -105,9 +105,15 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		{
 			return type;
 		}
+
+		public DiscriminatedParentMock setType(DiscriminatedTypeMock type)
+		{
+			this.type = type;
+			return this;
+		}
 	}
 
-	enum DiscriminatedTypeMock
+	public enum DiscriminatedTypeMock
 	{
 		@Subtype(DiscriminatedNameMock.class)
 		NAME,
@@ -119,7 +125,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		DESCRIPTION
 	}
 
-	static class DiscriminatedNameMock extends DiscriminatedParentMock
+	public static class DiscriminatedNameMock extends DiscriminatedParentMock
 	{
 		private final String name;
 
@@ -134,7 +140,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		}
 	}
 
-	static class DiscriminatedCodeMock extends DiscriminatedParentMock
+	public static class DiscriminatedCodeMock extends DiscriminatedParentMock
 	{
 		private final Integer code;
 
@@ -149,7 +155,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		}
 	}
 
-	static class DiscriminatedDescriptionMock extends DiscriminatedParentMock
+	public static class DiscriminatedDescriptionMock extends DiscriminatedParentMock
 	{
 		private String description;
 
@@ -168,7 +174,7 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		}
 	}
 
-	static class ReadOnlyDiscriminatedParentMock
+	public static class ReadOnlyDiscriminatedParentMock
 	{
 		@Discriminator
 		private final ReadOnlyDiscriminatedTypeMock type;
@@ -184,13 +190,13 @@ class DiscriminatorConstructorStrategyTest extends ConstructionStrategyTestSuppo
 		}
 	}
 
-	enum ReadOnlyDiscriminatedTypeMock
+	public enum ReadOnlyDiscriminatedTypeMock
 	{
 		@Subtype(ReadOnlyDiscriminatedNameMock.class)
 		NAME
 	}
 
-	static class ReadOnlyDiscriminatedNameMock extends ReadOnlyDiscriminatedParentMock
+	public static class ReadOnlyDiscriminatedNameMock extends ReadOnlyDiscriminatedParentMock
 	{
 		private final String name;
 

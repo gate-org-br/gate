@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-class CanonicalConstructorStrategyTest extends ConstructionStrategyTestSupport
+public class CanonicalConstructorStrategyTest extends ConstructionStrategyTestSupport
 {
 	@Test
 	void shouldConstructCanonicalConstructorTypeFromAttributes() throws ReflectiveOperationException
@@ -107,7 +107,7 @@ class CanonicalConstructorStrategyTest extends ConstructionStrategyTestSupport
 		Assertions.assertEquals("Root", result.getDescription());
 	}
 
-	static class CanonicalWithBeanAttributeMock
+	public static class CanonicalWithBeanAttributeMock
 	{
 		private final String name;
 		private String description;

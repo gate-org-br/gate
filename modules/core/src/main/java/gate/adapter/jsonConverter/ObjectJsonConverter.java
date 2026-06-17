@@ -54,7 +54,7 @@ public class ObjectJsonConverter implements JsonConverter
 			var attributes = FieldAttribute.getAttributes(object.getClass());
 			for (FieldAttribute attribute : attributes.values())
 			{
-				Object value = attribute.getFieldValue(object);
+				Object value = attribute.getValue(object);
 				if (value != null)
 					result.put(attribute.toString(), JsonConverter.toJson(value));
 			}

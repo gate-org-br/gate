@@ -36,6 +36,16 @@ public class ObjectJsonConverterTest
 			this.children = children;
 		}
 
+		public String getName()
+		{
+			return name;
+		}
+
+		public Convertable[] getChildren()
+		{
+			return children;
+		}
+
 		@Override public boolean equals(Object obj)
 		{
 			return obj instanceof Convertable other

@@ -32,7 +32,7 @@ public class ObjectJsonRenderer implements JsonRenderer
 			var attributes = FieldAttribute.getAttributes(type);
 			for (FieldAttribute attribute : attributes.values())
 			{
-				Object value = attribute.getFieldValue(object);
+				Object value = attribute.getValue(object);
 				if (shouldWrite(value))
 				{
 					String name = Objects.requireNonNullElse(attribute.getMetadata().name(), attribute.toString());

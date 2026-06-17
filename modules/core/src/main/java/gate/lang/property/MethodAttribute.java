@@ -1,7 +1,8 @@
 package gate.lang.property;
 
-import gate.error.PropertyError;
 import gate.annotation.ElementType;
+import gate.error.PropertyError;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -66,10 +67,9 @@ class MethodAttribute implements JavaIdentifierAttribute
 		{
 			if (object == null)
 				return null;
-			method.setAccessible(true);
 			return method.invoke(object, parameters);
 		} catch (IllegalAccessException
-				| InvocationTargetException e)
+		         | InvocationTargetException e)
 		{
 			throw new PropertyError("Error trying to call method %s",
 					method.getName());

@@ -164,7 +164,7 @@ class IntFieldAttribute extends AbstractFieldAttribute
 			if (method == null)
 				return null;
 
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 			return lookup.unreflect(method)
 					.asType(MethodType.methodType(int.class, Object.class));
 		} catch (Throwable ex)
@@ -183,7 +183,7 @@ class IntFieldAttribute extends AbstractFieldAttribute
 			if (method == null)
 				return null;
 
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(method.getDeclaringClass(), MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
@@ -197,7 +197,7 @@ class IntFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (getter != null)
+			if (getter != null || !Modifier.isPublic(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);
@@ -211,7 +211,9 @@ class IntFieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null
+					|| Modifier.isFinal(field.getModifiers())
+					|| !Modifier.isPublic(field.getModifiers()))
 				return null;
 
 			return Reflection.findVarHandle(field);

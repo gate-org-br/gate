@@ -1,5 +1,7 @@
 package mock;
 
+import gate.annotation.NullSafe;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +42,7 @@ public class RoleMock
 		return this;
 	}
 
+	@NullSafe
 	public RoleMock getRole() {return role == null ? role = new RoleMock() : role;}
 
 	public RoleMock setRole(RoleMock role)

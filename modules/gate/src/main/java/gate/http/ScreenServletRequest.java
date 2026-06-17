@@ -182,8 +182,7 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		if (property.getLastAttribute() instanceof CollectionAttribute
 				|| property.getLastAttribute() instanceof ArrayElementsAttribute)
 		{
-			var previous = property.getPreviousProperty();
-			return getParameterValues(previous.getElementType(), property.toString());
+			return getParameterValues(property.getGenericType(), property.toString());
 		}
 		return getParameter(property.getGenericType(), property.toString());
 	}

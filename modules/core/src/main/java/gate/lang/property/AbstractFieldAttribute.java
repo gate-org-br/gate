@@ -30,7 +30,6 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 		try
 		{
 			this.field = field;
-			field.setAccessible(true);
 
 			isDiscriminator = field.isAnnotationPresent(Discriminator.class);
 

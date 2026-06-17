@@ -51,5 +51,20 @@ public class ObjectJsonRendererTest
 			this.amount = amount;
 			this.child = child;
 		}
+
+		public String getName()
+		{
+			return name;
+		}
+
+		public Integer getAmount()
+		{
+			return amount;
+		}
+
+		public Bean getChild()
+		{
+			return child;
+		}
 	}
 }

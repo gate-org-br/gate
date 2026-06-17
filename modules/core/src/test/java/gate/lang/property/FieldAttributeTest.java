@@ -2,10 +2,12 @@ package gate.lang.property;
 
 import mock.UserMock;
 import mock.RoleMock;
+import gate.util.Reflection;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FieldAttributeTest
 {
@@ -17,7 +19,7 @@ class FieldAttributeTest
 		var attribute = FieldAttribute.of(field);
 
 		assertNull(attribute.getValue(user));
-		assertNull(attribute.getFieldValue(user));
+		assertTrue(Reflection.isNull(field, user));
 	}
 
 	@Test
@@ -30,6 +32,5 @@ class FieldAttributeTest
 		attribute.setValue(user, role);
 
 		assertSame(role, attribute.getValue(user));
-		assertSame(role, attribute.getFieldValue(user));
 	}
 }

@@ -84,6 +84,13 @@ public class CollectionAttribute implements Attribute
 	@Override
 	public void setValue(Object object, Object value)
 	{
+		if (attribute instanceof SelfAttribute)
+		{
+			Collection<Object> target = (Collection<Object>) object;
+			target.clear();
+			target.addAll(Toolkit.collection(value));
+			return;
+		}
 		attribute.setValue(object, collection(value));
 	}
 

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
+public class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 {
 	@Test
 	void shouldIgnoreSealedSubtypeConstructorAlreadyCoveredByParent() throws ReflectiveOperationException
@@ -132,7 +132,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		Assertions.assertEquals("canonical", ((ExactOverCanonicalSealedChildMock) result).getSource());
 	}
 
-	static class SealedSubtypeAttributeMock
+	public static class SealedSubtypeAttributeMock
 	{
 		private SealedChildMock parent;
 
@@ -142,11 +142,11 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static sealed class DuplicateSealedParentMock permits DuplicateSealedChildMock, DuplicateSealedSiblingMock
+	public static sealed class DuplicateSealedParentMock permits DuplicateSealedChildMock, DuplicateSealedSiblingMock
 	{
 	}
 
-	static final class DuplicateSealedChildMock extends DuplicateSealedParentMock
+	public static final class DuplicateSealedChildMock extends DuplicateSealedParentMock
 	{
 		private final String name;
 
@@ -161,18 +161,18 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class DuplicateSealedSiblingMock extends DuplicateSealedParentMock
+	public static final class DuplicateSealedSiblingMock extends DuplicateSealedParentMock
 	{
 		public DuplicateSealedSiblingMock(String name)
 		{
 		}
 	}
 
-	static sealed class TypedSealedParentMock permits StringTypedSealedChildMock, IntegerTypedSealedChildMock
+	public static sealed class TypedSealedParentMock permits StringTypedSealedChildMock, IntegerTypedSealedChildMock
 	{
 	}
 
-	static final class StringTypedSealedChildMock extends TypedSealedParentMock
+	public static final class StringTypedSealedChildMock extends TypedSealedParentMock
 	{
 		private final String value;
 
@@ -187,14 +187,14 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class IntegerTypedSealedChildMock extends TypedSealedParentMock
+	public static final class IntegerTypedSealedChildMock extends TypedSealedParentMock
 	{
 		public IntegerTypedSealedChildMock(Integer value)
 		{
 		}
 	}
 
-	static class SpecificSealedAttributeMock
+	public static class SpecificSealedAttributeMock
 	{
 		private SpecificSealedChildMock parent;
 
@@ -204,7 +204,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static sealed class SpecificSealedParentMock permits GeneralSealedChildMock, SpecificSealedChildMock
+	public static sealed class SpecificSealedParentMock permits GeneralSealedChildMock, SpecificSealedChildMock
 	{
 		public SpecificSealedParentMock getParent()
 		{
@@ -212,7 +212,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class GeneralSealedChildMock extends SpecificSealedParentMock
+	public static final class GeneralSealedChildMock extends SpecificSealedParentMock
 	{
 		private final SpecificSealedParentMock parent;
 
@@ -228,7 +228,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class SpecificSealedChildMock extends SpecificSealedParentMock
+	public static final class SpecificSealedChildMock extends SpecificSealedParentMock
 	{
 		private final SpecificSealedChildMock parent;
 
@@ -244,7 +244,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static class CrossSealedAttributeMock
+	public static class CrossSealedAttributeMock
 	{
 		private CrossSealedSpecificMock parent;
 		private CrossSealedSpecificMock owner;
@@ -260,34 +260,34 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static sealed class CrossSealedParentMock
+	public static sealed class CrossSealedParentMock
 			permits CrossSealedLeftMock, CrossSealedRightMock, CrossSealedSpecificMock
 	{
 	}
 
-	static final class CrossSealedLeftMock extends CrossSealedParentMock
+	public static final class CrossSealedLeftMock extends CrossSealedParentMock
 	{
 		public CrossSealedLeftMock(CrossSealedSpecificMock parent, CrossSealedParentMock owner)
 		{
 		}
 	}
 
-	static final class CrossSealedRightMock extends CrossSealedParentMock
+	public static final class CrossSealedRightMock extends CrossSealedParentMock
 	{
 		public CrossSealedRightMock(CrossSealedParentMock parent, CrossSealedSpecificMock owner)
 		{
 		}
 	}
 
-	static final class CrossSealedSpecificMock extends CrossSealedParentMock
+	public static final class CrossSealedSpecificMock extends CrossSealedParentMock
 	{
 	}
 
-	static sealed class CanonicalSealedParentMock permits CanonicalSealedChildMock, CanonicalSealedSiblingMock
+	public static sealed class CanonicalSealedParentMock permits CanonicalSealedChildMock, CanonicalSealedSiblingMock
 	{
 	}
 
-	static final class CanonicalSealedChildMock extends CanonicalSealedParentMock
+	public static final class CanonicalSealedChildMock extends CanonicalSealedParentMock
 	{
 		private final String name;
 		private final String description;
@@ -310,18 +310,18 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class CanonicalSealedSiblingMock extends CanonicalSealedParentMock
+	public static final class CanonicalSealedSiblingMock extends CanonicalSealedParentMock
 	{
 		public CanonicalSealedSiblingMock(Integer code)
 		{
 		}
 	}
 
-	static sealed class SupersetSealedParentMock permits SupersetSealedChildMock
+	public static sealed class SupersetSealedParentMock permits SupersetSealedChildMock
 	{
 	}
 
-	static final class SupersetSealedChildMock extends SupersetSealedParentMock
+	public static final class SupersetSealedChildMock extends SupersetSealedParentMock
 	{
 		private String name;
 
@@ -336,12 +336,12 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static sealed class ExactOverCanonicalSealedParentMock
+	public static sealed class ExactOverCanonicalSealedParentMock
 			permits ExactOverCanonicalSealedChildMock
 	{
 	}
 
-	static final class ExactOverCanonicalSealedChildMock
+	public static final class ExactOverCanonicalSealedChildMock
 			extends ExactOverCanonicalSealedParentMock
 	{
 		private final String name;
@@ -371,7 +371,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static sealed class SealedParentMock permits SealedChildMock, SealedSiblingMock
+	public static sealed class SealedParentMock permits SealedChildMock, SealedSiblingMock
 	{
 		private final SealedParentMock parent;
 
@@ -391,7 +391,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class SealedChildMock extends SealedParentMock
+	public static final class SealedChildMock extends SealedParentMock
 	{
 		private final String name;
 
@@ -407,7 +407,7 @@ class SealedConstructorStrategyTest extends ConstructionStrategyTestSupport
 		}
 	}
 
-	static final class SealedSiblingMock extends SealedParentMock
+	public static final class SealedSiblingMock extends SealedParentMock
 	{
 		public SealedSiblingMock(SealedParentMock parent)
 		{

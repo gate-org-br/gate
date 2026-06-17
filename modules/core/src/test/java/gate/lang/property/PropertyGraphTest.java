@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class PropertyGraphTest
+public class PropertyGraphTest
 {
 
 	@Test
@@ -213,12 +213,12 @@ class PropertyGraphTest
 
 	public record LineMock(PointMock start, PointMock end) {}
 
-	static sealed class AmbiguousSealedParentMock
+	public static sealed class AmbiguousSealedParentMock
 			permits AmbiguousSealedChildMock, AmbiguousSealedSiblingMock
 	{
 	}
 
-	static final class AmbiguousSealedChildMock extends AmbiguousSealedParentMock
+	public static final class AmbiguousSealedChildMock extends AmbiguousSealedParentMock
 	{
 		private String name;
 
@@ -228,7 +228,7 @@ class PropertyGraphTest
 		}
 	}
 
-	static final class AmbiguousSealedSiblingMock extends AmbiguousSealedParentMock
+	public static final class AmbiguousSealedSiblingMock extends AmbiguousSealedParentMock
 	{
 		private String name;
 
@@ -238,12 +238,12 @@ class PropertyGraphTest
 		}
 	}
 
-	static sealed class SharedSealedParentMock
+	public static sealed class SharedSealedParentMock
 			permits SharedSealedNamedMock, SharedSealedOtherMock
 	{
 	}
 
-	static sealed class SharedSealedNamedMock extends SharedSealedParentMock
+	public static sealed class SharedSealedNamedMock extends SharedSealedParentMock
 			permits SharedSealedChildMock, SharedSealedSiblingMock
 	{
 		private String name;
@@ -254,25 +254,25 @@ class PropertyGraphTest
 		}
 	}
 
-	static final class SharedSealedChildMock extends SharedSealedNamedMock
+	public static final class SharedSealedChildMock extends SharedSealedNamedMock
 	{
 	}
 
-	static final class SharedSealedSiblingMock extends SharedSealedNamedMock
+	public static final class SharedSealedSiblingMock extends SharedSealedNamedMock
 	{
 	}
 
-	static final class SharedSealedOtherMock extends SharedSealedParentMock
+	public static final class SharedSealedOtherMock extends SharedSealedParentMock
 	{
 	}
 
-	static class DiscriminatedParentMock
+	public static class DiscriminatedParentMock
 	{
 		@Discriminator
 		private DiscriminatedTypeMock type;
 	}
 
-	enum DiscriminatedTypeMock
+	public enum DiscriminatedTypeMock
 	{
 		@Subtype(DiscriminatedNameMock.class)
 		NAME,
@@ -281,7 +281,7 @@ class PropertyGraphTest
 		CODE
 	}
 
-	static class DiscriminatedNameMock extends DiscriminatedParentMock
+	public static class DiscriminatedNameMock extends DiscriminatedParentMock
 	{
 		private String name;
 
@@ -291,7 +291,7 @@ class PropertyGraphTest
 		}
 	}
 
-	static class DiscriminatedCodeMock extends DiscriminatedParentMock
+	public static class DiscriminatedCodeMock extends DiscriminatedParentMock
 	{
 		private String code;
 
@@ -301,13 +301,13 @@ class PropertyGraphTest
 		}
 	}
 
-	static class AmbiguousDiscriminatedParentMock
+	public static class AmbiguousDiscriminatedParentMock
 	{
 		@Discriminator
 		private AmbiguousDiscriminatedTypeMock type;
 	}
 
-	enum AmbiguousDiscriminatedTypeMock
+	public enum AmbiguousDiscriminatedTypeMock
 	{
 		@Subtype(AmbiguousDiscriminatedNameMock.class)
 		NAME,
@@ -316,7 +316,7 @@ class PropertyGraphTest
 		SIBLING
 	}
 
-	static class AmbiguousDiscriminatedNameMock extends AmbiguousDiscriminatedParentMock
+	public static class AmbiguousDiscriminatedNameMock extends AmbiguousDiscriminatedParentMock
 	{
 		private String name;
 
@@ -326,7 +326,7 @@ class PropertyGraphTest
 		}
 	}
 
-	static class AmbiguousDiscriminatedSiblingMock extends AmbiguousDiscriminatedParentMock
+	public static class AmbiguousDiscriminatedSiblingMock extends AmbiguousDiscriminatedParentMock
 	{
 		private String name;
 
@@ -336,13 +336,13 @@ class PropertyGraphTest
 		}
 	}
 
-	static class InvalidDiscriminatedParentMock
+	public static class InvalidDiscriminatedParentMock
 	{
 		@Discriminator
 		private InvalidDiscriminatedTypeMock type;
 	}
 
-	enum InvalidDiscriminatedTypeMock
+	public enum InvalidDiscriminatedTypeMock
 	{
 		@Subtype(DiscriminatedNameMock.class)
 		NAME

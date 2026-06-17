@@ -15,15 +15,43 @@ public class CollectionConverterTest
 	@SuppressWarnings("unused")
 	private List<Entry> entries;
 
-	public record Entry(String name, int value) {}
+	public record Entry(String name, int value)
+	{
+		public int getValue()
+		{
+			return value;
+		}
+	}
 
-	private static class Bean
+	public static class Bean
 	{
 		@gate.annotation.Converter(CollectionConverter.class)
 		private List<ID> ids;
 
 		@gate.annotation.Converter(CollectionConverter.class)
 		private Set<String> strings;
+
+		public List<ID> getIds()
+		{
+			return ids;
+		}
+
+		public Bean setIds(List<ID> ids)
+		{
+			this.ids = ids;
+			return this;
+		}
+
+		public Set<String> getStrings()
+		{
+			return strings;
+		}
+
+		public Bean setStrings(Set<String> strings)
+		{
+			this.strings = strings;
+			return this;
+		}
 	}
 
 	@Test
@@ -58,7 +86,7 @@ public class CollectionConverterTest
 		property.setConvertedValue(bean, "1, 2;3\n4");
 
 		Assertions.assertEquals(List.of(ID.valueOf(1), ID.valueOf(2), ID.valueOf(3), ID.valueOf(4)),
-				bean.ids);
+				bean.getIds());
 		Assertions.assertEquals("0000000001\n0000000002\n0000000003\n0000000004",
 				property.getConvertedValue(bean));
 	}
@@ -71,7 +99,7 @@ public class CollectionConverterTest
 
 		property.setConvertedValue(bean, "one, two;three\none");
 
-		Assertions.assertEquals(Set.of("one", "two", "three"), bean.strings);
+		Assertions.assertEquals(Set.of("one", "two", "three"), bean.getStrings());
 	}
 
 	@Test

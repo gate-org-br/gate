@@ -7,13 +7,11 @@ import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashMap;
 
-class RecordStrategyTest extends ConstructionStrategyTestSupport
+public class RecordStrategyTest extends ConstructionStrategyTestSupport
 {
 	@Test
 	void shouldConstructRecordFromAttributes() throws ReflectiveOperationException
 	{
-		record PointMock(int x, int y) {}
-
 		var attributes = new LinkedHashMap<Attribute, Object>();
 
 		attributes.put(Property.getProperty(PointMock.class, "x").getLastAttribute(), 10);
@@ -23,4 +21,6 @@ class RecordStrategyTest extends ConstructionStrategyTestSupport
 
 		Assertions.assertEquals(new PointMock(10, 20), result);
 	}
+
+	public record PointMock(int x, int y) {}
 }

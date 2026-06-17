@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-class ConstructionStrategyTest extends ConstructionStrategyTestSupport
+public class ConstructionStrategyTest extends ConstructionStrategyTestSupport
 {
 	@Test
 	void shouldThrowWhenConstructorAndFactoryMethodSelectionIsAmbiguous()
@@ -55,7 +55,7 @@ class ConstructionStrategyTest extends ConstructionStrategyTestSupport
 		Assertions.assertNull(result.getDescription());
 	}
 
-	static class ExactOverCanonicalMock
+	public static class ExactOverCanonicalMock
 	{
 		private final String name;
 		private final String description;

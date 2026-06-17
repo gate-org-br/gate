@@ -22,6 +22,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 
 	private final MethodHandle getter;
 	private final MethodHandle setter;
+	private final boolean nullSafe;
 	private final VarHandle fieldGetter;
 	private final VarHandle fieldSetter;
 
@@ -34,6 +35,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 	{
 		super(field);
 
+		nullSafe = isNullSafe();
 		getter = createGetter();
 		fieldGetter = createFieldGetter();
 		setter = createSetter();
@@ -45,6 +47,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
+			if (nullSafe && Reflection.isNull(field, object))
+				return null;
+
 			if (getter != null)
 				return getter.invoke(object);
 
@@ -111,7 +116,7 @@ public class FieldAttribute extends AbstractFieldAttribute
 	@Override
 	public Object forceValue(Object object)
 	{
-		Object value = getValue(object);
+		Object value = nullSafe && Reflection.isNull(field, object) ? null : getValue(object);
 		if (value != null)
 			return value;
 
@@ -120,17 +125,21 @@ public class FieldAttribute extends AbstractFieldAttribute
 		return value;
 	}
 
+	private boolean isNullSafe()
+	{
+		return Reflection.findGetter(field)
+				.map(e -> e.isAnnotationPresent(NullSafe.class))
+				.orElse(false);
+	}
+
 	private MethodHandle createGetter()
 	{
 		try
 		{
 			Method method = Reflection.findGetter(field).orElse(null);
-			if (method == null
-					|| method.getReturnType().isPrimitive()
-					|| method.isAnnotationPresent(NullSafe.class))
+			if (method == null)
 				return null;
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-					method.getDeclaringClass(), MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
@@ -147,12 +156,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 		try
 		{
 			Method method = Reflection.findSetter(field).orElse(null);
-			if (method == null
-					|| method.getParameters()[0].getType().isPrimitive()
-					|| method.getReturnType() != void.class)
+			if (method == null)
 				return null;
-			MethodHandles.Lookup lookup = MethodHandles.privateLookupIn(
-					method.getDeclaringClass(), MethodHandles.lookup());
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 			return lookup.unreflect(method);
 		} catch (Throwable ex)
 		{
@@ -168,6 +174,8 @@ public class FieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
+			if (!Modifier.isPublic(field.getModifiers()))
+				return null;
 			return Reflection.findVarHandle(field);
 		} catch (Throwable ex)
 		{
@@ -183,7 +191,9 @@ public class FieldAttribute extends AbstractFieldAttribute
 	{
 		try
 		{
-			if (setter != null || Modifier.isFinal(field.getModifiers()))
+			if (setter != null
+					|| Modifier.isFinal(field.getModifiers())
+					|| !Modifier.isPublic(field.getModifiers()))
 				return null;
 			return Reflection.findVarHandle(field);
 		} catch (Throwable ex)

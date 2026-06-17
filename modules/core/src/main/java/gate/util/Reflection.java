@@ -1,6 +1,7 @@
 package gate.util;
 
 import gate.annotation.ElementType;
+
 import java.beans.Introspector;
 import java.lang.invoke.*;
 import java.lang.reflect.*;
@@ -111,6 +112,29 @@ public class Reflection
 		return field;
 	}
 
+	public static boolean isNull(Field field, Object object)
+	{
+		try
+		{
+			var accessible = field.canAccess(object);
+			if (!accessible)
+				field.setAccessible(true);
+			try
+			{
+				return field.get(object) == null;
+			} finally
+			{
+				if (!accessible)
+					field.setAccessible(false);
+			}
+		} catch (IllegalAccessException ex)
+		{
+			throw new IllegalStateException(
+					"Failed to check if field '%s' on '%s' is null"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
 	/**
 	 * Finds the specified method on the specified type, and it's super types.
 	 *
@@ -126,18 +150,10 @@ public class Reflection
 		Objects.requireNonNull(name);
 		Objects.requireNonNull(parameterTypes);
 
-		Optional<Method> method = Stream.of(type.getDeclaredMethods())
+		return Stream.of(type.getMethods())
 				.filter(e -> e.getName().equals(name))
 				.filter(e -> Arrays.equals(e.getParameterTypes(), parameterTypes))
 				.findFirst();
-
-		Class<?> supertype = type.getSuperclass();
-		if (method.isEmpty() && supertype != null)
-			return findMethod(supertype, name, parameterTypes);
-
-		method.ifPresent(e -> e.setAccessible(true));
-
-		return method;
 	}
 
 	/**
@@ -166,15 +182,12 @@ public class Reflection
 	public static Optional<Method> findMethodByName(Class<?> type, String name)
 	{
 		List<Method> methods
-				= Stream.of(type.getDeclaredMethods()).filter(e -> e.getName().equals(name))
+				= Stream.of(type.getMethods()).filter(e -> e.getName().equals(name))
 				.collect(Collectors.toCollection(ArrayList::new));
 
 		switch (methods.size())
 		{
 			case 0:
-				Class<?> supertype = type.getSuperclass();
-				if (supertype != null)
-					return findMethodByName(supertype, name);
 				return Optional.empty();
 			case 1:
 				return Optional.of(methods.get(0));
@@ -219,25 +232,31 @@ public class Reflection
 		if (field.getDeclaringClass().isRecord())
 			return findMethod(field.getDeclaringClass(), name);
 
-		Optional<Method> method = findMethod(field.getDeclaringClass(),
-				"get" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
-		if (method.isEmpty()
-				&& (field.getType().equals(boolean.class) || field.getType().equals(Boolean.class)))
-			method = findMethod(field.getDeclaringClass(),
-					"is" + Character.toUpperCase(name.charAt(0)) + name.substring(1));
-		if (method.isEmpty())
-			method = findMethod(field.getDeclaringClass(), name);
-		return method;
+		var get = "get" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+		var getter = findMethod(field.getDeclaringClass(), get);
+		if (getter.isPresent())
+			return getter;
+
+		if (field.getType().equals(boolean.class)
+				|| field.getType().equals(Boolean.class))
+		{
+			var is = "is" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+			getter = findMethod(field.getDeclaringClass(), is);
+			if (getter.isPresent())
+				return getter;
+		}
+
+		return findMethod(field.getDeclaringClass(), name);
 	}
 
 	public static VarHandle findVarHandle(Field field)
 	{
 		try
 		{
-			MethodHandles.Lookup lookup =
-					MethodHandles.privateLookupIn(
-							field.getDeclaringClass(),
-							MethodHandles.lookup());
+			if (!Modifier.isPublic(field.getModifiers()))
+				throw new IllegalArgumentException("Field %s.%s is not public"
+						.formatted(field.getDeclaringClass().getName(), field.getName()));
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 			return lookup.unreflectVarHandle(field);
 		} catch (IllegalAccessException e)
 		{
@@ -253,8 +272,7 @@ public class Reflection
 				{
 					try
 					{
-						MethodHandles.Lookup lookup = MethodHandles
-								.privateLookupIn(m.getDeclaringClass(), MethodHandles.lookup());
+						MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
 						MethodHandle handle = lookup.unreflect(m);
 
@@ -276,8 +294,7 @@ public class Reflection
 				{
 					try
 					{
-						MethodHandles.Lookup lookup =
-								MethodHandles.privateLookupIn(field.getDeclaringClass(), MethodHandles.lookup());
+						MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 						MethodHandle impl = lookup.unreflect(method);
 						MethodType sam = MethodType.methodType(Object.class, Object.class);
 						MethodType instantiated = impl.type();
@@ -305,9 +322,7 @@ public class Reflection
 				{
 					try
 					{
-						MethodHandles.Lookup lookup =
-								MethodHandles.privateLookupIn(m.getDeclaringClass(),
-										MethodHandles.lookup());
+						MethodHandles.Lookup lookup = MethodHandles.publicLookup();
 
 						MethodHandle handle = lookup.unreflect(m);
 
@@ -334,12 +349,12 @@ public class Reflection
 
 		var name = field.getName();
 		var type = field.getType();
-		var method = findMethod(field.getDeclaringClass(),
-				"set" + Character.toUpperCase(name.charAt(0)) + name.substring(1),
-				type);
-		if (method.isEmpty())
-			method = findMethod(field.getDeclaringClass(), name, type);
-		return method;
+		var set = "set" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
+		var setter = findMethod(field.getDeclaringClass(), set, type);
+		if (setter.isPresent())
+			return setter;
+
+		return findMethod(field.getDeclaringClass(), name, type);
 	}
 
 	public static Optional<? extends AnnotatedElement> find(String string)
