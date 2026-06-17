@@ -409,14 +409,14 @@ public class Property
 	public String getRenderedValue(Object object)
 	{
 		for (int i = 0; i < attributes.size() - 1 && object != null; i++)
-			object = attributes.get(i).getValue(object);
+			object = attributes.get(i).forceValue(object);
 		return lastAttribute.getRenderedValue(object);
 	}
 
 	public String getConvertedValue(Object object)
 	{
 		for (int i = 0; i < attributes.size() - 1 && object != null; i++)
-			object = attributes.get(i).getValue(object);
+			object = attributes.get(i).forceValue(object);
 		return lastAttribute.getConvertedValue(object);
 	}
 
