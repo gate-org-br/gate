@@ -16,6 +16,12 @@ window.addEventListener("@map", function (event)
 		.then(result =>
 		{
 			let dataURL = DataURL.parse(result);
+			if (script.startsWith("'")
+				&& script.endsWith("'")
+				|| script.startsWith('"')
+				&& script.endsWith('"'))
+				script = script.substring(1, script.length - 1);
+
 			let func = new Function("result", `return ${script}`).bind(element);
 			let arrow = func();
 

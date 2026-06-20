@@ -20,21 +20,18 @@ export default class GCollectionItem extends StyledHTMLElement
 	{
 		super();
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-		this.shadowRoot.querySelector("button")
-			.addEventListener("click", () =>
-				this.dispatchEvent(new CustomEvent("remove", {bubbles: true})));
 	}
 
 	set template(elements)
 	{
-		let btn = this.shadowRoot.querySelector("button");
-
 		Array.from(elements)
 			.map(e => e.cloneNode(true))
-			.forEach(e => btn.before(e));
+			.forEach(e => this.shadowRoot.append(e));
 
-		this.#fields = Array.from(this.shadowRoot.querySelectorAll("[name]"));
+		this.#fields = Array.from(this.shadowRoot.querySelectorAll("*"))
+			.filter(e =>
+				e.matches("input, select, textarea")
+				|| customElements.get(e.localName)?.formAssociated === true);
 
 		this.shadowRoot.querySelector("slot")?.remove();
 
@@ -42,6 +39,7 @@ export default class GCollectionItem extends StyledHTMLElement
 		{
 			input.addEventListener("change", () =>
 				this.dispatchEvent(new Event("change", {bubbles: true, composed: true})));
+
 			input.addEventListener("input", () =>
 				this.dispatchEvent(new Event("input", {bubbles: true, composed: true})));
 		});
@@ -49,7 +47,8 @@ export default class GCollectionItem extends StyledHTMLElement
 
 	get value()
 	{
-		if (this.#fields.length === 1 && !this.#fields[0].name)
+		if (this.#fields.length === 1
+			&& !this.#fields[0].name)
 			return this.#fields[0].value;
 
 		return this.#fields.reduce((obj, input) =>
@@ -78,12 +77,6 @@ export default class GCollectionItem extends StyledHTMLElement
 
 	set value(data)
 	{
-		if (this.#fields.length === 1 && !this.#fields[0].name)
-		{
-			this.#fields[0].value = data ?? null;
-			return;
-		}
-
 		this.#fields.forEach(input =>
 		{
 			let value = data[input.name];

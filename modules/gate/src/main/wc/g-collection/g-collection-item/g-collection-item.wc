@@ -1,6 +1,3 @@
 <template>
 	<slot></slot>
-	<button type="button" class="danger">
-		<g-icon>&#x2026;</g-icon>
-	</button>
 </template>

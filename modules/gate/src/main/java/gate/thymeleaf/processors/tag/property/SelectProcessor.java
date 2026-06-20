@@ -71,9 +71,9 @@ public class SelectProcessor extends PropertyProcessor
 				.orElse(null);
 
 		Object value = property.getValue(screen);
-		var selected = value == null && Enum.class.isAssignableFrom(property.getRawType())
-				? Default.Extractor.extract(property.getRawType())
-				: value;
+		var defaultValue = Default.Extractor.extract(property.getRawType());
+		var selected = value == null ? defaultValue : value;
+		
 		if (selected != null)
 			attributes.put("data-value", Converter.toString(selected));
 

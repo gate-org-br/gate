@@ -16,45 +16,80 @@ customElements.define('g-collection', class extends HTMLElement
 		this.attachShadow({mode: "open"});
 		this.#internals = this.attachInternals();
 		this.shadowRoot.innerHTML += template.innerHTML;
+
 		if (!this.hasAttribute("tabindex"))
 			this.tabIndex = 0;
 
-		this.shadowRoot.querySelector("button")
+		this.shadowRoot.querySelector("#add")
 			.addEventListener("click", () => this.add());
-
-		this.shadowRoot.addEventListener("remove", event =>
-		{
-			event.target.remove();
-			this.update();
-			this.dispatchEvent(new Event("change", {bubbles: true}));
-		});
 
 		this.shadowRoot.addEventListener("change", event =>
 		{
 			event.stopPropagation();
+
 			this.update();
+
 			this.dispatchEvent(new Event("change", {bubbles: true}));
 		});
 
 		this.shadowRoot.addEventListener("input", event =>
 		{
 			event.stopPropagation();
+
 			this.update();
+
 			this.dispatchEvent(new Event("input", {bubbles: true}));
 		});
 	}
 
+	#createRow(data = null)
+	{
+		let row = document.createElement("div");
+
+		row.className = "row";
+
+		let item = GCollectionItem.create(this.template, data);
+
+		let remove = document.createElement("button");
+
+		remove.type = "button";
+		remove.innerHTML = "<g-icon>&#x2026;</g-icon>";
+
+		remove.addEventListener("click", () =>
+		{
+			row.remove();
+
+			this.update();
+
+			this.dispatchEvent(new Event("change", {bubbles: true}));
+		});
+
+		row.append(item, remove);
+
+		return row;
+	}
+
 	add(data = null)
 	{
-		const item = GCollectionItem.create(this.template, data);
-		this.shadowRoot.querySelector("section").appendChild(item);
+		this.shadowRoot.querySelector("section")
+			.appendChild(this.#createRow(data));
+
 		this.update();
+
 		this.dispatchEvent(new Event("change", {bubbles: true}));
 	}
 
-	items() { return Array.from(this.shadowRoot.querySelectorAll("g-collection-item")); }
+	items()
+	{
+		return Array.from(
+			this.shadowRoot.querySelectorAll("g-collection-item")
+		);
+	}
 
-	get template() { return this.querySelector("template")?.content.children ?? []; }
+	get template()
+	{
+		return this.querySelector("template")?.content.children ?? [];
+	}
 
 	get name() { return this.getAttribute("name"); }
 	set name(name) { this.setAttribute("name", name); }
@@ -66,6 +101,7 @@ customElements.define('g-collection', class extends HTMLElement
 	set max(max) { this.setAttribute("max", max); }
 
 	get label() { return this.getAttribute("label"); }
+
 	set label(label)
 	{
 		if (label == null)
@@ -75,6 +111,7 @@ customElements.define('g-collection', class extends HTMLElement
 	}
 
 	get placeholder() { return this.getAttribute("placeholder"); }
+
 	set placeholder(placeholder)
 	{
 		if (placeholder == null)
@@ -83,19 +120,34 @@ customElements.define('g-collection', class extends HTMLElement
 			this.setAttribute("placeholder", placeholder);
 	}
 
-	get size() { return this.items().length; }
+	get size()
+	{
+		return this.items().length;
+	}
 
-	get entries() { return this.items().map(item => item.value); }
+	get entries()
+	{
+		return this.items().map(item => item.value);
+	}
 
 	set entries(entries)
 	{
-		this.items().forEach(item => item.remove());
-		const section = this.shadowRoot.querySelector("section");
-		entries.forEach(data => section.appendChild(GCollectionItem.create(this.template, data)));
+		let section = this.shadowRoot.querySelector("section");
+
+		section.replaceChildren();
+
+		entries.forEach(data =>
+			section.appendChild(this.#createRow(data)));
+
 		this.update();
 	}
 
-	get value() { return this.entries.map(entry => Base64.encode(JSON.stringify(entry))).join(";"); }
+	get value()
+	{
+		return this.entries
+			.map(entry => Base64.encode(JSON.stringify(entry)))
+			.join(";");
+	}
 
 	set value(value)
 	{
@@ -105,8 +157,15 @@ customElements.define('g-collection', class extends HTMLElement
 			.map(item => JSON.parse(Base64.decode(item)));
 	}
 
-	get required() { return this.hasAttribute("required"); }
-	set required(required) { this.toggleAttribute("required", !!required); }
+	get required()
+	{
+		return this.hasAttribute("required");
+	}
+
+	set required(required)
+	{
+		this.toggleAttribute("required", !!required);
+	}
 
 	connectedCallback()
 	{
@@ -121,28 +180,35 @@ customElements.define('g-collection', class extends HTMLElement
 		let items = this.items();
 		let count = items.length;
 		let section = this.shadowRoot.querySelector("section");
+		let label = this.shadowRoot.querySelector("label");
+		let button = this.shadowRoot.querySelector("#add");
+
+		label.textContent = this.label ?? "";
 
 		this.#internals.setFormValue(this.value);
-		section.dataset.placeholder = this.placeholder ?? "";
-		section.toggleAttribute("empty", count === 0 && !!this.placeholder);
 
-		let label = this.label;
-		let button = this.shadowRoot.querySelector("button");
-		let span = button.querySelector("span");
-		span.textContent = label ?? "";
-		span.hidden = label == null || label === "";
+		section.dataset.placeholder = this.placeholder ?? "";
 
 		button.disabled = this.max && count >= this.max;
 
 		if (this.required && !count)
-			this.#internals.setValidity({valueMissing: true},
-				"Add at least one item", button);
+			this.#internals.setValidity(
+				{valueMissing: true},
+				"Add at least one item",
+				button
+			);
 		else if (this.min && count < this.min)
-			this.#internals.setValidity({rangeUnderflow: true},
-				`Add at least ${this.min} items`, button);
+			this.#internals.setValidity(
+				{rangeUnderflow: true},
+				`Add at least ${this.min} items`,
+				button
+			);
 		else if (this.max && count > this.max)
-			this.#internals.setValidity({rangeOverflow: true},
-				`Add at most ${this.max} items`, button);
+			this.#internals.setValidity(
+				{rangeOverflow: true},
+				`Add at most ${this.max} items`,
+				button
+			);
 		else
 			this.#internals.setValidity({});
 	}
@@ -198,5 +264,8 @@ customElements.define('g-collection', class extends HTMLElement
 			this.update();
 	}
 
-	static get observedAttributes() { return ["value", "label", "placeholder"]; }
+	static get observedAttributes()
+	{
+		return ["value", "label", "placeholder"];
+	}
 });

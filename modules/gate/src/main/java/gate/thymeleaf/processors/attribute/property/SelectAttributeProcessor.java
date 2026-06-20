@@ -61,11 +61,9 @@ public class SelectAttributeProcessor extends FormControlAttributeProcessor
 				.map(expression::function)
 				.orElse(null);
 
-		var selected =
-				value == null && Enum.class.isAssignableFrom(property.getRawType())
-						? Default.Extractor.extract(property.getRawType())
-						: value;
-
+		var defaultValue = Default.Extractor.extract(property.getRawType());
+		var selected = value == null ? defaultValue : value;
+		
 		if (selected != null)
 			handler.setAttribute("data-value",
 					Converter.toString(selected));

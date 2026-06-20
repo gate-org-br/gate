@@ -1,7 +1,11 @@
 <template>
+	<header>
+		<label></label>
+
+		<button id="add" type="button" class="alternative">
+			<g-icon>&#x1002;</g-icon>
+		</button>
+	</header>
+
 	<section></section>
-	<button type="button" class="alternative">
-		<g-icon>&#x1002;</g-icon>
-		<span></span>
-	</button>
 </template>

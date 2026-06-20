@@ -28,6 +28,8 @@ public @interface Default
 
 		public static Enum<?> extract(Class<?> type)
 		{
+			if (!type.isEnum())
+				return null;
 			return Stream.of(type.getEnumConstants()).map(Enum.class::cast).filter(e ->
 					{
 						try

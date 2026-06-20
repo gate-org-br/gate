@@ -1,28 +1,3 @@
 :host {
-	gap: 0.5rem;
-	display: grid;
-	padding: 0.5rem;
-	border-radius: 3px;
-	align-items: stretch;
-	grid-column: 1 / -1;
-	grid-template-columns: 1fr auto;
-	border: 1px solid var(--main3, #DDDDDD);
-	background-color: var(--main2, #F8F8F8);
-}
-
-button {
-	grid-column: 2;
-	width: 44px;
-	color: white;
-	height: 100%;
-	padding: 8px;
-	border: none;
-	display: flex;
-	cursor: pointer;
-	font-size: 12px;
-	border-radius: 3px;
-	align-items: center;
-	text-decoration: none;
-	justify-content: center;
-	background-color: var(--r2, #AA2222);
+	display: block;
 }
