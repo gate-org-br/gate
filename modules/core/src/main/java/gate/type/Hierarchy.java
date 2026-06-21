@@ -2,9 +2,7 @@ package gate.type;
 
 import gate.error.HierarchyException;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -250,11 +248,11 @@ public interface Hierarchy<T extends Hierarchy<T>>
 		for (T object : list)
 		{
 			Objects.requireNonNull(object.getId());
-
+			Set<ID> visited = new HashSet<>();
 			for (T parent = object.getParent(); parent != null && parent.getId() != null; parent =
 					parent.getParent())
 			{
-				if (parent.equals(object))
+				if (!visited.add(parent.getId()))
 					throw new HierarchyException(
 							String.format("Circular reference detected between %s and %s",
 									parent.getId(), object.getId()));

@@ -5,10 +5,11 @@ import java.io.Serial;
 /**
  * Signals that an invalid hierarchy relation was found.
  */
-public class HierarchyException extends RuntimeException
+public class HierarchyException extends AppException
 {
 
-	@Serial private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructs an HierarchyException with the specified detail message.

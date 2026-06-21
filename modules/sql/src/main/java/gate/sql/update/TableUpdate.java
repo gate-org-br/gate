@@ -82,6 +82,11 @@ public class TableUpdate implements Update
 			return this;
 		}
 
+		public Compiled set(String column, Supplier<?> value)
+		{
+			return column != null ? set(column, value.get()) : this;
+		}
+
 		public <T> Compiled set(Class<T> type, String column, T value)
 		{
 			values.add(value);
@@ -91,6 +96,11 @@ public class TableUpdate implements Update
 					.map(name -> name + " = ?")
 					.forEach(columns::add);
 			return this;
+		}
+
+		public <T> Compiled set(Class<T> type, String column, Supplier<T> value)
+		{
+			return column != null ? set(type, column, value.get()) : this;
 		}
 
 		public CompiledWhere where(ConstantCondition condition)
@@ -138,7 +148,9 @@ public class TableUpdate implements Update
 			@Override
 			public Sentence.Compiled build()
 			{
-				return Sentence.of(toString()).parameters(Stream.concat(values.stream(), condition.getParameters()).collect(Collectors.toList()));
+				return Sentence.of(toString())
+						.parameters(Stream.concat(values.stream(), condition.getParameters())
+								.collect(Collectors.toList()));
 			}
 
 			@Override
@@ -165,7 +177,9 @@ public class TableUpdate implements Update
 				@Override
 				public Sentence.Compiled build()
 				{
-					return Sentence.of(toString()).parameters(Stream.concat(values.stream(), condition.getParameters()).collect(Collectors.toList()));
+					return Sentence.of(toString())
+							.parameters(Stream.concat(values.stream(), condition.getParameters())
+									.collect(Collectors.toList()));
 				}
 
 				@Override

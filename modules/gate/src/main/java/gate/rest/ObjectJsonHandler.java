@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 @Provider
@@ -47,11 +46,6 @@ public class ObjectJsonHandler implements MessageBodyWriter<Object>, MessageBody
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream in)
 			throws IOException, WebApplicationException
 	{
-		if (genericType instanceof ParameterizedType parameterizedType)
-		{
-			if (parameterizedType.getActualTypeArguments().length > 0)
-				genericType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
-		}
 		String string = new String(in.readAllBytes());
 		return JsonConverter.fromJson(genericType, JsonElement.parse(string));
 	}

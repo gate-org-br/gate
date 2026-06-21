@@ -33,6 +33,23 @@ public class InsertTest
 	}
 
 	@Test
+	public void shouldIgnoreLazyValueWhenColumnIsNull()
+	{
+		var insert = Insert
+				.into("Uzer")
+				.set("id", 1)
+				.set(null, () ->
+				{
+					fail("Supplier should not be evaluated when column is null");
+					return "ignored";
+				})
+				.build();
+
+		assertEquals("insert into Uzer (id) values (?)", insert.toString());
+		assertEquals(List.of(1), insert.getParameters());
+	}
+
+	@Test
 	public void shouldExecuteInsertFromSqlString() throws ConstraintViolationException
 	{
 		try (Link link = TestDataSource.getLink())

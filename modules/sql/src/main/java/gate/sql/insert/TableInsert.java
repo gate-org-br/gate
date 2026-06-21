@@ -30,10 +30,28 @@ public class TableInsert implements Insert, Sentence.Compiled.Builder
 
 	public TableInsert set(String column, Object value)
 	{
+		Objects.requireNonNull(column);
 		columns.add(Formatter.identifier(Objects.requireNonNull(column)));
 		parameters.add("?");
 		values.add(value);
 		return this;
+	}
+
+	/**
+	 * Adds a column value supplied lazily to this insert sentence.
+	 * <p>
+	 * If {@code column} is {@code null}, this method leaves the insert unchanged
+	 * and does not evaluate {@code value}. This is useful when the target column
+	 * is selected conditionally and the absence of a column must also skip the
+	 * value computation.
+	 *
+	 * @param column the column name, or {@code null} to skip this assignment
+	 * @param value supplier of the value to be inserted
+	 * @return this insert sentence builder
+	 */
+	public TableInsert set(String column, Supplier<?> value)
+	{
+		return column != null ? set(column, value.get()) : this;
 	}
 
 	public <T> TableInsert set(Class<T> type, String column, T value)
@@ -68,7 +86,7 @@ public class TableInsert implements Insert, Sentence.Compiled.Builder
 	public String toString()
 	{
 		return "insert " + (ignore ? "ignore " : "") + "into " + table + " " + columns + " values "
-		       + parameters;
+				+ parameters;
 	}
 
 	public class When
