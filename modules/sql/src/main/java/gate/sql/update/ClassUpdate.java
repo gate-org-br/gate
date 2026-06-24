@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -254,6 +255,11 @@ public class ClassUpdate<T> implements Update
 				return Compiled.this.set(object, properties);
 			}
 
+			public Compiled then(Function<Compiled, Compiled> function)
+			{
+				return function.apply(Compiled.this);
+			}
+
 			public When when(boolean assertion)
 			{
 				return assertion ? this : new DisabledWhen();
@@ -283,6 +289,12 @@ public class ClassUpdate<T> implements Update
 
 			@Override
 			public <R> Compiled set(T object, List<PropertyReference<T, R>> properties)
+			{
+				return Compiled.this;
+			}
+
+			@Override
+			public Compiled then(Function<Compiled, Compiled> function)
 			{
 				return Compiled.this;
 			}
@@ -328,6 +340,11 @@ public class ClassUpdate<T> implements Update
 			return new Compiled().set(object, properties);
 		}
 
+		public Compiled then(Function<Compiled, Compiled> function)
+		{
+			return function.apply(new Compiled());
+		}
+
 		public When when(boolean assertion)
 		{
 			return assertion ? this : new DisabledWhen();
@@ -369,6 +386,12 @@ public class ClassUpdate<T> implements Update
 
 		@Override
 		public <R> Compiled set(T object, List<PropertyReference<T, R>> properties)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public Compiled then(Function<Compiled, Compiled> function)
 		{
 			return new Compiled();
 		}

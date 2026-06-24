@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -138,6 +139,11 @@ public class ClassInsert<T> implements Insert, Sentence.Compiled.Builder
 		public ClassInsert<T> set(PropertyReference<T, ?> property, Supplier<?> supplier)
 		{
 			return assertion ? ClassInsert.this.set(property, supplier.get()) : ClassInsert.this;
+		}
+
+		public ClassInsert<T> then(Function<ClassInsert<T>, ClassInsert<T>> function)
+		{
+			return assertion ? function.apply(ClassInsert.this) : ClassInsert.this;
 		}
 
 		public When when(boolean assertion)

@@ -31,9 +31,9 @@ public final class Credentials
 	private Credentials(LocalDateTime iat, LocalDateTime exp, ID sub, ID sid, User usr)
 	{
 		if (iat == null
-		    || exp == null
-		    || sub == null
-		    || usr != null && (usr.getId() == null || !sub.equals(usr.getId())))
+				|| exp == null
+				|| sub == null
+				|| usr != null && (usr.getId() == null || !sub.equals(usr.getId())))
 			throw new UnauthorizedException("Attempt to create credentials with invalid session");
 
 		this.iat = iat;
@@ -54,7 +54,8 @@ public final class Credentials
 
 	public User usr() {return usr;}
 
-	@Override public String toString()
+	@Override
+	public String toString()
 	{
 		return new Claims()
 				.sub(sub.toString())
@@ -63,31 +64,31 @@ public final class Credentials
 				.sid(sid != null ? sid.toString() : null)
 				.claim("usr", usr != null
 						? new JsonObject()
-						  .setObject("id", usr.getId())
-						  .setString("name", usr.getName())
-						  .setString("username", usr.getUsername())
-						  .setString("email", usr.getEmail())
-						  .set("auths", usr.computedAuthStream()
-										.map(e -> new JsonObject()
-												  .setObject("id", e.getId())
-												  .setString("module", e.getModule())
-												  .setString("screen", e.getScreen())
-												  .setString("action", e.getAction())
-												  .setObject("scope", e.getScope())
-												  .setObject("access", e.getAccess()))
-										.collect(Collectors.toCollection(JsonArray::new)))
-						  .set("role", usr.getRole().parentStream()
-									   .map(e -> new JsonObject()
-												 .setObject("id", e.getId())
-												 .setString("name", e.getName())
-												 .setString("rolename", e.getRolename())
-												 .setObject("email", e.getEmail()))
-									   .collect(Collectors.collectingAndThen(Collectors.toList(), nodes ->
-									   {
-										   for (int i = 0; i < nodes.size() - 1; i++)
-											   nodes.get(i).set("role", nodes.get(i + 1));
-										   return nodes.isEmpty() ? null : nodes.get(0);
-									   }))).unwrap()
+						.setObject("id", usr.getId())
+						.setString("name", usr.getName())
+						.setString("username", usr.getUsername())
+						.setString("email", usr.getEmail())
+						.set("auths", usr.computedAuthStream()
+								.map(e -> new JsonObject()
+										.setObject("id", e.getId())
+										.setString("module", e.getModule())
+										.setString("screen", e.getScreen())
+										.setString("action", e.getAction())
+										.setObject("scope", e.getScope())
+										.setObject("access", e.getAccess()))
+								.collect(Collectors.toCollection(JsonArray::new)))
+						.set("role", usr.getRole().lineage()
+								.map(e -> new JsonObject()
+										.setObject("id", e.getId())
+										.setString("name", e.getName())
+										.setString("rolename", e.getRolename())
+										.setObject("email", e.getEmail()))
+								.collect(Collectors.collectingAndThen(Collectors.toList(), nodes ->
+								{
+									for (int i = 0; i < nodes.size() - 1; i++)
+										nodes.get(i).set("role", nodes.get(i + 1));
+									return nodes.isEmpty() ? null : nodes.get(0);
+								}))).unwrap()
 						: null).toString();
 	}
 
@@ -105,7 +106,8 @@ public final class Credentials
 		return new Credentials(iat, exp, sub, sid, user);
 	}
 
-	@SuppressWarnings("rawtypes") public static Credentials parse(String token)
+	@SuppressWarnings("rawtypes")
+	public static Credentials parse(String token)
 			throws HierarchyException, UnauthorizedException
 	{
 		var claims = gate.security.Claims.valueOf(token);
@@ -124,38 +126,38 @@ public final class Credentials
 
 		var usr = claims.get("usr") instanceof Map map
 				? new User()
-				  .setId(ID.valueOf((String) map.get("id")))
-				  .setName((String) map.get("name"))
-				  .setUsername((String) map.get("username"))
-				  .setEmail((String) map.get("email"))
-				  .setAuths(map.containsKey("auths")
-							? ((List<?>) map.get("auths"))
-							  .stream()
-							  .filter(e -> e instanceof Map)
-							  .map(e -> (Map) e)
-							  .map(e -> new Auth()
-										.setId(e.get("id") instanceof String string ? ID.valueOf(string) : null)
-										.setScope(e.get("scope") instanceof String string ? Auth.Scope.valueOf(string) : null)
-										.setAccess(e.get("access") instanceof String string ? Auth.Access.valueOf(string) : null)
-										.setModule((String) e.get("module"))
-										.setScreen((String) e.get("screen"))
-										.setAction((String) e.get("action")))
-							  .toList()
-							: null)
-				  .setRole(Stream.iterate((Map) map.get("role"),
-						  Objects::nonNull,
-						  r -> (Map) r.get("role"))
-						   .map(r -> new Role()
-									 .setId(r.get("id") instanceof String string ? ID.valueOf(string) : null)
-									 .setName((String) r.get("name"))
-									 .setRolename((String) r.get("rolename"))
-									 .setEmail((String) r.get("email")))
-						   .collect(Collectors.collectingAndThen(Collectors.toList(), nodes ->
-						   {
-							   for (int i = 0; i < nodes.size() - 1; i++)
-								   nodes.get(i).setRole(nodes.get(i + 1));
-							   return nodes.isEmpty() ? null : nodes.get(0);
-						   })))
+				.setId(ID.valueOf((String) map.get("id")))
+				.setName((String) map.get("name"))
+				.setUsername((String) map.get("username"))
+				.setEmail((String) map.get("email"))
+				.setAuths(map.containsKey("auths")
+						  ? ((List<?>) map.get("auths"))
+						.stream()
+						.filter(e -> e instanceof Map)
+						.map(e -> (Map) e)
+						.map(e -> new Auth()
+								.setId(e.get("id") instanceof String string ? ID.valueOf(string) : null)
+								.setScope(e.get("scope") instanceof String string ? Auth.Scope.valueOf(string) : null)
+								.setAccess(e.get("access") instanceof String string ? Auth.Access.valueOf(string) : null)
+								.setModule((String) e.get("module"))
+								.setScreen((String) e.get("screen"))
+								.setAction((String) e.get("action")))
+						.toList()
+						  : null)
+				.setRole(Stream.iterate((Map) map.get("role"),
+								Objects::nonNull,
+								r -> (Map) r.get("role"))
+						.map(r -> new Role()
+								.setId(r.get("id") instanceof String string ? ID.valueOf(string) : null)
+								.setName((String) r.get("name"))
+								.setRolename((String) r.get("rolename"))
+								.setEmail((String) r.get("email")))
+						.collect(Collectors.collectingAndThen(Collectors.toList(), nodes ->
+						{
+							for (int i = 0; i < nodes.size() - 1; i++)
+								nodes.get(i).setRole(nodes.get(i + 1));
+							return nodes.isEmpty() ? null : nodes.get(0);
+						})))
 				: null;
 
 		return new Credentials(iat, exp, sub, sid, usr);

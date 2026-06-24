@@ -61,13 +61,13 @@ class CredentialsTest
 						credentials.usr().getUsername(),
 						credentials.usr().getEmail()));
 
-		Assertions.assertEquals(user.getRole().parentStream()
+		Assertions.assertEquals(user.getRole().lineage()
 						.map(e -> List.of(e.getId(),
 								e.getRole(),
 								e.getName()
 								, e.getRolename()
 								, e.getEmail())).toList(),
-				credentials.usr().getRole().parentStream()
+				credentials.usr().getRole().lineage()
 						.map(e -> List.of(e.getId(),
 								e.getRole(),
 								e.getName()

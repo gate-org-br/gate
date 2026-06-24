@@ -9,16 +9,18 @@ import java.time.LocalDateTime;
 
 public class LocalDateTimeJsonConverter implements JsonConverter
 {
-	@Override public Object ofJson(Type genericType, JsonElement element)
+	@Override
+	public Object ofJson(Type genericType, JsonElement element)
 	{
 		return element instanceof JsonString jsonString
 				? Converter.fromString(LocalDateTime.class, jsonString.unwrap())
 				: null;
 	}
 
-	@Override public JsonElement toJson(Class<?> type, Object object)
+	@Override
+	public JsonElement toJson(Class<?> type, Object object)
 	{
 		return object != null
-				? JsonString.wrap(Converter.toISOString(object)) : null;
+				? JsonString.wrap(Converter.toString(object)) : null;
 	}
 }

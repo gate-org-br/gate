@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  *
  * @param <T> the concrete type implementing this interface
  */
-public interface Hierarchy<T extends Hierarchy<T>>
+public interface Hierarchy<T extends Hierarchy<T>> extends Hierarchical<T>
 {
 
 	/**
@@ -63,11 +63,40 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @param entity the element to check
 	 * @return true if this element is a direct or indirect parent of the specified element
 	 * @throws NullPointerException if the specified element is null or has a null id
+	 * @deprecated use {@link #isAncestorOf(Hierarchy)}
 	 */
+	@Deprecated(since = "21.0.0", forRemoval = true)
 	default boolean isParentOf(T entity)
 	{
+		return isAncestorOf(entity);
+	}
+
+	/**
+	 * Checks if this element is an ancestor of the specified element.
+	 *
+	 * @param entity the element to check
+	 * @return true if this element is a direct or indirect parent of the specified element
+	 * @throws NullPointerException if the specified element is null or has a null id
+	 */
+	@Override
+	default boolean isAncestorOf(T entity)
+	{
 		Objects.requireNonNull(entity);
-		return getChildren().stream().anyMatch(e -> e.equals(entity) || e.isParentOf(entity));
+		Objects.requireNonNull(entity.getId());
+		return getChildren().stream().anyMatch(e -> e.equals(entity) || e.isAncestorOf(entity));
+	}
+
+	/**
+	 * Returns the root of the hierarchy this element belongs to.
+	 *
+	 * @return the root element, which may be this element itself if it has no parent
+	 * @deprecated use {@link #root()}
+	 */
+	@Deprecated(since = "21.0.0", forRemoval = true)
+	@SuppressWarnings("unchecked")
+	default T getRoot()
+	{
+		return root();
 	}
 
 	/**
@@ -75,11 +104,23 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 *
 	 * @return the root element, which may be this element itself if it has no parent
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
-	default T getRoot()
+	default T root()
 	{
 		return getParent() == null || getParent().getId() == null ? (T) this
-				: getParent().getRoot();
+				: getParent().root();
+	}
+
+	/**
+	 * Returns whether this element is the root of its hierarchy.
+	 *
+	 * @return {@code true} if this element has no parent or its parent has no id
+	 */
+	@Override
+	default boolean isRoot()
+	{
+		return getParent() == null || getParent().getId() == null;
 	}
 
 	/**
@@ -93,7 +134,21 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
-		return equals(entity) || isParentOf(entity);
+		return equals(entity) || isAncestorOf(entity);
+	}
+
+	/**
+	 * Checks if this element is a descendant of the specified element.
+	 *
+	 * @param entity the element to check
+	 * @return true if this element is a direct or indirect child of the specified element
+	 * @throws NullPointerException if the specified element is null or has a null id
+	 * @deprecated use {@link #isDescendantOf(Hierarchy)}
+	 */
+	@Deprecated(since = "21.0.0", forRemoval = true)
+	default boolean isChildOf(T entity)
+	{
+		return isDescendantOf(entity);
 	}
 
 	/**
@@ -103,12 +158,27 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return true if this element is a direct or indirect child of the specified element
 	 * @throws NullPointerException if the specified element is null or has a null id
 	 */
-	default boolean isChildOf(T entity)
+	@Override
+	default boolean isDescendantOf(T entity)
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
 		return getParent() != null && getParent().getId() != null
-				&& (getParent().equals(entity) || getParent().isChildOf(entity));
+				&& (getParent().equals(entity) || getParent().isDescendantOf(entity));
+	}
+
+	/**
+	 * Checks if this element is equal to or a descendant of the specified element.
+	 *
+	 * @param entity the element to check
+	 * @return true if this element equals or is a direct or indirect child of the specified element
+	 * @throws NullPointerException if the specified element is null or has a null id
+	 * @deprecated use {@link #isInSubtreeOf(Hierarchy)}
+	 */
+	@Deprecated(since = "21.0.0", forRemoval = true)
+	default boolean isContainedBy(T entity)
+	{
+		return isInSubtreeOf(entity);
 	}
 
 	/**
@@ -118,45 +188,24 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @return true if this element equals or is a direct or indirect child of the specified element
 	 * @throws NullPointerException if the specified element is null or has a null id
 	 */
-	default boolean isContainedBy(T entity)
+	@Override
+	default boolean isInSubtreeOf(T entity)
 	{
 		Objects.requireNonNull(entity);
 		Objects.requireNonNull(entity.getId());
-		return equals(entity) || isChildOf(entity);
+		return equals(entity) || isDescendantOf(entity);
 	}
 
 	/**
 	 * Returns a stream of this element and all its descendants recursively.
 	 *
 	 * @return a stream containing this element followed by all descendants in depth-first order
+	 * @deprecated use {@link #subtree()}
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated(since = "21.0.0", forRemoval = true)
 	default Stream<T> stream()
 	{
-		return Stream.concat((Stream<T>) Stream.of(this),
-				getChildren().stream().flatMap(Hierarchy::stream));
-	}
-
-	/**
-	 * Returns a list of this element and all its descendants recursively.
-	 *
-	 * @return a list containing this element followed by all descendants in depth-first order
-	 */
-	default List<T> toList()
-	{
-		return stream().collect(Collectors.toList());
-	}
-
-	/**
-	 * Returns a list of values extracted from this element and all its descendants recursively.
-	 *
-	 * @param <E>       the type of the extracted value
-	 * @param extractor the function used to extract a value from each element
-	 * @return a list of extracted values in depth-first order
-	 */
-	default <E> List<E> toList(Function<T, E> extractor)
-	{
-		return stream().map(extractor).collect(Collectors.toList());
+		return subtree();
 	}
 
 	/**
@@ -179,32 +228,76 @@ public interface Hierarchy<T extends Hierarchy<T>>
 	 * @param <E>       the type of the extracted value
 	 * @param extractor the function used to extract a value from each element
 	 * @return a list of extracted values from this element up to the root
+	 * @deprecated use {@link #lineage()}
 	 */
+	@Deprecated(since = "21.0.0", forRemoval = true)
 	default <E> List<E> toParentList(Function<T, E> extractor)
 	{
-		return parentStream().map(extractor).collect(Collectors.toList());
+		return lineage().map(extractor).collect(Collectors.toList());
 	}
 
 	/**
 	 * Returns a list of this element and all its ancestors recursively.
 	 *
 	 * @return a list containing this element followed by its ancestors up to the root
+	 * @deprecated use {@link #lineage()}
 	 */
+	@Deprecated(since = "21.0.0", forRemoval = true)
 	default List<T> toParentList()
 	{
-		return parentStream().collect(Collectors.toList());
+		return lineage().collect(Collectors.toList());
+	}
+
+	/**
+	 * Returns the direct parent and its ancestors up to the root.
+	 *
+	 * @return parent, grandparent and so on up to the root
+	 */
+	@Override
+	default Stream<T> ancestors()
+	{
+		return getParent() == null || getParent().getId() == null
+				? Stream.empty()
+				: Stream.concat(Stream.of(getParent()), getParent().ancestors());
+	}
+
+	/**
+	 * Returns the path from the root element to this element.
+	 *
+	 * @return path from the root to this element
+	 */
+	@Override
+	@SuppressWarnings("unchecked")
+	default Stream<T> path()
+	{
+		return getParent() == null || getParent().getId() == null
+				? Stream.of((T) this)
+				: Stream.concat(getParent().path(), Stream.of((T) this));
+	}
+
+	/**
+	 * Returns the siblings of this element.
+	 *
+	 * @return elements sharing the same parent, excluding this element
+	 */
+	@Override
+	default Stream<T> siblings()
+	{
+		return getParent() == null || getParent().getId() == null
+				? Stream.empty()
+				: getParent().getChildren().stream().filter(e -> !e.equals(this));
 	}
 
 	/**
 	 * Returns a stream of this element and all its ancestors recursively.
 	 *
 	 * @return a stream containing this element followed by its ancestors up to the root
+	 * @deprecated use {@link #lineage()}
 	 */
-	@SuppressWarnings("unchecked")
+	@Deprecated(since = "21.0.0", forRemoval = true)
 	default Stream<T> parentStream()
 	{
-		return getParent() == null || getParent().getId() == null ? Stream.of((T) this)
-				: Stream.concat(Stream.of((T) this), getParent().parentStream());
+		return lineage();
 	}
 
 	@Override

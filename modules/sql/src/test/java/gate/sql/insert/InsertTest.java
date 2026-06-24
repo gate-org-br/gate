@@ -702,10 +702,14 @@ public class InsertTest
                 .when(true)
                 .set(String.class, "name", () -> "John")
                 .when(false)
-                .set("birthdate", () -> LocalDate.of(2000, 1, 1));
+                .set("birthdate", () -> LocalDate.of(2000, 1, 1))
+                .when(true)
+                .then(insert -> insert.set("active", true))
+                .when(false)
+                .then(insert -> insert.set("ignored", true));
 
-        assertEquals("insert into Uzer (id, name) values (?, ?)", compiled.toString());
-        assertEquals("insert into Uzer (id, name) values (?, ?)", compiled.build().toString());
+        assertEquals("insert into Uzer (id, name, active) values (?, ?, ?)", compiled.toString());
+        assertEquals("insert into Uzer (id, name, active) values (?, ?, ?)", compiled.build().toString());
     }
 
     @Test

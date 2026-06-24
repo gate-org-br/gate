@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -135,6 +136,11 @@ public class ClassReplace<T> implements Replace, Sentence.Compiled.Builder
 		public ClassReplace<T> set(PropertyReference<T, ?> property, Supplier<?> supplier)
 		{
 			return assertion ? ClassReplace.this.set(property, supplier.get()) : ClassReplace.this;
+		}
+
+		public ClassReplace<T> then(Function<ClassReplace<T>, ClassReplace<T>> function)
+		{
+			return assertion ? function.apply(ClassReplace.this) : ClassReplace.this;
 		}
 
 		public When when(boolean assertion)

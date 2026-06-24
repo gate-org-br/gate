@@ -6,7 +6,9 @@ import gate.lang.property.Property;
 import gate.sql.fetcher.*;
 import gate.sql.mapper.*;
 import gate.type.DataGrid;
+import gate.type.Hierarchy;
 import gate.type.PivotTable;
+import gate.type.TreeNode;
 import gate.util.Page;
 
 import java.util.List;
@@ -393,6 +395,78 @@ public interface Fetchable
 	default <T> List<T> fetchEntityList(Class<T> type, Function<String, Object> context)
 	{
 		return fetch(new EntityListFetcher<>(type, context));
+	}
+
+	/**
+	 * Fetches each row as a hierarchical entity of the specified type and assembles
+	 * parent and children relationships.
+	 *
+	 * @param type type of the entities to be fetched
+	 * @param <T>  hierarchy entity type
+	 * @return root entities of the assembled hierarchy
+	 */
+	default <T extends Hierarchy<T>> List<T> fetchHierarchyList(Class<T> type)
+	{
+		return fetch(new HierarchyListFetcher<>(type));
+	}
+
+	/**
+	 * Fetches each row as a hierarchical entity of the specified type and assembles
+	 * parent and children relationships, allowing contextual values to be supplied
+	 * for specific properties before they are read from the result set.
+	 *
+	 * <p>The {@code context} may provide a value for a property, identified by its full name,
+	 * before the cursor tries to read it from the current row. Returning {@code null} means
+	 * the property should be resolved normally from the cursor.</p>
+	 *
+	 * @param type    type of the entities to be fetched
+	 * @param context function used to provide contextual values for specific property names
+	 * @param <T>     hierarchy entity type
+	 * @return root entities of the assembled hierarchy
+	 */
+	default <T extends Hierarchy<T>> List<T> fetchHierarchyList(Class<T> type,
+			Function<String, Object> context)
+	{
+		return fetch(new HierarchyListFetcher<>(type, context));
+	}
+
+	/**
+	 * Fetches each row as a tree node of the specified type and assembles parent
+	 * relationships using the specified id extractor.
+	 *
+	 * @param type type of the nodes to be fetched
+	 * @param id   function used to extract each node id
+	 * @param <T>  node type
+	 * @param <I>  node id type
+	 * @return root nodes of the assembled tree
+	 */
+	default <T extends TreeNode<T>, I> List<T> fetchTreeNodeList(Class<T> type,
+			Function<T, I> id)
+	{
+		return fetch(new TreeNodeListFetcher<>(type, id));
+	}
+
+	/**
+	 * Fetches each row as a tree node of the specified type and assembles parent
+	 * relationships using the specified id extractor, allowing contextual values
+	 * to be supplied for specific properties before they are read from the result set.
+	 *
+	 * <p>The {@code context} may provide a value for a property, identified by its full name,
+	 * before the cursor tries to read it from the current row. Returning {@code null} means
+	 * the property should be resolved normally from the cursor.</p>
+	 *
+	 * @param type    type of the nodes to be fetched
+	 * @param id      function used to extract each node id
+	 * @param context function used to provide contextual values for specific property names
+	 * @param <T>     node type
+	 * @param <I>     node id type
+	 * @return root nodes of the assembled tree
+	 */
+	default <T extends TreeNode<T>, I> List<T> fetchTreeNodeList(Class<T> type,
+			Function<T, I> id,
+			Function<String, Object> context)
+	{
+		return fetch(new TreeNodeListFetcher<>(type, id, context));
 	}
 
 	/**

@@ -148,6 +148,11 @@ public class ObjectReplace<T> implements Replace, Sentence.Compiled.Builder
 			return assertion ? ObjectReplace.this.set(property, extractor) : ObjectReplace.this;
 		}
 
+		public ObjectReplace<T> then(Function<ObjectReplace<T>, ObjectReplace<T>> function)
+		{
+			return assertion ? function.apply(ObjectReplace.this) : ObjectReplace.this;
+		}
+
 		public When when(boolean assertion)
 		{
 			return new When(this.assertion && assertion);

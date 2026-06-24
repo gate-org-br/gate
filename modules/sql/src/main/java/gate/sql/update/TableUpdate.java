@@ -10,6 +10,7 @@ import gate.sql.statement.Sentence;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -203,6 +204,11 @@ public class TableUpdate implements Update
 				return Compiled.this.set(type, column, supplier.get());
 			}
 
+			public Compiled then(Function<Compiled, Compiled> function)
+			{
+				return function.apply(Compiled.this);
+			}
+
 			public When when(boolean assertion)
 			{
 				return assertion ? this : new DisabledWhen();
@@ -220,6 +226,12 @@ public class TableUpdate implements Update
 
 			@Override
 			public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+			{
+				return Compiled.this;
+			}
+
+			@Override
+			public Compiled then(Function<Compiled, Compiled> function)
 			{
 				return Compiled.this;
 			}
@@ -255,6 +267,11 @@ public class TableUpdate implements Update
 			return new Compiled().set(type, column, supplier.get());
 		}
 
+		public Compiled then(Function<Compiled, Compiled> function)
+		{
+			return function.apply(new Compiled());
+		}
+
 		public When when(boolean assertion)
 		{
 			return assertion ? this : new DisabledWhen();
@@ -284,6 +301,12 @@ public class TableUpdate implements Update
 
 		@Override
 		public <T> Compiled set(Class<T> type, String column, Supplier<T> supplier)
+		{
+			return new Compiled();
+		}
+
+		@Override
+		public Compiled then(Function<Compiled, Compiled> function)
 		{
 			return new Compiled();
 		}

@@ -4,7 +4,7 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
 import gate.thymeleaf.processors.tag.TagModelProcessor;
-import gate.type.Hierarchy;
+import gate.type.Hierarchical;
 import gate.util.Toolkit;
 import jakarta.inject.Inject;
 import org.thymeleaf.context.ITemplateContext;
@@ -92,8 +92,8 @@ public abstract class IterableProcessor extends TagModelProcessor
 				for (Object child : Toolkit.iterable(children.apply(value)))
 					iterate(context, model, handler, exchange, body, child, target, index, depth,
 							children);
-			else if (value instanceof Hierarchy)
-				for (Object child : Toolkit.iterable(((Hierarchy<?>) value).getChildren()))
+			else if (value instanceof Hierarchical<?> hierarchical)
+				for (Object child : Toolkit.iterable(hierarchical.getChildren()))
 					iterate(context, model, handler, exchange, body, child, target, index, depth,
 							null);
 

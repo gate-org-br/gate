@@ -145,10 +145,14 @@ public class ReplaceTest
 				.when(true)
 				.set(String.class, "name", () -> "John")
 				.when(false)
-				.set("birthdate", () -> LocalDate.of(2000, 1, 1));
+				.set("birthdate", () -> LocalDate.of(2000, 1, 1))
+				.when(true)
+				.then(replace -> replace.set("active", true))
+				.when(false)
+				.then(replace -> replace.set("ignored", true));
 
-		assertEquals("replace into Uzer (id, name) values (?, ?)", compiled.toString());
-		assertEquals("replace into Uzer (id, name) values (?, ?)", compiled.build().toString());
+		assertEquals("replace into Uzer (id, name, active) values (?, ?, ?)", compiled.toString());
+		assertEquals("replace into Uzer (id, name, active) values (?, ?, ?)", compiled.build().toString());
 	}
 
 	@Test

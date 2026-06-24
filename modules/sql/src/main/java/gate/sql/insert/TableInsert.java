@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -30,7 +31,6 @@ public class TableInsert implements Insert, Sentence.Compiled.Builder
 
 	public TableInsert set(String column, Object value)
 	{
-		Objects.requireNonNull(column);
 		columns.add(Formatter.identifier(Objects.requireNonNull(column)));
 		parameters.add("?");
 		values.add(value);
@@ -46,7 +46,7 @@ public class TableInsert implements Insert, Sentence.Compiled.Builder
 	 * value computation.
 	 *
 	 * @param column the column name, or {@code null} to skip this assignment
-	 * @param value supplier of the value to be inserted
+	 * @param value  supplier of the value to be inserted
 	 * @return this insert sentence builder
 	 */
 	public TableInsert set(String column, Supplier<?> value)
@@ -106,6 +106,11 @@ public class TableInsert implements Insert, Sentence.Compiled.Builder
 		public <T> TableInsert set(Class<T> type, String column, Supplier<T> supplier)
 		{
 			return assertion ? TableInsert.this.set(type, column, supplier.get()) : TableInsert.this;
+		}
+
+		public TableInsert then(Function<TableInsert, TableInsert> consumer)
+		{
+			return assertion ? consumer.apply(TableInsert.this) : TableInsert.this;
 		}
 
 		public When when(boolean assertion)

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -85,6 +86,11 @@ public class TableReplace implements Replace, Sentence.Compiled.Builder
 		public <T> TableReplace set(Class<T> type, String column, Supplier<T> supplier)
 		{
 			return assertion ? TableReplace.this.set(type, column, supplier.get()) : TableReplace.this;
+		}
+
+		public TableReplace then(Function<TableReplace, TableReplace> function)
+		{
+			return assertion ? function.apply(TableReplace.this) : TableReplace.this;
 		}
 
 		public When when(boolean assertion)

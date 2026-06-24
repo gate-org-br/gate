@@ -276,6 +276,11 @@ public class ObjectUpdate<T> implements Update
 				return Compiled.this.set(properties);
 			}
 
+			public Compiled then(Function<Compiled, Compiled> function)
+			{
+				return function.apply(Compiled.this);
+			}
+
 			/**
 			 * Adds the next column(s) only if previous specified condition is true.
 			 *
@@ -327,6 +332,12 @@ public class ObjectUpdate<T> implements Update
 			 */
 			@Override
 			public Compiled set(List<PropertyReference<T, ?>> properties)
+			{
+				return Compiled.this;
+			}
+
+			@Override
+			public Compiled then(Function<Compiled, Compiled> function)
 			{
 				return Compiled.this;
 			}
@@ -386,6 +397,11 @@ public class ObjectUpdate<T> implements Update
 			return compiled().set(properties);
 		}
 
+		public Compiled then(Function<Compiled, Compiled> function)
+		{
+			return function.apply(compiled());
+		}
+
 		/**
 		 * Adds the next column(s) only if previous specified condition is true.
 		 *
@@ -437,6 +453,12 @@ public class ObjectUpdate<T> implements Update
 		 */
 		@Override
 		public Compiled set(List<PropertyReference<T, ?>> properties)
+		{
+			return compiled();
+		}
+
+		@Override
+		public Compiled then(Function<Compiled, Compiled> function)
 		{
 			return compiled();
 		}

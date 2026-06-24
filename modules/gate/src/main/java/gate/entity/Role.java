@@ -5,7 +5,6 @@ import gate.constraint.Maxlength;
 import gate.constraint.Pattern;
 import gate.constraint.Required;
 import gate.sql.annotation.Column;
-import gate.annotation.Entity;
 import gate.sql.annotation.Schema;
 import gate.type.Hierarchy;
 import gate.type.ID;
@@ -30,7 +29,8 @@ import java.util.stream.Stream;
 public class Role implements Serializable, Hierarchy<Role>
 {
 
-	@Serial private static final long serialVersionUID = 1L;
+	@Serial
+	private static final long serialVersionUID = 1L;
 
 	@Required
 	@Name
@@ -229,7 +229,7 @@ public class Role implements Serializable, Hierarchy<Role>
 
 	public boolean isDisabled()
 	{
-		return parentStream()
+		return lineage()
 				.anyMatch(e -> Boolean.FALSE.equals(active));
 	}
 
@@ -292,7 +292,7 @@ public class Role implements Serializable, Hierarchy<Role>
 
 	public Role getMasterRole()
 	{
-		return parentStream()
+		return lineage()
 				.filter(e -> Boolean.TRUE.equals(e.master))
 				.findFirst()
 				.orElse(this);
@@ -312,8 +312,8 @@ public class Role implements Serializable, Hierarchy<Role>
 	{
 		return Boolean.TRUE.equals(getMaster())
 				? Stream.concat(Stream.of(this), getChildren().stream()
-												 .filter(e -> !Boolean.TRUE.equals(e.getMaster()))
-												 .flatMap(Hierarchy::stream))
+				.filter(e -> !Boolean.TRUE.equals(e.getMaster()))
+				.flatMap(Hierarchy::subtree))
 				: Stream.empty();
 	}
 
@@ -329,8 +329,7 @@ public class Role implements Serializable, Hierarchy<Role>
 
 	public Stream<Role> masterStream()
 	{
-		return stream()
-				.filter(e -> Boolean.TRUE.equals(e.getMaster()));
+		return subtree().filter(e -> Boolean.TRUE.equals(e.getMaster()));
 	}
 
 	public List<Role> toMasterList()
@@ -346,9 +345,9 @@ public class Role implements Serializable, Hierarchy<Role>
 	private Stream<Auth> privateAuthStream()
 	{
 		return id != null ? Stream.concat(getAuths().stream()
-										  .filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
+						.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())),
 				getFuncs().stream().flatMap(e -> e.getAuths().stream())
-				.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
+						.filter(e -> Auth.Scope.PRIVATE.equals(e.getScope())))
 				: Stream.empty();
 	}
 
@@ -357,9 +356,9 @@ public class Role implements Serializable, Hierarchy<Role>
 
 		return id != null
 				? Stream.concat(getAuths().stream()
-								.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
+						.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
 				Stream.concat(getFuncs().stream().flatMap(e -> e.getAuths().stream())
-							  .filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
+								.filter(e -> Auth.Scope.PUBLIC.equals(e.getScope())),
 						getRole().publicAuthStream())) : Stream.empty();
 	}
 

@@ -4,7 +4,7 @@ import gate.thymeleaf.ELExpressionFactory;
 import gate.thymeleaf.Precedence;
 import gate.thymeleaf.TextEngine;
 import gate.type.Attributes;
-import gate.type.Hierarchy;
+import gate.type.Hierarchical;
 import gate.util.Toolkit;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -110,8 +110,8 @@ public class IterateAttributeProcessor extends AttributeModelProcessor
 					for (Object child : Toolkit.iterable(children.apply(value)))
 						iterate(context, model, handler, content, exchange, child, target, index,
 								depth, children);
-				else if (value instanceof Hierarchy<?> hierarchy)
-					hierarchy.getChildren().forEach(child -> iterate(context, model, handler,
+				else if (value instanceof Hierarchical<?> hierarchical)
+					hierarchical.getChildren().forEach(child -> iterate(context, model, handler,
 							content, exchange, child, target, index, depth, null));
 		}
 		exchange.setAttributeValue(depth, ((int) exchange.getAttributeValue(depth)) - 1);

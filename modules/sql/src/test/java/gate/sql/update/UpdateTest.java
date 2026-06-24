@@ -613,9 +613,11 @@ public class UpdateTest
         TableUpdate.Compiled compiled = Update.table("Uzer")
                 .set("name", "Alice");
         compiled.when(true).set("birthdate", () -> LocalDate.of(2000, 1, 1))
-                .when(false).set("ignored", () -> "x");
-        assertEquals("update Uzer set name = ?, birthdate = ?", compiled.toString());
-        assertEquals("update Uzer set name = ?, birthdate = ?", compiled.build().toString());
+                .when(false).set("ignored", () -> "x")
+                .when(true).then(update -> update.set("active", true))
+                .when(false).then(update -> update.set("ignored", true));
+        assertEquals("update Uzer set name = ?, birthdate = ?, active = ?", compiled.toString());
+        assertEquals("update Uzer set name = ?, birthdate = ?, active = ?", compiled.build().toString());
     }
 
     @Test

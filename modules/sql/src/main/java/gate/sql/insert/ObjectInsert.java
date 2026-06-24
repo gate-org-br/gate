@@ -151,6 +151,11 @@ public class ObjectInsert<T> implements Insert, Sentence.Compiled.Builder
 			return assertion ? ObjectInsert.this.set(property, extractor) : ObjectInsert.this;
 		}
 
+		public ObjectInsert<T> then(Function<ObjectInsert<T>, ObjectInsert<T>> function)
+		{
+			return assertion ? function.apply(ObjectInsert.this) : ObjectInsert.this;
+		}
+
 		public When when(boolean assertion)
 		{
 			return new When(this.assertion && assertion);
