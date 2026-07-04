@@ -2,7 +2,7 @@
 	box-sizing: border-box;
 }
 
-g-tab-control>a {
+g-tab-control > a {
 	flex-grow: 1;
 	flex-shrink: 0;
 }
@@ -82,3 +82,4 @@ main {
 			background-color: var(--main3);
 		}
 	}
+}

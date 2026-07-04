@@ -84,11 +84,11 @@ button {
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-	background-color: var(--g2, #009E60);
+	background-color: var(--back-g, #39511F);
 }
 
 .row > button {
-	background-color: var(--r2, #AA2222);
+	background-color: var(--back-r, #772E2C);
 }</style>`;
 /* global customElements */
 import Base64 from "./base64.js";

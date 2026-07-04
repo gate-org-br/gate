@@ -12,7 +12,7 @@ template.innerHTML = `
 	max-width: 800px;
 }
 
-dialog>section {
+dialog > section {
 	padding: 8px;
 	display: flex;
 	color: inherit;
@@ -39,31 +39,31 @@ label::first-line {
 	color: var(--text1, #000000);
 }
 
-:host([type="INFO"])>dialog>section::before {
+:host([type="INFO"]) > dialog > section::before {
 	content: "\\2015"
 }
 
 :host([type="ERROR"]) {
-	color: var(--r1)
+	color: var(--fore-r, #F0524F);
 }
 
-:host([type="ERROR"])>dialog>section::before {
+:host([type="ERROR"]) > dialog > section::before {
 	content: "\\1001"
 }
 
 :host([type="SUCCESS"]) {
-	color: var(--g1)
+	color: var(--fore-g, #5C962C);
 }
 
-:host([type="SUCCESS"])>dialog>section::before {
+:host([type="SUCCESS"]) > dialog > section::before {
 	content: "\\1000"
 }
 
 :host([type="WARNING"]) {
-	color: color: var(--y1, #808000)
+	color: var(--fore-y, #A68A0D)
 }
 
-:host([type="WARNING"])>dialog>section::before {
+:host([type="WARNING"]) > dialog > section::before {
 	content: "\\1007"
 }</style>`;
 /* global customElements, template */

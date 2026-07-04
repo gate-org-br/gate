@@ -34,7 +34,7 @@ body > main > header {
   display: flex;
   color: white;
   align-items: center;
-  background-color: #3f729b;
+  background-color: var(--base1);
   gap: var(--gap);
   padding: var(--gap);
 }

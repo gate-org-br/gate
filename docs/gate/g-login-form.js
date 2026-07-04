@@ -50,7 +50,7 @@ template.innerHTML = `
 	box-sizing: border-box;
 }
 
-g-tab-control>a {
+g-tab-control > a {
 	flex-grow: 1;
 	flex-shrink: 0;
 }
@@ -129,7 +129,8 @@ main {
 			max-width: unset;
 			background-color: var(--main3);
 		}
-	}</style>`;
+	}
+}</style>`;
 /* global customElements */
 
 import './g-coolbar.js';

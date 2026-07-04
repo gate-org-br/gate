@@ -3,12 +3,14 @@ package gate.type;
 import gate.util.Reflection;
 
 import java.io.Serializable;
+import java.lang.invoke.MethodType;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 @FunctionalInterface
 public interface PropertyReference<T, R> extends Function<T, R>, Serializable
@@ -51,16 +53,34 @@ public interface PropertyReference<T, R> extends Function<T, R>, Serializable
 					var className = lambda.getImplClass().replace('/', '.');
 					Class<?> ownerClass = Class.forName(className, false, classLoader);
 
-					Method accessor = Reflection.findMethod(ownerClass, lambda.getImplMethodName())
-							.orElseThrow(() -> new IllegalStateException("Could not find accessor method %s on %s"
-									.formatted(lambda.getImplMethodName(), ownerClass.getName())));
+					String name = lambda.getImplMethodName();
+					String signature = lambda.getImplMethodSignature();
+					Method accessor = Stream.of(ownerClass.getMethods())
+							.filter(method -> method.getName().equals(name))
+							.filter(method -> !method.isBridge())
+							.filter(method -> !method.isSynthetic())
+							.filter(method -> MethodType
+									.methodType(method.getReturnType(), method.getParameterTypes())
+									.toMethodDescriptorString()
+									.equals(signature))
+							.findFirst()
+							.or(() -> Stream.of(ownerClass.getMethods())
+									.filter(method -> method.getName().equals(name))
+									.filter(method -> !method.isBridge())
+									.filter(method -> !method.isSynthetic())
+									.findFirst())
+							.orElseThrow(() -> new IllegalStateException(
+									"Could not find accessor method %s%s on %s"
+											.formatted(name, signature, ownerClass.getName())));
 
 					Field field = Reflection.findField(accessor).orElse(null);
 
 					return new Metadata(lambda, ownerClass, field, accessor);
 				} catch (ReflectiveOperationException ex)
 				{
-					throw new IllegalStateException("Invalid property reference. Only direct method references to accessors are supported.", ex);
+					throw new IllegalStateException(
+							"Invalid property reference. Only direct method references to accessors are supported.",
+							ex);
 				}
 			});
 		}

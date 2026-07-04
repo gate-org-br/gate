@@ -40,57 +40,57 @@
 }
 
 :host(.success) {
-	color: var(--g1, #003D26);
-	border-color: var(--g1, #003D26);
+	color: var(--fore-g, #5C962C);
+	border-color: var(--fore-g, #5C962C);
 }
 
 :host(.success) ::slotted(hr) {
-	border-color: var(--g1, #003D26);
+	border-color: var(--fore-g, #5C962C);
 }
 
 :host(.success.fill) {
-	border-color: var(--g3, #A8F0C8);
-	background-color: var(--g3, #A8F0C8);
+	color: var(--text1, #FFFFFF);
+	background-color: var(--back-g, #39511F);
 }
 
 :host(.warning) {
-	color: var(--y1, #808000);
-	border-color: var(--y1, #808000);
+	color: var(--fore-y, #A68A0D);
+	border-color: var(--fore-y, #A68A0D);
 }
 
 :host(.warning) ::slotted(hr) {
-	border-color: var(--y1, #808000);
+	border-color: var(--fore-y, #A68A0D);
 }
 
 :host(.warning.fill) {
-	border-color: var(--y3, #FFFFCC);
-	background-color: var(--y3, #FFFFCC);
+	color: var(--text1, #FFFFFF);
+	background-color: var(--back-y, #5C4F17);
 }
 
 :host(.danger) {
-	color: var(--r1, #5e0000);
-	border-color: var(--r1, #5e0000);
+	color: var(--fore-r, #F0524F);
+	border-color: var(--fore-r, #F0524F);
 }
 
 :host(.danger) ::slotted(hr) {
-	border-color: var(--r1, #5e0000);
+	border-color: var(--fore-r, #F0524F);
 }
 
 :host(.danger.fill) {
-	border-color: var(--r3, #F0A8A8);
-	background-color: var(--r3, #F0A8A8);
+	color: var(--text1, #FFFFFF);
+	background-color: var(--back-r, #772E2C);
 }
 
 :host(.question) {
-	color: var(--b1, #1A2D5F);
-	border-color: var(--b1, #1A2D5F);
+	color: var(--fore-b, #3993D4);
+	border-color: var(--fore-b, #3993D4);
 }
 
 :host(.question) ::slotted(hr) {
-	border-color: var(--b1, #1A2D5F);
+	border-color: var(--fore-b, #3993D4);
 }
 
 :host(.question.fill) {
-	border-color: var(--b3, #A8D8F0);
-	background-color: var(--b3, #A8D8F0);
+	color: var(--text1, #FFFFFF);
+	background-color: var(--back-b, #245980);
 }

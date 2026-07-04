@@ -67,7 +67,7 @@ template.innerHTML = `
 
 ::slotted(g-desk-pane-reset) {
 	cursor: pointer;
-	color: var(--r1, #5e0000);
+	color: var(--fore-r, #F0524F);
 }
 
 ::slotted(g-desk-pane-reset)::before {

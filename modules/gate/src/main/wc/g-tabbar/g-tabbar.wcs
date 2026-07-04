@@ -46,7 +46,7 @@ header ::slotted(.g-command) {
 header ::slotted(a[aria-selected]),
 header ::slotted(button[aria-selected]),
 header ::slotted(.g-command[aria-selected]) {
-	color: var(--base1, #2f5674);
+	color: var(--fore-b, #3A69AE);
 	background-color: var(--main3, #DDDDDD);
 }
 

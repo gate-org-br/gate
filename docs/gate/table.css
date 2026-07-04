@@ -45,7 +45,7 @@ table tr > *:first-child {
 table tr > * > a,
 table tr > * > button,
 table tr > * > .g-command {
-  color: var(--b1, #1A2D5F);
+  color: var(--fore-b, #3993D4);
   cursor: pointer;
 }
 table tr > * > a:hover,
@@ -82,9 +82,9 @@ table > caption {
   line-height: 32px;
   font-weight: bold;
   text-align: center;
-  color: var(--text1);
   border-radius: 3px 3px 0 0;
-  background-color: var(--base3, #cfdce6);
+  color: var(--text1, #000000);
+  background: var(--base2);
 }
 table > thead > tr {
   color: var(--text1);
@@ -93,7 +93,7 @@ table > thead > tr > * {
   color: inherit;
   font-weight: bold;
   border-color: var(--main3, #DDDDDD);
-  background-color: var(--base4, #e8f1f6);
+  background-color: var(--base3, #e8f1f6);
 }
 table > tbody > tr {
   outline: none;

@@ -33,7 +33,7 @@ button {
 	text-decoration: none;
 	flex-direction: column;
 	justify-content: center;
-	color: var(--b1, #1A2D5F);
+	color: var(--fore-b, #3993D4);
 	background-color: var(--main1, white);
 }
 

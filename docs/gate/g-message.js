@@ -46,11 +46,12 @@ main {
 }
 
 :host(.error) {
-	color: var(--r1);
+	color: var(--fore-r, #F0524F);
 }
 
 :host(.error.fill) {
-	background-color: var(--r3);
+	color: var(--text1, #000000);
+	background-color: var(--back-r, #772E2C);
 }
 
 :host(.error.icon)::before {
@@ -58,11 +59,12 @@ main {
 }
 
 :host(.success) {
-	color: var(--g1, #003D26);
+	color: var(--fore-g, #5C962C);
 }
 
 :host(.success.fill) {
-	background-color: var(--g3, #A8F0C8);
+	color: var(--text1, #000000);
+	background-color: var(--back-g, #39511F);
 }
 
 :host(.success.icon)::before {
@@ -70,11 +72,12 @@ main {
 }
 
 :host(.warning) {
-	color: var(--y1, #808000);
+	color: var(--fore-y, #A68A0D);
 }
 
 :host(.warning.fill) {
-	background-color: var(--y3, #FFFFCC);
+	color: var(--text1, #000000);
+	background-color: var(--back-y, #5C4F17);
 }
 
 :host(.warning.icon)::before {
@@ -82,11 +85,12 @@ main {
 }
 
 :host(.question) {
-	color: var(--b1, #1A2D5F);
+	color: var(--fore-b, #3993D4);
 }
 
 :host(.question.fill) {
-	background-color: var(--b3, #A8D8F0);
+	color: var(--text1, #000000);
+	background-color: var(--back-b, #245980);
 }
 
 :host(.question.icon)::before {

@@ -26,7 +26,7 @@ div {
 	flex-direction: row-reverse;
 }
 
-div> ::slotted(:is(a, button, .g-command)) {
+div > ::slotted(:is(a, button, .g-command)) {
 	gap: 8px;
 	width: 120px;
 	height: 44px;
@@ -47,55 +47,55 @@ div> ::slotted(:is(a, button, .g-command)) {
 	transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-div> ::slotted(a:hover),
-div> ::slotted(button:hover),
-div> ::slotted(.g-command:hover) {
+div > ::slotted(a:hover),
+div > ::slotted(button:hover),
+div > ::slotted(.g-command:hover) {
 	transform: scale(1.05);
 }
 
-div> ::slotted(a:focus),
-div> ::slotted(button:focus),
-div> ::slotted(.g-command:focus) {
+div > ::slotted(a:focus),
+div > ::slotted(button:focus),
+div > ::slotted(.g-command:focus) {
 	outline: 4px solid var(--hovered, #FFFACD);
 }
 
-div> ::slotted(a.primary),
-div> ::slotted(button.primary),
-div> ::slotted(.g-command.primary) {
+div > ::slotted(a.primary),
+div > ::slotted(button.primary),
+div > ::slotted(.g-command.primary) {
 	border: none;
 	color: white;
-	background-color: var(--b2, #2A6B9A);
+	background-color: var(--fore-b, #245980);
 }
 
-div> ::slotted(a.alternative),
-div> ::slotted(button.alternative),
-div> ::slotted(.g-command.alternative) {
+div > ::slotted(a.alternative),
+div > ::slotted(button.alternative),
+div > ::slotted(.g-command.alternative) {
 	color: white;
 	border: none;
-	background-color: var(--g2, #009E60);
+	background-color: var(--fore-g, #39511F);
 }
 
-div> ::slotted(a.tertiary),
-div> ::slotted(button.tertiary),
-div> ::slotted(.g-command.tertiary) {
+div > ::slotted(a.tertiary),
+div > ::slotted(button.tertiary),
+div > ::slotted(.g-command.tertiary) {
 	color: var(--text1, #000000);
 	border: 1px solid var(--main3, #DDDDDD);
 	background-color: var(--text2, #FFFFFF);
 }
 
-div> ::slotted(a.danger),
-div> ::slotted(button.danger),
-div> ::slotted(.g-command.danger) {
+div > ::slotted(a.danger),
+div > ::slotted(button.danger),
+div > ::slotted(.g-command.danger) {
 	border: none;
 	color: white;
-	background-color: var(--r2, #AA2222);
+	background-color: var(--fore-r, #772E2C);
 }
 
-div> ::slotted([hidden="true"]) {
+div > ::slotted([hidden="true"]) {
 	display: none;
 }
 
-div> ::slotted(hr) {
+div > ::slotted(hr) {
 	border: none;
 	flex-grow: 100000;
 }

@@ -39,13 +39,13 @@ progress { width: 100%; height: 8px; }
 
 :host([status="PENDING"]) { color: var(--text1);}
 
-:host([status="COMMITED"]) { color: var(--g2);}
+:host([status="COMMITED"]) { color: var(--back-g, #39511F);}
 
-:host([status="CANCELED"]) { color: var(--r2);}
+:host([status="CANCELED"]) { color: var(--back-r, #772E2C);}
 
-:host([status="UNKNOWN"]) { color: var(--r2);}
+:host([status="UNKNOWN"]) { color: var(--back-r, #772E2C);}
 
-:host([status="CONNECTING"]) { color: var(--y2);}</style>`;
+:host([status="CONNECTING"]) { color: var(--back-y, #5C4F17);}</style>`;
 import Job from './job.js';
 
 const Status = Object.freeze({

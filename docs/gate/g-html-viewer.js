@@ -37,17 +37,16 @@ template.innerHTML = `
 }
 
 .tag {
-	color: var(--b1, #1A2D5F);
+	color: var(--fore-b, #3993D4);
 }
 
 .key {
-	color: var(--g1, #003D26);
+	color: var(--fore-g, #5C962C);
 }
 
 .val {
-	color: var(--r1, #5e0000);
-}
-</style>`;
+	color: var(--fore-r, #F0524F);
+}</style>`;
 function highlightHTML(htmlString)
 {
 	const selfClosing = ["AREA", "BASE", "BR", "COL", "COMMAND", "EMBED", "HR", "IMG", "INPUT",
