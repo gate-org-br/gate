@@ -48,10 +48,10 @@ section {
 section::after {
 	padding: 1rem;
 	display: none;
-	color: var(--main4);
 	min-height: 44px;
 	border-radius: 3px;
 	align-items: center;
+	color: var(--fore-b);
 	justify-content: center;
 	content: attr(data-placeholder);
 	border: 1px dashed var(--main3);
@@ -81,9 +81,9 @@ button {
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-	background-color: var(--back-g, #39511F);
+	background-color: var(--fore-g, #39511F);
 }
 
 .row > button {
-	background-color: var(--back-r, #772E2C);
+	background-color: var(--fore-r, #772E2C);
 }

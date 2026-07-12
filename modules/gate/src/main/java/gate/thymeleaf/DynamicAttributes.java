@@ -67,11 +67,13 @@ public class DynamicAttributes extends Attributes
 				put.accept("title", description);
 		}
 
-		if (!contains.test("data-tooltip"))
+		if (!contains.test("data-tooltip")
+				&& !contains.test("data-tooltip:text")
+				&& !contains.test("data-tooltip:source"))
 		{
 			String tooltip = property.getMetadata().tooltip();
 			if (tooltip != null && !tooltip.isEmpty())
-				put.accept("data-tooltip", tooltip);
+				put.accept("data-tooltip:text", tooltip);
 		}
 	}
 

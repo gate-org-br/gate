@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 /**
  * Holds the connection to the database and provides a clean interface for
- * transaction management, querying and execution of statements.
+ * transaction management, querying, and execution of statements.
  *
  * @author Davi Nunes da Silva
  */
@@ -303,7 +303,10 @@ public class Link implements AutoCloseable
 	 * @param <T>      type of the entities to be compiled with the sentence
 	 * @return a compiled and connected sentence ready for execution
 	 */
-	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled<T> sentence) {return sentence.connect(this);}
+	public <T> Sentence.Extractor.Compiled.Connected<T> prepare(Sentence.Extractor.Compiled<T> sentence)
+	{
+		return sentence.connect(this);
+	}
 
 	/**
 	 * Prepares a sentence to be executed.

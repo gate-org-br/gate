@@ -1,5 +1,6 @@
 :root {
   --gap: 12px;
+  --padding: 8px;
 }
 
 html {
@@ -35,10 +36,10 @@ body {
 	  height: 50px;
 	  display: flex;
 	  color: white;
-	  align-items: center;
-	  background-color: var(--base1);
 	  gap: var(--gap);
-	  padding: var(--gap);
+	  align-items: center;
+	  padding: var(--padding);
+	  background-color: var(--base1);
 
 	  > * {
 		margin: 0;
@@ -74,11 +75,11 @@ body {
 	  margin: 0;
 	  grid-row: 2;
 	  border: none;
-	  padding: 4px;
 	  display: flex;
 	  grid-column: span 2;
 	  align-items: center;
 	  justify-content: center;
+	  padding: var(--padding);
 	  background-color: var(--main2, #DDDDDD);
 	  border-bottom: 1px solid var(--base3, #cfdce6);
 	}
@@ -86,7 +87,6 @@ body {
 	> section {
 	  margin: 0;
 	  grid-row: 3;
-	  padding: 8px;
 	  grid-column: 2;
 
 	  min-height: 0;
@@ -96,20 +96,21 @@ body {
 	  background-color: var(--main1, white);
 	  display: flex;
 	  flex-direction: column;
+
 	  gap: var(--gap);
+	  padding: var(--padding);
 	}
 
 	> footer {
 	  grid-row: 4;
-	  gap: var(--gap);
 	  grid-column: span 2;
 
 	  height: 28px;
-	  padding: 8px;
+	  padding: var(--padding);
 
-	  display: flex;
+	  display: grid;
+	  gap: var(--gap);
 	  align-items: center;
-	  justify-content: space-between;
 
 	  font-size: 12px;
 	  font-weight: bold;
@@ -119,6 +120,31 @@ body {
 
 	  > * {
 		font-size: inherit;
+	  }
+
+	  &:has(> :nth-child(2):last-child) {
+		grid-template-columns: 1fr 1fr;
+
+		> :first-child {
+		  justify-self: start
+		}
+
+		> :last-child {
+		  justify-self: end
+		}
+	  }
+
+	  &:has(> :nth-child(3):last-child) {
+		justify-content: center;
+		grid-template-columns: 1fr 1fr 1fr;
+
+		> :first-child {
+		  justify-self: start
+		}
+
+		> :last-child {
+		  justify-self: end
+		}
 	  }
 	}
 
@@ -149,10 +175,9 @@ article {
   display: grid;
   min-height: 0;
   place-items: stretch;
-  grid-column-gap: 12px;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto 1fr auto;
-
+  
   > header {
 	grid-row: 1;
 	grid-column: span 2;

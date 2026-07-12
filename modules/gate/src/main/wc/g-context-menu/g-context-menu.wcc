@@ -185,11 +185,14 @@ export default class GContextMenu extends HTMLElement
 			e => e.newState === "closed" && menu.remove());
 
 		let parent = context;
-		while (parent && !parent.contains(menu))
-		{
-			parent.appendChild(menu);
+		if (parent.shadowRoot)
 			parent = parent.parentNode;
-		}
+		if (!parent.appendChild)
+			parent = document.documentElement;
+		parent.appendChild(menu);
+		if (menu.parentNode !== parent)
+			parent.parentNode.appendChild(menu);
+
 		menu.show(target);
 		return menu;
 	}

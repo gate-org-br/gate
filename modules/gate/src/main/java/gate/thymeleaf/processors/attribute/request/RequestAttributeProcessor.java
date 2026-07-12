@@ -86,7 +86,7 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 		if (!call.accessRule().allows(user))
 		{
 			if (element.getElementCompleteName().equalsIgnoreCase("a")
-			    || element.getElementCompleteName().equalsIgnoreCase("button"))
+					|| element.getElementCompleteName().equalsIgnoreCase("button"))
 				handler.removeElement();
 			return;
 		}
@@ -102,8 +102,11 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 		if (!element.hasAttribute("data-confirm") && meta.confirm() != null)
 			handler.setAttribute("data-confirm", meta.confirm());
 
-		if (!element.hasAttribute("data-tooltip") && meta.tooltip() != null)
-			handler.setAttribute("data-tooltip", meta.tooltip());
+		if (meta.tooltip() != null
+				&& !element.hasAttribute("data-tooltip")
+				&& !element.hasAttribute("data-tooltip:text")
+				&& !element.hasAttribute("data-tooltip:source"))
+			handler.setAttribute("data-tooltip:text", meta.tooltip());
 
 		if (!element.hasAttribute("title"))
 		{
@@ -151,8 +154,8 @@ public abstract class RequestAttributeProcessor extends AttributeProcessor
 		}
 
 		if (element instanceof IStandaloneElementTag
-		    && (element.getElementCompleteName().equalsIgnoreCase("a")
-		        || element.getElementCompleteName().equalsIgnoreCase("button")))
+				&& (element.getElementCompleteName().equalsIgnoreCase("a")
+				|| element.getElementCompleteName().equalsIgnoreCase("button")))
 		{
 			StringJoiner body = new StringJoiner("").setEmptyValue("unnamed");
 

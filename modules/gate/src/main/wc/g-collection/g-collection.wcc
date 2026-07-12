@@ -1,5 +1,4 @@
 /* global customElements */
-import Base64 from "./base64.js";
 import GMessageDialog from './g-message-dialog.js';
 import GCollectionItem from './g-collection-item.js';
 
@@ -144,17 +143,14 @@ customElements.define('g-collection', class extends HTMLElement
 
 	get value()
 	{
-		return this.entries
-			.map(entry => Base64.encode(JSON.stringify(entry)))
-			.join(";");
+		return this.entries.join("\n");
 	}
 
 	set value(value)
 	{
 		this.entries = (value?.trim() || "")
 			.split(/\s*(?:;|\r?\n)\s*/)
-			.filter(item => item)
-			.map(item => JSON.parse(Base64.decode(item)));
+			.filter(item => item);
 	}
 
 	get required()

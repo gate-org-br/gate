@@ -12,7 +12,7 @@ customElements.define('g-theme-selector', class extends HTMLElement
 		this.addEventListener("click", event =>
 		{
 			event.preventDefault();
-			GContextMenu.show(this, this,
+			GContextMenu.show(this, event,
 				{
 					text: "Light", icon: "2203", action: () => this.value = "light"
 				},

@@ -1,3 +1,8 @@
+:host {
+	display: block;
+	line-height: normal;
+}
+
 ul {
 	margin: 0;
 	padding: 8px;
@@ -30,6 +35,7 @@ li[data-action]:hover {
 }
 
 dl {
+	margin: 0;
 	display: inline-grid;
 	grid-template-columns: auto auto;
 }

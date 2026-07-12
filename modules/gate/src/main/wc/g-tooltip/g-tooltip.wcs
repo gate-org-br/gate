@@ -4,7 +4,7 @@
 
 :host(*) {
 	margin: 0;
-	padding: 10px;
+	padding: 8px;
 	font-size: 16px;
 	max-width: 50vw;
 	max-height: 50vh;
@@ -19,14 +19,23 @@
 
 :host(:popover-open) {
 	display: flex;
-	align-items: stretch;
 	flex-direction: column;
+	max-width: 50vw;
+	max-height: 50vh;
 }
 
 div {
-	height: auto;
 	overflow: auto;
-	width: max-content;
+	min-width: 0;
+	min-height: 0;
+	max-width: 100%;
+	max-height: 100%;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+:host(:has(> *)) div {
+	white-space: normal;
 }
 
 svg {

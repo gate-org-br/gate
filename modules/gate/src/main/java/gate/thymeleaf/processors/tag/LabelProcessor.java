@@ -1,10 +1,8 @@
 package gate.thymeleaf.processors.tag;
 
 import gate.adapter.renderer.Renderer;
-
 import gate.annotation.Color;
 import gate.base.Screen;
-import gate.adapter.converter.Converter;
 import gate.lang.property.Property;
 import gate.thymeleaf.ELExpressionFactory;
 import gate.type.Attributes;
@@ -59,11 +57,13 @@ public class LabelProcessor extends TagProcessor
 				attributes.put("title", description);
 		}
 
-		if (!attributes.containsKey("data-tooltip"))
+		if (!attributes.containsKey("data-tooltip")
+				&& !attributes.containsKey("data-tooltip:text")
+				&& !attributes.containsKey("data-tooltip:source"))
 		{
 			String tooltip = property.getMetadata().tooltip();
 			if (tooltip != null && !tooltip.isEmpty())
-				attributes.put("data-tooltip", tooltip);
+				attributes.put("data-tooltip:text", tooltip);
 		}
 
 		if (!attributes.containsKey("style"))

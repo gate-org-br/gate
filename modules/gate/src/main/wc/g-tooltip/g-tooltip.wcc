@@ -31,13 +31,17 @@ export default class GTooltip extends HTMLElement
 		if (!this.parentNode)
 			throw new Error("Attempt to show disconnected tooltip");
 
-		if (!target.getBoundingClientRect)
-			return;
-
-		const controller = new AbortController();
-		target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
-		target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
-		target.addEventListener("click", () => this.hide() || controller.abort(), {signal: controller.signal});
+		if (target instanceof Element)
+		{
+			const controller = new AbortController();
+			target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
+			target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
+			target.addEventListener("click", () => this.hide() || controller.abort(), {signal: controller.signal});
+		} else
+		{
+			const rect = target;
+			target = {getBoundingClientRect: () => rect};
+		}
 
 		this.style.visibility = "hidden";
 		this.showPopover();
@@ -75,19 +79,27 @@ export default class GTooltip extends HTMLElement
 		let tooltip = new GTooltip();
 		tooltip.setAttribute("auto", true);
 
-		element.appendChild(tooltip);
-		if (tooltip.parentNode !== element)
-			element.parentNode.appendChild(tooltip);
+		let parent = element instanceof Element ? element : document.documentElement;
+		if (parent.shadowRoot)
+			parent = parent.parentNode;
+		if (!parent.appendChild)
+			parent = document.documentElement;
+		parent.appendChild(tooltip);
+		if (tooltip.parentNode !== parent)
+			parent.parentNode.appendChild(tooltip);
 
-		if (typeof content === "object")
+		if (content instanceof Node)
+			tooltip.replaceChildren(content);
+		else if (typeof content === "object")
 		{
 			tooltip.innerHTML = "";
-			const element = new GJsonHTMLElement();
-			element.value = content;
-			tooltip.appendChild(element);
+			const payload = new GJsonHTMLElement();
+			payload.value = content;
+			tooltip.appendChild(payload);
 		} else
 			tooltip.innerHTML = content;
 		tooltip.show(element, position || DEFAULT_POSITION);
+		return tooltip;
 	}
 
 	static get observedAttributes()
