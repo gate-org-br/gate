@@ -139,6 +139,14 @@ function point(event)
 	return {x: event.clientX, y: event.clientY};
 }
 
+function options(target, exclusion)
+{
+	return {
+		exclusion,
+		position: target.getAttribute("data-tooltip:position")
+	};
+}
+
 export default class GTooltip extends HTMLElement
 {
 	#parent;
@@ -264,17 +272,16 @@ function trigger(event)
 
 	let timeout = setTimeout(() =>
 	{
-		const options = {exclusion};
 		if (this.hasAttribute("data-tooltip"))
 			DOM.navigate(this, this.getAttribute("data-tooltip"))
 				.orElseThrow(`${this.getAttribute("data-tooltip")} is not a valid selector`)
-				.show(this, options);
+				.show(this, options(this, exclusion));
 		else if (this.hasAttribute("data-tooltip:text"))
-			GTooltip.show(this, this.getAttribute("data-tooltip:text"), options);
+			GTooltip.show(this, this.getAttribute("data-tooltip:text"), options(this, exclusion));
 		else if (this.hasAttribute("data-tooltip:source"))
 			fetch(this.getAttribute("data-tooltip:source"))
 				.then(ResponseHandler.auto)
-				.then(content => GTooltip.show(this, content, options))
+				.then(content => GTooltip.show(this, content, options(this, exclusion)))
 				.catch(error => console.error('Error trying to fetch tooltip data:', error));
 	}, 500);
 	this.addEventListener("mouseleave", () =>
