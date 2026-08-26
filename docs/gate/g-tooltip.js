@@ -7,7 +7,7 @@ template.innerHTML = `
 
 :host(*) {
 	margin: 0;
-	padding: 10px;
+	padding: 8px;
 	font-size: 16px;
 	max-width: 50vw;
 	max-height: 50vh;
@@ -22,14 +22,23 @@ template.innerHTML = `
 
 :host(:popover-open) {
 	display: flex;
-	align-items: stretch;
 	flex-direction: column;
+	max-width: 50vw;
+	max-height: 50vh;
 }
 
 div {
-	height: auto;
 	overflow: auto;
-	width: max-content;
+	min-width: 0;
+	min-height: 0;
+	max-width: 100%;
+	max-height: 100%;
+	white-space: pre-wrap;
+	overflow-wrap: anywhere;
+}
+
+:host(:has(> *)) div {
+	white-space: normal;
 }
 
 svg {
@@ -125,6 +134,11 @@ const DEFAULT_POSITION = "north";
 export const POSITIONS = ["north", "south", "east", "west",
 	"northeast", "southwest", "northwest", "southeast"];
 
+function point(event)
+{
+	return {x: event.clientX, y: event.clientY};
+}
+
 export default class GTooltip extends HTMLElement
 {
 	#parent;
@@ -141,23 +155,33 @@ export default class GTooltip extends HTMLElement
 		this.shadowRoot.appendChild(template.content.cloneNode(true));
 	}
 
-	show(target, position = this.position)
+	show(target, options = {})
 	{
 		if (!this.parentNode)
 			throw new Error("Attempt to show disconnected tooltip");
 
-		if (!target.getBoundingClientRect)
-			return;
+		const position = options.position || this.position;
 
-		const controller = new AbortController();
-		target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
-		target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
-		target.addEventListener("click", () => this.hide() || controller.abort(), {signal: controller.signal});
+		if (target instanceof Element)
+		{
+			const controller = new AbortController();
+			target.addEventListener("mouseleave", () => this.hide() || controller.abort(), {signal: controller.signal});
+			target.addEventListener("focusout", () => this.hide() || controller.abort(), {signal: controller.signal});
+			target.addEventListener("click", () => this.hide() || controller.abort(), {signal: controller.signal});
+		} else
+		{
+			const rect = target;
+			target = {getBoundingClientRect: () => rect};
+		}
 
 		this.style.visibility = "hidden";
 		this.showPopover();
 
-		anchor(this, target, GAP, position, ...POSITIONS)
+		anchor(this, target, {
+			gap: GAP,
+			positions: [position, ...POSITIONS],
+			exclusion: options.exclusion
+		})
 			.then(({position, location}) =>
 			{
 				this.setAttribute("arrow", position);
@@ -185,24 +209,32 @@ export default class GTooltip extends HTMLElement
 		this.style.visibility = "hidden";
 	}
 
-	static show(element, content, position)
+	static show(element, content, options = {})
 	{
 		let tooltip = new GTooltip();
 		tooltip.setAttribute("auto", true);
 
-		element.appendChild(tooltip);
-		if (tooltip.parentNode !== element)
-			element.parentNode.appendChild(tooltip);
+		let parent = element instanceof Element ? element : document.documentElement;
+		if (parent.shadowRoot)
+			parent = parent.parentNode;
+		if (!parent.appendChild)
+			parent = document.documentElement;
+		parent.appendChild(tooltip);
+		if (tooltip.parentNode !== parent)
+			parent.parentNode.appendChild(tooltip);
 
-		if (typeof content === "object")
+		if (content instanceof Node)
+			tooltip.replaceChildren(content);
+		else if (typeof content === "object")
 		{
 			tooltip.innerHTML = "";
-			const element = new GJsonHTMLElement();
-			element.value = content;
-			tooltip.appendChild(element);
+			const payload = new GJsonHTMLElement();
+			payload.value = content;
+			tooltip.appendChild(payload);
 		} else
 			tooltip.innerHTML = content;
-		tooltip.show(element, position || DEFAULT_POSITION);
+		tooltip.show(element, options);
+		return tooltip;
 	}
 
 	static get observedAttributes()
@@ -224,23 +256,32 @@ export default class GTooltip extends HTMLElement
 
 customElements.define('g-tooltip', GTooltip);
 
-function trigger()
+function trigger(event)
 {
+	let exclusion = point(event);
+	const update = event => exclusion = point(event);
+	this.addEventListener("mousemove", update);
+
 	let timeout = setTimeout(() =>
 	{
+		const options = {exclusion};
 		if (this.hasAttribute("data-tooltip"))
 			DOM.navigate(this, this.getAttribute("data-tooltip"))
 				.orElseThrow(`${this.getAttribute("data-tooltip")} is not a valid selector`)
-				.show(this);
+				.show(this, options);
 		else if (this.hasAttribute("data-tooltip:text"))
-			GTooltip.show(this, this.getAttribute("data-tooltip:text"));
+			GTooltip.show(this, this.getAttribute("data-tooltip:text"), options);
 		else if (this.hasAttribute("data-tooltip:source"))
 			fetch(this.getAttribute("data-tooltip:source"))
 				.then(ResponseHandler.auto)
-				.then(content => GTooltip.show(this, content))
+				.then(content => GTooltip.show(this, content, options))
 				.catch(error => console.error('Error trying to fetch tooltip data:', error));
 	}, 500);
-	this.addEventListener("mouseleave", () => clearTimeout(timeout), {once: true});
+	this.addEventListener("mouseleave", () =>
+	{
+		clearTimeout(timeout);
+		this.removeEventListener("mousemove", update);
+	}, {once: true});
 }
 
 window.addEventListener("connected", event =>

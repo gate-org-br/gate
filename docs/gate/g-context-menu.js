@@ -129,7 +129,7 @@ function createSubmenu(link, event, actions)
 	link.appendChild(submenu);
 	submenu.style.visibility = "hidden";
 	submenu.showPopover();
-	anchor(submenu, link, 0, ...POSITIONS)
+	anchor(submenu, link, {gap: 0, positions: POSITIONS})
 		.then(({location}) =>
 		{
 			submenu.style.top = `${location.y}px`;
@@ -256,7 +256,7 @@ export default class GContextMenu extends HTMLElement
 
 		this.style.visibility = "hidden";
 		this.togglePopover(true);
-		anchor(this, target, 0, ...POSITIONS).then(e =>
+		anchor(this, target, {gap: 0, positions: POSITIONS}).then(e =>
 		{
 			this.style.top = `${e.location.y}px`;
 			this.style.left = `${e.location.x}px`;
@@ -282,11 +282,14 @@ export default class GContextMenu extends HTMLElement
 			e => e.newState === "closed" && menu.remove());
 
 		let parent = context;
-		while (parent && !parent.contains(menu))
-		{
-			parent.appendChild(menu);
+		if (parent.shadowRoot)
 			parent = parent.parentNode;
-		}
+		if (!parent.appendChild)
+			parent = document.documentElement;
+		parent.appendChild(menu);
+		if (menu.parentNode !== parent)
+			parent.parentNode.appendChild(menu);
+
 		menu.show(target);
 		return menu;
 	}
