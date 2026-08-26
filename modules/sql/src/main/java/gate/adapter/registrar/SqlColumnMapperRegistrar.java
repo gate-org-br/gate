@@ -5,6 +5,7 @@ import gate.lang.json.*;
 import gate.type.*;
 
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,8 @@ public class SqlColumnMapperRegistrar implements ColumnMapperRegistrar
 		registry.put(JsonObject.class, new JsonElementColumnMapper());
 		registry.put(JsonScalar.class, new JsonElementColumnMapper());
 		registry.put(JsonString.class, new JsonElementColumnMapper());
+		registry.put(Path.class, new PathColumnMapper());
+
 		return registry;
 	}
 }
