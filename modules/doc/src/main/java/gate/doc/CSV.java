@@ -7,8 +7,8 @@ import gate.report.Report;
 
 import java.io.OutputStream;
 
-@Icon("gate.doc.Doc$Type:CSV")
-public class CSV extends Doc
+@Icon("gate.doc.Document$Type:CSV")
+public class CSV extends Document
 {
 
 	public CSV(Report report)

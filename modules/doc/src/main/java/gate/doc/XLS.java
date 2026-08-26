@@ -7,8 +7,8 @@ import gate.report.Report;
 
 import java.io.OutputStream;
 
-@Icon("gate.doc.Doc$Type:XLS")
-public class XLS extends Doc
+@Icon("gate.doc.Document$Type:XLS")
+public class XLS extends Document
 {
 
 	public XLS(Report report)

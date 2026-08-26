@@ -15,17 +15,17 @@ import java.io.OutputStream;
  * Generates documents from objects of type {@link gate.report.Report}.
  */
 @Icon("2217")
-public abstract class Doc implements Printer
+public abstract class Document implements Printer
 {
 
 	private final Report report;
 
 	/**
-	 * Constructs a new Doc for the specified report.
+	 * Constructs a new Document for the specified report.
 	 *
 	 * @param report the report to be used to generate the document
 	 */
-	public Doc(Report report)
+	public Document(Report report)
 	{
 		this.report = report;
 	}
@@ -93,9 +93,9 @@ public abstract class Doc implements Printer
 	 *
 	 * @param type   type of the document to be created
 	 * @param report Report from where the document will be generated
-	 * @return the new Doc created
+	 * @return the new Document created
 	 */
-	public static Doc create(Type type, Report report)
+	public static Document create(Type type, Report report)
 	{
 		if (type == null)
 			throw new java.lang.IllegalArgumentException("type");

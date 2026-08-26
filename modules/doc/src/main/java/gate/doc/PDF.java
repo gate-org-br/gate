@@ -7,8 +7,8 @@ import gate.report.Report;
 
 import java.io.OutputStream;
 
-@Icon("gate.doc.Doc$Type:PDF")
-public class PDF extends Doc
+@Icon("gate.doc.Document$Type:PDF")
+public class PDF extends Document
 {
 
 	public PDF(Report report)
