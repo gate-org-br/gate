@@ -449,16 +449,16 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 			return -1;
 
 		return (long) d0 * 10_000_000_000L
-		       + (long) d1 * 1_000_000_000L
-		       + d2 * 100_000_000
-		       + d3 * 10_000_000
-		       + d4 * 1_000_000
-		       + d5 * 100_000
-		       + d6 * 10_000
-		       + d7 * 1_000
-		       + d8 * 100
-		       + d9 * 10
-		       + d10;
+				+ (long) d1 * 1_000_000_000L
+				+ d2 * 100_000_000
+				+ d3 * 10_000_000
+				+ d4 * 1_000_000
+				+ d5 * 100_000
+				+ d6 * 10_000
+				+ d7 * 1_000
+				+ d8 * 100
+				+ d9 * 10
+				+ d10;
 	}
 
 	/**
@@ -557,10 +557,10 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 	 * @param value the CPF numeric value
 	 * @return the 11-digit CPF string, or {@code null} if the value is invalid
 	 */
-	public static String digits(String value)
+	public static String raw(String value)
 	{
 		long parsed = toLong(value);
-		return parsed < 0 ? null : digits(parsed);
+		return parsed < 0 ? null : raw(parsed);
 	}
 
 	/**
@@ -609,7 +609,7 @@ public record CPF(long value) implements Comparable<CPF>, BrasilianDocument, Ser
 	 * @param value the CPF numeric value
 	 * @return the 11-digit CPF string, or {@code null} if the value is invalid
 	 */
-	public static String digits(long value)
+	public static String raw(long value)
 	{
 		if (!validate(value))
 			return null;

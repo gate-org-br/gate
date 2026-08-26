@@ -12,6 +12,15 @@ public class CNPJTest
 		assertTrue(CNPJ.validate("69.362.335/0001-56"));
 		assertTrue(CNPJ.validate("44.733.243/0001-04"));
 		assertTrue(CNPJ.validate("00.000.000/0001-91"));
+		assertTrue(CNPJ.validate("12.ABC.345/01DE-35"));
+	}
+
+	@Test
+	public void validateStringReturnsTrueForValidRawCnpj()
+	{
+		assertTrue(CNPJ.validate("69362335000156"));
+		assertTrue(CNPJ.validate("44733243000104"));
+		assertTrue(CNPJ.validate("12ABC34501DE35"));
 	}
 
 	@Test
@@ -19,17 +28,10 @@ public class CNPJTest
 	{
 		assertFalse(CNPJ.validate("44.733.243/0001-98"));
 		assertFalse(CNPJ.validate("44733243000198"));
+		assertFalse(CNPJ.validate("12.ABC.345/01DE-36"));
+		assertFalse(CNPJ.validate("12ABC34501DE36"));
 		assertFalse(CNPJ.validate("44.733.243-0001/04"));
 		assertFalse(CNPJ.validate(null));
-	}
-
-	@Test
-	public void validateLongReturnsTrueOnlyForValidCnpjValue()
-	{
-		assertTrue(CNPJ.validate(69362335000156L));
-		assertFalse(CNPJ.validate(69362335000157L));
-		assertFalse(CNPJ.validate(-1L));
-		assertFalse(CNPJ.validate(100_000_000_000_000L));
 	}
 
 	@Test
@@ -43,113 +45,65 @@ public class CNPJTest
 	@Test
 	public void formatStringNormalizesValidInputsWithOrWithoutPunctuation()
 	{
-		String[] inputs = {
-				"00",
-				"000",
-				"0000",
-				"00000",
-				"000000",
-				"0000000",
-				"00000000",
-				"000000000",
-				"0000000000",
-				"00000000000",
-				"000000000000",
-				"0000000000000",
-				"00000000000000",
-				"00.000.000/0000-00"
-		};
-
-		for (String input : inputs)
-			assertEquals("00.000.000/0000-00", CNPJ.format(input), input);
+		assertEquals("69.362.335/0001-56", CNPJ.format("69362335000156"));
+		assertEquals("69.362.335/0001-56", CNPJ.format("69.362.335/0001-56"));
+		assertEquals("12.ABC.345/01DE-35", CNPJ.format("12ABC34501DE35"));
+		assertEquals("12.ABC.345/01DE-35", CNPJ.format("12.abc.345/01de-35"));
 	}
 
 	@Test
-	public void formatLongReturnsFormattedCnpj()
+	public void rawReturnsUnformattedCnpj()
 	{
-		assertEquals("69.362.335/0001-56", CNPJ.format(69362335000156L));
+		assertEquals("69362335000156", CNPJ.raw("69.362.335/0001-56"));
+		assertEquals("69362335000156", CNPJ.raw("69362335000156"));
+		assertEquals("12ABC34501DE35", CNPJ.raw("12.ABC.345/01DE-35"));
+		assertEquals("12ABC34501DE35", CNPJ.raw("12abc34501de35"));
 	}
 
 	@Test
-	public void formatLongReturnsNullForInvalidCnpj()
+	public void rawReturnsNullForInvalidCnpj()
 	{
-		assertNull(CNPJ.format(69362335000157L));
-		assertNull(CNPJ.format(-1L));
+		assertNull(CNPJ.raw("44.733.243/0001-98"));
+		assertNull(CNPJ.raw("44733243000198"));
+		assertNull(CNPJ.raw(null));
 	}
 
 	@Test
-	public void digitsReturnsZeroPaddedRawCnpj()
+	public void valueOfStringCreatesCnpjForValidInput()
 	{
-		assertEquals("69362335000156", CNPJ.digits(69362335000156L));
-		assertEquals("00000000000000", CNPJ.digits(0L));
+		assertEquals(new CNPJ("69.362.335/0001-56"), CNPJ.valueOf("69362335000156"));
+		assertEquals(new CNPJ("12.ABC.345/01DE-35"), CNPJ.valueOf("12abc34501de35"));
 	}
 
 	@Test
-	public void digitsReturnsNullForInvalidCnpj()
-	{
-		assertNull(CNPJ.digits(69362335000157L));
-		assertNull(CNPJ.digits(-1L));
-	}
-
-	@Test
-	public void toLongParsesRawAndFormattedCnpj()
-	{
-		assertEquals(69362335000156L, CNPJ.toLong("69362335000156"));
-		assertEquals(69362335000156L, CNPJ.toLong("69.362.335/0001-56"));
-		assertEquals(0L, CNPJ.toLong("00.000.000/0000-00"));
-	}
-
-	@Test
-	public void toLongReturnsMinusOneForInvalidInput()
-	{
-		assertEquals(-1L, CNPJ.toLong(null));
-		assertEquals(-1L, CNPJ.toLong("44.733.243-0001/04"));
-		assertEquals(-1L, CNPJ.toLong("44733243000198"));
-		assertEquals(-1L, CNPJ.toLong("abc"));
-	}
-
-	@Test
-	public void ofStringCreatesCnpjForValidInput()
-	{
-		assertEquals(new CNPJ(69362335000156L), CNPJ.valueOf("69.362.335/0001-56"));
-		assertEquals(new CNPJ(69362335000156L), CNPJ.valueOf("69362335000156"));
-	}
-
-	@Test
-	public void ofStringThrowsForInvalidInput()
+	public void valueOfStringThrowsForInvalidInput()
 	{
 		assertThrows(IllegalArgumentException.class, () -> CNPJ.valueOf("44733243000198"));
 		assertThrows(IllegalArgumentException.class, () -> CNPJ.valueOf((String) null));
 	}
 
 	@Test
-	public void ofLongAndConstructorRejectInvalidValues()
-	{
-		assertThrows(IllegalArgumentException.class, () -> CNPJ.valueOf(69362335000157L));
-		assertThrows(IllegalArgumentException.class, () -> new CNPJ(69362335000157L));
-	}
-
-	@Test
 	public void toStringReturnsFormattedCnpj()
 	{
-		assertEquals("69.362.335/0001-56", new CNPJ(69362335000156L).toString());
+		assertEquals("69.362.335/0001-56", new CNPJ("69362335000156").toString());
+		assertEquals("12.ABC.345/01DE-35", new CNPJ("12abc34501de35").toString());
 	}
 
 	@Test
-	public void compareToOrdersByNumericValue()
+	public void compareToOrdersByFormattedValue()
 	{
-		CNPJ smaller = new CNPJ(44733243000104L);
-		CNPJ larger = new CNPJ(69362335000156L);
+		CNPJ smaller = new CNPJ("44.733.243/0001-04");
+		CNPJ larger = new CNPJ("69.362.335/0001-56");
 
 		assertTrue(smaller.compareTo(larger) < 0);
 		assertTrue(larger.compareTo(smaller) > 0);
-		assertEquals(0, smaller.compareTo(new CNPJ(44733243000104L)));
+		assertEquals(0, smaller.compareTo(new CNPJ("44733243000104")));
 	}
 
 	@Test
-	public void equalityUsesCnpjValue()
+	public void equalityUsesFormattedCnpjValue()
 	{
-		assertEquals(new CNPJ(69362335000156L), new CNPJ(69362335000156L));
-		assertNotEquals(new CNPJ(69362335000156L), new CNPJ(44733243000104L));
+		assertEquals(new CNPJ("69.362.335/0001-56"), new CNPJ("69362335000156"));
+		assertNotEquals(new CNPJ("69.362.335/0001-56"), new CNPJ("44.733.243/0001-04"));
 	}
 }

@@ -74,17 +74,17 @@ public class CPFTest
 	}
 
 	@Test
-	public void digitsReturnsZeroPaddedRawCpf()
+	public void rawReturnsZeroPaddedRawCpf()
 	{
-		assertEquals("31434388433", CPF.digits(31434388433L));
-		assertEquals("00000000000", CPF.digits(0L));
+		assertEquals("31434388433", CPF.raw(31434388433L));
+		assertEquals("00000000000", CPF.raw(0L));
 	}
 
 	@Test
-	public void digitsReturnsNullForInvalidCpf()
+	public void rawReturnsNullForInvalidCpf()
 	{
-		assertNull(CPF.digits(31434388434L));
-		assertNull(CPF.digits(-1L));
+		assertNull(CPF.raw(31434388434L));
+		assertNull(CPF.raw(-1L));
 	}
 
 	@Test
