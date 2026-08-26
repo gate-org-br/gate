@@ -2,8 +2,12 @@ let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
 <style data-element="g-collection-item">:host {
+	padding: 8px;
 	display: block;
+	border-radius: 5px;
+	border: 1px solid var(--main3);
 }</style>`;
+import Base64 from "./base64.js";
 import StyledHTMLElement from './styled-html-element.js';
 
 export default class GCollectionItem extends StyledHTMLElement
@@ -34,6 +38,8 @@ export default class GCollectionItem extends StyledHTMLElement
 			.map(e => e.cloneNode(true))
 			.forEach(e => this.shadowRoot.append(e));
 
+		customElements.upgrade(this.shadowRoot);
+
 		this.#fields = Array.from(this.shadowRoot.querySelectorAll("*"))
 			.filter(e =>
 				e.matches("input, select, textarea")
@@ -57,7 +63,7 @@ export default class GCollectionItem extends StyledHTMLElement
 			&& !this.#fields[0].name)
 			return this.#fields[0].value;
 
-		return this.#fields.reduce((obj, input) =>
+		const value = this.#fields.reduce((obj, input) =>
 		{
 			if (!input.name)
 				throw new Error("Missing input name");
@@ -79,10 +85,20 @@ export default class GCollectionItem extends StyledHTMLElement
 
 			return obj;
 		}, {});
+
+		return Base64.encode(JSON.stringify(value));
 	}
 
 	set value(data)
 	{
+		if (this.#fields.length === 1
+			&& !this.#fields[0].name)
+		{
+			this.#fields[0].value = data;
+			return;
+		}
+
+		data = JSON.parse(Base64.decode(data));
 		this.#fields.forEach(input =>
 		{
 			let value = data[input.name];
@@ -93,7 +109,7 @@ export default class GCollectionItem extends StyledHTMLElement
 				let values = value == null ? [] : Array.isArray(value) ? value : [value];
 				input.checked = values.map(String).includes(input.value);
 			} else
-				input.value = value ?? null;
+				input.value = value ?? "";
 		});
 	}
 

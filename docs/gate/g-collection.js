@@ -51,10 +51,10 @@ section {
 section::after {
 	padding: 1rem;
 	display: none;
-	color: var(--main4);
 	min-height: 44px;
 	border-radius: 3px;
 	align-items: center;
+	color: var(--fore-b);
 	justify-content: center;
 	content: attr(data-placeholder);
 	border: 1px dashed var(--main3);
@@ -84,14 +84,13 @@ button {
 	align-items: center;
 	text-decoration: none;
 	justify-content: center;
-	background-color: var(--back-g, #39511F);
+	background-color: var(--fore-g, #39511F);
 }
 
 .row > button {
-	background-color: var(--back-r, #772E2C);
+	background-color: var(--fore-r, #772E2C);
 }</style>`;
 /* global customElements */
-import Base64 from "./base64.js";
 import GMessageDialog from './g-message-dialog.js';
 import GCollectionItem from './g-collection-item.js';
 
@@ -236,17 +235,14 @@ customElements.define('g-collection', class extends HTMLElement
 
 	get value()
 	{
-		return this.entries
-			.map(entry => Base64.encode(JSON.stringify(entry)))
-			.join(";");
+		return this.entries.join("\n");
 	}
 
 	set value(value)
 	{
 		this.entries = (value?.trim() || "")
 			.split(/\s*(?:;|\r?\n)\s*/)
-			.filter(item => item)
-			.map(item => JSON.parse(Base64.decode(item)));
+			.filter(item => item);
 	}
 
 	get required()

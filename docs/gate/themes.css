@@ -1,10 +1,10 @@
 :root {
   color-scheme: light;
-  --text1: #000000;
+  --text1: #1A1A1A;
   --text2: #FFFFFF;
-  --main1: #FFFFFF;
-  --main2: #F0F0F0;
-  --main3: #DDDDDD;
+  --main1: #FCFCFD;
+  --main2: #F1F2F4;
+  --main3: #E3E5E8;
   --base1: #416B78;
   --base2: #9BB5BE;
   --base3: #C8DAE1;
@@ -16,22 +16,22 @@
   --back-r: #F3C9C6;
   --fore-g: #2A7D52;
   --back-g: #BBE3CE;
-  --acent: #c0b9cd;
+  --accent: #C0B9CD;
   --hovered: #FFFACD;
   --loading: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI0IiBjeT0iMTIiIHI9IjEuNSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIxLjU7MzsxLjUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIzOzEuNTszIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIvPjwvY2lyY2xlPjxjaXJjbGUgY3g9IjIwIiBjeT0iMTIiIHI9IjEuNSI+PGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iciIgZHVyPSIwLjc1cyIgdmFsdWVzPSIxLjU7MzsxLjUiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIi8+PC9jaXJjbGU+PC9zdmc+);
 }
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --text1: #FFFFFF;
-    --text2: #000000;
-    --main1: #1a1a1a;
-    --main2: #2a2a2a;
-    --main3: #444444;
-    --base3: #344F57;
-    --base2: #2F444B;
-    --base1: #253137;
-    --acent: #d4c9e0;
+    --text1: #F3F4F6;
+    --text2: #111111;
+    --main1: #1E1E1E;
+    --main2: #2A2D2E;
+    --main3: #3C4043;
+    --base3: #647F87;
+    --base2: #3F545B;
+    --base1: #2C4B54;
+    --accent: #D4C9E0;
     --fore-y: #BFA23C;
     --back-y: #54491A;
     --fore-b: #5A93C0;
@@ -40,20 +40,20 @@
     --back-r: #5E3330;
     --fore-g: #7CA353;
     --back-g: #35491F;
-    --hovered: #2a2522;
+    --hovered: #2A3946;
   }
 }
 :root:has(g-theme-selector[value="dark"]) {
   color-scheme: dark;
-  --text1: #FFFFFF;
-  --text2: #000000;
-  --main1: #1a1a1a;
-  --main2: #2a2a2a;
-  --main3: #444444;
-  --base3: #344F57;
-  --base2: #2F444B;
-  --base1: #253137;
-  --acent: #d4c9e0;
+  --text1: #F3F4F6;
+  --text2: #111111;
+  --main1: #1E1E1E;
+  --main2: #2A2D2E;
+  --main3: #3C4043;
+  --base3: #647F87;
+  --base2: #3F545B;
+  --base1: #2C4B54;
+  --accent: #D4C9E0;
   --fore-y: #BFA23C;
   --back-y: #54491A;
   --fore-b: #5A93C0;
@@ -62,15 +62,15 @@
   --back-r: #5E3330;
   --fore-g: #7CA353;
   --back-g: #35491F;
-  --hovered: #2a2522;
+  --hovered: #2A3946;
 }
 :root:has(g-theme-selector[value="light"]) {
   color-scheme: light;
-  --text1: #000000;
+  --text1: #1A1A1A;
   --text2: #FFFFFF;
-  --main1: #FFFFFF;
-  --main2: #F0F0F0;
-  --main3: #DDDDDD;
+  --main1: #FCFCFD;
+  --main2: #F1F2F4;
+  --main3: #E3E5E8;
   --base1: #416B78;
   --base2: #9BB5BE;
   --base3: #C8DAE1;
@@ -82,6 +82,6 @@
   --back-r: #F3C9C6;
   --fore-g: #2A7D52;
   --back-g: #BBE3CE;
-  --acent: #c0b9cd;
+  --accent: #C0B9CD;
   --hovered: #FFFACD;
 }

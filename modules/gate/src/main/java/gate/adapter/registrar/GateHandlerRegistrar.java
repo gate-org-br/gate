@@ -6,6 +6,7 @@ import gate.command.HideCommand;
 import gate.command.RedirectCommand;
 import gate.command.ReloadCommand;
 import gate.doc.Doc;
+import gate.io.URLBuilder;
 import gate.lang.json.*;
 import gate.report.Report;
 import gate.type.*;
@@ -69,6 +70,7 @@ public class GateHandlerRegistrar implements HandlerRegistrar
 		registry.put(JsonString.class, JsonElementHandler.class);
 		registry.put(Report.class, ReportHandler.class);
 		registry.put(Doc.class, DocHandler.class);
+		registry.put(URLBuilder.class, URLBuilderHandler.class);
 		return registry;
 	}
 }

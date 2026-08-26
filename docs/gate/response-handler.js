@@ -1,4 +1,5 @@
 import DataURL from './data-url.js';
+import Job from './job.js';
 
 function reject(response)
 {
@@ -138,6 +139,21 @@ export default class ResponseHandler
 			return Promise.resolve();
 		if (response.ok)
 			return Promise.resolve();
+		return reject(response);
+	}
+
+	/**
+	 * Handles a event stream response, resolving or rejecting the promise based on the response status.
+	 * @static
+	 * @param {Response} response - The response object received from a fetch request.
+	 * @returns {Promise<Job>} - A Job that handles the stream.
+	 */
+	static job(response)
+	{
+		if (!response)
+			return Promise.resolve();
+		if (response.ok)
+			return Job.from(response);
 		return reject(response);
 	}
 

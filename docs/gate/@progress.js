@@ -1,5 +1,5 @@
-import Job from './job.js';
 import DataURL from "./data-url.js";
+import ResponseHandler from "./response-handler.js";
 
 window.addEventListener("@progress", function (event)
 {
@@ -18,7 +18,7 @@ window.addEventListener("@progress", function (event)
 		fetch(url, url === event.detail.action
 			? {method: event.detail.method, body}
 			: {})
-			.then(response => Job.from(response))
+			.then(ResponseHandler.job)
 			.then(job =>
 			{
 				job.addEventListener('Progress', e => dialog
@@ -40,7 +40,12 @@ window.addEventListener("@progress", function (event)
 				const reconnect = err.uuid || uuid;
 				if (!reconnect)
 					return event.failure(path, err);
-				dialog.dispatchEvent(new CustomEvent('error', {detail: {text: "Reconnecting to server", uuid: reconnect}}));
+				dialog.dispatchEvent(new CustomEvent('error', {
+					detail: {
+						text: "Reconnecting to server",
+						uuid: reconnect
+					}
+				}));
 				setTimeout(() => connect(`Progress?uuid=${encodeURIComponent(reconnect)}`, reconnect), 5000);
 			});
 	connect(event.detail.action);

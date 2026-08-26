@@ -39,7 +39,7 @@ template.innerHTML = `
 :host(.fill) {
 	color: var(--text1, #000000);
 	border-color: var(--main3, #DDDDDD);
-	background-color: var(--main3, #DDDDDD);
+	background-color: var(--main2, #DDDDDD);
 }
 
 :host(.success) {

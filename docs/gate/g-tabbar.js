@@ -19,7 +19,6 @@ template.innerHTML = `
 header {
 	flex: 1;
 	gap: 8px;
-	padding: 8px;
 	display: flex;
 	overflow-x: hidden;
 	white-space: nowrap;

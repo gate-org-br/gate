@@ -1,7 +1,12 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<section></section>
-<style data-element="g-json-html-element">ul {
+<style data-element="g-json-html-element">:host {
+	display: block;
+	line-height: normal;
+}
+
+ul {
 	margin: 0;
 	padding: 8px;
 	list-style-type: none;
@@ -33,6 +38,7 @@ li[data-action]:hover {
 }
 
 dl {
+	margin: 0;
 	display: inline-grid;
 	grid-template-columns: auto auto;
 }

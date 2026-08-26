@@ -48,7 +48,9 @@ export default function mask(element)
 
 	element.onkeydown = function (event)
 	{
-		event = event ? event : window.event;
+		if (event.target.hasAttribute("readonly"))
+			return false;
+
 		switch (event.keyCode)
 		{
 			// ///////////////////////////////////////////////////////
@@ -60,18 +62,18 @@ export default function mask(element)
 					if (MASKS[mask.charAt(i)])
 						return this.setCursor(i);
 				return false;
-				// ///////////////////////////////////////////////////////
-				// DIREITA
-				// ///////////////////////////////////////////////////////
+			// ///////////////////////////////////////////////////////
+			// DIREITA
+			// ///////////////////////////////////////////////////////
 			case 39:
 
 				for (var i = this.getCursor() + 1; i <= mask.length; i++)
 					if (i === mask.length || MASKS[mask.charAt(i)])
 						return this.setCursor(i);
 				return false;
-				// ///////////////////////////////////////////////////////
-				// BACKSPACE
-				// ///////////////////////////////////////////////////////
+			// ///////////////////////////////////////////////////////
+			// BACKSPACE
+			// ///////////////////////////////////////////////////////
 			case 8:
 
 				for (var i = this.getCursor() - 1; i >= 0; i--)
@@ -85,9 +87,9 @@ export default function mask(element)
 					}
 				}
 				return false;
-				// ///////////////////////////////////////////////////////
-				// Delete
-				// ///////////////////////////////////////////////////////
+			// ///////////////////////////////////////////////////////
+			// Delete
+			// ///////////////////////////////////////////////////////
 			case 46:
 
 				for (var i = this.getCursor(); i < mask.length; i++)
@@ -98,21 +100,21 @@ export default function mask(element)
 
 						this.setCursor(i + 1);
 						while (this.getCursor() < mask.length
-							&& !MASKS[mask.charAt(this.getCursor())])
+						&& !MASKS[mask.charAt(this.getCursor())])
 							this.setCursor(this.getCursor() + 1);
 						changed = true;
 						break;
 					}
 				}
 				return false;
-				// ///////////////////////////////////////////////////////
-				// END
-				// ///////////////////////////////////////////////////////
+			// ///////////////////////////////////////////////////////
+			// END
+			// ///////////////////////////////////////////////////////
 			case 35:
 				return this.setCursor(mask.length);
-				// ///////////////////////////////////////////////////////
-				// HOME
-				// ///////////////////////////////////////////////////////
+			// ///////////////////////////////////////////////////////
+			// HOME
+			// ///////////////////////////////////////////////////////
 			case 36:
 				return this.setCursor(0);
 		}
@@ -122,7 +124,9 @@ export default function mask(element)
 
 	element.onkeypress = function (event)
 	{
-		event = event ? event : window.event;
+		if (event.target.hasAttribute("readonly"))
+			return false;
+
 		switch (event.keyCode)
 		{
 			case 8:
@@ -158,7 +162,7 @@ export default function mask(element)
 						this.setCursor(i + 1);
 
 						while (this.getCursor() < mask.length
-							&& !MASKS[mask.charAt(this.getCursor())])
+						&& !MASKS[mask.charAt(this.getCursor())])
 							this.setCursor(this.getCursor() + 1);
 
 						changed = true;
@@ -172,6 +176,9 @@ export default function mask(element)
 
 	element.onpaste = function (event)
 	{
+		if (event.target.hasAttribute("readonly"))
+			return false;
+
 		var data = event.clipboardData.getData("text");
 		if (data)
 		{
@@ -206,7 +213,7 @@ export default function mask(element)
 		{
 			this.setCursor(0);
 			while (this.getCursor() < mask.length
-				&& !MASKS[mask.charAt(this.getCursor())])
+			&& !MASKS[mask.charAt(this.getCursor())])
 				this.setCursor(this.getCursor() + 1);
 		}, 0);
 	};

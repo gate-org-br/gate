@@ -1,8 +1,8 @@
 fieldset {
   gap: 12px;
   margin: 0;
-  padding: 12px;
   display: grid;
+  padding: 12px 0;
   align-items: start;
   border-radius: 3px;
   border: 1px solid transparent;
@@ -196,7 +196,8 @@ fieldset > label > form[data-icon]::after {
 }
 fieldset > fieldset {
   margin: 0;
-  border: 1px solid var(--main2, #F0F0F0);
+  padding: 12px;
+  border: 1px solid var(--main3, #DDDDDD);
 }
 @media only screen and (min-width: 600px) {
   fieldset > *[data-size="1"] {

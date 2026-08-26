@@ -1,8 +1,7 @@
 let template = document.createElement("template");
 template.innerHTML = `
 	<slot></slot>
-<style data-element="g-path">:host(*)
-{
+<style data-element="g-path">:host(*) {
 	gap: 4px;
 	height: 16px;
 	font-size: inherit;
@@ -11,8 +10,7 @@ template.innerHTML = `
 	justify-content: flex-start;
 }
 
-::slotted(*)
-{
+::slotted(*) {
 	gap: 4px;
 	height: 100%;
 	display: flex;
@@ -21,8 +19,7 @@ template.innerHTML = `
 	justify-content: space-between;
 }
 
-::slotted([data-icon])::before
-{
+::slotted([data-icon])::before {
 	display: flex;
 	font-size: inherit;
 	font-family: "gate";
@@ -31,10 +28,8 @@ template.innerHTML = `
 	content: attr(data-icon);
 }
 
-::slotted(:not(:last-child)):after
-{
+::slotted(:not(:last-child)):after {
 	display: flex;
-	color: #999999;
 	content: "\\2275";
 	font-size: inherit;
 	align-items: center;
