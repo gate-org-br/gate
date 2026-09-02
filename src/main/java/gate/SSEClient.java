@@ -5,7 +5,6 @@ import gate.event.AppEvent;
 import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletOutputStream;
 
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
@@ -14,6 +13,7 @@ class SSEClient
     private final User subject;
     private ServletOutputStream out;
     private final AsyncContext asyncContext;
+    private boolean closed;
 
     SSEClient(User user, AsyncContext asyncContext)
     {
@@ -21,33 +21,37 @@ class SSEClient
         this.asyncContext = asyncContext;
     }
 
-    synchronized void send(AppEvent event)
+    synchronized boolean send(AppEvent event)
     {
-        if (event.checkAccess(subject))
+        if (closed)
+            return false;
+
+        try
         {
-            try
-            {
-                if (out == null)
-                    out = asyncContext.getResponse().getOutputStream();
+            if (!event.checkAccess(subject))
+                return true;
 
-                var data = Base64.getEncoder()
-                        .encodeToString(event.toString()
-                                .getBytes(StandardCharsets.UTF_8));
+            if (out == null)
+                out = asyncContext.getResponse().getOutputStream();
 
-                out.println("event: message");
-                out.println("data: " + data);
-                out.println();
-                out.flush();
-                asyncContext.getResponse().flushBuffer();
-            } catch (IOException | RuntimeException ex)
-            {
-                asyncContext.complete();
-            }
-        }
+            var data = Base64.getEncoder()
+                    .encodeToString(event.toString()
+                            .getBytes(StandardCharsets.UTF_8));
+
+            out.println("event: message");
+            out.println("data: " + data);
+            out.println();
+            out.flush();
+            asyncContext.getResponse().flushBuffer();
+            return true;
+        } catch (Exception ex) {return false;}
     }
 
     synchronized boolean heartbeat()
     {
+        if (closed)
+            return false;
+
         try
         {
             if (out == null)
@@ -64,10 +68,20 @@ class SSEClient
 
     synchronized void close()
     {
+        if (closed)
+            return;
+
+        closed = true;
         try
         {
             if (out != null)
                 out.close();
+        } catch (Exception ignored)
+        {
+        }
+        try
+        {
+            asyncContext.complete();
         } catch (Exception ignored)
         {
         }

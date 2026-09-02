@@ -3,6 +3,7 @@ package gate;
 import gate.event.AppEvent;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.ObservesAsync;
 
 import java.util.Collections;
 import java.util.Set;
@@ -32,6 +33,18 @@ public class SSEClients
 
     void onAPPEvent(@Observes AppEvent event)
     {
-        clients.forEach(e -> e.send(event));
+        clients.removeIf(client ->
+        {
+            if (client.send(event))
+                return false;
+
+            client.close();
+            return true;
+        });
+    }
+
+    void onAPPEventAsync(@ObservesAsync AppEvent event)
+    {
+        onAPPEvent(event);
     }
 }
