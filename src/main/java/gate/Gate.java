@@ -138,7 +138,9 @@ public class Gate extends HttpServlet
                 {
                     if (mainAction == Call.NONE)
                         throw new InternalServerException("No main action defined");
-                    response.sendRedirect(mainAction.toString());
+                    response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+                    response.setHeader("Location",
+                            httpServletRequest.getContextPath() + "/" + mainAction);
                     return;
                 }
             }
