@@ -1,7 +1,7 @@
 package gate.lang.constructionStrategy;
 
 import gate.lang.property.ArrayAttribute;
-import gate.lang.property.ArrayElementsAttribute;
+import gate.lang.property.ArrayIndexAttribute;
 import gate.lang.property.Attribute;
 import gate.util.Toolkit;
 
@@ -14,7 +14,7 @@ record ArrayStrategy() implements ConstructionStrategy
 	public Object construct(Class<?> type, Map<Attribute, Object> attributes)
 	{
 		var elements = attributes.entrySet().stream()
-				.filter(e -> e.getKey() instanceof ArrayElementsAttribute)
+				.filter(e -> e.getKey() instanceof ArrayAttribute)
 				.findFirst()
 				.orElse(null);
 
@@ -36,15 +36,15 @@ record ArrayStrategy() implements ConstructionStrategy
 	private Object fromIndexedValues(Class<?> type, Map<Attribute, Object> attributes)
 	{
 		int size = attributes.keySet().stream()
-				.filter(ArrayAttribute.class::isInstance)
-				.map(ArrayAttribute.class::cast)
-				.mapToInt(ArrayAttribute::getIndex)
+				.filter(ArrayIndexAttribute.class::isInstance)
+				.map(ArrayIndexAttribute.class::cast)
+				.mapToInt(ArrayIndexAttribute::getIndex)
 				.max()
 				.orElse(-1) + 1;
 
 		var array = Array.newInstance(type.getComponentType(), size);
 		for (var entry : attributes.entrySet())
-			if (entry.getKey() instanceof ArrayAttribute attribute)
+			if (entry.getKey() instanceof ArrayIndexAttribute attribute)
 				Array.set(array, attribute.getIndex(), entry.getValue());
 		return array;
 	}

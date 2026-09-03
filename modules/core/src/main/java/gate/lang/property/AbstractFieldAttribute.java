@@ -21,6 +21,7 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	private final Type elementType;
 	private final boolean isEntityId;
 	private final Converter converter;
+	private final gate.adapter.collector.Collector collector;
 	private final boolean isDiscriminator;
 	private final List<Constraint.Implementation<?>> constraints;
 	private final Metadata metadata;
@@ -60,6 +61,13 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 					? field.getAnnotation(gate.annotation.Converter.class).value()
 					.getDeclaredConstructor().newInstance()
 					: Converter.getConverter(rawType);
+
+			collector = field.isAnnotationPresent(gate.annotation.Collector.class)
+					? field.getAnnotation(gate.annotation.Collector.class).value()
+					.getDeclaredConstructor().newInstance()
+					: Collection.class.isAssignableFrom(rawType)
+					  ? gate.adapter.collector.Collector.getCollector(rawType)
+					  : null;
 
 			List<Constraint.Implementation<?>> cons = new ArrayList<>();
 			Stream.of(field.getAnnotations()).filter(
@@ -128,6 +136,12 @@ public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
 	public Converter getConverter()
 	{
 		return converter;
+	}
+
+	@Override
+	public gate.adapter.collector.Collector getCollector()
+	{
+		return collector;
 	}
 
 	@Override

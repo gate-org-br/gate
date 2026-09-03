@@ -9,6 +9,8 @@ const GAP = 16;
 const DEFAULT_POSITION = "north";
 export const POSITIONS = ["north", "south", "east", "west",
 	"northeast", "southwest", "northwest", "southeast"];
+const RESTRICTED_PARENTS = ["AREA", "BASE", "BR", "COL", "EMBED", "HR",
+	"IMG", "INPUT", "LINK", "META", "SELECT", "SOURCE", "TEXTAREA", "TRACK", "WBR"];
 
 function point(event)
 {
@@ -103,7 +105,8 @@ export default class GTooltip extends HTMLElement
 			parent = parent.parentNode;
 		if (!parent.appendChild)
 			parent = document.documentElement;
-		parent.appendChild(tooltip);
+		if (!RESTRICTED_PARENTS.includes(parent.tagName))
+			parent.appendChild(tooltip);
 		if (tooltip.parentNode !== parent)
 			parent.parentNode.appendChild(tooltip);
 

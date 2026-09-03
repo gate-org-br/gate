@@ -3,25 +3,24 @@ package gate.http;
 import gate.adapter.converter.Converter;
 import gate.adapter.handler.Handler;
 import gate.entity.User;
-
 import gate.error.AuthenticationException;
-import gate.error.ConversionException;
 import gate.error.InvalidUsernamePasswordException;
-import gate.lang.property.ArrayElementsAttribute;
+import gate.lang.property.ArrayAttribute;
 import gate.lang.property.CollectionAttribute;
 import gate.lang.property.Property;
 import gate.lang.property.PropertyGraph;
 import gate.type.RequestCommand;
-import gate.util.Reflection;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.Part;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.UncheckedIOException;
 import java.lang.reflect.Type;
-import java.net.URLDecoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,50 +69,50 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		return new ArrayList<>(parameters);
 	}
 
-	public Object getParameterValues(Type type, String name)
+	public Object getParameterValues(Property property)
+	{
+		Object[] values = getParameterValues(property.getGenericType(), property.toString());
+		if (values == null)
+			return null;
+
+		if (property.getLastAttribute() instanceof CollectionAttribute attribute)
+			return attribute.getCollector().ofArray(attribute.getCollectionType(), values);
+
+		if (property.getLastAttribute() instanceof ArrayAttribute)
+			return values;
+
+		return Arrays.stream(values).toList();
+	}
+
+	public Object[] getParameterValues(Type type, String name)
 	{
 		String[] strings = getParameterValues(name);
 		if (strings != null)
 			return Arrays.stream(strings)
-					.map(e -> Converter.getConverter(type).ofString(type, e))
-					.toList();
+					.map(e -> Converter.fromString(type, e))
+					.toArray();
 
 		var parts = parts().stream()
 				.filter(e -> e.getName().equals(name))
 				.toList();
-		if (!parts.isEmpty())
-			return parts.stream()
-					.map(e -> Handler.fromPart(type, e))
-					.toList();
-
-		return null;
+		if (parts.isEmpty())
+			return null;
+		return parts.stream()
+				.map(part -> getPart(type, part))
+				.toArray();
 	}
 
-	public Object getParameter(Type type, String name)
+	public Object getParameterValue(Type type, String name)
 	{
-		try
-		{
-			Object value = getParameterValue(name);
+		Object value = getParameterValue(name);
 
-			if (value instanceof String string)
-				return Converter.getConverter(type).ofString(type, string);
+		if (value instanceof String string)
+			return Converter.getConverter(type).ofString(type, string);
 
-			if (value instanceof Part part)
-			{
-				try
-				{
-					return Handler.fromPart(Reflection.getRawType(type), part);
-				} finally
-				{
-					part.delete();
-				}
-			}
+		if (value instanceof Part part)
+			return getPart(type, part);
 
-			return null;
-		} catch (IOException ex)
-		{
-			throw new UncheckedIOException(ex);
-		}
+		return null;
 	}
 
 	public Object getParameterValue(String name)
@@ -121,28 +120,10 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		String string = getParameter(name);
 		return string != null ? string
 				: parts().stream()
-				  .filter(e -> e.getName().equals(name))
-				  .filter(e -> e.getSize() > 0)
-				  .findAny()
-				  .orElse(null);
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> T getParameter(String charset, Class<T> type, String name) throws ConversionException
-	{
-		try
-		{
-			String string = getParameter(name);
-			if (string != null)
-				return (T) Converter.getConverter(type).ofString(type, URLDecoder.decode(getParameter(name), charset));
-			if (parts().stream().anyMatch(e -> e.getName().equals(name)))
-				return Handler.fromPart(type,
-						parts().stream().filter(e -> e.getName().equals(name)).findFirst().orElseThrow());
-			return null;
-		} catch (UnsupportedEncodingException e)
-		{
-			throw new RuntimeException(e);
-		}
+				.filter(e -> e.getName().equals(name))
+				.filter(e -> e.getSize() > 0)
+				.findAny()
+				.orElse(null);
 	}
 
 	public String getBody()
@@ -160,12 +141,6 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T getBody(Class<T> type) throws ConversionException
-	{
-		return (T) Converter.getConverter(type).ofString(type, ScreenServletRequest.this.getBody());
-	}
-
 	public Optional<String> getCookieValue(String name)
 	{
 		return Optional.ofNullable(getCookies())
@@ -177,14 +152,29 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 				.filter(e -> !e.isBlank());
 	}
 
-	public Object getParameter(Property property)
+	public Object getParameterValue(Property property)
 	{
 		if (property.getLastAttribute() instanceof CollectionAttribute
-				|| property.getLastAttribute() instanceof ArrayElementsAttribute)
+				|| property.getLastAttribute() instanceof ArrayAttribute)
+			return getParameterValues(property);
+		return getParameterValue(property.getGenericType(), property.toString());
+	}
+
+	private Object getPart(Type type, Part part)
+	{
+		try
 		{
-			return getParameterValues(property.getGenericType(), property.toString());
+			return Handler.fromPart(type, part);
+		} finally
+		{
+			try
+			{
+				part.delete();
+			} catch (IOException ex)
+			{
+				throw new UncheckedIOException(ex);
+			}
 		}
-		return getParameter(property.getGenericType(), property.toString());
 	}
 
 	public Authentication getAuthentication() throws AuthenticationException

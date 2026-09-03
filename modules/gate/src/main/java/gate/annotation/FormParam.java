@@ -63,7 +63,7 @@ public @interface FormParam
 				var properties = getPrefixedProperties(request, name);
 				if (!properties.isEmpty())
 					return PropertyGraph.of(parameter.getType(), properties)
-							.populate(property -> request.getParameter(property.getGenericType(),
+							.populate(property -> request.getParameterValue(property.getGenericType(),
 									name + "." + property));
 
 				if (value == null && parameter.isAnnotationPresent(Required.class))

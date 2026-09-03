@@ -144,6 +144,11 @@ public interface Attribute
 		return Converter.getConverter(getRawType());
 	}
 
+	default gate.adapter.collector.Collector getCollector()
+	{
+		return gate.adapter.collector.Collector.getCollector(getRawType());
+	}
+
 	default Renderer getRenderer()
 	{
 		return Renderer.getRenderer(getRawType());

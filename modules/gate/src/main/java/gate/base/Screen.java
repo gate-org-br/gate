@@ -50,7 +50,7 @@ public abstract class Screen extends Base
 		this.request = request;
 		this.response = response;
 		var graph = request.getPropertyGraph(getClass());
-		graph.populate(this, request::getParameter);
+		graph.populate(this, request::getParameterValue);
 	}
 
 	public Object execute(Method method) throws Throwable
@@ -61,22 +61,22 @@ public abstract class Screen extends Base
 			Object value;
 
 			if (parameter.isAnnotationPresent(QueryParam.class)
-			    || parameter.isAnnotationPresent(jakarta.ws.rs.QueryParam.class))
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.QueryParam.class))
 				value = Optional.ofNullable(Property.parse(getClass(),
 								QueryParam.Extractor.getName(parameter)))
 						.map(property -> property.getValue(this))
 						.orElseGet(() -> QueryParam.Extractor.extract(getRequest(), parameter));
 			else if (parameter.isAnnotationPresent(FormParam.class)
-			         || parameter.isAnnotationPresent(jakarta.ws.rs.FormParam.class))
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.FormParam.class))
 				value = Optional.ofNullable(Property.parse(getClass(),
 								FormParam.Extractor.getName(parameter)))
 						.map(property -> property.getValue(this))
 						.orElseGet(() -> FormParam.Extractor.extract(getRequest(), parameter));
 			else if (parameter.isAnnotationPresent(HeaderParam.class)
-			         || parameter.isAnnotationPresent(jakarta.ws.rs.HeaderParam.class))
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.HeaderParam.class))
 				value = HeaderParam.Extractor.extract(getRequest(), parameter);
 			else if (parameter.isAnnotationPresent(CookieParam.class)
-			         || parameter.isAnnotationPresent(jakarta.ws.rs.CookieParam.class))
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.CookieParam.class))
 				value = CookieParam.Extractor.extract(getRequest(), parameter);
 			else
 				value = BodyParam.Extractor.extract(getRequest(), parameter);

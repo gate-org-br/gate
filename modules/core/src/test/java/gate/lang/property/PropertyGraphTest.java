@@ -104,6 +104,19 @@ public class PropertyGraphTest
 	}
 
 	@Test
+	public void testRecordCollection()
+	{
+		var request = Map
+				.of("names[]", List.of("Ana", "Bia"));
+
+		var result = (CollectionRecordMock) PropertyGraph
+				.of(CollectionRecordMock.class, new ArrayList<>(request.keySet()))
+				.populate(prop -> request.get(prop.toString()));
+
+		Assertions.assertEquals(List.of("Ana", "Bia"), result.names());
+	}
+
+	@Test
 	public void testIgnoreInvalidProperty()
 	{
 		var request = Map
@@ -212,6 +225,8 @@ public class PropertyGraphTest
 	public record PointMock(int x, int y) {}
 
 	public record LineMock(PointMock start, PointMock end) {}
+
+	public record CollectionRecordMock(List<String> names) {}
 
 	public static sealed class AmbiguousSealedParentMock
 			permits AmbiguousSealedChildMock, AmbiguousSealedSiblingMock

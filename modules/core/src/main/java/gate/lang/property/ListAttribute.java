@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-class ListAttribute implements Attribute
+public class ListAttribute implements Attribute
 {
 
 	private final int index;
@@ -50,6 +50,11 @@ class ListAttribute implements Attribute
 			rawType = Object.class;
 			elementType = Object.class;
 		}
+	}
+
+	public int getIndex()
+	{
+		return index;
 	}
 
 	@Override

@@ -1,10 +1,11 @@
 package gate.lang.property;
 
-import gate.util.Instance;
 import gate.annotation.ElementType;
+import gate.adapter.collector.Collector;
 import gate.util.Toolkit;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -91,18 +92,32 @@ public class CollectionAttribute implements Attribute
 			target.addAll(Toolkit.collection(value));
 			return;
 		}
-		attribute.setValue(object, collection(value));
+		attribute.setValue(object, collect(value));
 	}
 
-	private Object collection(Object value)
+	public Collector getCollector()
+	{
+		return attribute.getCollector();
+	}
+
+	public Type getCollectionType()
+	{
+		return attribute.getGenericType();
+	}
+
+	@Override
+	public boolean matches(Parameter parameter)
+	{
+		return attribute.matches(parameter);
+	}
+
+	private Object collect(Object value)
 	{
 		Collection<?> collection = Toolkit.collection(value);
 		if (attribute.getRawType().isAssignableFrom(collection.getClass()))
 			return collection;
 
-		Collection<Object> result = Instance.createCollection(attribute.getRawType());
-		result.addAll(collection);
-		return result;
+		return getCollector().ofArray(attribute.getGenericType(), collection.toArray());
 	}
 
 	@Override

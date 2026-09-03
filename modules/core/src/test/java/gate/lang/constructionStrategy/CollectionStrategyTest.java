@@ -36,6 +36,41 @@ class CollectionStrategyTest extends ConstructionStrategyTestSupport
 	}
 
 	@Test
+	void shouldConstructAndPopulateCollectionTypeFromIndexedProperties()
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(List.class, "[0]").getLastAttribute(), "A",
+				Property.getProperty(List.class, "[1]").getLastAttribute(), "B");
+
+		var result = ConstructionStrategy.newInstance(List.class, attributes);
+
+		Assertions.assertInstanceOf(ArrayList.class, result);
+		Assertions.assertEquals(List.of("A", "B"), result);
+	}
+
+	@Test
+	void shouldFailWhenMixingCollectionElementsAndIndexedProperties()
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(List.class, "[]").getLastAttribute(), List.of("A", "B"),
+				Property.getProperty(List.class, "[0]").getLastAttribute(), "C");
+
+		Assertions.assertThrows(ConstructionException.class,
+				() -> ConstructionStrategy.newInstance(List.class, attributes));
+	}
+
+	@Test
+	void shouldFailWhenMixingArrayElementsAndIndexedProperties()
+	{
+		var attributes = Map.<Attribute, Object>of(
+				Property.getProperty(String[].class, "[]").getLastAttribute(), List.of("A", "B"),
+				Property.getProperty(String[].class, "[0]").getLastAttribute(), "C");
+
+		Assertions.assertThrows(ConstructionException.class,
+				() -> ConstructionStrategy.newInstance(String[].class, attributes));
+	}
+
+	@Test
 	void shouldFailWhenInterfaceTypeIsNotSupportedByObjectFactory()
 	{
 		var attributes = new LinkedHashMap<Attribute, Object>();

@@ -236,11 +236,10 @@ class PropertyParser
 
 		if (name != null)
 		{
-			// Array access
 			if (clazz.isArray())
 			{
 				if (name instanceof Number number)
-					return new ArrayAttribute(clazz.getComponentType(), number.intValue());
+					return new ArrayIndexAttribute(clazz.getComponentType(), number.intValue());
 
 				return null;
 			}
@@ -285,7 +284,7 @@ class PropertyParser
 		if (clazz.isArray())
 		{
 			attributes.remove(attributes.size() - 1);
-			return new ArrayElementsAttribute(attribute);
+			return new ArrayAttribute(attribute);
 		}
 
 		if (Collection.class.isAssignableFrom(clazz))

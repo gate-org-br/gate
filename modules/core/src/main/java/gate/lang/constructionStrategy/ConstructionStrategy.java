@@ -1,16 +1,14 @@
 package gate.lang.constructionStrategy;
 
-import gate.util.Instance;
 import gate.annotation.Canonical;
 import gate.annotation.Default;
 import gate.annotation.Discriminator;
 import gate.error.ConstructionException;
-import gate.lang.property.Attribute;
+import gate.lang.property.*;
 import gate.util.Reflection;
 
 import java.lang.reflect.*;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -61,7 +59,12 @@ public interface ConstructionStrategy
 		return Cache.INSTANCE.compute(type, attributes, () ->
 		{
 			if (type.isArray())
+			{
+				if (attributes.stream().anyMatch(ArrayAttribute.class::isInstance)
+						&& attributes.stream().anyMatch(ArrayIndexAttribute.class::isInstance))
+					throw new ConstructionException("Attempt to mix indexed [n] e non index [] properties.");
 				return new ArrayStrategy();
+			}
 
 			if (type.isRecord())
 			{
@@ -79,9 +82,18 @@ public interface ConstructionStrategy
 			}
 
 			if (Collection.class.isAssignableFrom(type))
-				return new CollectionStrategy(() -> Instance.createCollection(type));
+			{
+				if (attributes.stream().anyMatch(CollectionAttribute.class::isInstance)
+						&& attributes.stream().anyMatch(ListAttribute.class::isInstance))
+					throw new ConstructionException("Attempt to mix indexed [n] e non index [] properties.");
+
+				return !attributes.isEmpty()
+						&& attributes.stream().allMatch(ListAttribute.class::isInstance)
+						? new IndexedCollectionStrategy()
+						: new CollectionStrategy();
+			}
 			if (Map.class.isAssignableFrom(type))
-				return new CollectionStrategy(() -> Instance.createMap(type));
+				return new MapStrategy();
 
 			var constructors =
 					Stream.concat(Modifier.isAbstract(type.getModifiers()) ? Stream.of()
@@ -229,18 +241,12 @@ public interface ConstructionStrategy
 		return attributes.stream().allMatch(a -> Arrays.stream(parameters).anyMatch(a::matches));
 	}
 
-	static Object newInstance(Class<?> type,
-	                          Map<Attribute, Object> attributes)
+	static Object newInstance(Class<?> type, Map<Attribute, Object> attributes)
 	{
-		return of(type, attributes.keySet())
-				.construct(type, attributes);
+		return of(type, attributes.keySet()).construct(type, attributes);
 	}
 
-	static Object newInstance(Class<?> type)
-	{
-		return newInstance(type, Map.of());
-	}
+	static Object newInstance(Class<?> type) {return newInstance(type, Map.of());}
 
-	Object construct(Class<?> type,
-	                 Map<Attribute, Object> attributes);
+	Object construct(Class<?> type, Map<Attribute, Object> attributes);
 }
