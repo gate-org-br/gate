@@ -129,7 +129,6 @@ public class Messenger implements ServletContextListener
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", server.getPort());
 		props.put("mail.smtp.host", server.getHost());
-		props.put("mail.smtp.socketFactory.port", server.getPort());
 
 		if (server.getTimeout() != null)
 		{
@@ -141,7 +140,7 @@ public class Messenger implements ServletContextListener
 			props.put("mail.smtp.starttls.enable", "true");
 
 		if (server.getUseSSL())
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+			props.put("mail.smtp.ssl.enable", "true");
 
 		jakarta.mail.Session session = jakarta.mail.Session.getInstance(props, new jakarta.mail.Authenticator()
 		{
