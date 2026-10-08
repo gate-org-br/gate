@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["event-handler.js"],
+  "sourcesContent": ["/**\n * EventHandler class provides utility methods for handling events.\n * @class\n */\nexport default class EventHandler extends HTMLElement\n{\n\t/**\n\t * Cancels the default action, propagation, and immediate propagation of an event.\n\t * @static\n\t * @param {Event} event - The event object to be cancelled.\n\t * @returns {void}\n\t * @example\n\t * // Import the EventHandler class\n\t * import EventHandler from './gate/event-handler.js';\n\t *\n\t * // Use the cancel method to prevent the default action, propagation, and immediate propagation of an event\n\t * document.addEventListener('click', (event) => {\n\t *     EventHandler.cancel(event);\n\t * });\n\t */\n\tstatic cancel(event)\n\t{\n\t\tevent.preventDefault();\n\t\tevent.stopPropagation();\n\t\tevent.stopImmediatePropagation();\n\t}\n\n\tstatic dispatch(path, ...events)\n\t{\n\t\tlet target = path.filter(e => e.isConnected && e.dispatchEvent)[0];\n\t\tif (target)\n\t\t\tevents.forEach(event => target.dispatchEvent(event));\n\t}\n}\n\n\n"],
+  "mappings": "AAIA,qBAAqBA,UAAqB,WAC1C,CAeC,OAAO,OAAOC,EACd,CACCA,EAAM,eAAe,EACrBA,EAAM,gBAAgB,EACtBA,EAAM,yBAAyB,CAChC,CAEA,OAAO,SAASC,KAASC,EACzB,CACC,IAAIC,EAASF,EAAK,OAAOG,GAAKA,EAAE,aAAeA,EAAE,aAAa,EAAE,CAAC,EAC7DD,GACHD,EAAO,QAAQF,GAASG,EAAO,cAAcH,CAAK,CAAC,CACrD,CACD",
+  "names": ["EventHandler", "event", "path", "events", "target", "e"]
+}

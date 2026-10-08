@@ -1,28 +1,3 @@
-/* global fetch */
+import"./trigger.js";import d from"./dom.js";import p from"./data-url.js";import h from"./request-builder.js";import u from"./response-handler.js";window.addEventListener("@value",function(t){let o=t.composedPath(),{method:i,action:n,form:l,parameters:[r],signal:c}=t.detail,m=d.navigate(t,r).orElseThrow(`${r} is not a valid selector`);fetch(h.build(i,n,l),{signal:c}).then(e=>{const s=e.headers.get("content-type");return u.auto(e).then(a=>{m.value=a,t.success(o,new p(s,a).toString())})}).catch(e=>t.failure(o,e))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@value", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, parameters: [selector], signal} = event.detail;
-
-	let target = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(response =>
-		{
-			const contentType = response.headers.get('content-type');
-			return ResponseHandler.auto(response)
-				.then(result =>
-				{
-					target.value = result;
-					event.success(path, new DataURL(contentType, result).toString());
-				});
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@value.js.map

@@ -1,30 +1,5 @@
-let template = document.createElement("template");
-template.innerHTML = `
-<style data-element="g-event-source">:host(*) { display: none }</style>`;
-import Base64 from './base64.js';
+let d=document.createElement("template");d.innerHTML=`
+<style data-element="g-event-source">:host(*){display:none}
+</style>`;import u from"./base64.js";export default function c(e,s,o){const t=new EventSource(e);t.onopen=()=>o&&console.log("listening to app events."),t.addEventListener("message",n=>{let a=u.decode(n.data);o&&console.log(a);const r=JSON.parse(a);s.dispatchEvent(new CustomEvent("sse",{bubbles:!0,composed:!0,detail:r})),s.dispatchEvent(new CustomEvent(r.type,{bubbles:!0,composed:!0,detail:r.detail}))}),t.onerror=n=>o&&console.error("Error when listening to app events:",n),window.addEventListener("beforeunload",()=>t.close(),{once:!0})}Array.from(document.querySelectorAll("[data-event-source]")).forEach(e=>c(e.getAttribute("data-event-source"),e,e.hasAttribute("data-event-source:log")));
 
-/* global customElements, template */
-
-export default function	registerEventSource(path, listener, log)
-{
-	const eventSource = new EventSource(path);
-
-	eventSource.onopen = () => log && console.log('listening to app events.');
-
-	eventSource.addEventListener('message', (message) =>
-	{
-		let json = Base64.decode(message.data);
-		log && console.log(json);
-		const event = JSON.parse(json);
-		listener.dispatchEvent(new CustomEvent("sse", {bubbles: true, composed: true, detail: event}));
-		listener.dispatchEvent(new CustomEvent(event.type, {bubbles: true, composed: true, detail: event.detail}));
-	});
-
-	eventSource.onerror = error => log && console.error('Error when listening to app events:', error);
-
-	window.addEventListener('beforeunload', () => eventSource.close(), {once: true});
-}
-
-Array.from(document.querySelectorAll("[data-event-source]"))
-	.forEach(listener => registerEventSource(listener.getAttribute("data-event-source"),
-			listener, listener.hasAttribute("data-event-source:log")));
+//# sourceMappingURL=g-event-source.js.map

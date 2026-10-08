@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["request-builder.js"],
+  "sourcesContent": ["export default class RequestBuilder\n{\n\tstatic build(method, action, body, contentType)\n\t{\n\t\tif (!action || action === \"#\")\n\t\t\taction = \"data:text/plain,\";\n\n\t\tconst headers = new Headers();\n\t\theaders.append(\"X-G-Fragment\", \"1\");\n\t\tswitch (method)\n\t\t{\n\t\t\tcase \"get\":\n\t\t\t\treturn new Request(action, {headers});\n\t\t\tcase \"delete\":\n\t\t\tcase \"head\":\n\t\t\tcase \"options\":\n\t\t\t\treturn new Request(action, {headers, method});\n\t\t\tcase \"post\":\n\t\t\tcase \"put\":\n\t\t\tcase \"patch\":\n\t\t\t\tif (contentType)\n\t\t\t\t\theaders.append(\"Content-Type\", contentType);\n\n\t\t\t\tif (body instanceof HTMLFormElement)\n\t\t\t\t\tbody = new FormData(body);\n\t\t\t\telse if (!body)\n\t\t\t\t\tbody = \"\";\n\n\t\t\t\treturn new Request(action, {method, headers, body});\n\t\t}\n\t}\n}\n"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,MAAMC,EAAQC,EAAQC,EAAMC,EACnC,EACK,CAACF,GAAUA,IAAW,OACzBA,EAAS,oBAEV,MAAMG,EAAU,IAAI,QAEpB,OADAA,EAAQ,OAAO,eAAgB,GAAG,EAC1BJ,EACR,CACC,IAAK,MACJ,OAAO,IAAI,QAAQC,EAAQ,CAAC,QAAAG,CAAO,CAAC,EACrC,IAAK,SACL,IAAK,OACL,IAAK,UACJ,OAAO,IAAI,QAAQH,EAAQ,CAAC,QAAAG,EAAS,OAAAJ,CAAM,CAAC,EAC7C,IAAK,OACL,IAAK,MACL,IAAK,QACJ,OAAIG,GACHC,EAAQ,OAAO,eAAgBD,CAAW,EAEvCD,aAAgB,gBACnBA,EAAO,IAAI,SAASA,CAAI,EACfA,IACTA,EAAO,IAED,IAAI,QAAQD,EAAQ,CAAC,OAAAD,EAAQ,QAAAI,EAAS,KAAAF,CAAI,CAAC,CACpD,CACD,CACD",
+  "names": ["RequestBuilder", "method", "action", "body", "contentType", "headers"]
+}

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["g-table-scroll.js"],
+  "sourcesContent": ["let template = document.createElement(\"template\");\ntemplate.innerHTML = `\n\t<slot></slot>\n<style data-element=\"g-table-scroll\">*{box-sizing:border-box}:host(*){gap:12px;height:100%;display:flex;overflow:auto;position:relative;align-items:stretch;flex-direction:column;justify-content:flex-start}\n</style>`;\n/* global customElements, template */\n\ncustomElements.define('g-table-scroll', class extends HTMLElement\n{\n\tconstructor()\n\t{\n\t\tsuper();\n\t\tthis.attachShadow({mode: \"open\"});\n\t\tthis.shadowRoot.appendChild(template.content.cloneNode(true));\n\t}\n\n\tconnectedCallback()\n\t{\n\t\tArray.from(this.querySelectorAll(\"thead > tr > *\")).forEach(e =>\n\t\t{\n\t\t\te.style.top = \"0\";\n\t\t\te.style.position = \"sticky\";\n\t\t});\n\n\t\tArray.from(this.querySelectorAll(\"tfoot > tr > *\")).forEach(e =>\n\t\t{\n\t\t\te.style.bottom = \"0\";\n\t\t\te.style.position = \"sticky\";\n\t\t});\n\t}\n});"],
+  "mappings": "AAAA,IAAI,SAAW,SAAS,cAAc,UAAU,EAChD,SAAS,UAAY;AAAA;AAAA;AAAA,UAMrB,eAAe,OAAO,iBAAkB,cAAc,WACtD,CACC,aACA,CACC,MAAM,EACN,KAAK,aAAa,CAAC,KAAM,MAAM,CAAC,EAChC,KAAK,WAAW,YAAY,SAAS,QAAQ,UAAU,EAAI,CAAC,CAC7D,CAEA,mBACA,CACC,MAAM,KAAK,KAAK,iBAAiB,gBAAgB,CAAC,EAAE,QAAQA,GAC5D,CACCA,EAAE,MAAM,IAAM,IACdA,EAAE,MAAM,SAAW,QACpB,CAAC,EAED,MAAM,KAAK,KAAK,iBAAiB,gBAAgB,CAAC,EAAE,QAAQA,GAC5D,CACCA,EAAE,MAAM,OAAS,IACjBA,EAAE,MAAM,SAAW,QACpB,CAAC,CACF,CACD,CAAC",
+  "names": ["e"]
+}

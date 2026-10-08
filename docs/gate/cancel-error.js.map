@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["cancel-error.js"],
+  "sourcesContent": ["export default class CancelError extends Error\n{\n\tconstructor(message)\n\t{\n\t\tsuper(message || \"Cancel\");\n\t}\n}\n"],
+  "mappings": "AAAA,qBAAqBA,UAAoB,KACzC,CACC,YAAYC,EACZ,CACC,MAAMA,GAAW,QAAQ,CAC1B,CACD",
+  "names": ["CancelError", "message"]
+}

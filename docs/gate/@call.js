@@ -1,36 +1,3 @@
-import DataURL from './data-url.js';
-import DOM from './dom.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import './trigger.js';
+import u from"./data-url.js";import p from"./dom.js";import h from"./request-builder.js";import g from"./response-handler.js";import"./trigger.js";window.addEventListener("@call",function(t){let i=t.composedPath(),{method:s,action:l,form:c,parameters:[e],signal:f}=t.detail,n=e.lastIndexOf(":");if(n===-1)throw new Error("Missing function name");let r=e.substring(n+1),a=p.navigate(t,e.substring(0,n)).orElseThrow(`${e} is not a valid selector`);fetch(h.build(s,l,c),{signal:f}).then(o=>{const d=o.headers.get("content-type")||"text/plain";return g.auto(o).then(m=>{if(typeof a[r]!="function")throw new Error(`Function ${r} is not defined on ${e}`);a[r](),t.success(i,new u(d,m).toString())})}).catch(o=>t.failure(i,o))});
 
-window.addEventListener("@call", function (event)
-{
-	let path = event.composedPath();
-	let { method, action, form, parameters: [selector], signal } = event.detail;
-
-	let index = selector.lastIndexOf(":");
-	if (index === -1)
-		throw new Error("Missing function name");
-
-	let func = selector.substring(index + 1);
-	let target = DOM.navigate(event, selector.substring(0, index))
-		.orElseThrow(`${selector} is not a valid selector`);
-
-	fetch(RequestBuilder.build(method, action, form), { signal })
-		.then(response =>
-		{
-			const contentType = response.headers.get('content-type')
-				|| 'text/plain';
-			return ResponseHandler.auto(response)
-				.then(result =>
-				{
-					if (typeof target[func] !== 'function')
-						throw new Error(`Function ${func} is not defined on ${selector}`);
-
-					target[func]();
-					event.success(path, new DataURL(contentType, result).toString());
-				});
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@call.js.map

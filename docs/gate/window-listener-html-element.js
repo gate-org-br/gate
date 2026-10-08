@@ -1,27 +1,3 @@
-export default class WindowListenerHTMLElement extends HTMLElement
-{
-	#listeners = [];
+export default class o extends HTMLElement{#e=[];addWindowListener(n,t,e){this.#e.push({event:n,listener:t,options:e}),this.isConnected&&window.addEventListener(n,t,e)}connectedCallback(){for(const{event:n,listener:t,options:e}of this.#e)window.addEventListener(n,t,e)}disconnectedCallback(){for(const{event:n,listener:t,options:e}of this.#e){const s=typeof e=="boolean"?e:e?.capture??!1;window.removeEventListener(n,t,s)}}}
 
-	addWindowListener(event, listener, options)
-	{
-		this.#listeners.push({event, listener, options});
-		if (this.isConnected)
-			window.addEventListener(event, listener, options);
-	}
-
-	connectedCallback()
-	{
-		for (const {event, listener, options} of this.#listeners)
-			window.addEventListener(event, listener, options);
-	}
-
-	disconnectedCallback()
-	{
-		for (const {event, listener, options} of this.#listeners)
-		{
-			const capture = typeof options === 'boolean'
-				? options : options?.capture ?? false;
-			window.removeEventListener(event, listener, capture);
-		}
-	}
-}
+//# sourceMappingURL=window-listener-html-element.js.map

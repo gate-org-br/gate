@@ -1,30 +1,3 @@
-/* global fetch, import */
+import"./trigger.js";import h from"./dom.js";import c from"./data-url.js";import d from"./request-builder.js";import f from"./response-handler.js";window.addEventListener("@template",function(o){let i=o.composedPath(),{method:m,action:p,parameters:[l],form:s,signal:n}=o.detail,a=h.navigate(o,l).orElseThrow(`${l} is not a valid selector`);import("./handlebars.js").then(t=>t.default).then(t=>(t.registerHelper("add",(e,r)=>e+r),t.registerHelper("sub",(e,r)=>e-r),t.registerHelper("mul",(e,r)=>e*r),t.registerHelper("div",(e,r)=>e/r),t.compile(a.innerHTML.replace(/<!--{{([^}]+)}}-->/g,"{{$1}}")))).then(t=>fetch(d.build(m,p,s),{signal:n}).then(f.json).then(e=>t(e)).then(c.ofHTML).then(e=>o.success(i,e)).catch(e=>o.failure(i,e)))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@template", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, parameters: [selector], form, signal} = event.detail;
-	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
-
-	import("./handlebars.js")
-		.then(e => e.default)
-		.then(Handlebars =>
-		{
-			Handlebars.registerHelper("add", (number, value) => number + value);
-			Handlebars.registerHelper("sub", (number, value) => number - value);
-			Handlebars.registerHelper("mul", (number, value) => number * value);
-			Handlebars.registerHelper("div", (number, value) => number / value);
-			return Handlebars.compile(element.innerHTML.replace(/<!--{{([^}]+)}}-->/g, '{{$1}}'));
-		}).then(template => fetch(RequestBuilder.build(method, action, form), {signal})
-			.then(ResponseHandler.json)
-			.then(result => template(result))
-			.then(DataURL.ofHTML)
-			.then(result => event.success(path, result))
-			.catch(error => event.failure(path, error)));
-});
+//# sourceMappingURL=@template.js.map

@@ -1,26 +1,3 @@
-/* global fetch */
+import"./trigger.js";import s from"./dom.js";import c from"./data-url.js";import d from"./request-builder.js";import f from"./response-handler.js";window.addEventListener("@inner-html",function(t){let o=t.composedPath(),{method:n,action:m,parameters:[r],form:l,signal:i}=t.detail,a=s.navigate(t,r).orElseThrow(`${r} is not a valid selector`);fetch(d.build(n,m,l),{signal:i}).then(f.text).then(e=>{if(i?.aborted||!document.contains(a))return t.resolve(o);a.innerHTML=e,t.success(o,c.ofHTML(e))}).catch(e=>t.failure(o,e))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@inner-html", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, parameters: [selector], form, signal} = event.detail;
-	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.text)
-		.then(result =>
-		{
-			if (signal?.aborted || !document.contains(element))
-				return event.resolve(path);
-
-			element.innerHTML = result;
-			event.success(path, DataURL.ofHTML(result));
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@inner-html.js.map

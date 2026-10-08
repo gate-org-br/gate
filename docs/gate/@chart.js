@@ -1,25 +1,3 @@
-import './g-chart-dialog.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
+import"./g-chart-dialog.js";import n from"./data-url.js";import s from"./request-builder.js";import h from"./response-handler.js";window.addEventListener("@chart",function(t){let i=t.composedPath(),a=i[0]||t.target,{method:r,action:l,form:m,parameters:[p],signal:c}=t.detail,e=window.top.document.createElement("g-chart-dialog");e.type=p||"pie",e.caption=a.getAttribute("title");let d=e.show();fetch(s.build(r,l,m),{signal:c}).then(h.json).then(o=>{e.value=o,d.finally(()=>t.success(i,n.ofJSON(o)))}).catch(o=>t.failure(i,o))});
 
-window.addEventListener("@chart", function (event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {method, action, form, parameters: [type], signal} = event.detail;
-
-	let dialog = window.top.document.createElement("g-chart-dialog");
-	dialog.type = type || "pie";
-	dialog.caption = trigger.getAttribute("title");
-
-	let promise = dialog.show();
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.json)
-		.then(result =>
-		{
-			dialog.value = result;
-			promise.finally(() => event.success(path, DataURL.ofJSON(result)));
-		}).catch(error => event.failure(path, error));
-
-});
+//# sourceMappingURL=@chart.js.map

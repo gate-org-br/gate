@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["g-icon.js"],
+  "sourcesContent": ["let template = document.createElement(\"template\");\ntemplate.innerHTML = `<i><slot></slot></i><style data-element=\"g-icon\">*{box-sizing:border-box}:host(*){display:flex;cursor:inherit;font-size:inherit;align-items:center;justify-content:center}i{cursor:inherit;font-family:gate;font-size:inherit;font-style:normal}\n</style>`;\n/* global customElements, template */\n\ncustomElements.define('g-icon', class extends HTMLElement\n{\n\tconstructor()\n\t{\n\t\tsuper();\n\t\tthis.attachShadow({mode: \"open\"});\n\t\tthis.shadowRoot.appendChild(template.content.cloneNode(true));\n\t}\n});"],
+  "mappings": "AAAA,IAAI,SAAW,SAAS,cAAc,UAAU,EAChD,SAAS,UAAY;AAAA,UAIrB,eAAe,OAAO,SAAU,cAAc,WAC9C,CACC,aACA,CACC,MAAM,EACN,KAAK,aAAa,CAAC,KAAM,MAAM,CAAC,EAChC,KAAK,WAAW,YAAY,SAAS,QAAQ,UAAU,EAAI,CAAC,CAC7D,CACD,CAAC",
+  "names": []
+}

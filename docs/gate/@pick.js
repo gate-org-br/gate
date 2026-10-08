@@ -1,28 +1,3 @@
-import DOM from './dom.js';
-import VALUES from './values.js';
-import Return from './@return.js';
-import DataURL from './data-url.js';
-import GFramePicker from './g-frame-picker.js';
-import GFetchPicker from './g-fetch-picker.js';
+import"./dom.js";import p from"./values.js";import"./@return.js";import i from"./data-url.js";import l from"./g-frame-picker.js";import f from"./g-fetch-picker.js";window.addEventListener("@pick",function(e){let r=e.composedPath(),t=r[0]||e.target,{action:a,parameters:[o]}=e.detail;if(t.tagName==="INPUT"&&!t.value)return e.success(r,new i("application/json","[]").toString());let c=p.get(t)||"";(o==="frame"?l:f).pick(a,t.title).then(i.ofJSON).then(m=>e.success(r,m)).catch(()=>{t.tagName==="INPUT"&&(t.value=c),e.resolve(r)}).finally(()=>t.hasAttribute("tabindex")&&t.focus())});
 
-window.addEventListener("@pick", function pick(event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {action, parameters: [type]} = event.detail;
-
-	if (trigger.tagName === "INPUT" && !trigger.value)
-		return event.success(path, new DataURL("application/json", "[]").toString());
-
-	let value = VALUES.get(trigger) || "";
-	let picker = type === "frame" ? GFramePicker : GFetchPicker;
-	picker.pick(action, trigger.title)
-		.then(DataURL.ofJSON)
-		.then(dataURL => event.success(path, dataURL))
-		.catch(() =>
-		{
-			if (trigger.tagName === "INPUT")
-				trigger.value = value;
-			event.resolve(path);
-		}).finally(() => trigger.hasAttribute("tabindex") && trigger.focus());
-});
+//# sourceMappingURL=@pick.js.map

@@ -1,32 +1,3 @@
-/* global fetch */
+import"./trigger.js";import p from"./data-url.js";import f from"./request-builder.js";import m from"./response-handler.js";window.addEventListener("@if",function(t){let e=t.composedPath(),o=e[0]||t.target,{method:s,action:n,parameters:[l],form:c,signal:d}=t.detail;fetch(f.build(s,n,c),{signal:d}).then(m.dataURL).then(a=>{let r=p.parse(a),i=new Function("result",`return ${l}`).bind(o)();(r.contentType.startsWith("application/json")?JSON.stringify(i(JSON.parse(r.data))):i(r.data))?t.success(e,a):t.resolve(e)}).catch(a=>t.failure(e,a))});
 
-import './trigger.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@if", function (event)
-{
-	let path = event.composedPath();
-	let element = path[0] || event.target;
-	let {method, action, parameters: [script], form, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.dataURL)
-		.then(result =>
-		{
-			let dataURL = DataURL.parse(result);
-			let func = new Function("result", `return ${script}`).bind(element);
-
-			let arrow = func();
-			let test = dataURL.contentType.startsWith("application/json")
-				? JSON.stringify(arrow(JSON.parse(dataURL.data))) : arrow(dataURL.data);
-
-			if (test)
-				event.success(path, result);
-			else
-				event.resolve(path);
-
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@if.js.map

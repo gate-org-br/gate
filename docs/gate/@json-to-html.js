@@ -1,21 +1,3 @@
-/* global fetch */
+import"./trigger.js";import"./dom.js";import n from"./data-url.js";import s from"./formatter.js";import f from"./request-builder.js";import h from"./response-handler.js";window.addEventListener("@json-to-html",function(t){let r=t.composedPath(),{method:e,action:m,form:i,signal:a}=t.detail;fetch(f.build(e,m,i),{signal:a}).then(h.json).then(s.JSONtoHTML).then(n.ofHTML).then(o=>t.success(r,o)).catch(o=>t.failure(r,o))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import Formatter from './formatter.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@json-to-html", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.json)
-		.then(Formatter.JSONtoHTML)
-		.then(DataURL.ofHTML)
-		.then(result => event.success(path, result))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@json-to-html.js.map

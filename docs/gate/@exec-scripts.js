@@ -1,25 +1,3 @@
-import DOM from './dom.js';
-const BLOCK = new Set(["data-trigger", "data-action", "data-target"]);
+import o from"./dom.js";const i=new Set(["data-trigger","data-action","data-target"]);window.addEventListener("@execute-scripts",function(a){let s=a.composedPath();(a.detail.parameters?.length?a.detail.parameters:["this"]).map(t=>o.navigate(a,t).orElseThrow(`${t} is not a valid selector`)).flatMap(t=>t.tagName==="SCRIPT"?[t]:Array.from(t.querySelectorAll("script"))).forEach(t=>{const e=document.createElement("script");for(const r of t.attributes)i.has(r.name.toLowerCase())||e.setAttribute(r.name,r.value);e.textContent=t.textContent,t.replaceWith(e)}),a.success(s)});
 
-window.addEventListener("@execute-scripts", function (event)
-{
-	let path = event.composedPath();
-	const parameters = event.detail.parameters?.length ? event.detail.parameters : ["this"];
-
-	parameters.map(selector => DOM.navigate(event, selector)
-			.orElseThrow(`${selector} is not a valid selector`))
-		.flatMap(element => element.tagName === "SCRIPT" ? [element] :
-				Array.from(element.querySelectorAll("script")))
-		.forEach(e =>
-		{
-			const script = document.createElement("script");
-
-			for (const attr of e.attributes)
-				if (!BLOCK.has(attr.name.toLowerCase()))
-					script.setAttribute(attr.name, attr.value);
-			script.textContent = e.textContent;
-			e.replaceWith(script);
-		});
-
-	event.success(path);
-});
+//# sourceMappingURL=@exec-scripts.js.map

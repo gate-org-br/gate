@@ -1,19 +1,3 @@
-/* global fetch */
+import"./trigger.js";import s from"./dom.js";import c from"./request-builder.js";import d from"./response-handler.js";window.addEventListener("@remove",function(e){let t=e.composedPath(),{method:r,action:i,parameters:[o],form:a,signal:l}=e.detail,m=s.navigate(e,o).orElseThrow(`${o} is not a valid selector`);return fetch(c.build(r,i,a),{signal:l}).then(d.none).then(()=>m.remove()).then(()=>e.success(t)).catch(n=>e.failure(t,n))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@remove", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, parameters: [selector], form, signal} = event.detail;
-	let element = DOM.navigate(event, selector).orElseThrow(`${selector} is not a valid selector`);
-
-	return fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.none)
-		.then(() => element.remove())
-		.then(() => event.success(path))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@remove.js.map

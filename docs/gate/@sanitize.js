@@ -1,21 +1,3 @@
-/* global fetch */
+import"./trigger.js";import"./dom.js";import n from"./data-url.js";import s from"./sanitize.js";import f from"./request-builder.js";import d from"./response-handler.js";window.addEventListener("@sanitize",function(t){let i=t.composedPath(),{method:e,action:r,form:m,signal:a}=t.detail;fetch(f.build(e,r,m),{signal:a}).then(d.text).then(s).then(n.ofHTML).then(o=>t.success(i,o)).catch(o=>t.failure(i,o))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import sanitize from './sanitize.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@sanitize", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.text)
-		.then(sanitize)
-		.then(DataURL.ofHTML)
-		.then(result => event.success(path, result))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@sanitize.js.map

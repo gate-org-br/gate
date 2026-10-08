@@ -1,20 +1,3 @@
-/* global fetch */
+import"./trigger.js";import"./dom.js";import"./event-handler.js";import a from"./request-builder.js";import c from"./response-handler.js";import"./trigger-event.js";window.addEventListener("@redirect",function(e){let t=e.composedPath(),{method:o,action:i,form:n,signal:m}=e.detail;return fetch(a.build(o,i,n),{signal:m}).then(c.text).then(r=>window.location=r).then(()=>e.success(t)).catch(r=>e.failure(t,r))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import EventHandler from './event-handler.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import {TriggerSuccessEvent, TriggerFailureEvent, TriggerResolveEvent} from './trigger-event.js';
-
-window.addEventListener("@redirect", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, signal} = event.detail;
-
-	return fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.text)
-		.then(result => window.location = result)
-		.then(() => event.success(path))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@redirect.js.map

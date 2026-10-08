@@ -1,28 +1,3 @@
-/* global fetch */
+import"./trigger.js";import"./dom.js";import m from"./data-url.js";import s from"./request-builder.js";import d from"./response-handler.js";const R="this.parent('.content, #content')";window.addEventListener("@content",function(t){let e=t.composedPath(),{method:i,action:c,form:a,signal:n}=t.detail,r=t.target.closest("#content, .content");fetch(s.build(i,c,a),{signal:n}).then(d.text).then(o=>{if(n?.aborted||!document.contains(r))return t.resolve(e);r.innerHTML=o,t.success(e,m.ofHTML(o))}).catch(o=>t.failure(e,o))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-const SELECTOR = "this.parent('.content, #content')";
-
-window.addEventListener("@content", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, signal} = event.detail;
-	let element = event.target.closest("#content, .content");
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.text)
-		.then(result =>
-		{
-			if (signal?.aborted || !document.contains(element))
-				return event.resolve(path);
-
-			element.innerHTML = result;
-			event.success(path, DataURL.ofHTML(result));
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@content.js.map

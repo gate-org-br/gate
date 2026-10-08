@@ -1,28 +1,3 @@
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import Populator from './populator.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
+import f from"./dom.js";import n from"./data-url.js";import c from"./populator.js";import h from"./request-builder.js";import g from"./response-handler.js";window.addEventListener("@populate",function(t){let o=t.composedPath(),r=o[0]||t.target,{method:i,action:m,form:s,signal:u}=t.detail,[l,p="value",d="label"]=t.detail.parameters,e=f.navigate(r,l).orElseThrow(`${l} is not a valid selector`);fetch(h.build(i,m,s),{signal:u}).then(g.json).then(a=>{new c(a).populate(e,p,d),e.hasAttribute("data-value")&&(e.value=e.getAttribute("data-value")),t.success(o,n.ofJSON(a))}).catch(a=>t.failure(o,a))});
 
-window.addEventListener("@populate", function (event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-
-	let {method, action, form, signal} = event.detail;
-	let [selector, value = "value", label = "label"] = event.detail.parameters;
-
-	let element = DOM.navigate(trigger, selector).orElseThrow(`${selector} is not a valid selector`);
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.json)
-		.then(result =>
-		{
-			new Populator(result).populate(element, value, label);
-			if (element.hasAttribute("data-value"))
-				element.value = element.getAttribute("data-value");
-			event.success(path, DataURL.ofJSON(result));
-		})
-		.catch(error => event.failure(path, error));
-});
-
+//# sourceMappingURL=@populate.js.map

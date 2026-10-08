@@ -1,37 +1,3 @@
-/* global fetch */
+import"./trigger.js";import s from"./data-url.js";import h from"./request-builder.js";import m from"./response-handler.js";window.addEventListener("@map",function(a){let n=a.composedPath(),o=n[0]||a.target,{method:d,action:p,parameters:[t],form:c,signal:l}=a.detail;fetch(h.build(d,p,c),{signal:l}).then(m.dataURL).then(e=>{let i=s.parse(e);(t.startsWith("'")&&t.endsWith("'")||t.startsWith('"')&&t.endsWith('"'))&&(t=t.substring(1,t.length-1));let r=new Function("result",`return ${t}`).bind(o)();i.contentType.startsWith("application/json")?e=JSON.stringify(r(JSON.parse(i.data))):e=r(i.data),a.success(n,new s(i.contentType,e).toString())}).catch(e=>a.failure(n,e))});
 
-import './trigger.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@map", function (event)
-{
-	let path = event.composedPath();
-	let element = path[0] || event.target;
-	let {method, action, parameters: [script], form, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.dataURL)
-		.then(result =>
-		{
-			let dataURL = DataURL.parse(result);
-			if (script.startsWith("'")
-				&& script.endsWith("'")
-				|| script.startsWith('"')
-				&& script.endsWith('"'))
-				script = script.substring(1, script.length - 1);
-
-			let func = new Function("result", `return ${script}`).bind(element);
-			let arrow = func();
-
-			if (dataURL.contentType.startsWith("application/json"))
-				result = JSON.stringify(arrow(JSON.parse(dataURL.data)));
-			else
-				result = arrow(dataURL.data);
-
-			event.success(path, new DataURL(dataURL.contentType, result).toString());
-
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@map.js.map

@@ -1,37 +1,4 @@
-export default class CSV
-{
-	static parse(text)
-	{
-		var a = [];
-		text.replace(/(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,;'"\s\\]*(?:\s+[^,;'"\s\\]+)*))\s*(?:[,;]|$)/g,
-			function (g0, g1, g2, g3)
-			{
-				if (g1 !== undefined)
-					a.push(g1.replace(/\\'/g, "'"));
-				else if (g2 !== undefined)
-					a.push(g2.replace(/\\"/g, '"'));
-				else if (g3 !== undefined)
-					a.push(g3);
-				return '';
-			});
-		if (/,\s*$/.test(text))
-			a.push('');
-		return a;
-	}
+export default class d{static parse(n){var t=[];return n.replace(/(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,;'"\s\\]*(?:\s+[^,;'"\s\\]+)*))\s*(?:[,;]|$)/g,function(a,e,s,i){return e!==void 0?t.push(e.replace(/\\'/g,"'")):s!==void 0?t.push(s.replace(/\\"/g,'"')):i!==void 0&&t.push(i),""}),/,\s*$/.test(n)&&t.push(""),t}static print(n,t){let a="data:text/csv;charset=utf-8,"+n.map(s=>s.map(i=>'"'+i+'"')).map(s=>s.join(",")).join(`
+`);a=encodeURI(a);let e=document.createElement("a");e.setAttribute("href",a),e.setAttribute("download",t||"print.csv"),document.body.appendChild(e),e.click(),document.body.removeChild(e)}}
 
-	static print(rows, name)
-	{
-		let url = "data:text/csv;charset=utf-8,"
-			+ rows
-			.map(r => r.map(c => "\"" + c + "\""))
-			.map(r => r.join(",")).join("\n");
-		url = encodeURI(url);
-
-		let link = document.createElement("a");
-		link.setAttribute("href", url);
-		link.setAttribute("download", name || "print.csv");
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-	}
-}
+//# sourceMappingURL=csv.js.map

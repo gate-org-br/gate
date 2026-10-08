@@ -1,29 +1,3 @@
-/* global fetch */
+import"./trigger.js";import d from"./dom.js";import f from"./data-url.js";import c from"./request-builder.js";import h from"./response-handler.js";window.addEventListener("@property",function(t){let i=t.composedPath(),{method:s,action:a,form:n,parameters:[r],signal:l}=t.detail,o=r.lastIndexOf(":");if(o===-1)throw new Error("Missing property name");let p=r.substring(o+1),m=d.navigate(t,r.substring(0,o)).orElseThrow(`${r} is not a valid selector`);fetch(c.build(s,a,n),{signal:l}).then(h.json).then(e=>{m[p]=e,t.success(i,f.ofJSON(e))}).catch(e=>t.failure(i,e))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@property", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, parameters: [selector], signal} = event.detail;
-
-	let index = selector.lastIndexOf(":");
-	if (index === -1)
-		throw new Error("Missing property name");
-
-	let property = selector.substring(index + 1);
-	let target = DOM.navigate(event, selector.substring(0, index))
-		.orElseThrow(`${selector} is not a valid selector`);
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.json)
-		.then(result =>
-		{
-			target[property] = result;
-			event.success(path, DataURL.ofJSON(result));
-		}).catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@property.js.map

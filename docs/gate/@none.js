@@ -1,16 +1,3 @@
-/* global fetch */
+import"./trigger.js";import d from"./request-builder.js";import s from"./response-handler.js";window.addEventListener("@none",function(e){let t=e.composedPath(),{method:o,action:n,form:i,signal:r}=e.detail;return fetch(d.build(o,n,i),{signal:r}).then(s.none).then(()=>e.success(t)).catch(a=>e.failure(t,a))});
 
-import './trigger.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@none", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, signal} = event.detail;
-
-	return fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.none)
-		.then(() => event.success(path))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@none.js.map

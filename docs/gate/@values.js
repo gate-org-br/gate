@@ -1,28 +1,3 @@
-/* global fetch */
-import './trigger.js';
-import DataURL from './data-url.js';
-import property from './property.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
+import"./trigger.js";import l from"./data-url.js";import f from"./property.js";import h from"./request-builder.js";import u from"./response-handler.js";function i(t,o){return o&&o.length?o.map(a=>f(t,a)):Object.values(t)}window.addEventListener("@values",function(t){let o=t.composedPath(),{method:a,action:n,form:m,parameters:e,signal:p}=t.detail;fetch(h.build(a,n,m),{signal:p}).then(u.json).then(r=>Array.isArray(r)?r.map(s=>i(s,e)):i(r,e)).then(l.ofJSON).then(r=>t.success(o,r)).catch(r=>t.failure(o,r))});
 
-function map(object, parameters)
-{
-	return parameters && parameters.length
-		? parameters.map(e => property(object, e))
-		: Object.values(object);
-}
-
-window.addEventListener("@values", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, parameters, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.json)
-		.then(object => Array.isArray(object)
-				? object.map(e => map(e, parameters))
-				: map(object, parameters))
-		.then(DataURL.ofJSON)
-		.then(result => event.success(path, result))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@values.js.map

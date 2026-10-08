@@ -1,26 +1,3 @@
-import DOM from './dom.js';
+import i from"./dom.js";function e(t){t.removeAttribute("data-overflowing"),(t.scrollWidth>t.clientWidth||t.scrollWidth>t.parentNode.clientWidth||Array.from(t.querySelectorAll("td, th")).some(r=>r.scrollWidth>r.clientWidth))&&t.setAttribute("data-overflowing","true")}window.addEventListener("resize",()=>i.traverse(document,t=>t.tagName==="TABLE"&&t.hasAttribute("data-collapse"),t=>e(t))),window.addEventListener("orientationchange",()=>i.traverse(document,t=>t.tagName==="TABLE"&&t.hasAttribute("data-collapse"),t=>e(t))),window.addEventListener("connected",t=>{t.target.tagName==="TABLE"&&t.target.hasAttribute("data-collapse")&&e(t.target)});
 
-function checkOverflow(table)
-{
-	table.removeAttribute('data-overflowing');
-	if (table.scrollWidth > table.clientWidth
-		|| table.scrollWidth > table.parentNode.clientWidth
-		|| Array.from(table.querySelectorAll("td, th"))
-		.some(e => e.scrollWidth > e.clientWidth))
-		table.setAttribute('data-overflowing', 'true');
-}
-
-window.addEventListener("resize", () =>
-	DOM.traverse(document, e => e.tagName === "TABLE"
-			&& e.hasAttribute("data-collapse"), table => checkOverflow(table)));
-
-window.addEventListener("orientationchange", () =>
-	DOM.traverse(document, e => e.tagName === "TABLE"
-			&& e.hasAttribute("data-collapse"), table => checkOverflow(table)));
-
-window.addEventListener("connected", event =>
-	{
-		if (event.target.tagName === "TABLE"
-			&& event.target.hasAttribute('data-collapse'))
-			checkOverflow(event.target);
-	});
+//# sourceMappingURL=collapse.js.map

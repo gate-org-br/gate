@@ -1,16 +1,3 @@
-import trigger from './trigger-core.js';
-import TriggerExtractor from './trigger-extractor.js';
+import e from"./trigger-core.js";import i from"./trigger-extractor.js";window.addEventListener("change",function(t){let r=t.target||t.composedPath()[0];i.trigger(r)==="change"&&e(t,r,r)}),window.addEventListener("input",function(t){let r=t.target||t.composedPath()[0];i.trigger(r)==="input"&&e(t,r,r)});
 
-window.addEventListener("change", function (event)
-{
-	let element = event.target || event.composedPath()[0];
-	if (TriggerExtractor.trigger(element) === "change")
-		trigger(event, element, element);
-});
-
-window.addEventListener("input", function (event)
-{
-	let element = event.target || event.composedPath()[0];
-	if (TriggerExtractor.trigger(element) === "input")
-		trigger(event, element, element);
-});
+//# sourceMappingURL=trigger-change.js.map

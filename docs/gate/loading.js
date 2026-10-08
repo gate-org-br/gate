@@ -1,24 +1,7 @@
-const id = 'gate-loading-style';
-
-const style =
-	`@keyframes loading
+const d="gate-loading-style",o=`@keyframes loading
 	{
 		0% { width: 0 }
 		100% { width: 100% }
-	}`;
+	}`;document.head.insertAdjacentHTML("beforeend",`<style id='${d}'>${o}</style>`);export default function n(e){if(e?.parentNode?.shadowRoot&&!e.parentNode.shadowRoot.getElementById(d)){const t=document.createElement("style");t.id=d,t.innerHTML=o,e.parentNode.shadowRoot.appendChild(t)}}
 
-document.head.insertAdjacentHTML('beforeend', `<style id='${id}'>${style}</style>`);
-
-export default function loading(element)
-{
-	if (element?.parentNode?.shadowRoot)
-	{
-		if (!element.parentNode.shadowRoot.getElementById(id))
-		{
-			const styleElement = document.createElement('style');
-			styleElement.id = id;
-			styleElement.innerHTML = style;
-			element.parentNode.shadowRoot.appendChild(styleElement);
-		}
-	}
-}
+//# sourceMappingURL=loading.js.map

@@ -1,29 +1,3 @@
-export default class ObjectFilter
-{
+export default class e{static filter(t,n){return t.filter(r=>e.contains(r,n))}static contains(t,n){return t==null?!1:typeof t=="string"?t.toLowerCase().includes(n):typeof t=="number"?t.toString().includes(n):Array.isArray(t)?t.some(r=>e.contains(r,n)):typeof t=="object"?Object.values(t).some(r=>e.contains(r,n)):!1}}
 
-	static filter(options, text)
-	{
-		return options.filter(e => ObjectFilter.contains(e, text));
-	}
-
-	static contains(obj, search) {
-		if (obj == null)
-			return false;
-
-		if (typeof obj === 'string')
-			return obj.toLowerCase().includes(search);
-
-		if (typeof obj === 'number')
-			return obj.toString().includes(search);
-
-		if (Array.isArray(obj))
-			return obj.some(item => ObjectFilter.contains(item, search));
-
-		if (typeof obj === 'object')
-			return Object.values(obj).some(value => ObjectFilter.contains(value, search));
-
-		return false;
-	}
-}
-
-
+//# sourceMappingURL=object-filter.js.map

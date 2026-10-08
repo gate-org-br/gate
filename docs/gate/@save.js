@@ -1,15 +1,3 @@
-import GFilePicker from './g-file-picker.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
+import d from"./g-file-picker.js";import c from"./request-builder.js";import l from"./response-handler.js";window.addEventListener("@save",function(e){let a=e.composedPath(),{method:i,action:o,form:r,signal:s}=e.detail;fetch(c.build(i,o,r),{signal:s}).then(l.dataURL).then(d.saveDataURL).then(t=>e.success(a,t)).catch(t=>e.failure(a,t))});
 
-window.addEventListener("@save", function (event)
-{
-	let path = event.composedPath();
-	let {method, action, form, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.dataURL)
-		.then(GFilePicker.saveDataURL)
-		.then(response => event.success(path, response))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@save.js.map

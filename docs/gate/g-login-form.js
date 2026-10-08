@@ -1,5 +1,4 @@
-let template = document.createElement("template");
-template.innerHTML = `
+let d=document.createElement("template");d.innerHTML=`
 	<main><header><img id='logo' src='Logo.svg'><label id='app'></label><label id='version'></label></header><section><g-tab-control><a href='#' id='login-tab'><g-icon>&#X2004;</g-icon>Fazer logon
 				</a><div><form id='form' method='POST' target='_top' action='#'><fieldset><label>
 								Login:
@@ -18,274 +17,35 @@ template.innerHTML = `
 										title='Entre com a sua senha.' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label><label style='grid-column: 1 / span 8'>
 								Nova Senha:
 								<span><input type="password" required='required' maxlength='32' tabindex="1"
-										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label><label style='grid-column: 9 / span 8'>
+										title='A nova senha tem que ter no m\xEDnimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label><label style='grid-column: 9 / span 8'>
 								Repita:
 								<span><input type="password" required='required' maxlength='32' tabindex="1"
-										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label></fieldset><g-coolbar><button id='setup-button' class="primary">
+										title='A nova senha tem que ter no m\xEDnimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label></fieldset><g-coolbar><button id='setup-button' class="primary">
 								Trocar<g-icon>&#X2057;</g-icon></button></g-coolbar></form></div><a id='forgot-tab' href='#'><g-icon>&#X2034;</g-icon>Esqueci a senha
 				</a><div><form method='POST' action="#"><g-callout><p>
 								Entre com o seu login ou email na caixa de texto
-								abaixo e clique em <strong>Enviar código</strong>.
+								abaixo e clique em <strong>Enviar c\xF3digo</strong>.
 
-								Uma código será enviado para seu endereço de email
-								e deverá ser utilizado para redefinir sua senha
+								Uma c\xF3digo ser\xE1 enviado para seu endere\xE7o de email
+								e dever\xE1 ser utilizado para redefinir sua senha
 								clicando em <strong>Redefinir senha</strong>.
 							</p></g-callout><fieldset><label>
 								Login ou E-Mail:
 								<span><input type="text" required='required' maxlength='64' tabindex="1"
 										title='Entre com o seu login ou e-mail' /></span></label></fieldset><g-coolbar><button id='forgot-button' class="primary">
-								Enviar código<g-icon>&#X2034;</g-icon></button></g-coolbar></form></div><a id='reset-tab' href='#'><g-icon>&#X2058;</g-icon>Redefinir a senha
+								Enviar c\xF3digo<g-icon>&#X2034;</g-icon></button></g-coolbar></form></div><a id='reset-tab' href='#'><g-icon>&#X2058;</g-icon>Redefinir a senha
 				</a><div><form method='POST' action="#"><fieldset><label>
-								Entre com o código recebido no email:
+								Entre com o c\xF3digo recebido no email:
 								<span style='flex-basis: 60px'><textarea required='required' tabindex="1"
-										title='Entre com o código recebido no email'></textarea></span></label><label style='grid-column: 1 / span 8'>
+										title='Entre com o c\xF3digo recebido no email'></textarea></span></label><label style='grid-column: 1 / span 8'>
 								Entre com a nova senha:
 								<span><input type="password" required='required' maxlength='32' tabindex="1"
-										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label><label style='grid-column: 9 / span 8'>
+										title='A nova senha tem que ter no m\xEDnimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label><label style='grid-column: 9 / span 8'>
 								Repita a nova senha:
 								<span><input type="password" required='required' maxlength='32' tabindex="1"
-										title='A nova senha tem que ter no mínimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label></fieldset><g-coolbar><button id='reset-button' class="primary">
+										title='A nova senha tem que ter no m\xEDnimo 8 caracteres' pattern='^.{8,}$' /><a href="#" class="show"><g-icon>&#X2199;</g-icon></a></span></label></fieldset><g-coolbar><button id='reset-button' class="primary">
 								Redefinir<g-icon>&#X2058;</g-icon></button></g-coolbar></form></div></g-tab-control></section></main>
-<style data-element="g-login-form">* {
-	box-sizing: border-box;
-}
+<style data-element="g-login-form">*{box-sizing:border-box}g-tab-control>a{flex-grow:1;flex-shrink:0}:host(*){inset:0;position:absolute;display:flex;align-items:center;justify-content:center}main{width:600px;min-width:320px;max-width:calc(100% - 16px);border:1px solid var(--main3, #DDDDDD);background-color:var(--main2, #F0F0F0);box-shadow:6px 6px 6px #000000bf;header{gap:8px;padding:8px;height:50px;color:#fff;display:flex;align-items:center;background-color:var(--base2, #3f729b)}#logo{width:32px;height:32px}#app{flex-grow:1;font-size:20px}#version{font-size:12px}section{padding:10px}form{gap:12px;display:flex;flex-direction:column}:host([setup-password="false"]) #setup-tab,:host([setup-password="false"]) #forgot-tab,:host([setup-password="false"]) #reset-tab{display:none}@media screen and (max-width:600px){:host(*){align-items:flex-start}main{width:100%;border:none;height:100%;box-shadow:none;max-width:unset;background-color:var(--main3)}}}
+</style>`;import"./g-coolbar.js";import"./g-icon.js";import n from"./g-message-dialog.js";import"./g-tab-control.js";import c from"./response-handler.js";import h from"./stylesheets.js";customElements.define("g-login-form",class extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.shadowRoot.appendChild(d.content.cloneNode(!0)),h("input.css","fieldset.css").forEach(t=>this.shadowRoot.appendChild(t));let i=this.shadowRoot.querySelector("#setup-button");i.addEventListener("click",t=>{t.preventDefault();let e=i.closest("form").querySelectorAll("input")[0];e.value=e.value.trim();let o=i.closest("form").querySelectorAll("input")[1];o.value=o.value.trim();let r=i.closest("form").querySelectorAll("input")[2];r.value=r.value.trim();let s=i.closest("form").querySelectorAll("input")[3];if(s.value=s.value.trim(),!e.reportValidity()||!o.reportValidity()||!r.reportValidity()||!s.reportValidity())return;if(e.value===r.value)return n.error("A nova senha n\xE3o pode ser igual ao login");if(r.value!==s.value)return n.error("As duas senhas n\xE3o conferem");let u=btoa(e.value+":"+o.value);fetch(new Request("SetupPassword",{method:"post",headers:{Authorization:`Basic ${u}`},body:r.value})).then(c.none).then(()=>{this.shadowRoot.querySelector("#login-tab").click(),n.success("Senha alterada com sucesso"),e.value=o.value=r.value=s.value=""}).catch(p=>n.error(p.message))});let l=this.shadowRoot.querySelector("#forgot-button");l.addEventListener("click",t=>{t.preventDefault();let e=l.closest("form").querySelectorAll("input")[0];e.value=e.value.trim(),e.reportValidity()&&fetch(`ResetPassword?username=${e.value}`).then(c.none).then(()=>{this.shadowRoot.querySelector("#reset-tab").click(),n.success("C\xF3digo enviado com sucesso"),e.value=""}).catch(o=>n.error(o.message))});let a=this.shadowRoot.querySelector("#reset-button");a.addEventListener("click",t=>{t.preventDefault();let e=a.closest("form").querySelector("textarea");e.value=e.value.trim();let o=a.closest("form").querySelectorAll("input")[0];o.value=o.value.trim();let r=a.closest("form").querySelectorAll("input")[1];if(r.value=r.value.trim(),!(!e.reportValidity()||!o.reportValidity()||!r.reportValidity())){if(o.value!==r.value)return n.error("As duas senhas n\xE3o conferem");fetch(new Request("ResetPassword",{method:"post",headers:{Authorization:`Bearer ${e.value}`},body:o.value})).then(c.none).then(()=>{this.shadowRoot.querySelector("#login-tab").click(),n.success("Senha alterada com sucesso"),e.value=o.value=r.value=""}).catch(s=>n.error(s.message))}}),Array.from(this.shadowRoot.querySelectorAll(".show")).forEach(t=>{t.addEventListener("click",()=>{t.previousElementSibling.type==="password"?(t.previousElementSibling.type="text",t.firstElementChild.innerHTML="&#X3070;"):(t.previousElementSibling.type="password",t.firstElementChild.innerHTML="&#X2199;")})})}attributeChangedCallback(i,l,a){switch(i){case"action":return this.shadowRoot.querySelector("#form").action=a;case"method":return this.shadowRoot.querySelector("#form").method=a;case"target":return this.shadowRoot.querySelector("#form").target=a;case"logo":return this.shadowRoot.querySelector("#logo").src=a;case"app":return this.shadowRoot.querySelector("#app").innerText=a;case"version":return this.shadowRoot.querySelector("#version").innerText=`Vers\xE3o ${a}`;case"tab":return this.shadowRoot.querySelector(`#${a}-tab`)?this.shadowRoot.querySelector(`#${a}-tab`).click():null}}static get observedAttributes(){return["action","method","target","logo","app","version","tab"]}});
 
-g-tab-control > a {
-	flex-grow: 1;
-	flex-shrink: 0;
-}
-
-:host(*) {
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-main {
-	width: 600px;
-	min-width: 320px;
-	max-width: calc(100% - 16px);
-	border: 1px solid var(--main3, #DDDDDD);
-	background-color: var(--main2, #F0F0F0);
-	box-shadow: 6px 6px 6px 0px rgba(0, 0, 0, 0.75);
-
-	header {
-		gap: 8px;
-		padding: 8px;
-		height: 50px;
-		color: white;
-		display: flex;
-		align-items: center;
-		background-color: var(--base2, #3f729b);
-	}
-
-	#logo {
-		width: 32px;
-		height: 32px;
-	}
-
-	#app {
-		flex-grow: 1;
-		font-size: 20px;
-	}
-
-	#version {
-		font-size: 12px;
-	}
-
-	section {
-		padding: 10px;
-	}
-
-	form {
-		gap: 12px;
-		display: flex;
-		flex-direction: column;
-	}
-
-	:host([setup-password='false']) #setup-tab,
-	:host([setup-password='false']) #forgot-tab,
-	:host([setup-password='false']) #reset-tab {
-		display: none;
-	}
-
-	@media screen and (max-width: 600px) {
-
-
-		:host(*) {
-			align-items: flex-start;
-		}
-
-		main {
-			width: 100%;
-			border: none;
-			height: 100%;
-			box-shadow: none;
-			max-width: unset;
-			background-color: var(--main3);
-		}
-	}
-}</style>`;
-/* global customElements */
-
-import './g-coolbar.js';
-import './g-icon.js';
-import GMessageDialog from './g-message-dialog.js';
-import './g-tab-control.js';
-import ResponseHandler from './response-handler.js';
-import stylesheets from './stylesheets.js';
-
-customElements.define('g-login-form', class extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this.attachShadow({ mode: "open" });
-		this.shadowRoot.appendChild(template.content.cloneNode(true));
-		stylesheets('input.css', 'fieldset.css').forEach(e => this.shadowRoot.appendChild(e));
-
-		let setup = this.shadowRoot.querySelector("#setup-button");
-		setup.addEventListener("click", event =>
-		{
-			event.preventDefault();
-			let username = setup.closest("form").querySelectorAll("input")[0];
-			username.value = username.value.trim();
-			let password = setup.closest("form").querySelectorAll("input")[1];
-			password.value = password.value.trim();
-			let change = setup.closest("form").querySelectorAll("input")[2];
-			change.value = change.value.trim();
-			let repeat = setup.closest("form").querySelectorAll("input")[3];
-			repeat.value = repeat.value.trim();
-
-			if (!username.reportValidity()
-				|| !password.reportValidity()
-				|| !change.reportValidity()
-				|| !repeat.reportValidity())
-				return;
-
-			if (username.value === change.value)
-				return GMessageDialog.error("A nova senha não pode ser igual ao login");
-
-			if (change.value !== repeat.value)
-				return GMessageDialog.error("As duas senhas não conferem");
-
-			let creadentials = btoa(username.value + ':' + password.value);
-			fetch(new Request("SetupPassword", {
-				method: "post",
-				headers: { Authorization: `Basic ${creadentials}` }, body: change.value
-			}))
-				.then(ResponseHandler.none)
-				.then(() =>
-				{
-					this.shadowRoot.querySelector("#login-tab").click();
-					GMessageDialog.success("Senha alterada com sucesso");
-					username.value = password.value = change.value = repeat.value = "";
-				})
-				.catch(error => GMessageDialog.error(error.message));
-		});
-
-		let forgot = this.shadowRoot.querySelector("#forgot-button");
-		forgot.addEventListener("click", event =>
-		{
-			event.preventDefault();
-			let username = forgot.closest("form").querySelectorAll("input")[0];
-			username.value = username.value.trim();
-
-			if (!username.reportValidity())
-				return;
-
-			fetch(`ResetPassword?username=${username.value}`)
-				.then(ResponseHandler.none)
-				.then(() =>
-				{
-					this.shadowRoot.querySelector("#reset-tab").click();
-					GMessageDialog.success("Código enviado com sucesso");
-					username.value = "";
-				})
-				.catch(error => GMessageDialog.error(error.message));
-		});
-
-		let reset = this.shadowRoot.querySelector("#reset-button");
-		reset.addEventListener("click", event =>
-		{
-			event.preventDefault();
-
-			let code = reset.closest("form").querySelector("textarea");
-			code.value = code.value.trim();
-			let change = reset.closest("form").querySelectorAll("input")[0];
-			change.value = change.value.trim();
-			let repeat = reset.closest("form").querySelectorAll("input")[1];
-			repeat.value = repeat.value.trim();
-
-			if (!code.reportValidity()
-				|| !change.reportValidity()
-				|| !repeat.reportValidity())
-				return;
-
-			if (change.value !== repeat.value)
-				return GMessageDialog.error("As duas senhas não conferem");
-
-			fetch(new Request("ResetPassword", {
-				method: "post",
-				headers: { Authorization: `Bearer ${code.value}` }, body: change.value
-			}))
-				.then(ResponseHandler.none)
-				.then(() =>
-				{
-					this.shadowRoot.querySelector("#login-tab").click();
-					GMessageDialog.success("Senha alterada com sucesso");
-					code.value = change.value = repeat.value = "";
-				})
-				.catch(error => GMessageDialog.error(error.message));
-		});
-
-		Array.from(this.shadowRoot.querySelectorAll(".show")).forEach(e => 
-		{
-			e.addEventListener("click", () =>
-			{
-				if (e.previousElementSibling.type === "password")
-				{
-					e.previousElementSibling.type = "text";
-					e.firstElementChild.innerHTML = "&#X3070;"
-				} else
-				{
-					e.previousElementSibling.type = "password";
-					e.firstElementChild.innerHTML = "&#X2199;"
-				}
-			});
-		});
-	}
-
-	attributeChangedCallback(name, _, val)
-	{
-		switch (name)
-		{
-			case "action":
-				return this.shadowRoot.querySelector("#form").action = val;
-			case "method":
-				return this.shadowRoot.querySelector("#form").method = val;
-			case "target":
-				return this.shadowRoot.querySelector("#form").target = val;
-			case "logo":
-				return this.shadowRoot.querySelector("#logo").src = val;
-			case "app":
-				return this.shadowRoot.querySelector("#app").innerText = val;
-			case "version":
-				return this.shadowRoot.querySelector("#version").innerText = `Versão ${val}`;
-			case "tab":
-				return this.shadowRoot.querySelector(`#${val}-tab`)
-					? this.shadowRoot.querySelector(`#${val}-tab`).click()
-					: null;
-		}
-	}
-
-	static get observedAttributes()
-	{
-		return ["action", "method", "target", "logo", "app", "version", "tab"];
-	}
-});
+//# sourceMappingURL=g-login-form.js.map

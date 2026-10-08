@@ -1,24 +1,3 @@
-/* global fetch */
+import s from"./data-url.js";import c from"./request-builder.js";import n from"./response-handler.js";import"./trigger.js";window.addEventListener("@head",function(o){let e=o.composedPath(),{method:a,action:i,parameters:[d=1],form:m,signal:r}=o.detail;fetch(c.build(a,i,m),{signal:r}).then(n.json).then(t=>{if(r?.aborted)return o.resolve(e);t=t.slice(0,d),o.success(e,s.ofJSON(t))}).catch(t=>o.failure(e,t))});
 
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import './trigger.js';
-
-window.addEventListener("@head", function (event)
-{
-	let path = event.composedPath();
-	let { method, action, parameters: [count = 1], form, signal } = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), { signal })
-		.then(ResponseHandler.json)
-		.then(result =>
-		{
-			if (signal?.aborted)
-				return event.resolve(path);
-
-			result = result.slice(0, count);
-			event.success(path, DataURL.ofJSON(result));
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@head.js.map

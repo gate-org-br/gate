@@ -1,36 +1,4 @@
-function resolveStyleSheetImports(sheet, visited = new Set())
-{
-	const key = sheet.href || sheet.ownerNode?.textContent;
-	if (visited.has(key))
-		return '';
-	visited.add(key);
+function l(e,o=new Set){const n=e.href||e.ownerNode?.textContent;if(o.has(n))return"";o.add(n);let s="";try{for(const t of e.cssRules)t instanceof CSSImportRule?s+=l(t.styleSheet,o):s+=t.cssText+`
+`}catch{}return s}let c="";for(const e of document.styleSheets)c+=l(e);const r=new CSSStyleSheet;r.replaceSync(c);export default class S extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.shadowRoot.adoptedStyleSheets=[r]}}
 
-	let css = '';
-	try {
-		for (const rule of sheet.cssRules)
-			if (rule instanceof CSSImportRule)
-				css += resolveStyleSheetImports(rule.styleSheet, visited);
-			else
-				css += rule.cssText + '\n';
-	} catch (e) {
-	}
-
-	return css;
-}
-
-let css = '';
-for (const sheet of document.styleSheets)
-	css += resolveStyleSheetImports(sheet);
-const globalStyles = new CSSStyleSheet();
-globalStyles.replaceSync(css);
-
-
-export default class StyledHTMLElement extends HTMLElement
-{
-	constructor()
-	{
-		super();
-		this.attachShadow({mode: 'open'});
-		this.shadowRoot.adoptedStyleSheets = [globalStyles];
-	}
-}
+//# sourceMappingURL=styled-html-element.js.map

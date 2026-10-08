@@ -1,22 +1,3 @@
-export default function sanitize(html) {
-	const template = document.createElement('template');
-	template.innerHTML = html;
+export default function c(o){const t=document.createElement("template");return t.innerHTML=o,t.content.querySelectorAll("script, style").forEach(e=>e.remove()),t.content.querySelectorAll("*").forEach(e=>{[...e.attributes].forEach(r=>{const n=r.name.toLowerCase(),a=r.value;n.startsWith("on")&&e.removeAttribute(r.name),(n==="href"||n==="src")&&/^javascript:/i.test(a)&&e.removeAttribute(r.name)})}),t.innerHTML}
 
-
-	template.content.querySelectorAll('script, style')
-		.forEach(e => e.remove());
-
-
-	template.content.querySelectorAll('*').forEach(el => {
-		[...el.attributes].forEach(a => {
-			const name = a.name.toLowerCase();
-			const value = a.value;
-			if (name.startsWith('on'))
-				el.removeAttribute(a.name);
-			if ((name === 'href' || name === 'src') && /^javascript:/i.test(value))
-				el.removeAttribute(a.name);
-		});
-	});
-
-	return template.innerHTML;
-}
+//# sourceMappingURL=sanitize.js.map

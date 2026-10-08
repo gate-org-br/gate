@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["trigger-change.js"],
+  "sourcesContent": ["import trigger from './trigger-core.js';\nimport TriggerExtractor from './trigger-extractor.js';\n\nwindow.addEventListener(\"change\", function (event)\n{\n\tlet element = event.target || event.composedPath()[0];\n\tif (TriggerExtractor.trigger(element) === \"change\")\n\t\ttrigger(event, element, element);\n});\n\nwindow.addEventListener(\"input\", function (event)\n{\n\tlet element = event.target || event.composedPath()[0];\n\tif (TriggerExtractor.trigger(element) === \"input\")\n\t\ttrigger(event, element, element);\n});\n"],
+  "mappings": "AAAA,OAAOA,MAAa,oBACpB,OAAOC,MAAsB,yBAE7B,OAAO,iBAAiB,SAAU,SAAUC,EAC5C,CACC,IAAIC,EAAUD,EAAM,QAAUA,EAAM,aAAa,EAAE,CAAC,EAChDD,EAAiB,QAAQE,CAAO,IAAM,UACzCH,EAAQE,EAAOC,EAASA,CAAO,CACjC,CAAC,EAED,OAAO,iBAAiB,QAAS,SAAUD,EAC3C,CACC,IAAIC,EAAUD,EAAM,QAAUA,EAAM,aAAa,EAAE,CAAC,EAChDD,EAAiB,QAAQE,CAAO,IAAM,SACzCH,EAAQE,EAAOC,EAASA,CAAO,CACjC,CAAC",
+  "names": ["trigger", "TriggerExtractor", "event", "element"]
+}

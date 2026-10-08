@@ -1,18 +1,3 @@
-export default class Base64
-{
-	static	decode(string)
-	{
-		const bytes = new Uint8Array(atob(string).split('').map(char => char.charCodeAt(0)));
-		const decoder = new TextDecoder('utf-8');
-		return decoder.decode(bytes);
-	}
+export default class n{static decode(t){const o=new Uint8Array(atob(t).split("").map(e=>e.charCodeAt(0)));return new TextDecoder("utf-8").decode(o)}static encode(t){const r=new TextEncoder("utf-8").encode(t);let e="";return r.forEach(c=>e+=String.fromCharCode(c)),btoa(e)}}
 
-	static	encode(string)
-	{
-		const encoder = new TextEncoder('utf-8');
-		const bytes = encoder.encode(string);
-		let binaryString = '';
-		bytes.forEach(byte => binaryString += String.fromCharCode(byte));
-		return btoa(binaryString);
-	}
-}
+//# sourceMappingURL=base64.js.map

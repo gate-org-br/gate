@@ -1,20 +1,3 @@
-import trigger from './trigger-core.js';
-import TriggerExtractor from './trigger-extractor.js';
+import n from"./trigger-core.js";import i from"./trigger-extractor.js";window.addEventListener("load",function(o){let e=window.location.hash;if(!e)return;let t=document.querySelector(e);if(!t)return;if(i.isNative(t))return t.click();let r=i.target(t);r&&r.startsWith("@")&&n(o,t,t)});
 
-window.addEventListener("load", function (event)
-{
-	let selector = window.location.hash;
-	if (!selector)
-		return;
-
-	let element = document.querySelector(selector);
-	if (!element)
-		return;
-
-	if (TriggerExtractor.isNative(element))
-		return element.click();
-
-	let target = TriggerExtractor.target(element);
-	if (target && target.startsWith("@"))
-		trigger(event, element, element);
-});
+//# sourceMappingURL=trigger-hash.js.map

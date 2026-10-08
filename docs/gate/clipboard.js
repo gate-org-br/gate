@@ -1,15 +1,3 @@
-export default class Clipboard
-{
-	static copy(data)
-	{
-		const textarea = document.createElement('textarea');
-		textarea.value = data;
-		textarea.removeAttribute('readonly');
-		textarea.style.position = 'absolute';
-		textarea.style.left = '-9999px';
-		document.body.appendChild(textarea);
-		textarea.select();
-		document.execCommand('copy');
-		document.body.removeChild(textarea);
-	}
-}
+export default class o{static copy(t){const e=document.createElement("textarea");e.value=t,e.removeAttribute("readonly"),e.style.position="absolute",e.style.left="-9999px",document.body.appendChild(e),e.select(),document.execCommand("copy"),document.body.removeChild(e)}}
+
+//# sourceMappingURL=clipboard.js.map

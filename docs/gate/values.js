@@ -1,8 +1,3 @@
-const VALUES = new WeakMap();
-window.addEventListener("focusin", function (event)
-{
-	if (event.target.tagName === "INPUT")
-		VALUES.set(event.target, event.target.value);
-});
+const a=new WeakMap;window.addEventListener("focusin",function(t){t.target.tagName==="INPUT"&&a.set(t.target,t.target.value)});export default a;
 
-export default VALUES;
+//# sourceMappingURL=values.js.map

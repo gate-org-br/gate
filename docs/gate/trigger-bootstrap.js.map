@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["trigger-bootstrap.js"],
+  "sourcesContent": ["import trigger from './trigger-core.js';\nimport TriggerExtractor from './trigger-extractor.js';\n\nwindow.addEventListener(\"load\", event =>\n{\n\tArray.from(document.querySelectorAll('*'))\n\t\t.filter(e => TriggerExtractor.trigger(e) === \"load\")\n\t\t.forEach(e => trigger(event, e, e, e.dataset.action));\n});\n"],
+  "mappings": "AAAA,OAAOA,MAAa,oBACpB,OAAOC,MAAsB,yBAE7B,OAAO,iBAAiB,OAAQC,GAChC,CACC,MAAM,KAAK,SAAS,iBAAiB,GAAG,CAAC,EACvC,OAAOC,GAAKF,EAAiB,QAAQE,CAAC,IAAM,MAAM,EAClD,QAAQA,GAAKH,EAAQE,EAAOC,EAAGA,EAAGA,EAAE,QAAQ,MAAM,CAAC,CACtD,CAAC",
+  "names": ["trigger", "TriggerExtractor", "event", "e"]
+}

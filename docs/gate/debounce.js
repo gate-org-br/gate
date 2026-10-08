@@ -1,9 +1,3 @@
-export default function debounce(func, timeout = 300)
-{
-	let timer;
-	return (...args) =>
-	{
-		clearTimeout(timer);
-		timer = setTimeout(() => func.apply(this, args), timeout);
-	};
-}
+export default function o(t,u=300){let e;return(...i)=>{clearTimeout(e),e=setTimeout(()=>t.apply(this,i),u)}}
+
+//# sourceMappingURL=debounce.js.map

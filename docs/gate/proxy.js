@@ -1,24 +1,3 @@
-export default class Proxy
-{
-	static create(element)
-	{
-		let clone = element.cloneNode(true);
-		clone.onclick = event =>
-		{
-			element.click();
-			event.preventDefault();
-		};
-		return clone;
-	}
+export default class c{static create(t){let e=t.cloneNode(!0);return e.onclick=l=>{t.click(),l.preventDefault()},e}static copyStyle(t,e){e=e.style,t=getComputedStyle(t);for(var l=t.length;l-- >0;){var r=t[l];alert(r),e.setProperty(r,t.getPropertyValue(r))}}}
 
-	static	copyStyle(source, target)
-	{
-		target = target.style;
-		source = getComputedStyle(source);
-		for (var i = source.length; i-- > 0; ) {
-			var name = source[i];
-			alert(name);
-			target.setProperty(name, source.getPropertyValue(name));
-		}
-	}
-}
+//# sourceMappingURL=proxy.js.map

@@ -1,19 +1,3 @@
-import DOM from './dom.js';
-import trigger from './trigger.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
+import f from"./dom.js";import l from"./trigger.js";import n from"./request-builder.js";import p from"./response-handler.js";window.addEventListener("@trigger",function(t){let r=t.composedPath(),{cause:i,method:o,action:a,parameters:[s],form:m,signal:c}=t.detail;fetch(n.build(o,a,m),{signal:c}).then(p.dataURL).then(e=>{t.success(r,e),f.navigate(t,s).ifPresent(d=>l(i,d))}).catch(e=>t.failure(r,e))});
 
-window.addEventListener("@trigger", function (event)
-{
-	let path = event.composedPath();
-	let {cause, method, action, parameters: [selector], form, signal} = event.detail;
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.dataURL)
-		.then(result =>
-		{
-			event.success(path, result);
-			DOM.navigate(event, selector).ifPresent(element => trigger(cause, element));
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@trigger.js.map

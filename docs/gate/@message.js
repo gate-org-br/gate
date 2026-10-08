@@ -1,25 +1,3 @@
-import DataURL from './data-url.js';
-import EventHandler from './event-handler.js';
-import RequestBuilder from './request-builder.js';
-import GMessageDialog from './g-message-dialog.js';
-import ResponseHandler from './response-handler.js';
+import p from"./data-url.js";import"./event-handler.js";import f from"./request-builder.js";import c from"./g-message-dialog.js";import d from"./response-handler.js";window.addEventListener("@message",function(t){t.preventDefault(),t.stopPropagation();let{method:s,action:a,form:i,parameters:r,signal:n}=t.detail,l=r.filter(e=>["success","warning","error","info"].includes(e))[0]||"success",m=r.filter(e=>/^\d+$/.test(e)).map(parseInt)[0],o=t.composedPath();return fetch(f.build(s,a,i),{signal:n}).then(d.text).then(e=>{c.show(l,e,m),t.success(o,p.ofText(e))}).catch(e=>t.failure(o,e))});
 
-window.addEventListener("@message", function (event)
-{
-	event.preventDefault();
-	event.stopPropagation();
-	let {method, action, form, parameters, signal} = event.detail;
-
-	let type = parameters.filter(e => ["success", "warning", "error", "info"].includes(e))[0] || "success";
-	let duration = parameters.filter(e => /^\d+$/.test(e)).map(parseInt)[0];
-
-	let path = event.composedPath();
-	return fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.text)
-		.then(text =>
-		{
-			GMessageDialog.show(type, text, duration);
-			event.success(path, DataURL.ofText(text));
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@message.js.map

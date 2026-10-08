@@ -1,27 +1,3 @@
-/* global fetch */
+import"./trigger.js";import s from"./resolve.js";import h from"./data-url.js";import i from"./request-builder.js";import m from"./response-handler.js";import f from"./trigger-extractor.js";window.addEventListener("@post",function(t){let e=t.composedPath(),a=e[0]||t.target,{action:d,method:n,form:p,parameters:c,signal:l}=t.detail,o=c[0]||f.action(a);return o=s(a,t.detail.context,o),fetch(i.build(n,d,p),{signal:l}).then(m.dataURL).then(h.parse).then(r=>fetch(i.build("post",o,r.data,r.contentType))).then(m.dataURL).then(r=>t.success(e,r)).catch(r=>t.failure(e,r))});
 
-import './trigger.js';
-import resolve from './resolve.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-import TriggerExtractor from './trigger-extractor.js';
-
-window.addEventListener("@post", function (event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {action, method, form, parameters, signal} = event.detail;
-
-	let url = parameters[0] || TriggerExtractor.action(trigger);
-
-	url = resolve(trigger, event.detail.context, url);
-
-	return fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.dataURL)
-		.then(DataURL.parse)
-		.then(result => fetch(RequestBuilder.build("post", url, result.data, result.contentType)))
-		.then(ResponseHandler.dataURL)
-		.then(result => event.success(path, result))
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@post.js.map

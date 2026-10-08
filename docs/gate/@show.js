@@ -1,27 +1,3 @@
-/* global fetch */
+import"./trigger.js";import h from"./dom.js";import"./data-url.js";import n from"./request-builder.js";import c from"./response-handler.js";window.addEventListener("@show",function(e){let t=e.composedPath(),a=t[0]||e.target,{method:s,action:l,form:m,parameters:[i],signal:d}=e.detail,o=h.navigate(a,i).orElseThrow(`${i} is not a valid selector`);fetch(n.build(s,l,m),{signal:d}).then(c.dataURL).then(r=>{o.show?o.show():o.removeAttribute("hidden"),e.success(t,r)}).catch(r=>e.failure(t,r))});
 
-import './trigger.js';
-import DOM from './dom.js';
-import DataURL from './data-url.js';
-import RequestBuilder from './request-builder.js';
-import ResponseHandler from './response-handler.js';
-
-window.addEventListener("@show", function (event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {method, action, form, parameters: [selector], signal} = event.detail;
-	let element = DOM.navigate(trigger, selector).orElseThrow(`${selector} is not a valid selector`);
-
-	fetch(RequestBuilder.build(method, action, form), {signal})
-		.then(ResponseHandler.dataURL)
-		.then(result =>
-		{
-			if (element.show)
-				element.show();
-			else
-				element.removeAttribute("hidden");
-			event.success(path, result);
-		})
-		.catch(error => event.failure(path, error));
-});
+//# sourceMappingURL=@show.js.map

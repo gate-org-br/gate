@@ -1,37 +1,3 @@
-export function master(select)
-{
-	const id = select.id;
-	const idx = select.selectedIndex >= 0 ? select.selectedIndex : 0;
-	document.querySelectorAll(`[data-master="${id}"]`).forEach(e =>
-	{
-		const ondisabled = `data-disabled-on-${idx}`;
-		if (e.hasAttribute(ondisabled))
-			e.disabled = e.getAttribute(ondisabled) === 'true';
-		else if (e.hasAttribute("data-disabled-on"))
-			e.disabled = e.getAttribute('data-disabled-on') === 'true';
-		else
-			e.disabled = false;
+export function master(d){const n=d.id,e=d.selectedIndex>=0?d.selectedIndex:0;document.querySelectorAll(`[data-master="${n}"]`).forEach(t=>{const a=`data-disabled-on-${e}`;t.hasAttribute(a)?t.disabled=t.getAttribute(a)==="true":t.hasAttribute("data-disabled-on")?t.disabled=t.getAttribute("data-disabled-on")==="true":t.disabled=!1;const i=`data-hidden-on-${e}`;t.hasAttribute(i)?t.hidden=t.getAttribute(i)==="true":t.hasAttribute("data-hidden-on")?t.hidden=t.getAttribute("data-hidden-on")==="true":t.hidden=!1})}window.addEventListener("change",d=>{d.target.tagName==="SELECT"&&d.target.id&&master(d.target)}),window.addEventListener("connected",d=>{d.target.tagName==="SELECT"&&d.target.id&&master(d.target)});
 
-		const onhidden = `data-hidden-on-${idx}`;
-		if (e.hasAttribute(onhidden))
-			e.hidden = e.getAttribute(onhidden) === 'true';
-		else if (e.hasAttribute("data-hidden-on"))
-			e.hidden = e.getAttribute('data-hidden-on') === 'true';
-		else
-			e.hidden = false;
-	});
-}
-
-window.addEventListener("change", event =>
-{
-	if (event.target.tagName === "SELECT"
-		&& event.target.id)
-		master(event.target);
-});
-
-window.addEventListener("connected", event =>
-{
-	if (event.target.tagName === "SELECT"
-		&& event.target.id)
-		master(event.target);
-});
+//# sourceMappingURL=master-select.js.map

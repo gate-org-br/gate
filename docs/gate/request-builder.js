@@ -1,32 +1,3 @@
-export default class RequestBuilder
-{
-	static build(method, action, body, contentType)
-	{
-		if (!action || action === "#")
-			action = "data:text/plain,";
+export default class n{static build(a,e,s,r){(!e||e==="#")&&(e="data:text/plain,");const t=new Headers;switch(t.append("X-G-Fragment","1"),a){case"get":return new Request(e,{headers:t});case"delete":case"head":case"options":return new Request(e,{headers:t,method:a});case"post":case"put":case"patch":return r&&t.append("Content-Type",r),s instanceof HTMLFormElement?s=new FormData(s):s||(s=""),new Request(e,{method:a,headers:t,body:s})}}}
 
-		const headers = new Headers();
-		headers.append("X-G-Fragment", "1");
-		switch (method)
-		{
-			case "get":
-				return new Request(action, {headers});
-			case "delete":
-			case "head":
-			case "options":
-				return new Request(action, {headers, method});
-			case "post":
-			case "put":
-			case "patch":
-				if (contentType)
-					headers.append("Content-Type", contentType);
-
-				if (body instanceof HTMLFormElement)
-					body = new FormData(body);
-				else if (!body)
-					body = "";
-
-				return new Request(action, {method, headers, body});
-		}
-	}
-}
+//# sourceMappingURL=request-builder.js.map

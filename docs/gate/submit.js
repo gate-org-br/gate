@@ -1,14 +1,3 @@
-export default function submit(form, method, action, target)
-{
-	let button = document.createElement("button");
-	button.style.displey = "none";
-	if (method)
-		button.setAttribute("formmethod", method);
-	if (action)
-		button.setAttribute("formaction", action);
-	if (target)
-		button.setAttribute("formtarget", target);
-	form.appendChild(button);
-	button.click();
-	button.remove();
-}
+export default function r(n,e,i,o){let t=document.createElement("button");t.style.displey="none",e&&t.setAttribute("formmethod",e),i&&t.setAttribute("formaction",i),o&&t.setAttribute("formtarget",o),n.appendChild(t),t.click(),t.remove()}
+
+//# sourceMappingURL=submit.js.map

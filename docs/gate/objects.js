@@ -1,23 +1,3 @@
-export default class Objects
-{
-	static isEmpty(value)
-	{
-		return !value && value !== 0
-			&& value !== false;
-	}
+export default class r{static isEmpty(t){return!t&&t!==0&&t!==!1}static compare(t,i){return r.isEmpty(t)&&r.isEmpty(i)?0:r.isEmpty(t)?1:r.isEmpty(i)?-1:t>i?1:t<i?-1:0}}
 
-	static compare(s1, s2)
-	{
-		if (Objects.isEmpty(s1)
-			&& Objects.isEmpty(s2))
-			return 0;
-
-		if (Objects.isEmpty(s1))
-			return 1;
-
-		if (Objects.isEmpty(s2))
-			return -1;
-
-		return s1 > s2 ? 1 : s1 < s2 ? -1 : 0;
-	}
-}
+//# sourceMappingURL=objects.js.map

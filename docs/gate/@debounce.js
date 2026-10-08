@@ -1,26 +1,3 @@
-/* global fetch */
+import"./trigger.js";let r=new WeakMap;window.addEventListener("@debounce",function(e){let t=e.composedPath(),o=t[0]||e.target,{parameters:[a="1000"]}=e.detail;e.resolve(t);let s=r.get(o);s&&clearTimeout(s);const i=setTimeout(()=>{r.delete(o),e.success(t)},parseInt(a));r.set(o,i)});
 
-import './trigger.js';
-
-let REGISTRY = new WeakMap();
-
-window.addEventListener("@debounce", function (event)
-{
-	let path = event.composedPath();
-	let trigger = path[0] || event.target;
-	let {parameters: [timeout = "1000"]} = event.detail;
-
-	event.resolve(path);
-
-	let prev = REGISTRY.get(trigger);
-	if (prev)
-		clearTimeout(prev);
-
-	const resolve = setTimeout(() =>
-	{
-		REGISTRY.delete(trigger);
-		event.success(path);
-	}, parseInt(timeout));
-
-	REGISTRY.set(trigger, resolve);
-});
+//# sourceMappingURL=@debounce.js.map

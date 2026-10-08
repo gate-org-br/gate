@@ -1,18 +1,3 @@
-const PREVENT_BODY_SCROLL = e => e.preventDefault();
+const d=o=>o.preventDefault();export default class t{static disable(e){e.setAttribute("data-scroll-disabled","data-scroll-disabled"),Array.from(e.children).forEach(a=>t.disable(a)),window.top.document.documentElement.addEventListener("touchmove",d,!1)}static enable(e){e.removeAttribute("data-scroll-disabled"),Array.from(e.children).forEach(a=>t.enable(a)),window.top.document.documentElement.removeEventListener("touchmove",d,!1)}}
 
-export default class Scroll
-{
-	static disable(element)
-	{
-		element.setAttribute("data-scroll-disabled", "data-scroll-disabled");
-		Array.from(element.children).forEach(e => Scroll.disable(e));
-		window.top.document.documentElement.addEventListener("touchmove", PREVENT_BODY_SCROLL, false);
-	}
-
-	static enable(element)
-	{
-		element.removeAttribute("data-scroll-disabled");
-		Array.from(element.children).forEach(e => Scroll.enable(e));
-		window.top.document.documentElement.removeEventListener("touchmove", PREVENT_BODY_SCROLL, false);
-	}
-}
+//# sourceMappingURL=scroll.js.map
