@@ -1,0 +1,3 @@
+import"./trigger.js";import s from"./resolve.js";import h from"./data-url.js";import i from"./request-builder.js";import m from"./response-handler.js";import f from"./trigger-extractor.js";window.addEventListener("@post",function(t){let e=t.composedPath(),a=e[0]||t.target,{action:d,method:n,form:p,parameters:c,signal:l}=t.detail,o=c[0]||f.action(a);return o=s(a,t.detail.context,o),fetch(i.build(n,d,p),{signal:l}).then(m.dataURL).then(h.parse).then(r=>fetch(i.build("post",o,r.data,r.contentType))).then(m.dataURL).then(r=>t.success(e,r)).catch(r=>t.failure(e,r))});
+
+//# sourceMappingURL=@post.js.map

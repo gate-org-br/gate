@@ -1,0 +1,18 @@
+<template>
+	<dialog>
+		<header>
+			Selecione um tipo de relatório
+			<a id='cancel' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<button id='PDF'><g-icon>&#x2218;</g-icon>PDF</button>
+			<button id='XLS'><g-icon>&#x2221;</g-icon>XLS</button>
+			<button id='DOC'><g-icon>&#x2220;</g-icon>DOC</button>
+			<button id='CSV'><g-icon>&#x2222;</g-icon>CSV</button>
+		</section>
+	</dialog>
+</template>

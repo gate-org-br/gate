@@ -1,0 +1,1 @@
+select id, name, birthdate, contract__min, contract__max from Uzer where id = ?

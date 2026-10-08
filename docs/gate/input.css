@@ -1,0 +1,77 @@
+input,
+select {
+  padding: 0 4px 0 4px;
+}
+input,
+select,
+textarea,
+g-selectn,
+g-select1,
+g-select-menu {
+  width: 100%;
+  height: 38px;
+  color: inherit;
+  font-size: 14px;
+  min-height: 38px;
+  border: 1px solid var(--main2, #F0F0F0);
+  background-color: var(--main1, #FFFFFF);
+}
+textarea,
+g-selectn,
+g-select1 {
+  height: 100%;
+}
+input:first-child,
+select:first-child,
+textarea:first-child,
+g-selectn:first-child,
+g-select1:first-child,
+g-select-menu:first-child {
+  border-radius: 3px 0 0 3px;
+}
+input:last-child,
+select:last-child,
+textarea:last-child,
+g-selectn:last-child,
+g-select1:last-child,
+g-select-menu:last-child {
+  border-radius: 0 3px 3px 0;
+}
+input:only-child,
+select:only-child,
+textarea:only-child,
+g-selectn:only-child,
+g-select1:only-child,
+g-select-menu:only-child {
+  border-radius: 3px;
+}
+textarea {
+  margin: 0;
+  resize: none;
+  padding: 4px;
+  line-height: 24px;
+}
+input:hover,
+textarea:hover,
+select:hover,
+g-select-menu:hover {
+  outline: none;
+}
+input:focus,
+textarea:focus,
+select:focus,
+g-select-menu:focus {
+  outline: none;
+  background-color: var(--hovered, #FFFACD);
+}
+input:invalid,
+select:invalid,
+textarea:invalid {
+  box-shadow: inset 0 0 1px 1px rgba(255, 0, 0, 0.75);
+}
+input[type='checkbox'],
+input[type='radio'] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}

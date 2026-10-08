@@ -1,0 +1,94 @@
+<g-callout class='fill'>
+	<h1>gate.sql</h1>
+	<p>
+		<code>gate.sql</code> is a SQL-first API. You write SQL, compose the dynamic parts in Java,
+		execute through <code>Link</code>, and choose how the result should be fetched.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Quick Start</a>
+	<div>
+		<g-callout>
+			<p>A typical read flow has four steps:</p>
+			<ol>
+				<li>Start from a SQL resource file or a builder</li>
+				<li>Add dynamic filters with <code>Condition</code></li>
+				<li>Connect the query with <code>Link</code></li>
+				<li>Fetch the result in the shape you need</li>
+			</ol>
+			<g-message class='fill'>
+				<pre><code>List&lt;User&gt; users = Select
+	.of(getClass().getResource("UserDao/search(User).sql"))
+	.where(Condition.TRUE
+		.and("User.name").lk(filter.getName())
+		.and("User.active").eq(filter.getActive()))
+	.orderBy("User.name")
+	.build()
+	.connect(linkSource.get())
+	.fetchEntityList(User.class);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Write Flow</a>
+	<div>
+		<g-callout>
+			<p>
+				Write operations follow the same idea: build the SQL, connect it, execute it, and
+				handle the result explicitly.
+			</p>
+			<g-message class='fill'>
+				<pre><code>if (Update.table("Organization")
+	.set("name", value.getName())
+	.set("host", value.getHost())
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(linkSource.get())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">How To Read These Docs</a>
+	<div>
+		<g-callout>
+			<p>Recommended order:</p>
+			<table>
+				<thead>
+				<tr>
+					<th>Page</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>Link</code></td>
+					<td>Opening connections, executing queries and commands, and controlling transactions</td>
+				</tr>
+				<tr>
+					<td><code>Select</code></td>
+					<td>Building read queries, ordering, grouping, and pagination</td>
+				</tr>
+				<tr>
+					<td><code>Condition</code></td>
+					<td>Dynamic filters, joins, nested predicates, and optional clauses</td>
+				</tr>
+				<tr>
+					<td><code>Fetchers</code></td>
+					<td>Choosing the result shape: entity, map, page, JSON, grid, scalar</td>
+				</tr>
+				<tr>
+					<td><code>Insert / Update / Delete</code></td>
+					<td>Write operations and safety patterns</td>
+				</tr>
+				<tr>
+					<td><code>Production Patterns</code></td>
+					<td>Common DAO-style combinations for real application code</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+</g-tab-control>

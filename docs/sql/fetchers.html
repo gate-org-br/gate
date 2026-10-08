@@ -1,0 +1,134 @@
+<g-callout class='fill'>
+	<h1>Fetchers</h1>
+	<p>
+		After a query is connected to a <code>Link</code>, choose the fetch method by the shape of
+		data you want back. This is usually the last decision in the DAO method.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Choosing The Result Shape</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>If you need</th>
+					<th>Use</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>A single scalar value</td>
+					<td><code>fetchObject(...)</code> or <code>fetchInt()</code>, <code>fetchBoolean()</code>, etc.</td>
+				</tr>
+				<tr>
+					<td>A list of first-column values</td>
+					<td><code>fetchObjectList(...)</code> or <code>fetchObjectSet(...)</code></td>
+				</tr>
+				<tr>
+					<td>A single entity</td>
+					<td><code>fetchEntity(...)</code></td>
+				</tr>
+				<tr>
+					<td>A list or set of entities</td>
+					<td><code>fetchEntityList(...)</code> or <code>fetchEntitySet(...)</code></td>
+				</tr>
+				<tr>
+					<td>A flexible row structure</td>
+					<td><code>fetchMap()</code>, <code>fetchMapList()</code>, <code>fetchMapPage()</code></td>
+				</tr>
+				<tr>
+					<td>Analytical output</td>
+					<td><code>fetchDataGrid()</code> or <code>fetchPivotTable(...)</code></td>
+				</tr>
+				<tr>
+					<td>JSON directly</td>
+					<td><code>fetchJsonObject()</code>, <code>fetchJsonArray()</code>, <code>fetchJsonTree()</code></td>
+				</tr>
+				<tr>
+					<td>Custom cursor handling</td>
+					<td><code>fetch(fetcher)</code> or <code>stream(mapper)</code></td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+
+	<a href="#">Common Examples</a>
+	<div>
+		<g-callout>
+			<g-message class='fill'>
+				<pre><code>Optional&lt;Integer&gt; total = query.fetchObject(Integer.class);
+
+List&lt;String&gt; names = query.fetchObjectList(String.class);
+
+Optional&lt;User&gt; user = query.fetchEntity(User.class);
+
+List&lt;User&gt; users = query.fetchEntityList(User.class);
+
+List&lt;Map&lt;String, Object&gt;&gt; rows = query.fetchMapList();
+
+Page&lt;Map&lt;String, Object&gt;&gt; page = query.fetchMapPage(20, 0);
+
+JsonArray json = query.fetchJsonArray();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Main Methods</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>fetchObject(...)</code></td>
+					<td>Read one value from the first column of the first row</td>
+				</tr>
+				<tr>
+					<td><code>fetchObjectList(...)</code>, <code>fetchObjectSet(...)</code></td>
+					<td>Read many first-column values</td>
+				</tr>
+				<tr>
+					<td><code>fetchEntity(...)</code></td>
+					<td>Materialize one object</td>
+				</tr>
+				<tr>
+					<td><code>fetchEntityList(...)</code>, <code>fetchEntitySet(...)</code></td>
+					<td>Materialize many objects</td>
+				</tr>
+				<tr>
+					<td><code>fetchEntityPage(...)</code></td>
+					<td>Materialize a page of entities</td>
+				</tr>
+				<tr>
+					<td><code>fetchMap(...)</code>, <code>fetchMapList()</code></td>
+					<td>Return rows as maps keyed by column name</td>
+				</tr>
+				<tr>
+					<td><code>fetchMapPage(...)</code></td>
+					<td>Return a page of map rows</td>
+				</tr>
+				<tr>
+					<td><code>fetchDataGrid(...)</code></td>
+					<td>Read analytical tables and report-style outputs</td>
+				</tr>
+				<tr>
+					<td><code>fetchJsonObject()</code>, <code>fetchJsonArray()</code></td>
+					<td>Return JSON directly from the query result</td>
+				</tr>
+				<tr>
+					<td><code>fetch(fetcher)</code>, <code>stream(mapper)</code></td>
+					<td>Take full control of cursor traversal or result mapping</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+</g-tab-control>

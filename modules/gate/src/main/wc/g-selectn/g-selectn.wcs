@@ -1,0 +1,68 @@
+* {
+	box-sizing: border-box
+}
+
+:host(*) {
+	padding: 8px;
+	display: grid;
+	overflow: auto;
+	overflow-y: auto;
+	position: relative;
+	border-radius: 3px;
+	align-items: center;
+	grid-auto-rows: 24px;
+	align-content: start;
+	background-color: var(--main1, white);
+	grid-template-columns: 24px 1fr;
+}
+
+:host([columns='1']) {
+	grid-template-columns: 32px 1fr
+}
+
+:host([columns='2']) {
+	grid-template-columns: 32px 1fr 32px 1fr
+}
+
+:host([columns='3']) {
+	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr
+}
+
+:host([columns='4']) {
+	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr
+}
+
+:host([columns='5']) {
+	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
+}
+
+:host([columns='6']) {
+	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
+}
+
+:host([columns='7']) {
+	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
+}
+
+:host([columns='8']) {
+	grid-template-columns: 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr
+}
+
+*,
+::slotted(*) {
+
+	cursor: pointer;
+	border: none !important;
+}
+
+input,
+::slotted(input) {
+	margin: 0;
+	width: 16px;
+}
+
+input {
+	top: 4px;
+	right: 4px;
+	position: absolute;
+}

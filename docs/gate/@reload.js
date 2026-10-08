@@ -1,0 +1,3 @@
+import"./trigger.js";import s from"./dom.js";import f from"./request-builder.js";import p from"./response-handler.js";window.addEventListener("@reload",function(e){let a=e.composedPath(),{method:n,action:l,form:d,parameters:t,signal:c}=e.detail;fetch(f.build(n,l,d),{signal:c}).then(p.dataURL).then(i=>{e.success(a,i);let o=null;if(t[0])switch(t[0]){case"_self":o=window.location;break;case"_parent":o=window.parent.location;break;case"_top":o=window.top.location;break;default:o=s.navigate(e,t[0]).orElseThrow(`${t[0]} is not a valid selector`);break}else o=a.find(r=>r&&typeof r.reload=="function")||window.location;typeof o.reload=="function"&&o.reload()}).catch(i=>e.failure(a,i))});
+
+//# sourceMappingURL=@reload.js.map

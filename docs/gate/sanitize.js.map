@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["sanitize.js"],
+  "sourcesContent": ["export default function sanitize(html) {\n\tconst template = document.createElement('template');\n\ttemplate.innerHTML = html;\n\n\n\ttemplate.content.querySelectorAll('script, style')\n\t\t.forEach(e => e.remove());\n\n\n\ttemplate.content.querySelectorAll('*').forEach(el => {\n\t\t[...el.attributes].forEach(a => {\n\t\t\tconst name = a.name.toLowerCase();\n\t\t\tconst value = a.value;\n\t\t\tif (name.startsWith('on'))\n\t\t\t\tel.removeAttribute(a.name);\n\t\t\tif ((name === 'href' || name === 'src') && /^javascript:/i.test(value))\n\t\t\t\tel.removeAttribute(a.name);\n\t\t});\n\t});\n\n\treturn template.innerHTML;\n}"],
+  "mappings": "AAAA,wBAAwBA,EAASC,EAAM,CACtC,MAAMC,EAAW,SAAS,cAAc,UAAU,EAClD,OAAAA,EAAS,UAAYD,EAGrBC,EAAS,QAAQ,iBAAiB,eAAe,EAC/C,QAAQ,GAAK,EAAE,OAAO,CAAC,EAGzBA,EAAS,QAAQ,iBAAiB,GAAG,EAAE,QAAQC,GAAM,CACpD,CAAC,GAAGA,EAAG,UAAU,EAAE,QAAQC,GAAK,CAC/B,MAAMC,EAAOD,EAAE,KAAK,YAAY,EAC1BE,EAAQF,EAAE,MACZC,EAAK,WAAW,IAAI,GACvBF,EAAG,gBAAgBC,EAAE,IAAI,GACrBC,IAAS,QAAUA,IAAS,QAAU,gBAAgB,KAAKC,CAAK,GACpEH,EAAG,gBAAgBC,EAAE,IAAI,CAC3B,CAAC,CACF,CAAC,EAEMF,EAAS,SACjB",
+  "names": ["sanitize", "html", "template", "el", "a", "name", "value"]
+}

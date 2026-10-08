@@ -1,0 +1,3 @@
+import"./g-stack-frame.js";import c from"./data-url.js";import d from"./request-builder.js";import m from"./response-handler.js";window.addEventListener("@stack",function(a){let i=a.composedPath(),{method:r,action:s,form:o,signal:l}=a.detail,e=window.top.document.createElement("g-stack-frame"),n=e.show();e.classList.add("content"),a.detail.parameters[0],e.setAttribute("data-loading",""),fetch(d.build(r,s,o),{signal:l}).then(m.text).then(t=>{n.finally(()=>a.success(i,c.ofHTML(t))),e.appendChild(document.createRange().createContextualFragment(t))}).catch(t=>{e.hide(),a.failure(t)}).finally(()=>e.removeAttribute("data-loading"))});
+
+//# sourceMappingURL=@stack.js.map

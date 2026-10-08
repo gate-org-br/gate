@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["colorize.js"],
+  "sourcesContent": ["export default function colorize(rows)\n{\n\trows = Array.from(rows);\n\trows.forEach(row =>\n\t{\n\t\trow.classList.remove(\"odd\");\n\t\trow.classList.remove(\"even\");\n\t});\n\n\tlet visible = rows.filter(e => window.getComputedStyle(e).display === \"table-row\");\n\tif (visible.length !== rows.length)\n\t{\n\t\tlet type = \"odd\";\n\t\tvisible.forEach(row =>\n\t\t{\n\t\t\trow.classList.add(type);\n\t\t\ttype = type === \"even\" ? \"odd\" : \"even\";\n\t\t});\n\t}\n}"],
+  "mappings": "AAAA,wBAAwBA,EAASC,EACjC,CACCA,EAAO,MAAM,KAAKA,CAAI,EACtBA,EAAK,QAAQC,GACb,CACCA,EAAI,UAAU,OAAO,KAAK,EAC1BA,EAAI,UAAU,OAAO,MAAM,CAC5B,CAAC,EAED,IAAIC,EAAUF,EAAK,OAAO,GAAK,OAAO,iBAAiB,CAAC,EAAE,UAAY,WAAW,EACjF,GAAIE,EAAQ,SAAWF,EAAK,OAC5B,CACC,IAAIG,EAAO,MACXD,EAAQ,QAAQD,GAChB,CACCA,EAAI,UAAU,IAAIE,CAAI,EACtBA,EAAOA,IAAS,OAAS,MAAQ,MAClC,CAAC,CACF,CACD",
+  "names": ["colorize", "rows", "row", "visible", "type"]
+}

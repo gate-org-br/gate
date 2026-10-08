@@ -1,0 +1,65 @@
+/* global customElements */
+
+import './g-logger.js';
+import './g-digital-clock.js';
+
+customElements.define('g-progress-status', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+		const title = this.shadowRoot.getElementById("title");
+		const progress = this.shadowRoot.querySelector("progress");
+		const clock = this.shadowRoot.querySelector("g-digital-clock");
+		const counter = this.shadowRoot.getElementById("counter");
+		const logger = this.shadowRoot.querySelector("g-logger");
+
+		const update = detail =>
+		{
+			if (detail.todo > 0 && detail.done >= 0)
+				counter.textContent = `${detail.done}/${detail.todo} (${Math.round((detail.done / detail.todo) * 100)}%)`;
+			if (detail.text !== title.innerHTML)
+			{
+				logger.append(detail.text);
+				title.innerHTML = detail.text;
+			}
+			if (detail.todo > 0)
+			{
+				progress.max = detail.todo;
+				if (detail.done >= 0)
+					progress.value = detail.done;
+			}
+		};
+
+		this.addEventListener('Progress', e =>
+		{
+			update(e.detail);
+			switch (e.detail.status)
+			{
+				case 'COMMITED':
+					this.setAttribute("status", "commited");
+					clock.setAttribute("paused", "paused");
+					break;
+				case 'CANCELED':
+					this.setAttribute("status", "canceled");
+					clock.setAttribute("paused", "paused");
+					break;
+				case 'UNKNOWN':
+					this.setAttribute("status", "unknown");
+					clock.setAttribute("paused", "paused");
+					break;
+				default:
+					this.removeAttribute("status");
+					clock.removeAttribute("paused");
+			}
+		});
+		this.addEventListener('error', e =>
+		{
+			this.setAttribute("status", "error");
+			update(e.detail);
+		});
+	}
+});

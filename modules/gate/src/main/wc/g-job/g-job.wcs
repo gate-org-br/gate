@@ -1,0 +1,45 @@
+:host {
+	width: 100%;
+	display: inline-grid;
+
+	gap: 4px;
+	padding: 4px 6px;
+	border-radius: 4px;
+	align-items: center;
+	border: 1px solid var(--main3);
+	background-color: var(--main2);
+	grid-template-columns: 16px 100px 1fr;
+}
+
+:host::before { font-family: "gate"; color: inherit; }
+
+:host([status="CONNECTING"])::before { content: "\\2051";}
+
+:host([status="PENDING"])::before { content: "\\2206";}
+
+:host([status="COMMITED"])::before { content: "\\1000";}
+
+:host([status="CANCELED"])::before { content: "\\1001";}
+
+:host([status="UNKNOWN"])::before { content: "\\1006";}
+
+progress { width: 100%; height: 8px; }
+
+#counter {
+	padding: 2px;
+	display: flex;
+	font-size: 11px;
+	white-space: nowrap;
+	align-items: center;
+	font-variant-numeric: tabular-nums;
+}
+
+:host([status="PENDING"]) { color: var(--text1);}
+
+:host([status="COMMITED"]) { color: var(--back-g, #39511F);}
+
+:host([status="CANCELED"]) { color: var(--back-r, #772E2C);}
+
+:host([status="UNKNOWN"]) { color: var(--back-r, #772E2C);}
+
+:host([status="CONNECTING"]) { color: var(--back-y, #5C4F17);}

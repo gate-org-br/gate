@@ -1,0 +1,3 @@
+import s from"./optional.js";export default class i{static getSelectedLink(o){let t=window.location.href;t[t.length-1]==="#"&&(t=t.slice(0,-1));let a=new URLSearchParams(new URL(t).search),c=Array.from(o).filter(e=>e.href&&e.href.includes("?")||e.formaction&&e.formaction.includes("?"));var n=c.filter(e=>{const r=new URLSearchParams(new URL(e.href||e.formaction).search);return r.MODULE===a.MODULE&&r.SCREEN===a.SCREEN&&r.ACTION===a.ACTION});if(n.length===0){var n=c.filter(r=>{const f=new URLSearchParams(new URL(r.href||r.formaction).search);return f.MODULE===a.MODULE&&f.SCREEN===a.SCREEN});n.length===0&&(n=c.filter(r=>new URLSearchParams(new URL(r.href||r.formaction).search).MODULE===a.MODULE))}return s.of(n[0])}}
+
+//# sourceMappingURL=selection.js.map

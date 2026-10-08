@@ -1,0 +1,40 @@
+body[data-loading] {
+	height: 100vh;
+	cursor: pointer;
+	position: relative;
+	color: transparent;
+}
+
+body[data-loading]>* {
+	visibility: hidden;
+}
+
+body[data-loading]::before {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	content: "";
+	position: absolute;
+	visibility: visible;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-color: var(--main);
+	background-image: var(--loading);
+	background-size: clamp(64px, 25%, 128px);
+}
+
+section[data-loading] > *,
+article[data-loading] > *
+{
+	visibility: hidden;
+}
+
+section[data-loading],
+article[data-loading] {
+	background-position: center;
+	background-repeat: no-repeat;
+	background-image: var(--loading);
+	background-size: clamp(128px, 25%, 256px);
+}

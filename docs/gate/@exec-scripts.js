@@ -1,0 +1,3 @@
+import o from"./dom.js";const i=new Set(["data-trigger","data-action","data-target"]);window.addEventListener("@execute-scripts",function(a){let s=a.composedPath();(a.detail.parameters?.length?a.detail.parameters:["this"]).map(t=>o.navigate(a,t).orElseThrow(`${t} is not a valid selector`)).flatMap(t=>t.tagName==="SCRIPT"?[t]:Array.from(t.querySelectorAll("script"))).forEach(t=>{const e=document.createElement("script");for(const r of t.attributes)i.has(r.name.toLowerCase())||e.setAttribute(r.name,r.value);e.textContent=t.textContent,t.replaceWith(e)}),a.success(s)});
+
+//# sourceMappingURL=@exec-scripts.js.map

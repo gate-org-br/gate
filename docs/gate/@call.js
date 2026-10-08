@@ -1,0 +1,3 @@
+import u from"./data-url.js";import p from"./dom.js";import h from"./request-builder.js";import g from"./response-handler.js";import"./trigger.js";window.addEventListener("@call",function(t){let i=t.composedPath(),{method:s,action:l,form:c,parameters:[e],signal:f}=t.detail,n=e.lastIndexOf(":");if(n===-1)throw new Error("Missing function name");let r=e.substring(n+1),a=p.navigate(t,e.substring(0,n)).orElseThrow(`${e} is not a valid selector`);fetch(h.build(s,l,c),{signal:f}).then(o=>{const d=o.headers.get("content-type")||"text/plain";return g.auto(o).then(m=>{if(typeof a[r]!="function")throw new Error(`Function ${r} is not defined on ${e}`);a[r](),t.success(i,new u(d,m).toString())})}).catch(o=>t.failure(i,o))});
+
+//# sourceMappingURL=@call.js.map

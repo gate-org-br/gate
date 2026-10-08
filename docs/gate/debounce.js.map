@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["debounce.js"],
+  "sourcesContent": ["export default function debounce(func, timeout = 300)\n{\n\tlet timer;\n\treturn (...args) =>\n\t{\n\t\tclearTimeout(timer);\n\t\ttimer = setTimeout(() => func.apply(this, args), timeout);\n\t};\n}"],
+  "mappings": "AAAA,wBAAwBA,EAASC,EAAMC,EAAU,IACjD,CACC,IAAIC,EACJ,MAAO,IAAIC,IACX,CACC,aAAaD,CAAK,EAClBA,EAAQ,WAAW,IAAMF,EAAK,MAAM,KAAMG,CAAI,EAAGF,CAAO,CACzD,CACD",
+  "names": ["debounce", "func", "timeout", "timer", "args"]
+}

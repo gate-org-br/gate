@@ -1,0 +1,28 @@
+<template>
+	<dialog>
+		<header>
+			<label id='caption'>
+				Selecione um ítem
+			</label>
+			<a id='close' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<ul is='g-tree-list'></ul>
+		</section>
+		<footer>
+			<g-coolbar>
+				<button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon>
+				</button>
+				<hr>
+				<button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon>
+				</button>
+			</g-coolbar>
+		</footer>
+	</dialog>
+</template>

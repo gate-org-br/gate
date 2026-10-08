@@ -1,0 +1,3 @@
+import"./trigger.js";import s from"./data-url.js";import h from"./request-builder.js";import m from"./response-handler.js";window.addEventListener("@map",function(a){let n=a.composedPath(),o=n[0]||a.target,{method:d,action:p,parameters:[t],form:c,signal:l}=a.detail;fetch(h.build(d,p,c),{signal:l}).then(m.dataURL).then(e=>{let i=s.parse(e);(t.startsWith("'")&&t.endsWith("'")||t.startsWith('"')&&t.endsWith('"'))&&(t=t.substring(1,t.length-1));let r=new Function("result",`return ${t}`).bind(o)();i.contentType.startsWith("application/json")?e=JSON.stringify(r(JSON.parse(i.data))):e=r(i.data),a.success(n,new s(i.contentType,e).toString())}).catch(e=>a.failure(n,e))});
+
+//# sourceMappingURL=@map.js.map

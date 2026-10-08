@@ -1,0 +1,12 @@
+let n=document.createElement("template");n.innerHTML=`
+	<dialog><header><label id='caption'></label><a id='close' href="#"><g-icon>
+					&#X1011;
+				</g-icon></a></header><section><input type="TEXT" placeholder="Pesquisar"/><div><g-grid auto-select>
+					Nenhum registro encontrado
+				</g-grid></div></section><footer><g-coolbar><button id='clear' class='primary'>
+					Limpar <g-icon>&#X2018;</g-icon></button><hr><button id='cancel' class='tertiary'>
+					Cancelar <g-icon>&#X2027;</g-icon></button></g-coolbar></footer></dialog>
+<style data-element="g-select-picker">dialog{height:fit-content;width:clamp(320px,calc(100% - 120px),1024px);height:clamp(320px,calc(100% - 120px),768px)}dialog>section{gap:4px;padding:4px;display:grid;align-items:stretch;justify-items:stretch;align-content:stretch;justify-content:stretch;grid-template-rows:40px auto}div{overflow:auto}
+</style>`;import"./g-icon.js";import"./g-grid.js";import l from"./g-window.js";import r from"./cancel-error.js";export default class a extends l{#t=[];#e=[];constructor(){super(),this.addEventListener("cancel",()=>this.hide()),this.addEventListener("commit",()=>this.hide()),this.shadowRoot.innerHTML=this.shadowRoot.innerHTML+n.innerHTML,this.shadowRoot.getElementById("close").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.getElementById("cancel").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.getElementById("clear").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("commit",{detail:{index:0,value:[]}})));let t=this.shadowRoot.querySelector("g-grid");t.addEventListener("select",o=>this.dispatchEvent(new CustomEvent("commit",{detail:{index:o.detail.index,value:o.detail.value}})));let e=this.shadowRoot.querySelector("input");e.addEventListener("input",()=>t.populate(this.#t,{columns:this.#e,filter:e.value}))}set caption(t){this.shadowRoot.getElementById("caption").textContent=t}get caption(){return this.shadowRoot.getElementById("caption").textContent}populate(t=[],{columns:e=[]}={}){this.#t=t,this.#e=e,this.shadowRoot.querySelector("g-grid").populate(t,{columns:e})}static pick(t=[],{caption:e="",columns:o=[]}={}){let i=window.top.document.createElement("g-select-picker");return e&&(i.caption=e),i.populate(t,{columns:o}),i.show(),new Promise((c,s)=>{i.addEventListener("cancel",()=>s(new r)),i.addEventListener("commit",d=>c(d.detail))})}}customElements.define("g-select-picker",a);
+
+//# sourceMappingURL=g-select-picker.js.map

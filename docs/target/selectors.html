@@ -1,0 +1,96 @@
+<h1>Selectors</h1>
+<p>
+	Many Gate targets accept a selector parameter.
+	In the simple case, this parameter is just a normal CSS selector such as <code>#content</code>.
+	Gate also supports a navigation syntax for cases where the target element should be found relative
+	to the trigger element.
+</p>
+
+<p>
+	A selector can start with <strong>this</strong> to indicate navigation relative to the trigger element
+	or be a valid CSS selector to directly target an element on the document.
+	Selectors can be quoted with double <strong>(")</strong>
+	or single <strong>(')</strong> quotes. Steps can be separated by dots <strong>(.)</strong>
+	or enclosed with square brackets <strong>([])</strong>.
+</p>
+
+<g-callout class="warning">
+	<p>
+		This page describes the advanced selector language.
+		If you are starting with Gate, you will usually only need a normal CSS selector such as
+		<code>#content</code>.
+	</p>
+</g-callout>
+
+<g-callout>
+	<div>
+		<dl>
+			<dt>this</dt>
+			<dd>Skips the current step and continues to the next one.</dd>
+
+			<dt>parent()</dt>
+			<dd>Navigates to the parent of the element.</dd>
+
+			<dt>parent(number)</dt>
+			<dd>Navigates to the nth parent of the element.</dd>
+
+			<dt>parent(selector)</dt>
+			<dd>Navigates to the first parent of the element that matches the provided CSS selector.</dd>
+
+			<dt>prev()</dt>
+			<dd>Navigates to the previous sibling of the element.</dd>
+
+			<dt>prev(number)</dt>
+			<dd>Navigates to the nth previous sibling of the element.</dd>
+
+			<dt>prev(selector)</dt>
+			<dd>Navigates to the first previous sibling of the element that matches the provided CSS selector.</dd>
+
+			<dt>next()</dt>
+			<dd>Navigates to the next sibling of the element.</dd>
+
+			<dt>next(number)</dt>
+			<dd>Navigates to the nth next sibling of the element.</dd>
+
+			<dt>next(selector)</dt>
+			<dd>Navigates to the first next sibling of the element that matches the provided CSS selector.</dd>
+
+			<dt>search(selector)</dt>
+			<dd>Navigates to the first child element that matches the provided CSS selector.</dd>
+
+			<dt>[+number]</dt>
+			<dd>Navigates to the nth child element of the current source element.</dd>
+
+			<dt>[-number]</dt>
+			<dd>Navigates to the nth child element of the current source element in reverse order.</dd>
+
+			<dt>[selector]</dt>
+			<dd>Navigates to the first direct child element that matches the provided CSS selector.</dd>
+		</dl>
+	</div>
+</g-callout>
+
+<p>
+	The following examples show both the simple and the relative forms.
+</p>
+
+<g-callout>
+	<div>
+		<dl>
+			<dt>#content</dt>
+			<dd>Selects the element with id <code>content</code>.</dd>
+
+			<dt>section</dt>
+			<dd>Selects the first matching <code>section</code> element in the document.</dd>
+
+			<dt>this.parent(section)</dt>
+			<dd>Navigates to the first parent section element of the trigger element.</dd>
+
+			<dt>this.parent(2).next('.class-name')</dt>
+			<dd>Navigates to the sibling with class <code>class-name</code> of the third parent of the trigger element.</dd>
+
+			<dt>this.prev(-1)[3]</dt>
+			<dd>Navigates to the fourth child of the previous sibling of the trigger element.</dd>
+		</dl>
+	</div>
+</g-callout>

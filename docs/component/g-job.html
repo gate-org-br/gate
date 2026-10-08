@@ -1,0 +1,71 @@
+<g-callout class="fill">
+	<h1>&lt;g-job&gt;</h1>
+	<p>
+		The <code>g-job</code> component displays the current state of a server-side progress job.
+		It can render a known progress snapshot from attributes, or connect to the progress stream when
+		a <code>uuid</code> is available and the status is still active.
+	</p>
+</g-callout>
+
+<style>
+	.job-grid {
+		display: grid;
+		gap: 12px;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	}
+
+	.job-sample {
+		gap: 8px;
+		display: grid;
+		align-content: start;
+	}
+
+	.job-sample>label {
+		font-size: 12px;
+		color: var(--text1, #000000);
+	}
+</style>
+
+<div class="job-grid">
+	<g-html-viewer>
+		<div class="job-sample">
+			<label>Created</label>
+			<g-job status="CREATED"></g-job>
+		</div>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<div class="job-sample">
+			<label>Pending</label>
+			<g-job status="PENDING" todo="40" done="17"></g-job>
+		</div>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<div class="job-sample">
+			<label>Commited</label>
+			<g-job status="COMMITED" todo="40" done="40"></g-job>
+		</div>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<div class="job-sample">
+			<label>Canceled</label>
+			<g-job status="CANCELED" todo="40" done="9"></g-job>
+		</div>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<div class="job-sample">
+			<label>Unknown</label>
+			<g-job status="UNKNOWN"></g-job>
+		</div>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<div class="job-sample">
+			<label>Invalid UUID</label>
+			<g-job uuid="docs-invalid-progress" status="UNKNOWN"></g-job>
+		</div>
+	</g-html-viewer>
+</div>

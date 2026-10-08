@@ -1,0 +1,6 @@
+dialog {
+	width: calc(100vw - 32px);
+	height: calc(100vh - 32px);
+}
+
+th, td { overflow-wrap: anywhere;}

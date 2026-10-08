@@ -1,0 +1,89 @@
+<g-callout class='fill'>
+	<h1>Delete</h1>
+	<p>
+		Use <code>Delete</code> when the removal must stay explicit and auditable. In most cases,
+		that means a clear predicate and an explicit row-count check.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Delete By ID</a>
+	<div>
+		<g-callout>
+			<p>The most common delete flow is a simple, scoped delete by identifier.</p>
+			<g-message class='fill'>
+				<pre><code>Delete.from("Attachment")
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(linkSource.get())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Not Found Guard</a>
+	<div>
+		<g-callout>
+			<p>If the record must exist, validate the affected row count.</p>
+			<g-message class='fill'>
+				<pre><code>if (Delete.from("Organization")
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(linkSource.get())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Delete With Subquery</a>
+	<div>
+		<g-callout>
+			<p>
+				Use a subquery when the delete target depends on another relational lookup.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Delete.from("Attachment")
+	.where(Condition.of("Attachment.id")
+		.isEq(Select.expression("Category.Attachment$id")
+			.from("Category")
+			.where(Condition.of("Category.id").eq(category.getId()))))
+	.build()
+	.connect(linkSource.get())
+	.execute();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Main Methods</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Method</th>
+					<th>Use it for</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td><code>from(...)</code></td>
+					<td>Choose the table to delete from</td>
+				</tr>
+				<tr>
+					<td><code>where(...)</code></td>
+					<td>Restrict which rows will be deleted</td>
+				</tr>
+				<tr>
+					<td><code>build()</code></td>
+					<td>Produce the executable delete</td>
+				</tr>
+				<tr>
+					<td><code>execute()</code></td>
+					<td>Run the delete and return the affected row count</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+</g-tab-control>

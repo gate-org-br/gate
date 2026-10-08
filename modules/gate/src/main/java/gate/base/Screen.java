@@ -1,0 +1,165 @@
+package gate.base;
+
+import gate.annotation.*;
+import gate.error.AppException;
+import gate.http.ScreenServletRequest;
+import gate.http.ScreenServletResponse;
+import gate.lang.property.Property;
+import gate.type.RequestCommand;
+import gate.util.Page;
+import gate.util.Paginator;
+import gate.util.PropertyComparator;
+import gate.util.Reflection;
+import jakarta.enterprise.inject.spi.Unmanaged;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+
+public abstract class Screen extends Base
+{
+
+	private String orderBy;
+	private Integer pageSize;
+	private Integer pageIndx;
+	private List<String> messages;
+	private ScreenServletRequest request;
+	private HttpServletResponse response;
+
+	public static Screen create(Class<Screen> clazz)
+	{
+		Unmanaged.UnmanagedInstance<Screen> instance = null;
+		try
+		{
+			instance = new Unmanaged<>(clazz).newInstance();
+			return instance.produce().inject().postConstruct().get();
+		} finally
+		{
+			if (instance != null)
+				instance.preDestroy().dispose();
+		}
+	}
+
+	public void prepare(ScreenServletRequest request,
+	                    ScreenServletResponse response)
+	{
+		this.request = request;
+		this.response = response;
+		var graph = request.getPropertyGraph(getClass());
+		graph.populate(this, request::getParameterValue);
+	}
+
+	public Object execute(Method method) throws Throwable
+	{
+		List<Object> parameters = new ArrayList<>();
+		for (var parameter : method.getParameters())
+		{
+			Object value;
+
+			if (parameter.isAnnotationPresent(QueryParam.class)
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.QueryParam.class))
+				value = Optional.ofNullable(Property.parse(getClass(),
+								QueryParam.Extractor.getName(parameter)))
+						.map(property -> property.getValue(this))
+						.orElseGet(() -> QueryParam.Extractor.extract(getRequest(), parameter));
+			else if (parameter.isAnnotationPresent(FormParam.class)
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.FormParam.class))
+				value = Optional.ofNullable(Property.parse(getClass(),
+								FormParam.Extractor.getName(parameter)))
+						.map(property -> property.getValue(this))
+						.orElseGet(() -> FormParam.Extractor.extract(getRequest(), parameter));
+			else if (parameter.isAnnotationPresent(HeaderParam.class)
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.HeaderParam.class))
+				value = HeaderParam.Extractor.extract(getRequest(), parameter);
+			else if (parameter.isAnnotationPresent(CookieParam.class)
+					|| parameter.isAnnotationPresent(jakarta.ws.rs.CookieParam.class))
+				value = CookieParam.Extractor.extract(getRequest(), parameter);
+			else
+				value = BodyParam.Extractor.extract(getRequest(), parameter);
+
+			parameters.add(value);
+		}
+		try
+		{
+			return method.invoke(this, parameters.toArray());
+		} catch (InvocationTargetException ex)
+		{
+			throw ex.getCause();
+		}
+	}
+
+	public Integer getDefaultPageSize() {return 10;}
+
+	public RequestCommand getCommand() {return getRequest().getCommand();}
+
+	public String getModule() {return getCommand().module();}
+	public String getScreen() {return getCommand().screen();}
+	public String getAction() {return getCommand().action();}
+
+	public ScreenServletRequest getRequest() {return request;}
+	public HttpServletResponse getResponse() {return response;}
+
+	public String getMethod() {return request.getMethod().toLowerCase();}
+	public boolean isGET() {return "GET".equals(request.getMethod());}
+	public boolean isDELETE() {return "DELETE".equals(request.getMethod());}
+	public boolean isPOST() {return "POST".equals(request.getMethod());}
+	public boolean isPUT() {return "PUT".equals(request.getMethod());}
+	public boolean isHEAD() {return "HEAD".equals(request.getMethod());}
+	public boolean isPATCH() {return "PATCH".equals(request.getMethod());}
+	public boolean isOPTIONS() {return "OPTIONS".equals(request.getMethod());}
+
+	public List<String> getMessages() {return messages == null ? messages = new LinkedList<>() : messages;}
+
+	public void setMessages(Exception ex) {setMessages(ex.getMessage());}
+	public void setMessages(AppException ex) {setMessages(ex.getMessages());}
+	public void setMessages(String... messages) {this.messages = List.of(messages);}
+	public void setMessages(List<String> messages) {this.messages = messages;}
+
+	public Integer getPageIndx() {return pageIndx == null ? pageIndx = 0 : pageIndx;}
+	public void setPageIndx(Integer pageIndx) {this.pageIndx = pageIndx;}
+	public Integer getPageSize() {return pageSize == null ? pageSize = getDefaultPageSize() : pageSize;}
+	public void setPageSize(Integer pageSize) {this.pageSize = pageSize;}
+	public String getOrderBy() {return orderBy;}
+	public void setOrderBy(String orderBy) {this.orderBy = orderBy;}
+
+	public <R> Page<R> paginate(List<R> data) {return new Paginator<>(data, getPageSize()).getPage(getPageIndx());}
+
+	public <T> List<T> ordenate(List<T> data)
+	{
+		if (getOrderBy() != null)
+			data.sort(new PropertyComparator(getOrderBy()));
+		return data;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Optional<Class<Screen>> getScreen(String module, String screen)
+	{
+		try
+		{
+			return Optional.of(Thread.currentThread()
+							.getContextClassLoader()
+							.loadClass(screen != null
+									? module + "." + screen
+									  + "Screen"
+									: module + ".Screen"))
+					.map(e -> (Class<Screen>) e);
+		} catch (ClassNotFoundException ex)
+		{
+			return Optional.empty();
+		}
+	}
+
+	public static Optional<Method> getAction(Class<Screen> clazz, String action)
+	{
+		return Reflection.findMethodByName(clazz, action != null ? "call" + action : "call");
+	}
+
+	public static Optional<Method> getAction(String module, String screen, String action)
+	{
+		return getScreen(module, screen).flatMap(e -> getAction(e, action));
+	}
+}

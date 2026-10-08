@@ -1,0 +1,40 @@
+package gate.util;
+
+import gate.lang.property.Property;
+
+import java.util.Comparator;
+
+public class PropertyComparator implements Comparator<Object>
+{
+
+	private final String name;
+	private final boolean desc;
+
+	public PropertyComparator(String name)
+	{
+		desc = name.charAt(0) == '-';
+		this.name = name.charAt(0) == '-' || name.charAt(0) == '+' ? name.substring(1) : name;
+	}
+
+	@Override
+	public int compare(Object obj1, Object obj2)
+	{
+
+		Property property = Property.getProperty(obj1.getClass(), name);
+		@SuppressWarnings("unchecked")
+		Comparable<Object> comparable1 =
+				(Comparable<Object>) (desc ? property.getValue(obj2) : property.getValue(obj1));
+		@SuppressWarnings("unchecked")
+		Comparable<Object> comparable2 =
+				(Comparable<Object>) (desc ? property.getValue(obj1) : property.getValue(obj2));
+
+		if (comparable1 == null && comparable2 == null)
+			return 0;
+		else if (comparable1 != null && comparable2 == null)
+			return 1;
+		else if (comparable1 == null)
+			return -1;
+		else
+			return comparable1.compareTo(comparable2);
+	}
+}

@@ -1,0 +1,10 @@
+let a=document.createElement("template");a.innerHTML=`
+	<dialog><header>
+			Selecione um \xEDcone
+			<a id='cancel' href="#"><g-icon>
+					&#X1011;
+				</g-icon></a></header><section><g-icon-selector></g-icon-selector></section></dialog>
+<style data-element="g-icon-picker">dialog{height:600px;min-width:320px;max-width:600px;width:calc(100% - 40px)}g-icon-selector{flex-grow:1}
+</style>`;import"./g-icon.js";import"./g-icon-selector.js";import r from"./g-window.js";import s from"./cancel-error.js";export default class c extends r{constructor(){super(),this.addEventListener("cancel",()=>this.hide()),this.addEventListener("commit",()=>this.hide()),this.shadowRoot.innerHTML=this.shadowRoot.innerHTML+a.innerHTML,this.shadowRoot.getElementById("cancel").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.querySelector("g-icon-selector").addEventListener("selected",t=>this.dispatchEvent(new CustomEvent("commit",{detail:t.detail.icon})))}static pick(){let e=window.top.document.createElement("g-icon-picker");return e.show(),new Promise((t,n)=>{e.addEventListener("cancel",()=>n(new s)),e.addEventListener("commit",i=>t(i.detail))})}}customElements.define("g-icon-picker",c),window.addEventListener("connected",o=>{const e=o.target;if(e.getAttribute("data-picker")==="icon"){let t=e.parentNode.appendChild(document.createElement("a"));t.href="#",e.hasAttribute("tabindex")&&t.setAttribute("tabindex",e.getAttribute("tabindex"));let n=t.appendChild(document.createElement("g-icon"));n.innerHTML=e.value?"&#x1001;":"&#x2003;",e.addEventListener("input",()=>n.innerHTML=e.value?"&#x1001;":"&#x2009;"),e.addEventListener("change",()=>n.innerHTML=e.value?"&#x1001;":"&#x2009;"),t.addEventListener("click",i=>{i.preventDefault(),e.value?(e.value="",e.dispatchEvent(new Event("change",{bubbles:!0}))):c.pick().then(d=>e.value=d).then(()=>e.dispatchEvent(new Event("change",{bubbles:!0}))).catch(()=>{}),t.focus(),t.blur()})}});
+
+//# sourceMappingURL=g-icon-picker.js.map

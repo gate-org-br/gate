@@ -1,0 +1,12 @@
+<template>
+	<table>
+		<caption></caption>
+		<thead></thead>
+		<tbody></tbody>
+	</table>
+	<g-callout class='fill'>
+		<slot></slot>
+	</g-callout>
+	<style data-columns>
+	</style>
+</template>

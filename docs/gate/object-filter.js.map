@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["object-filter.js"],
+  "sourcesContent": ["export default class ObjectFilter\n{\n\n\tstatic filter(options, text)\n\t{\n\t\treturn options.filter(e => ObjectFilter.contains(e, text));\n\t}\n\n\tstatic contains(obj, search) {\n\t\tif (obj == null)\n\t\t\treturn false;\n\n\t\tif (typeof obj === 'string')\n\t\t\treturn obj.toLowerCase().includes(search);\n\n\t\tif (typeof obj === 'number')\n\t\t\treturn obj.toString().includes(search);\n\n\t\tif (Array.isArray(obj))\n\t\t\treturn obj.some(item => ObjectFilter.contains(item, search));\n\n\t\tif (typeof obj === 'object')\n\t\t\treturn Object.values(obj).some(value => ObjectFilter.contains(value, search));\n\n\t\treturn false;\n\t}\n}\n\n\n"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CAEC,OAAO,OAAOC,EAASC,EACvB,CACC,OAAOD,EAAQ,OAAOE,GAAKH,EAAa,SAASG,EAAGD,CAAI,CAAC,CAC1D,CAEA,OAAO,SAASE,EAAKC,EAAQ,CAC5B,OAAID,GAAO,KACH,GAEJ,OAAOA,GAAQ,SACXA,EAAI,YAAY,EAAE,SAASC,CAAM,EAErC,OAAOD,GAAQ,SACXA,EAAI,SAAS,EAAE,SAASC,CAAM,EAElC,MAAM,QAAQD,CAAG,EACbA,EAAI,KAAKE,GAAQN,EAAa,SAASM,EAAMD,CAAM,CAAC,EAExD,OAAOD,GAAQ,SACX,OAAO,OAAOA,CAAG,EAAE,KAAKG,GAASP,EAAa,SAASO,EAAOF,CAAM,CAAC,EAEtE,EACR,CACD",
+  "names": ["ObjectFilter", "options", "text", "e", "obj", "search", "item", "value"]
+}

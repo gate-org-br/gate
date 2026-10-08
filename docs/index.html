@@ -1,0 +1,75 @@
+<!DOCTYPE HTML>
+
+<html lang="pt-BR">
+
+	<head>
+		<meta charset="UTF-8">
+		<title>Gate</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="./gate/Gate.css"/>
+		<script type="module" src="./gate/g-html-viewer.js"></script>
+		<script type="module" src="./gate/Gate.js"></script>
+	</head>
+
+	<body data-loading onload="document.body.removeAttribute('data-loading')">
+
+		<main>
+			<header>
+				<img src="Logo.svg" alt="Gate logo"/>
+				<label>Gate</label>
+				<label>Version 1.0.0-SNAPSHOT</label>
+			</header>
+
+			<nav>
+				<g-tabbar>
+					<a href="routing.html" target="@inner-html(#content)">
+						Routing
+						<g-icon>&#X3050;</g-icon>
+					</a>
+					<a href="./security/authentication.html" target="@inner-html(#content)">
+						Authentication
+						<g-icon>&#X2080;</g-icon>
+					</a>
+					<a href="./security/access-control.html" target="@inner-html(#content)">
+						Access Control
+						<g-icon>&#X2002;</g-icon>
+					</a>
+					<a href="./sql/main.html" target="@inner-html(#content)">
+						SQL
+						<g-icon>&#X2124;</g-icon>
+					</a>
+					<a href="./target/main.html" target="@inner-html(#content)">
+						Targets
+						<g-icon>&#X1011;</g-icon>
+					</a>
+					<a href="./component/main.html" target="@inner-html(#content)">
+						Components
+						<g-icon>&#X2178;</g-icon>
+					</a>
+					<a href="./icon/main.html" target="@inner-html(#content)">
+						Icons
+						<g-icon>&#X2009;</g-icon>
+					</a>
+					<hr/>
+					<a id="reload" href="./index.html">
+						Reload
+						<g-icon>&#X2025;</g-icon>
+					</a>
+					<a href="./login.html">Sair
+						<g-icon>&#X2007;</g-icon>
+					</a>
+				</g-tabbar>
+			</nav>
+
+			<section id="content">
+			</section>
+
+			<footer>
+				<label>Foo</label>
+				<g-theme-selector>
+				</g-theme-selector>
+				<label>Bar</label>
+			</footer>
+		</main>
+	</body>
+</html>

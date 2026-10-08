@@ -1,0 +1,4 @@
+<template>
+	<progress></progress>
+	<span id="counter"></span>
+</template>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["fullscreen.js"],
+  "sourcesContent": ["export default class FullScreen\n{\n\tstatic status()\n\t{\n\t\treturn false\n\t\t\t|| document.fullscreenElement\n\t\t\t|| document.mozFullScreenElement\n\t\t\t|| document.webkitFullscreenElement;\n\t}\n\n\tstatic switch (element)\n\t{\n\t\tif (FullScreen.status())\n\t\t\tFullScreen.exit();\n\t\telse\n\t\t\tFullScreen.enter(element);\n\t\treturn FullScreen.status();\n\t}\n\n\tstatic enter(element)\n\t{\n\t\tif (element.requestFullscreen)\n\t\t\telement.requestFullscreen();\n\t\telse if (element.mozRequestFullScreen)\n\t\t\telement.mozRequestFullScreen();\n\t\telse if (element.webkitRequestFullScreen)\n\t\t\telement.webkitRequestFullScreen();\n\t}\n\n\tstatic exit()\n\t{\n\t\tif (document.exitFullscreen)\n\t\t\tdocument.exitFullscreen();\n\t\telse if (document.webkitExitFullscreen)\n\t\t\tdocument.webkitExitFullscreen();\n\t\telse if (document.mozCancelFullScreen)\n\t\t\tdocument.mozCancelFullScreen();\n\t}\n}"],
+  "mappings": "AAAA,qBAAqBA,CACrB,CACC,OAAO,QACP,CACC,OACI,SAAS,mBACT,SAAS,sBACT,SAAS,uBACd,CAEA,OAAO,OAAQC,EACf,CACC,OAAID,EAAW,OAAO,EACrBA,EAAW,KAAK,EAEhBA,EAAW,MAAMC,CAAO,EAClBD,EAAW,OAAO,CAC1B,CAEA,OAAO,MAAMC,EACb,CACKA,EAAQ,kBACXA,EAAQ,kBAAkB,EAClBA,EAAQ,qBAChBA,EAAQ,qBAAqB,EACrBA,EAAQ,yBAChBA,EAAQ,wBAAwB,CAClC,CAEA,OAAO,MACP,CACK,SAAS,eACZ,SAAS,eAAe,EAChB,SAAS,qBACjB,SAAS,qBAAqB,EACtB,SAAS,qBACjB,SAAS,oBAAoB,CAC/B,CACD",
+  "names": ["FullScreen", "element"]
+}

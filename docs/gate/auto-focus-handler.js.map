@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["auto-focus-handler.js"],
+  "sourcesContent": ["window.addEventListener(\"connected\", function (event)\n{\n\tif (event.target.hasAttribute(\"autofocus\"))\n\t\treturn event.target.focus();\n\n\tif (!event.target.hasAttribute(\"tabindex\"))\n\t\treturn;\n\n\tlet target = parseInt(event.target.getAttribute(\"tabindex\"), 10);\n\tif (target < 0)\n\t\treturn;\n\n\tif (!document.activeElement)\n\t\treturn event.target.focus();\n\n\tif (!document.activeElement.hasAttribute(\"tabindex\"))\n\t\treturn event.target.focus();\n\n\tlet current = parseInt(document.activeElement.getAttribute(\"tabindex\"), 10);\n\tif (current < 0)\n\t\treturn event.target.focus();\n\n\tif (target < current)\n\t\tevent.target.focus();\n});\n"],
+  "mappings": "AAAA,OAAO,iBAAiB,YAAa,SAAUA,EAC/C,CACC,GAAIA,EAAM,OAAO,aAAa,WAAW,EACxC,OAAOA,EAAM,OAAO,MAAM,EAE3B,GAAI,CAACA,EAAM,OAAO,aAAa,UAAU,EACxC,OAED,IAAIC,EAAS,SAASD,EAAM,OAAO,aAAa,UAAU,EAAG,EAAE,EAC/D,GAAIC,EAAS,EACZ,OAKD,GAHI,CAAC,SAAS,eAGV,CAAC,SAAS,cAAc,aAAa,UAAU,EAClD,OAAOD,EAAM,OAAO,MAAM,EAE3B,IAAIE,EAAU,SAAS,SAAS,cAAc,aAAa,UAAU,EAAG,EAAE,EAC1E,GAAIA,EAAU,EACb,OAAOF,EAAM,OAAO,MAAM,EAEvBC,EAASC,GACZF,EAAM,OAAO,MAAM,CACrB,CAAC",
+  "names": ["event", "target", "current"]
+}

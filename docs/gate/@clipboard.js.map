@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@clipboard.js"],
+  "sourcesContent": ["import './trigger.js';\nimport DataURL from './data-url.js';\nimport Clipboard from './clipboard.js';\n\nwindow.addEventListener(\"@clipboard\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet {action} = event.detail;\n\n\tif (!action?.startsWith(\"data:\"))\n\t\treturn event.failure(path, new Error(\"@clipboard target only supports data URLs\"));\n\n\ttry\n\t{\n\t\tClipboard.copy(DataURL.parse(action).data);\n\t\tevent.success(path, action);\n\t} catch (error)\n\t{\n\t\tevent.failure(path, error);\n\t}\n});"],
+  "mappings": "AAAA,MAAO,eACP,OAAOA,MAAa,gBACpB,OAAOC,MAAe,iBAEtB,OAAO,iBAAiB,aAAc,SAAUC,EAChD,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAC,OAAAE,CAAM,EAAIF,EAAM,OAErB,GAAI,CAACE,GAAQ,WAAW,OAAO,EAC9B,OAAOF,EAAM,QAAQC,EAAM,IAAI,MAAM,2CAA2C,CAAC,EAElF,GACA,CACCF,EAAU,KAAKD,EAAQ,MAAMI,CAAM,EAAE,IAAI,EACzCF,EAAM,QAAQC,EAAMC,CAAM,CAC3B,OAASC,EACT,CACCH,EAAM,QAAQC,EAAME,CAAK,CAC1B,CACD,CAAC",
+  "names": ["DataURL", "Clipboard", "event", "path", "action", "error"]
+}

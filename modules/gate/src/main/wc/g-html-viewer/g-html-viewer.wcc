@@ -1,0 +1,69 @@
+function highlightHTML(htmlString)
+{
+	const selfClosing = ["AREA", "BASE", "BR", "COL", "COMMAND", "EMBED", "HR", "IMG", "INPUT",
+		"KEYGEN", "LINK", "META", "PARAM", "SOURCE", "TRACK", "WBR"];
+
+
+	let highlightedString = "";
+	const parser = new DOMParser();
+	const doc = parser.parseFromString(htmlString, "text/html");
+
+	function highlightNodes(node, depth)
+	{
+		const indent = `\n${"\t".repeat(depth)}`;
+		if (node.nodeType === Node.ELEMENT_NODE)
+		{
+			highlightedString += `${indent}<b class="tag">&lt;${node.tagName.toLowerCase()}</b>`;
+			if (node.hasAttributes())
+			{
+				let size = Array.from(node.attributes).map(attr => attr.name.length + attr.value.length)
+					.reduce((a, b) => a + b);
+				Array.from(node.attributes).map((attr, index) =>
+					highlightedString += `${size > 120 && index ? indent + '\t\t' : ' '}<b class="key">${attr.name}</b>`
+					+ (attr.value ? `="<b class="val">${attr.value}</b>"` : ""));
+			}
+			highlightedString += `<b class="tag">&gt;</b>`;
+
+			if (!selfClosing.includes(node.tagName))
+			{
+				Array.from(node.tagName === "TEMPLATE" ? node.content.childNodes : node.childNodes)
+					.forEach(e => highlightNodes(e, depth + 1));
+				highlightedString += `${indent}<b class="tag">&lt;/${node.tagName.toLowerCase()}&gt;</b>`;
+			}
+		} else if (node.nodeType === Node.TEXT_NODE)
+		{
+			if (node.textContent.trim().length)
+				highlightedString += `${indent}${node.textContent.trim()}`;
+		} else if (node.nodeType === Node.COMMENT_NODE)
+			highlightedString += `${indent}&lt;!--${node.textContent.trim()}--&gt;`;
+	}
+
+	highlightNodes(doc.body, 0);
+
+	return highlightedString;
+}
+
+customElements.define('g-html-viewer', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({ mode: 'open' });
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+		new MutationObserver(() => this.connectedCallback()).observe(this,
+			{ attributes: true, childList: true, subtree: true });
+	}
+
+	get code()
+	{
+		return this.shadowRoot.querySelector('code');
+	}
+
+	connectedCallback()
+	{
+		let text = this.innerHTML;
+		if (this.hasAttribute("ignore"))
+			text = text.replace(new RegExp(this.getAttribute("ignore"), 'gi'), "");
+		this.code.innerHTML = highlightHTML(text);
+	}
+});

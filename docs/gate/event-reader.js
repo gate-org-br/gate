@@ -1,0 +1,3 @@
+import c from"./base64.js";import o from"./line-reader.js";export default class u{#e;constructor(t){this.#e=new o(t)}async next(){const t=[];for(;;){const r=await this.#e.next();if(r!==null&&r!==""){t.push(r);continue}if(t.length===0)return r===null?null:await this.next();const s={};return t.forEach(n=>{const e=n.indexOf(":");if(e===0)return;const i=e>0?n.substring(0,e):n,a=e>0?n.substring(e+(n[e+1]===" "?2:1)):"";switch(i){case"id":s.id=a;break;case"retry":s.retry=a;break;case"event":s.event=a;break;case"data":s.data=JSON.parse(c.decode(a));break}}),s}}}
+
+//# sourceMappingURL=event-reader.js.map

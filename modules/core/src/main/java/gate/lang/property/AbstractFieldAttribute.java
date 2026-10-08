@@ -1,0 +1,176 @@
+package gate.lang.property;
+
+import gate.adapter.converter.Converter;
+import gate.adapter.metadata.Metadata;
+import gate.adapter.metadata.SimpleMetadata;
+import gate.annotation.*;
+import gate.constraint.Constraint;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.stream.Stream;
+
+public abstract class AbstractFieldAttribute implements JavaIdentifierAttribute
+{
+	private final Type genericType;
+	protected final Field field;
+	private final Class<?> rawType;
+	private final Type elementType;
+	private final boolean isEntityId;
+	private final Converter converter;
+	private final gate.adapter.collector.Collector collector;
+	private final boolean isDiscriminator;
+	private final List<Constraint.Implementation<?>> constraints;
+	private final Metadata metadata;
+
+	AbstractFieldAttribute(Field field)
+	{
+		try
+		{
+			this.field = field;
+
+			isDiscriminator = field.isAnnotationPresent(Discriminator.class);
+
+			rawType = field.getType();
+			genericType = field.getGenericType();
+
+			isEntityId
+					= field.getDeclaringClass().isAnnotationPresent(Entity.class) && field.getName()
+					.equals(field.getDeclaringClass().getAnnotation(Entity.class).value());
+
+			if (rawType.isAnnotationPresent(ElementType.class))
+				elementType = rawType.getAnnotation(ElementType.class).value();
+			else if (rawType.isArray())
+				elementType = rawType.getComponentType();
+			else if (List.class.isAssignableFrom(rawType)
+					&& genericType instanceof ParameterizedType)
+				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+			else if (Set.class.isAssignableFrom(rawType)
+					&& genericType instanceof ParameterizedType)
+				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[0];
+			else if (Map.class.isAssignableFrom(rawType)
+					&& genericType instanceof ParameterizedType)
+				elementType = ((ParameterizedType) genericType).getActualTypeArguments()[1];
+			else
+				elementType = Object.class;
+
+			converter = field.isAnnotationPresent(gate.annotation.Converter.class)
+					? field.getAnnotation(gate.annotation.Converter.class).value()
+					.getDeclaredConstructor().newInstance()
+					: Converter.getConverter(rawType);
+
+			collector = field.isAnnotationPresent(gate.annotation.Collector.class)
+					? field.getAnnotation(gate.annotation.Collector.class).value()
+					.getDeclaredConstructor().newInstance()
+					: Collection.class.isAssignableFrom(rawType)
+					  ? gate.adapter.collector.Collector.getCollector(rawType)
+					  : null;
+
+			List<Constraint.Implementation<?>> cons = new ArrayList<>();
+			Stream.of(field.getAnnotations()).filter(
+							annotation -> annotation.annotationType().isAnnotationPresent(Constraint.class))
+					.map(Constraint.Implementation::getImplementation).forEach(cons::add);
+			converter.getConstraints().stream()
+					.filter(e -> cons.stream().noneMatch(c -> c.getName().equals(e.getName())))
+					.forEach(cons::add);
+			constraints = Collections.unmodifiableList(cons);
+
+			var name = Name.Extractor.extract(field).orElse(null);
+			var icon = gate.annotation.Icon.Extractor.extract(field).orElse(null);
+			var code = Code.Extractor.extract(field).orElse(null);
+			var color = Color.Extractor.extract(field).orElse(null);
+			var tooltip = Tooltip.Extractor.extract(field).orElse(null);
+			var description = Description.Extractor.extract(field).orElse(null);
+			var mask = Mask.Extractor.extract(field).orElse(null);
+			var placeholder = Placeholder.Extractor.extract(field).orElse(null);
+			this.metadata = Metadata.getMetadata(rawType)
+					.merge(SimpleMetadata.builder()
+							.name(name)
+							.description(description)
+							.tooltip(tooltip)
+							.placeholder(placeholder)
+							.mask(mask)
+							.color(color)
+							.code(code)
+							.icon(icon)
+							.build());
+
+		} catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+		         | InvocationTargetException ex)
+		{
+			throw new IllegalStateException("Failed to access field attribute", ex);
+		}
+	}
+
+	@Override
+	public Type getGenericType()
+	{
+		return genericType;
+	}
+
+	@Override
+	public Class<?> getRawType()
+	{
+		return rawType;
+	}
+
+	@Override
+	public Class<?> getOwner()
+	{
+		return field.getDeclaringClass();
+	}
+
+	@Override
+	public Collection<Constraint.Implementation<?>> getConstraints()
+	{
+		return constraints;
+	}
+
+	@Override
+	public Metadata getMetadata() {return metadata;}
+
+	@Override
+	public Converter getConverter()
+	{
+		return converter;
+	}
+
+	@Override
+	public gate.adapter.collector.Collector getCollector()
+	{
+		return collector;
+	}
+
+	@Override
+	public Type getElementType()
+	{
+		return elementType;
+	}
+
+	@Override
+	public boolean isEntityId()
+	{
+		return isEntityId;
+	}
+
+	@Override
+	public boolean isDiscriminator() {return isDiscriminator;}
+	
+	@Override
+	public boolean equals(Object o) {return o instanceof AbstractFieldAttribute a && Objects.equals(field, a.field);}
+
+	@Override
+	public int hashCode()
+	{
+		return field.hashCode();
+	}
+
+	@Override
+	public String toString()
+	{
+		return field.getName();
+	}
+}

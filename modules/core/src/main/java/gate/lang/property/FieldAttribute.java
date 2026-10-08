@@ -1,0 +1,226 @@
+package gate.lang.property;
+
+import gate.util.Instance;
+import gate.annotation.NullSafe;
+import gate.util.Reflection;
+
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+public class FieldAttribute extends AbstractFieldAttribute
+{
+	private static final ConcurrentHashMap<Field, FieldAttribute> CACHE = new ConcurrentHashMap<>();
+	private static final Map<Class<?>, Map<String, FieldAttribute>> ATTRIBUTES = new ConcurrentHashMap<>();
+
+	private final MethodHandle getter;
+	private final MethodHandle setter;
+	private final boolean nullSafe;
+	private final VarHandle fieldGetter;
+	private final VarHandle fieldSetter;
+
+	public static FieldAttribute of(Field field)
+	{
+		return CACHE.computeIfAbsent(field, FieldAttribute::new);
+	}
+
+	private FieldAttribute(Field field)
+	{
+		super(field);
+
+		nullSafe = isNullSafe();
+		getter = createGetter();
+		fieldGetter = createFieldGetter();
+		setter = createSetter();
+		fieldSetter = createFieldSetter();
+	}
+
+	@Override
+	public Object getValue(Object object)
+	{
+		try
+		{
+			if (nullSafe && Reflection.isNull(field, object))
+				return null;
+
+			if (getter != null)
+				return getter.invoke(object);
+
+			if (fieldGetter != null)
+				return fieldGetter.get(object);
+
+			throw new UnsupportedOperationException(
+					"The property %s of class %s does not support reading"
+							.formatted(field.getName(), field.getDeclaringClass().getName()));
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException)
+				throw (RuntimeException) ex;
+			throw new IllegalStateException(
+					"Failed to read field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	public Object getFieldValue(Object object)
+	{
+		try
+		{
+			if (fieldGetter != null)
+				return fieldGetter.get(object);
+
+			throw new UnsupportedOperationException(
+					"The property %s of class %s does not support direct field reading"
+							.formatted(field.getName(), field.getDeclaringClass().getName()));
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException)
+				throw (RuntimeException) ex;
+			throw new IllegalStateException(
+					"Failed to read field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	@Override
+	public void setValue(Object object, Object value)
+	{
+		if (setter == null && fieldSetter == null)
+			throw new UnsupportedOperationException(
+					"The property %s of class %s does not support writing"
+							.formatted(field.getName(), field.getDeclaringClass().getName()));
+
+		try
+		{
+			if (setter != null)
+				setter.invoke(object, value);
+			else
+				fieldSetter.set(object, value);
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException)
+				throw (RuntimeException) ex;
+			throw new IllegalStateException(
+					"Failed to write field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	@Override
+	public Object forceValue(Object object)
+	{
+		Object value = nullSafe && Reflection.isNull(field, object) ? null : getValue(object);
+		if (value != null)
+			return value;
+
+		value = Instance.create(getRawType());
+		setValue(object, value);
+		return value;
+	}
+
+	private boolean isNullSafe()
+	{
+		return Reflection.findGetter(field)
+				.map(e -> e.isAnnotationPresent(NullSafe.class))
+				.orElse(false);
+	}
+
+	private MethodHandle createGetter()
+	{
+		try
+		{
+			Method method = Reflection.findGetter(field).orElse(null);
+			if (method == null)
+				return null;
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+			return lookup.unreflect(method);
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException(
+					"Failed to create getter handle for field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	private MethodHandle createSetter()
+	{
+		try
+		{
+			Method method = Reflection.findSetter(field).orElse(null);
+			if (method == null)
+				return null;
+			MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+			return lookup.unreflect(method);
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException(
+					"Failed to create setter handle for field '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	private VarHandle createFieldGetter()
+	{
+		try
+		{
+			if (!Modifier.isPublic(field.getModifiers()))
+				return null;
+			return Reflection.findVarHandle(field);
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException(
+					"Failed to create field getter handle for '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	private VarHandle createFieldSetter()
+	{
+		try
+		{
+			if (setter != null
+					|| Modifier.isFinal(field.getModifiers())
+					|| !Modifier.isPublic(field.getModifiers()))
+				return null;
+			return Reflection.findVarHandle(field);
+		} catch (Throwable ex)
+		{
+			if (ex instanceof RuntimeException runtimeException)
+				throw runtimeException;
+			throw new IllegalStateException(
+					"Failed to create field setter handle for '%s' on '%s'"
+							.formatted(field.getName(), field.getDeclaringClass().getName()), ex);
+		}
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		return obj instanceof FieldAttribute attribute
+				&& Objects.equals(field, attribute.field);
+	}
+
+	public static Map<String, FieldAttribute> getAttributes(Class<?> type)
+	{
+		return ATTRIBUTES.computeIfAbsent(type, c ->
+				Reflection.getFields(c).stream()
+						.filter(e -> !Modifier.isStatic(e.getModifiers()))
+						.filter(e -> !Modifier.isTransient(e.getModifiers()))
+						.filter(e -> !e.getDeclaringClass().getModule().isNamed()
+								|| e.getDeclaringClass().getModule().isOpen(e.getDeclaringClass().getPackageName()))
+						.collect(Collectors.toMap(Field::getName, FieldAttribute::of)));
+	}
+}

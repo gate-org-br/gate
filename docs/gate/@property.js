@@ -1,0 +1,3 @@
+import"./trigger.js";import d from"./dom.js";import f from"./data-url.js";import c from"./request-builder.js";import h from"./response-handler.js";window.addEventListener("@property",function(t){let i=t.composedPath(),{method:s,action:a,form:n,parameters:[r],signal:l}=t.detail,o=r.lastIndexOf(":");if(o===-1)throw new Error("Missing property name");let p=r.substring(o+1),m=d.navigate(t,r.substring(0,o)).orElseThrow(`${r} is not a valid selector`);fetch(c.build(s,a,n),{signal:l}).then(h.json).then(e=>{m[p]=e,t.success(i,f.ofJSON(e))}).catch(e=>t.failure(i,e))});
+
+//# sourceMappingURL=@property.js.map

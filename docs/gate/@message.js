@@ -1,0 +1,3 @@
+import p from"./data-url.js";import"./event-handler.js";import f from"./request-builder.js";import c from"./g-message-dialog.js";import d from"./response-handler.js";window.addEventListener("@message",function(t){t.preventDefault(),t.stopPropagation();let{method:s,action:a,form:i,parameters:r,signal:n}=t.detail,l=r.filter(e=>["success","warning","error","info"].includes(e))[0]||"success",m=r.filter(e=>/^\d+$/.test(e)).map(parseInt)[0],o=t.composedPath();return fetch(f.build(s,a,i),{signal:n}).then(d.text).then(e=>{c.show(l,e,m),t.success(o,p.ofText(e))}).catch(e=>t.failure(o,e))});
+
+//# sourceMappingURL=@message.js.map

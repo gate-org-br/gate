@@ -1,0 +1,122 @@
+<g-callout class='fill'>
+	<h1>Production Patterns</h1>
+	<p>
+		This page focuses on combinations that usually age well in DAO code: readable SQL,
+		explicit write scope, and predictable result handling.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Resource SQL + Java Filters</a>
+	<div>
+		<g-callout>
+			<p>
+				Keep the base SQL in a resource file and assemble only the dynamic pieces in Java.
+			</p>
+			<g-message class='fill'>
+				<pre><code>var condition = Condition.TRUE
+	.and("User.name").lk(filter.getName())
+	.and("User.username").eq(filter.getUsername())
+	.and().when(!getUser().isSuperUser()).expression("Access.id").isNotNull();
+
+List&lt;User&gt; users = Select
+	.of(getClass().getResource("UserDao/search(User).sql"))
+	.where(condition)
+	.orderBy("User.name")
+	.build()
+	.connect(linkSource.get())
+	.fetchEntityList(User.class);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">EXISTS For Access Rules</a>
+	<div>
+		<g-callout>
+			<p>
+				When the access rule is relational, keep it in SQL with <code>exists</code>.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Condition access = Condition
+	.of("Ticket.confidential").isEq("false")
+	.or("Ticket.requesterId").eq(getUser().getId())
+	.or().exists(Select.expression("id")
+		.from("Share")
+		.where(Condition.of("Share.Ticket$id").isEq("Ticket.id")
+			.and("Share.User$id").eq(getUser().getId())));</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Write Guard</a>
+	<div>
+		<g-callout>
+			<p>
+				If an update or delete is supposed to hit one existing row, treat zero affected rows
+				as a failure.
+			</p>
+			<g-message class='fill'>
+				<pre><code>if (Delete.from("Organization")
+	.where(Condition.of("id").eq(value.getId()))
+	.build()
+	.connect(linkSource.get())
+	.execute() == 0)
+	throw new NotFoundException();</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Generated Keys</a>
+	<div>
+		<g-callout>
+			<p>
+				Use generated key helpers immediately after inserts so the caller leaves the DAO with
+				the final identifier already attached.
+			</p>
+			<g-message class='fill'>
+				<pre><code>Insert.into("Organization")
+	.set("name", value.getName())
+	.build()
+	.connect(linkSource.get())
+	.fetchGeneratedKey(ID.class)
+	.ifPresent(value::setId);</code></pre>
+			</g-message>
+		</g-callout>
+	</div>
+
+	<a href="#">Checklist</a>
+	<div>
+		<g-callout>
+			<table>
+				<thead>
+				<tr>
+					<th>Guideline</th>
+					<th>Why it helps</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>Keep long SQL in resource files</td>
+					<td>Readability improves without losing SQL control</td>
+				</tr>
+				<tr>
+					<td>Use <code>Condition.TRUE</code> as the default baseline</td>
+					<td>Optional filters stay easy to compose</td>
+				</tr>
+				<tr>
+					<td>Prefer <code>exists</code> for relational visibility rules</td>
+					<td>The filtering stays in the database</td>
+				</tr>
+				<tr>
+					<td>Check affected rows on required updates and deletes</td>
+					<td>No silent write failures</td>
+				</tr>
+				<tr>
+					<td>Attach generated keys immediately after inserts</td>
+					<td>The object leaves the DAO complete</td>
+				</tr>
+				</tbody>
+			</table>
+		</g-callout>
+	</div>
+</g-tab-control>

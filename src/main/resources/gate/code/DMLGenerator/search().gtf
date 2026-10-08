@@ -1,7 +1,0 @@
-select 
-    ${getTableName()}.${id.getColumnName()} as '${id.getName()}'
-    <g:iterator source="${properties}" target="property">,
-    ${getTableName()}.${@property.getColumnName()} as '${@property.getName()}'
-    </g:iterator>
-from
-    ${getTableName()}

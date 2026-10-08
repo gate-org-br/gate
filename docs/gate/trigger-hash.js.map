@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["trigger-hash.js"],
+  "sourcesContent": ["import trigger from './trigger-core.js';\nimport TriggerExtractor from './trigger-extractor.js';\n\nwindow.addEventListener(\"load\", function (event)\n{\n\tlet selector = window.location.hash;\n\tif (!selector)\n\t\treturn;\n\n\tlet element = document.querySelector(selector);\n\tif (!element)\n\t\treturn;\n\n\tif (TriggerExtractor.isNative(element))\n\t\treturn element.click();\n\n\tlet target = TriggerExtractor.target(element);\n\tif (target && target.startsWith(\"@\"))\n\t\ttrigger(event, element, element);\n});"],
+  "mappings": "AAAA,OAAOA,MAAa,oBACpB,OAAOC,MAAsB,yBAE7B,OAAO,iBAAiB,OAAQ,SAAUC,EAC1C,CACC,IAAIC,EAAW,OAAO,SAAS,KAC/B,GAAI,CAACA,EACJ,OAED,IAAIC,EAAU,SAAS,cAAcD,CAAQ,EAC7C,GAAI,CAACC,EACJ,OAED,GAAIH,EAAiB,SAASG,CAAO,EACpC,OAAOA,EAAQ,MAAM,EAEtB,IAAIC,EAASJ,EAAiB,OAAOG,CAAO,EACxCC,GAAUA,EAAO,WAAW,GAAG,GAClCL,EAAQE,EAAOE,EAASA,CAAO,CACjC,CAAC",
+  "names": ["trigger", "TriggerExtractor", "event", "selector", "element", "target"]
+}

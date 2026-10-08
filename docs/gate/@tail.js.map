@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["@tail.js"],
+  "sourcesContent": ["/* global fetch */\n\nimport DataURL from './data-url.js';\nimport RequestBuilder from './request-builder.js';\nimport ResponseHandler from './response-handler.js';\nimport './trigger.js';\n\nwindow.addEventListener(\"@tail\", function (event)\n{\n\tlet path = event.composedPath();\n\tlet { method, action, parameters: [count = 1], form, signal } = event.detail;\n\n\tfetch(RequestBuilder.build(method, action, form), { signal })\n\t\t.then(ResponseHandler.json)\n\t\t.then(result =>\n\t\t{\n\t\t\tif (signal?.aborted)\n\t\t\t\treturn event.resolve(path);\n\n\t\t\tresult = result.slice(-count);\n\t\t\tevent.success(path, DataURL.ofJSON(result));\n\t\t})\n\t\t.catch(error => event.failure(path, error));\n});"],
+  "mappings": "AAEA,OAAOA,MAAa,gBACpB,OAAOC,MAAoB,uBAC3B,OAAOC,MAAqB,wBAC5B,MAAO,eAEP,OAAO,iBAAiB,QAAS,SAAUC,EAC3C,CACC,IAAIC,EAAOD,EAAM,aAAa,EAC1B,CAAE,OAAAE,EAAQ,OAAAC,EAAQ,WAAY,CAACC,EAAQ,CAAC,EAAG,KAAAC,EAAM,OAAAC,CAAO,EAAIN,EAAM,OAEtE,MAAMF,EAAe,MAAMI,EAAQC,EAAQE,CAAI,EAAG,CAAE,OAAAC,CAAO,CAAC,EAC1D,KAAKP,EAAgB,IAAI,EACzB,KAAKQ,GACN,CACC,GAAID,GAAQ,QACX,OAAON,EAAM,QAAQC,CAAI,EAE1BM,EAASA,EAAO,MAAM,CAACH,CAAK,EAC5BJ,EAAM,QAAQC,EAAMJ,EAAQ,OAAOU,CAAM,CAAC,CAC3C,CAAC,EACA,MAAMC,GAASR,EAAM,QAAQC,EAAMO,CAAK,CAAC,CAC5C,CAAC",
+  "names": ["DataURL", "RequestBuilder", "ResponseHandler", "event", "path", "method", "action", "count", "form", "signal", "result", "error"]
+}

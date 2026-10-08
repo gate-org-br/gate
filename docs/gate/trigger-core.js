@@ -1,0 +1,3 @@
+import h,{TriggerStartupEvent as v}from"./trigger-event.js";import a from"./trigger-extractor.js";import u from"./resolve.js";const g=new WeakMap;export default function b(f,r,s,t){if(r.hasAttribute("data-loading"))return;if(a.isNative(r))return r.click();let o=a.form(r),p=a.method(r);t=t||a.action(r);let i=a.target(r);if(f.ctrlKey&&f.type==="click"&&(i="_blank"),!i.startsWith("_")&&!i.startsWith("@")&&(i=`@frame(${i})`),!o||r.hasAttribute("formnovalidate")||o.hasAttribute("novalidate")||o.reportValidity()){if(t=u(r,s||{},t),t===null)return;g.get(r)?.abort(),g.set(r,new AbortController);let d=h.of(f,p,t,o,i,s,g.get(r).signal);r.dispatchEvent(new v(d)),r.dispatchEvent(d)}}
+
+//# sourceMappingURL=trigger-core.js.map

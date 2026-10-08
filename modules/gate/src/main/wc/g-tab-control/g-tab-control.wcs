@@ -1,0 +1,142 @@
+* {
+	box-sizing: border-box;
+}
+
+:host(*) {
+	min-width: 0;
+	display: grid;
+	grid-template-rows: auto 1fr;
+	background-color: transparent;
+	border: 1px outset var(--main2, #F0F0F0);
+}
+
+header {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+section {
+	min-width: 0;
+	min-height: 0;
+	display: flex;
+	align-items: stretch;
+	flex-direction: column;
+	justify-content: stretch;
+}
+
+::slotted(div) {
+	gap: 12px;
+	min-width: 0;
+	min-height: 0;
+	display: none;
+	padding: 18px;
+	overflow-y: auto;
+	align-items: stretch;
+	flex-direction: column;
+	background-color: var(--main1, white);
+}
+
+:host([type='dummy']) ::slotted(div) {
+	display: flex;
+}
+
+::slotted(a),
+::slotted(button) {
+	gap: 8px;
+	padding: 8px;
+	height: 32px;
+	border: none;
+	display: flex;
+	cursor: pointer;
+	flex-basis: 50%;
+	font-size: 0.75rem;
+	align-items: center;
+	text-decoration: none;
+	color: var(--text1, #000000);
+	justify-content: flex-start;
+	background-color: var(--main2, #F0F0F0);
+}
+
+header> ::slotted(:not(:first-child)) {
+	border-left: 1px solid var(--main3, #F8F8F8);
+}
+
+
+::slotted(a:hover),
+::slotted(button:hover) {
+	background-color: var(--hovered, #FFFACD);
+}
+
+::slotted(a:focus),
+::slotted(button:focus) {
+	border: none;
+	outline: none;
+}
+
+::slotted(a[data-selected=true]),
+::slotted(button[data-selected=true]) {
+	color: var(--text1, #000000);
+	font-weight: bold;
+	background-color: var(--main1, white);
+}
+
+@media only screen and (min-width: 768px) {
+	header> ::slotted(*) {
+		flex-basis: 25%;
+	}
+
+	:host([size='9'])>header> ::slotted(*),
+	:host([size='10'])>header> ::slotted(*),
+	:host([size='20'])>header> ::slotted(*),
+	:host([size='30'])>header> ::slotted(*),
+	:host([size='40'])>header> ::slotted(*),
+	:host([size='50'])>header> ::slotted(*),
+	:host([size='60'])>header> ::slotted(*),
+	:host([size='70'])>header> ::slotted(*),
+	:host([size='80'])>header> ::slotted(*),
+	:host([size='90'])>header> ::slotted(*),
+	:host([size='100'])>header> ::slotted(*) {
+		flex-basis: 20%;
+	}
+}
+
+@media only screen and (min-width: 1200px) {
+	header> ::slotted(*) {
+		flex-basis: 12.5%;
+	}
+
+	:host([size='9'])>header> ::slotted(*),
+	:host([size='10'])>header> ::slotted(*),
+	:host([size='20'])>header> ::slotted(*),
+	:host([size='30'])>header> ::slotted(*),
+	:host([size='40'])>header> ::slotted(*),
+	:host([size='50'])>header> ::slotted(*),
+	:host([size='60'])>header> ::slotted(*),
+	:host([size='70'])>header> ::slotted(*),
+	:host([size='80'])>header> ::slotted(*),
+	:host([size='90'])>header> ::slotted(*),
+	:host([size='100'])>header> ::slotted(*) {
+		flex-basis: 10%;
+	}
+}
+
+::slotted(:is(a, button, .g-command)[data-loading]) {
+	position: relative;
+}
+
+::slotted(:is(a, button, .g-command)[data-loading])::before {
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	content: "";
+	color: inherit;
+	position: absolute;
+	background-size: 25%;
+	border-radius: inherit;
+	background-color: inherit;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-position-y: center;
+	background-image: var(--loading);
+}

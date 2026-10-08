@@ -1,0 +1,91 @@
+<g-callout class='fill'>
+	<h1>&lt;g-coolbar&gt;</h1>
+	<p>
+		The <code>&lt;g-coolbar&gt;</code> component displays actions in a horizontal toolbar using links, buttons and
+		<code>.g-command</code> elements. It supports semantic button variants, greedy spacing with <code>&lt;hr&gt;</code>,
+		reversed alignment with <code>reverse</code>, and an automatic overflow menu when the available width is not enough
+		to display all actions at once.
+	</p>
+</g-callout>
+
+<g-tab-control>
+	<a href="#">Example 1</a>
+	<div>
+		<p>
+			By default, toolbar actions are aligned from right to left.
+		</p>
+
+		<g-html-viewer>
+			<g-coolbar>
+				<button class="primary">
+					primary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="alternative">
+					alternative<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="secondary">
+					secondary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="danger">
+					danger<g-icon>&#X1001;</g-icon>
+				</button>
+				<hr />
+				<button class="tertiary">
+					tertiary<g-icon>&#X1000;</g-icon>
+				</button>
+			</g-coolbar>
+		</g-html-viewer>
+	</div>
+	<a href="#">Example 2</a>
+	<div>
+		<p>
+			The <code>reverse</code> attribute changes the alignment to left-to-right.
+		</p>
+		<g-html-viewer>
+			<g-coolbar reverse>
+				<button class="primary">
+					primary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="alternative">
+					alternative<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="secondary">
+					secondary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="danger">
+					danger<g-icon>&#X1001;</g-icon>
+				</button>
+				<hr />
+				<button class="tertiary">
+					tertiary<g-icon>&#X1000;</g-icon>
+				</button>
+			</g-coolbar>
+		</g-html-viewer>
+	</div>
+	<a href="#">Example 3</a>
+	<div>
+		<p>
+			When <code>disabled</code> is set, the toolbar hides its actions and shows an indeterminate progress bar instead.
+		</p>
+		<g-html-viewer>
+			<g-coolbar disabled>
+				<button class="primary">
+					primary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="alternative">
+					alternative<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="secondary">
+					secondary<g-icon>&#X1000;</g-icon>
+				</button>
+				<button class="danger">
+					danger<g-icon>&#X1001;</g-icon>
+				</button>
+				<hr />
+				<button class="tertiary">
+					tertiary<g-icon>&#X1000;</g-icon>
+				</button>
+			</g-coolbar>
+		</g-html-viewer>
+	</div>
+</g-tab-control>

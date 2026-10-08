@@ -1,0 +1,10 @@
+let c=document.createElement("template");c.innerHTML=`
+	<dialog><header>
+			Selecione uma data
+			<a id='cancel' href="#"><g-icon>
+					&#X1011;
+				</g-icon></a></header><section><g-date-selector></g-date-selector></section></dialog>
+<style data-element="g-date-picker">dialog{height:440px;min-width:320px;max-width:600px;width:calc(100% - 40px)}dialog>section{align-items:stretch}g-date-selector{flex-grow:1}
+</style>`;import"./g-icon.js";import"./g-date-selector.js";import o from"./g-window.js";import s from"./cancel-error.js";export default class a extends o{constructor(){super(),this.addEventListener("cancel",()=>this.hide()),this.addEventListener("commit",()=>this.hide()),this.shadowRoot.innerHTML=this.shadowRoot.innerHTML+c.innerHTML,this.shadowRoot.getElementById("cancel").addEventListener("click",()=>this.dispatchEvent(new CustomEvent("cancel"))),this.shadowRoot.querySelector("g-date-selector").addEventListener("selected",e=>this.dispatchEvent(new CustomEvent("commit",{detail:e.detail})))}static pick(){let e=window.top.document.createElement("g-date-picker");return e.show(),new Promise((t,n)=>{e.addEventListener("commit",i=>t(i.detail)),e.addEventListener("cancel",()=>n(new s))})}}customElements.define("g-date-picker",a),window.addEventListener("connected",d=>{const e=d.target;if(e.getAttribute("data-picker")==="date"){let t=e.parentNode.appendChild(document.createElement("a"));t.href="#",e.hasAttribute("tabindex")&&t.setAttribute("tabindex",e.getAttribute("tabindex"));let n=t.appendChild(document.createElement("g-icon"));n.innerHTML=e.value?"&#x1001;":"&#x2003;",e.addEventListener("input",()=>n.innerHTML=e.value?"&#x1001;":"&#x2003;"),e.addEventListener("change",()=>n.innerHTML=e.value?"&#x1001;":"&#x2003;"),t.addEventListener("click",i=>{i.preventDefault(),e.value?(e.value="",e.dispatchEvent(new Event("change",{bubbles:!0}))):a.pick().then(r=>e.value=r).then(()=>e.dispatchEvent(new Event("change",{bubbles:!0}))).catch(()=>{}),t.focus(),t.blur()})}});
+
+//# sourceMappingURL=g-date-picker.js.map

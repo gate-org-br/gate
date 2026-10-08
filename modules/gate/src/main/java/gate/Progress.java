@@ -1,0 +1,331 @@
+package gate;
+
+import gate.entity.User;
+import gate.event.EventClient;
+import gate.event.EventClients;
+import gate.lang.json.JsonObject;
+import jakarta.servlet.AsyncContext;
+
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
+@SuppressWarnings("resource")
+public class Progress implements AutoCloseable
+{
+	private static final int UNKNOWN = 0;
+	private static final ThreadLocal<Progress> CURRENT = new ThreadLocal<>();
+	private static final Map<String, Progress> INSTANCES = new ConcurrentHashMap<>();
+
+	private final User user;
+	private final String uuid;
+	private final EventClient client;
+	private volatile State state = State.DEFAULT;
+	private final EventClients clients = new EventClients();
+
+	private Progress(String uuid, User user, EventClient client)
+	{
+		this.uuid = uuid;
+		this.user = user;
+		this.client = client;
+	}
+
+	private static Optional<Progress> current() {return Optional.ofNullable(CURRENT.get());}
+
+	/**
+	 * Initiates a new task of indeterminate size.
+	 *
+	 * @param text description of the task being initiated
+	 */
+	public static void startup(String text) {startup(UNKNOWN, text);}
+
+	/**
+	 * Initiates a new task.
+	 *
+	 * @param todo size of the task being initiated
+	 * @param text description of the task being initiated
+	 */
+	public static void startup(long todo, String text)
+	{
+		Objects.requireNonNull(text);
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (Status.COMMITED.equals(state.status) || Status.CANCELED.equals(state.status))
+				throw new IllegalStateException("Attempt to startup finished task");
+			progress.update(Status.PENDING, todo, 0, text)
+					.dispatch(progress.toJson());
+		});
+	}
+
+	/**
+	 * Display a message without updating progress.
+	 *
+	 * @param message message to be displayed
+	 */
+	public static void message(String message)
+	{
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			progress.update(state.status, state.todo, state.done, message)
+					.dispatch(progress.toJson());
+		});
+	}
+
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param step number of records to be processed before each notification
+	 */
+	public static void updateForEach(int step)
+	{
+		if (step <= 0)
+			throw new IllegalArgumentException("Step must be a whole positive number");
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (Status.PENDING != state.status)
+				throw new IllegalStateException("Attempt to update non pending task");
+			progress.update(state.status, state.todo, state.done + 1, state.text);
+			if (progress.state.done % step == 0)
+				progress.dispatch(progress.toJson());
+		});
+	}
+
+	/**
+	 * Increments the progress for each one percent.
+	 */
+	public static void updatePercentage()
+	{
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (Status.PENDING != state.status)
+				throw new IllegalStateException("Attempt to update non pending task");
+			if (state.todo == UNKNOWN)
+				throw new IllegalStateException("updatePercentage requires a known todo size");
+			progress.update(state.status, state.todo, state.done + 1, state.text);
+			state = progress.state;
+			if (state.done % Math.max(Math.floorDiv(state.todo, 100), 1) == 0)
+				progress.dispatch(progress.toJson());
+		});
+	}
+
+	/**
+	 * Increments the progress of the current task.
+	 */
+	public static void update()
+	{
+		current().map(e -> e.state)
+				.ifPresent(state -> update(state.done + 1, state.text));
+	}
+
+	/**
+	 * Updates the progress of the current task.
+	 *
+	 * @param done new progress of the current task
+	 */
+	public static void update(long done)
+	{
+		current().map(e -> e.state)
+				.ifPresent(state -> update(done, state.text));
+	}
+
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param text description of the progress made
+	 */
+	public static void update(String text)
+	{
+		current().map(e -> e.state)
+				.ifPresent(state -> update(state.done + 1, text));
+	}
+
+	/**
+	 * Increments the progress of the current task.
+	 *
+	 * @param done new progress of the current task
+	 * @param text description of the progress made
+	 */
+	public static void update(long done, String text)
+	{
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (!Status.PENDING.equals(state.status))
+				throw new IllegalStateException("Attempt to update non pending task");
+			progress.update(state.status, state.todo, done, text)
+					.dispatch(progress.toJson());
+		});
+	}
+
+	/**
+	 * Conclude the task being executed
+	 *
+	 * @param text message indicating success
+	 */
+	public static void commit(String text)
+	{
+		Objects.requireNonNull(text);
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (!Status.PENDING.equals(state.status))
+				throw new IllegalStateException("Attempt to commit non pending task");
+			progress.update(Status.COMMITED, state.todo, state.done, text);
+			progress.dispatch(progress.toJson());
+		});
+	}
+
+	/**
+	 * Cancel the task being executed
+	 *
+	 * @param text reason for the cancellation
+	 */
+	public static void cancel(String text)
+	{
+		Objects.requireNonNull(text);
+		current().ifPresent(progress ->
+		{
+			State state = progress.state;
+			if (!Status.PENDING.equals(state.status))
+				throw new IllegalStateException("Attempt to cancel non pending task");
+			progress.update(Status.CANCELED, state.todo, state.done, text);
+			progress.dispatch(progress.toJson());
+		});
+	}
+
+	static Progress create(AsyncContext context, User user)
+	{
+		String uuid = UUID.randomUUID().toString();
+		var client = new EventClient(context, user);
+		Progress progress = new Progress(uuid, user, client);
+		INSTANCES.put(uuid, progress);
+		progress.dispatch("UUID", new JsonObject()
+				.setString("uuid", uuid));
+		CURRENT.set(progress);
+		return progress;
+	}
+
+	public static String UUID() {return current().map(Progress::uuid).orElse(null);}
+
+	public static State state(User user, String uuid)
+	{
+		return Optional.ofNullable(INSTANCES.get(uuid))
+				.filter(e -> Objects.equals(e.user, user))
+				.map(e -> e.state)
+				.orElse(State.UNKNOWN);
+	}
+
+	static void attach(AsyncContext context, User user, String uuid)
+	{
+		if (user == null)
+			throw new IllegalArgumentException("Missing user");
+		if (uuid == null || uuid.isBlank())
+			throw new IllegalArgumentException("Missing uuid");
+
+		var progress = INSTANCES.get(uuid);
+
+		if (progress == null || !Objects.equals(progress.user, user))
+		{
+			try (EventClient client = new EventClient(context, user))
+			{
+				client.dispatch("UUID", new JsonObject().setString("uuid", uuid));
+				client.dispatch("Progress", State.UNKNOWN.toJson());
+			}
+		} else
+			progress.attach(context, user);
+	}
+
+	private Progress update(Status status, long todo, long done, String text)
+	{
+		this.state = new State(status, todo, done, text);
+		return this;
+	}
+
+	private void dispatch(JsonObject message) {dispatch("Progress", message);}
+
+	private void dispatch(String type, JsonObject message)
+	{
+		client.dispatch(type, message);
+		clients.dispatch(type, message);
+	}
+
+	@Override
+	public synchronized void close()
+	{
+		dispatch("Finish", new JsonObject().setString("message", "Job complete"));
+		client.close();
+		clients.close();
+		INSTANCES.remove(this.uuid);
+		CURRENT.remove();
+	}
+
+	synchronized void attach(AsyncContext context, User user)
+	{
+		clients.subscribe(context, user);
+		dispatch("UUID", new JsonObject().setString("uuid", uuid));
+		client.dispatch("Progress", state.toJson());
+	}
+
+	public synchronized void result(String contentType, String filename, String data)
+	{
+		dispatch("Result", new JsonObject()
+				.setString("contentType", contentType)
+				.setString("filename", filename)
+				.setString("data", data));
+	}
+
+	public synchronized void redirect(String url)
+	{
+		dispatch("Redirect", new JsonObject()
+				.setString("url", url));
+	}
+
+	synchronized void abort(String message)
+	{
+		State state = this.state;
+		if (state.status == Status.PENDING)
+			update(Status.CANCELED, state.todo, state.done, message);
+		else
+			update(state.status, state.todo, state.done, message);
+		dispatch(this.toJson());
+		dispatch("Failure", new JsonObject()
+				.setString("message", message));
+	}
+
+	public String uuid() {return uuid;}
+
+	public JsonObject toJson() {return state.toJson();}
+
+	@Override
+	public String toString() {return toJson().toString();}
+
+	public enum Status
+	{
+		PENDING, COMMITED, CANCELED, UNKNOWN
+	}
+
+	public record State(Status status, long todo, long done, String text)
+	{
+		public static final State DEFAULT = new State(Status.PENDING, Progress.UNKNOWN, Progress.UNKNOWN, "Connecting");
+		public static final State UNKNOWN = new State(Status.UNKNOWN, Progress.UNKNOWN, Progress.UNKNOWN, "Lost track of progress");
+
+		public JsonObject toJson()
+		{
+			return new JsonObject()
+					.setLong("todo", todo)
+					.setLong("done", done)
+					.setString("text", text)
+					.setString("event", "Progress")
+					.setString("status", status.name());
+		}
+
+		@Override
+		public String toString() {return toJson().toString();}
+	}
+}

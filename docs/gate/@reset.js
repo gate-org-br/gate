@@ -1,0 +1,3 @@
+import d from"./data-url.js";import p from"./dom.js";import f from"./request-builder.js";import h from"./response-handler.js";import"./trigger.js";window.addEventListener("@reset",function(t){let r=t.composedPath(),{method:i,action:l,form:s,parameters:[o],signal:n}=t.detail,e=p.navigate(t,o).orElseThrow(`${o} is not a valid selector`);fetch(f.build(i,l,s),{signal:n}).then(a=>{const m=a.headers.get("content-type")||"text/plain";return h.auto(a).then(c=>{e.reset?e.reset():e.tagName==="INPUT"||e.tagName==="SELECT"||e.tagName==="TEXTAREA"?e.value="":e.replaceChildren(),t.success(r,new d(m,c).toString())})}).catch(a=>t.failure(r,a))});
+
+//# sourceMappingURL=@reset.js.map

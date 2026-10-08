@@ -1,0 +1,436 @@
+[
+	[
+		"id",
+		"Name",
+		"Job",
+		"Birthdate",
+		"Sex"
+	],
+	[
+		"1",
+		"Albert Einstein",
+		"Physicist",
+		"March 14, 1879",
+		"Male"
+	],
+	[
+		"2",
+		"Marie Curie",
+		"Chemist and Physicist",
+		"November 7, 1867",
+		"Female"
+	],
+	[
+		"3",
+		"Nelson Mandela",
+		"Political Leader",
+		"July 18, 1918",
+		"Male"
+	],
+	[
+		"4",
+		"Ada Lovelace",
+		"Mathematician and Writer",
+		"December 10, 1815",
+		"Female"
+	],
+	[
+		"5",
+		"Leonardo da Vinci",
+		"Polymath",
+		"April 15, 1452",
+		"Male"
+	],
+	[
+		"6",
+		"Rosa Parks",
+		"Civil Rights Activist",
+		"February 4, 1913",
+		"Female"
+	],
+	[
+		"7",
+		"Steve Jobs",
+		"Entrepreneur and Innovator",
+		"February 24, 1955",
+		"Male"
+	],
+	[
+		"8",
+		"Malala Yousafzai",
+		"Activist for Female Education",
+		"July 12, 1997",
+		"Female"
+	],
+	[
+		"9",
+		"Martin Luther King Jr.",
+		"Civil Rights Leader",
+		"January 15, 1929",
+		"Male"
+	],
+	[
+		"10",
+		"Jane Goodall",
+		"Primatologist and Anthropologist",
+		"April 3, 1934",
+		"Female"
+	],
+	[
+		"11",
+		"Winston Churchill",
+		"British Prime Minister",
+		"November 30, 1874",
+		"Male"
+	],
+	[
+		"12",
+		"Mahatma Gandhi",
+		"Leader of Indian Independence Movement",
+		"October 2, 1869",
+		"Male"
+	],
+	[
+		"13",
+		"Cleopatra",
+		"Queen of Ancient Egypt",
+		"January 69 BC",
+		"Female"
+	],
+	[
+		"14",
+		"William Shakespeare",
+		"Playwright and Poet",
+		"April 23, 1564",
+		"Male"
+	],
+	[
+		"15",
+		"Mother Teresa",
+		"Missionary and Nobel Laureate",
+		"August 26, 1910",
+		"Female"
+	],
+	[
+		"16",
+		"Issac Newton",
+		"Physicist and Mathematician",
+		"January 4, 1643",
+		"Male"
+	],
+	[
+		"17",
+		"Charles Darwin",
+		"Naturalist and Biologist",
+		"February 12, 1809",
+		"Male"
+	],
+	[
+		"18",
+		"Marilyn Monroe",
+		"Actress and Model",
+		"June 1, 1926",
+		"Female"
+	],
+	[
+		"19",
+		"Abraham Lincoln",
+		"16th President of the United States",
+		"February 12, 1809",
+		"Male"
+	],
+	[
+		"20",
+		"Pablo Picasso",
+		"Painter and Sculptor",
+		"October 25, 1881",
+		"Male"
+	],
+	[
+		"21",
+		"Cristiano Ronaldo",
+		"Footballer",
+		"February 5, 1985",
+		"Male"
+	],
+	[
+		"22",
+		"Amelia Earhart",
+		"Aviator and Author",
+		"July 24, 1897",
+		"Female"
+	],
+	[
+		"23",
+		"Bill Gates",
+		"Co-founder of Microsoft",
+		"October 28, 1955",
+		"Male"
+	],
+	[
+		"24",
+		"Queen Elizabeth II",
+		"Queen of the United Kingdom",
+		"April 21, 1926",
+		"Female"
+	],
+	[
+		"25",
+		"John F. Kennedy",
+		"35th President of the United States",
+		"May 29, 1917",
+		"Male"
+	],
+	[
+		"26",
+		"Stephen Hawking",
+		"Theoretical Physicist",
+		"January 8, 1942",
+		"Male"
+	],
+	[
+		"27",
+		"Oprah Winfrey",
+		"Media Mogul and Philanthropist",
+		"January 29, 1954",
+		"Female"
+	],
+	[
+		"28",
+		"Neil Armstrong",
+		"Astronaut and First Person on the Moon",
+		"August 5, 1930",
+		"Male"
+	],
+	[
+		"29",
+		"Elon Musk",
+		"Entrepreneur and CEO of SpaceX and Tesla",
+		"June 28, 1971",
+		"Male"
+	],
+	[
+		"30",
+		"Marie Antoinette",
+		"Queen of France",
+		"November 2, 1755",
+		"Female"
+	],
+	[
+		"31",
+		"Vincent van Gogh",
+		"Painter",
+		"March 30, 1853",
+		"Male"
+	],
+	[
+		"32",
+		"Coco Chanel",
+		"Fashion Designer",
+		"August 19, 1883",
+		"Female"
+	],
+	[
+		"33",
+		"George Washington",
+		"1st President of the United States",
+		"February 22, 1732",
+		"Male"
+	],
+	[
+		"34",
+		"Charles Dickens",
+		"Novelist",
+		"February 7, 1812",
+		"Male"
+	],
+	[
+		"35",
+		"Helen Keller",
+		"Author and Activist",
+		"June 27, 1880",
+		"Female"
+	],
+	[
+		"36",
+		"Walt Disney",
+		"Entrepreneur and Animator",
+		"December 5, 1901",
+		"Male"
+	],
+	[
+		"37",
+		"J.K. Rowling",
+		"Author of Harry Potter series",
+		"July 31, 1965",
+		"Female"
+	],
+	[
+		"38",
+		"Sigmund Freud",
+		"Psychologist",
+		"May 6, 1856",
+		"Male"
+	],
+	[
+		"39",
+		"Frida Kahlo",
+		"Painter",
+		"July 6, 1907",
+		"Female"
+	],
+	[
+		"40",
+		"Mark Twain",
+		"Author and Humorist",
+		"November 30, 1835",
+		"Male"
+	],
+	[
+		"41",
+		"George Orwell",
+		"Author of 1984",
+		"June 25, 1903",
+		"Male"
+	],
+	[
+		"42",
+		"Marlon Brando",
+		"Actor",
+		"April 3, 1924",
+		"Male"
+	],
+	[
+		"43",
+		"Eleanor Roosevelt",
+		"First Lady and Activist",
+		"October 11, 1884",
+		"Female"
+	],
+	[
+		"44",
+		"John Lennon",
+		"Musician and Activist",
+		"October 9, 1940",
+		"Male"
+	],
+	[
+		"45",
+		"Madame Curie",
+		"Chemist and Physicist",
+		"November 7, 1867",
+		"Female"
+	],
+	[
+		"46",
+		"Napoleon Bonaparte",
+		"Military and Political Leader",
+		"August 15, 1769",
+		"Male"
+	],
+	[
+		"47",
+		"Aristotle",
+		"Philosopher",
+		"384 BC",
+		"Male"
+	],
+	[
+		"48",
+		"Queen Victoria",
+		"Queen of the United Kingdom",
+		"May 24, 1819",
+		"Female"
+	],
+	[
+		"49",
+		"Michael Jordan",
+		"Basketball Player",
+		"February 17, 1963",
+		"Male"
+	],
+	[
+		"50",
+		"Einstein",
+		"Physicist",
+		"March 14, 1879",
+		"Male"
+	],
+	[
+		"51",
+		"Cleopatra VII",
+		"Queen of Ancient Egypt",
+		"January 69 BC",
+		"Female"
+	],
+	[
+		"52",
+		"George W. Bush",
+		"43rd President of the United States",
+		"July 6, 1946",
+		"Male"
+	],
+	[
+		"53",
+		"Wright Brothers",
+		"Aviation Pioneers",
+		"Orville: August 19, 1871 / Wilbur: April 16, 1867",
+		"Male"
+	],
+	[
+		"54",
+		"Mao Zedong",
+		"Chinese Communist Leader",
+		"December 26, 1893",
+		"Male"
+	],
+	[
+		"55",
+		"Thomas Edison",
+		"Inventor",
+		"February 11, 1847",
+		"Male"
+	],
+	[
+		"56",
+		"Martha Graham",
+		"Dancer and Choreographer",
+		"May 11, 1894",
+		"Female"
+	],
+	[
+		"57",
+		"Alexander the Great",
+		"Military Conqueror",
+		"July 356 BC",
+		"Male"
+	],
+	[
+		"58",
+		"Aung San Suu Kyi",
+		"Political Leader and Nobel Laureate",
+		"June 19, 1945",
+		"Female"
+	],
+	[
+		"59",
+		"Karl Marx",
+		"Philosopher and Economist",
+		"May 5, 1818",
+		"Male"
+	],
+	[
+		"60",
+		"Muhammad Ali",
+		"Boxer and Activist",
+		"January 17, 1942",
+		"Male"
+	],
+	[
+		"61",
+		"George Washington Carver",
+		"Agricultural Scientist",
+		"January 1864",
+		"Male"
+	]
+]

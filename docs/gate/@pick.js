@@ -1,0 +1,3 @@
+import"./dom.js";import p from"./values.js";import"./@return.js";import i from"./data-url.js";import l from"./g-frame-picker.js";import f from"./g-fetch-picker.js";window.addEventListener("@pick",function(e){let r=e.composedPath(),t=r[0]||e.target,{action:a,parameters:[o]}=e.detail;if(t.tagName==="INPUT"&&!t.value)return e.success(r,new i("application/json","[]").toString());let c=p.get(t)||"";(o==="frame"?l:f).pick(a,t.title).then(i.ofJSON).then(m=>e.success(r,m)).catch(()=>{t.tagName==="INPUT"&&(t.value=c),e.resolve(r)}).finally(()=>t.hasAttribute("tabindex")&&t.focus())});
+
+//# sourceMappingURL=@pick.js.map

@@ -1,0 +1,35 @@
+dialog
+{
+	height: fit-content;
+	min-width: 320px;
+	max-width: 800px;
+	width: calc(100% - 40px);
+}
+
+dialog > footer > button {
+	flex-grow: 1;
+	justify-content: center;
+}
+
+#commit::after
+{
+	content: "Processando";
+}
+
+:host([status="commited"]) #commit,
+:host([status="redirect"]) #commit
+{
+	color: var(--question1);
+}
+
+:host([status="canceled"]) #commit
+{
+	color: var(--error1);
+}
+
+:host([status="commited"]) #commit::after,
+:host([status="canceled"]) #commit::after,
+:host([status="redirect"]) #commit::after
+{
+	content: "Ok";
+}

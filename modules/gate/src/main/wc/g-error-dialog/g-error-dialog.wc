@@ -1,0 +1,56 @@
+<template>
+	<dialog>
+		<header>
+			<label id="title">
+			</label>
+			<a id="cancel" href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<main>
+				<section>
+					<fieldset>
+						<label data-size="2">
+							Date
+							<span id="timestamp">
+							</span>
+						</label>
+						<label data-size="2">
+							Status
+							<span id="status">
+							</span>
+						</label>
+						<label data-size="4">
+							Method
+							<span id="method">
+							</span>
+						</label>
+						<label data-size="8">
+							URI
+							<span id="uri">
+							</span>
+						</label>
+					</fieldset>
+					<table is="g-tree-grid" class="r7">
+						<caption>ERRORS</caption>
+						<thead>
+							<tr>
+								<th>Exception</th>
+								<th>Message</th>
+								<th>Class</th>
+								<th>Method</th>
+								<th>File</th>
+								<th style="width: 80px">Line</th>
+							</tr>
+						</thead>
+						<tbody>
+						</tbody>
+					</table>
+				</section>
+			</main>
+		</section>
+	</dialog>
+</template>

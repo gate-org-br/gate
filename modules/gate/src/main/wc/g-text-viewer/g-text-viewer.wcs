@@ -1,0 +1,45 @@
+:host(*) {
+	flex-grow: 1;
+	display: flex;
+	overflow: auto;
+	line-height: normal;
+	align-items: stretch;
+	justify-content: stretch;
+}
+
+dialog {
+	top: 0;
+	bottom: 0;
+	padding: 8px;
+	outline: none;
+	border: 1px solid #CCCCCC;
+}
+
+#editor {
+	flex-grow: 1;
+	padding: 12px;
+	outline: none;
+	overflow: auto;
+	font-size: 16px;
+	text-align: justify;
+	white-space: pre-wrap;
+	border-radius: 0 0 5px 5px;
+	background-color: transparent;
+}
+
+#editor>div {
+	padding: 8px;
+	display: flex;
+	overflow: auto;
+	margin: 4px 0 4px 0;
+	height: fit-content;
+	align-items: stretch;
+	justify-content: center;
+	border: 1px solid #EFEFEF;
+	background-color: var(--hovered, #FFFACD);
+}
+
+#editor>img {
+	display: block;
+	max-width: 100%;
+}

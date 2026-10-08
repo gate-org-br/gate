@@ -1,0 +1,13 @@
+<template>
+	<header>
+		<slot></slot>
+	</header>
+	<g-trigger id="show">
+		<g-icon>&#x2265;</g-icon>
+		<g-context-menu>
+			<slot name='more'>
+
+			</slot>
+		</g-context-menu>
+	</g-trigger>
+</template>

@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["window-listener-html-element.js"],
+  "sourcesContent": ["export default class WindowListenerHTMLElement extends HTMLElement\n{\n\t#listeners = [];\n\n\taddWindowListener(event, listener, options)\n\t{\n\t\tthis.#listeners.push({event, listener, options});\n\t\tif (this.isConnected)\n\t\t\twindow.addEventListener(event, listener, options);\n\t}\n\n\tconnectedCallback()\n\t{\n\t\tfor (const {event, listener, options} of this.#listeners)\n\t\t\twindow.addEventListener(event, listener, options);\n\t}\n\n\tdisconnectedCallback()\n\t{\n\t\tfor (const {event, listener, options} of this.#listeners)\n\t\t{\n\t\t\tconst capture = typeof options === 'boolean'\n\t\t\t\t? options : options?.capture ?? false;\n\t\t\twindow.removeEventListener(event, listener, capture);\n\t\t}\n\t}\n}"],
+  "mappings": "AAAA,qBAAqBA,UAAkC,WACvD,CACCC,GAAa,CAAC,EAEd,kBAAkBC,EAAOC,EAAUC,EACnC,CACC,KAAKH,GAAW,KAAK,CAAC,MAAAC,EAAO,SAAAC,EAAU,QAAAC,CAAO,CAAC,EAC3C,KAAK,aACR,OAAO,iBAAiBF,EAAOC,EAAUC,CAAO,CAClD,CAEA,mBACA,CACC,SAAW,CAAC,MAAAF,EAAO,SAAAC,EAAU,QAAAC,CAAO,IAAK,KAAKH,GAC7C,OAAO,iBAAiBC,EAAOC,EAAUC,CAAO,CAClD,CAEA,sBACA,CACC,SAAW,CAAC,MAAAF,EAAO,SAAAC,EAAU,QAAAC,CAAO,IAAK,KAAKH,GAC9C,CACC,MAAMI,EAAU,OAAOD,GAAY,UAChCA,EAAUA,GAAS,SAAW,GACjC,OAAO,oBAAoBF,EAAOC,EAAUE,CAAO,CACpD,CACD,CACD",
+  "names": ["WindowListenerHTMLElement", "#listeners", "event", "listener", "options", "capture"]
+}

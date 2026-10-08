@@ -1,0 +1,110 @@
+<h1>Getting Started</h1>
+<p>
+	A target tells the browser what to do with the result of a request.
+	HTML already provides the standard navigation targets such as <strong>_self</strong>,
+	<strong>_blank</strong>, <strong>_top</strong> and <strong>_parent</strong>.
+	Gate adds more targets, identified by the <strong>@</strong> prefix, to support
+	common interface behaviors such as replacing HTML, opening dialogs, showing messages
+	and stacking content.
+</p>
+
+<p>
+	The most common case is simple: an element triggers a request and a Gate target decides how the result
+	should be applied to the interface.
+	For example, <strong>@inner-html(#content)</strong> means: execute the request and replace the
+	contents of <strong>#content</strong> with the returned HTML.
+</p>
+
+<g-callout>
+	<p>
+		You do not need to learn all target types to start using Gate.
+		A very common first step is just:
+	</p>
+	<pre><code>&lt;a href="/page" target="@inner-html(#content)"&gt;Open&lt;/a&gt;
+&lt;div id="content"&gt;&lt;/div&gt;</code></pre>
+</g-callout>
+
+<h2>Trigger Attributes</h2>
+<p>
+	Every trigger defines three concepts:
+	<strong>action</strong>, which is the URL to be called;
+	<strong>method</strong>, which is the HTTP method of the request;
+	and <strong>target</strong>, which tells Gate what should be done with the result of that request.
+</p>
+
+<p>
+	Gate reuses the native HTML attributes whenever the element already has a standard way to define
+	request data.
+	When the element does not have one, Gate uses <strong>data-*</strong> attributes.
+</p>
+
+<table>
+	<thead>
+	<tr>
+		<th>Concept</th>
+		<th>Anchor</th>
+		<th>Form</th>
+		<th>Button</th>
+		<th>Other elements</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr>
+		<td>Action</td>
+		<td><code>href</code></td>
+		<td><code>action</code></td>
+		<td><code>formaction</code></td>
+		<td><code>data-action</code></td>
+	</tr>
+	<tr>
+		<td>Method</td>
+		<td>implicit <code>GET</code> or <code>data-method</code></td>
+		<td><code>method</code></td>
+		<td><code>formmethod</code></td>
+		<td><code>data-method</code></td>
+	</tr>
+	<tr>
+		<td>Target</td>
+		<td><code>target</code></td>
+		<td><code>target</code></td>
+		<td><code>formtarget</code></td>
+		<td><code>data-target</code></td>
+	</tr>
+	</tbody>
+</table>
+
+<h2>Basic Selectors</h2>
+<p>
+	Many Gate targets accept a selector parameter.
+	For most applications, the usual case is a normal CSS selector such as <code>#content</code>,
+	<code>#dialog</code> or <code>main section</code>.
+</p>
+
+<p>
+	If you are starting with Gate, you can usually think of the selector parameter as
+	"the CSS selector of the element that will receive the result".
+</p>
+
+<g-callout>
+	<p>
+		Examples:
+	</p>
+	<ul>
+		<li><code>@inner-html(#content)</code></li>
+		<li><code>@outer-html(#summary)</code></li>
+		<li><code>@value(#username)</code></li>
+	</ul>
+</g-callout>
+
+<p>
+	Gate also supports an advanced selector navigation syntax based on the trigger element, using expressions
+	such as <code>this.parent().next()</code>.
+	That syntax is documented separately because it is more advanced than the basic CSS selector case.
+</p>
+
+<g-callout>
+	<p>
+		See <a href="./target/selectors.html" target="@inner-html(#content)">Selectors</a>
+		for the advanced selector language.
+	</p>
+</g-callout>

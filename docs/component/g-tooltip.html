@@ -1,0 +1,114 @@
+<g-callout class='fill'>
+	<h1>&lt;g-tooltip&gt;</h1>
+	<p>
+		The <strong>&lt;g-tooltip&gt;</strong> component provides a seamless way to attach tooltips to other
+		elements within your HTML structure. To bind a tooltip, simply include a
+		<strong>&lt;g-tooltip&gt;</strong>
+		tag inside the target element, and within it, define the content you wish to display.
+		This straightforward approach streamlines the process of creating and associating
+		tooltips with specific elements, enhancing the overall user experience.
+	</p>
+	<p>
+		The <strong>&lt;g-tooltip&gt;</strong> allows you to precisely control its display position. By utilizing the optional <strong>position</strong>
+		attribute, you can indicate the preferred location for the tooltip concerning its parent element. The engine will make every effort to display
+		the tooltip at the specified position; however, if it's not feasible due to space constraints or other factors, the engine intelligently
+		selects an alternative position for optimal visibility. This versatility ensures a seamless integration of tooltips while accommodating
+		dynamic layout scenarios.
+	</p>
+	<p>
+		In addition to using the <strong>&lt;g-tooltip&gt;</strong> component, you have the alternative option of employing the data-tooltip
+		and data-tooltip:position attributes on any HTML element. When utilizing data-tooltip, you can provide a JSON string as its value,
+		defining the content you wish to display within the tooltip. The engine will automatically convert the JSON into HTML for an expressive
+		and customizable tooltip presentation. Moreover, the optional data-tooltip:position attribute allows you to specify the preferred
+		positioning of the tooltip.
+	</p>
+</g-callout>
+
+<div style='display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px'>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-southeast'>
+			Southeast
+			<g-tooltip id='tooltip-southeast' position='southeast'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-south'>
+			South
+			<g-tooltip id='tooltip-south' position='south'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-southwest'>
+			Southwest
+			<g-tooltip id='tooltip-southwest' position='southwest'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-east'>
+			East
+			<g-tooltip id='tooltip-east' position='east'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip:position='south'
+			   data-tooltip:source='data:application/json,{"Name": "Foo", "Jobs": ["Teacher", "Scientist", "Programmer"]}'>
+			JSON
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-west'>
+			West
+			<g-tooltip id='tooltip-west' position='west'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-northeast'>
+			Northeast
+			<g-tooltip id='tooltip-northeast' position='northeast'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-north'>
+			North
+			<g-tooltip id='tooltip-north' position='north'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-callout data-tooltip='#tooltip-northwest'>
+			Northwest
+			<g-tooltip id='tooltip-northwest' position='northwest'>
+				<g-message class='fill icon' style='width: 200px'>
+					This is a custom tooltip
+				</g-message>
+			</g-tooltip>
+		</g-callout>
+	</g-html-viewer>
+</div>

@@ -1,0 +1,20 @@
+<template>
+	<dialog>
+		<header>
+			Selecione um mês
+			<a id='cancel' href="#">
+				<g-icon>
+					&#X1011;
+				</g-icon>
+			</a>
+		</header>
+		<section>
+			<g-month-selector>
+			</g-month-selector>
+		</section>
+		<footer>
+			<button id='commit'>
+			</button>
+		</footer>
+	</dialog>
+</template>

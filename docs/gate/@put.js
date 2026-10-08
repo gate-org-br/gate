@@ -1,0 +1,3 @@
+import"./trigger.js";import h from"./resolve.js";import s from"./data-url.js";import i from"./request-builder.js";import m from"./response-handler.js";import f from"./trigger-extractor.js";window.addEventListener("@put",function(t){let e=t.composedPath(),o=e[0]||t.target,{action:d,method:n,form:p,parameters:c,signal:l}=t.detail,a=c[0]||f.action(o);return a=h(o,t.detail.context,a),fetch(i.build(n,d,p)).then(m.dataURL).then(s.parse).then(r=>fetch(i.build("put",a,r.data,r.contentType),{signal:l})).then(m.dataURL).then(r=>t.success(e,r)).catch(r=>t.failure(e,r))});
+
+//# sourceMappingURL=@put.js.map

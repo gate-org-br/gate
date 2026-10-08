@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["trigger.js"],
+  "sourcesContent": ["import './trigger-click.js';\nimport './trigger-change.js';\nimport './trigger-hover.js';\nimport './trigger-bootstrap.js';\nimport './trigger-hash.js';\nimport './trigger-connected.js';\nimport './trigger-sse.js';\n\nexport {default} from './trigger-core.js';"],
+  "mappings": "AAAA,MAAO,qBACP,MAAO,sBACP,MAAO,qBACP,MAAO,yBACP,MAAO,oBACP,MAAO,yBACP,MAAO,mBAEP,OAAQ,YAAc",
+  "names": []
+}

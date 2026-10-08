@@ -1,0 +1,3 @@
+export function master(d){const n=d.id,e=d.selectedIndex>=0?d.selectedIndex:0;document.querySelectorAll(`[data-master="${n}"]`).forEach(t=>{const a=`data-disabled-on-${e}`;t.hasAttribute(a)?t.disabled=t.getAttribute(a)==="true":t.hasAttribute("data-disabled-on")?t.disabled=t.getAttribute("data-disabled-on")==="true":t.disabled=!1;const i=`data-hidden-on-${e}`;t.hasAttribute(i)?t.hidden=t.getAttribute(i)==="true":t.hasAttribute("data-hidden-on")?t.hidden=t.getAttribute("data-hidden-on")==="true":t.hidden=!1})}window.addEventListener("change",d=>{d.target.tagName==="SELECT"&&d.target.id&&master(d.target)}),window.addEventListener("connected",d=>{d.target.tagName==="SELECT"&&d.target.id&&master(d.target)});
+
+//# sourceMappingURL=master-select.js.map

@@ -1,0 +1,14 @@
+[
+	{
+		"Name": "Foo",
+		"Sex": "Male"
+	},
+	{
+		"Name": "Bar",
+		"Sex": "Male"
+	},
+	{
+		"Name": "Baz",
+		"Sex": "Female"
+	}
+]

@@ -1,0 +1,120 @@
+<g-callout class="fill">
+	<h1>&lt;g-message&gt;</h1>
+	<p>
+		The <code>g-message</code> component is a compact message box for short status information, tips, warnings and errors.
+		It is designed to be scanned quickly and may optionally display an icon.
+		Use <code>g-message</code> for operational guidance or feedback near the current context.
+		Common combinations use semantic variant classes such as <code>success</code>, <code>warning</code>,
+		<code>error</code> and <code>question</code>, together with <code>fill</code> and <code>icon</code>.
+		For longer conceptual explanations or highlighted content blocks, prefer <code>g-callout</code>.
+	</p>
+</g-callout>
+
+<div style="display: grid; gap: 10px; grid-template-columns: 1fr 1fr 1fr 1fr">
+	<g-html-viewer>
+		<g-message>
+			<p>Standard</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="fill">
+			<p>Standard</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class='icon'>
+			<p>Standard</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="fill icon">
+			<p>Standard</p>
+		</g-message>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<g-message class="error">
+			<p>Error</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class='error icon'>
+			<p>Error</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="error fill">
+			<p>Error</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="error fill icon">
+			<p>Error</p>
+		</g-message>
+	</g-html-viewer>
+
+
+	<g-html-viewer>
+		<g-message class="success">
+			<p>Success</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class='success icon'>
+			<p>Success</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="success fill">
+			<p>Success</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="success fill icon">
+			<p>Success</p>
+		</g-message>
+	</g-html-viewer>
+
+	<g-html-viewer>
+		<g-message class="warning">
+			<p>Warning</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class='warning icon'>
+			<p>Warning</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="warning fill">
+			<p>Warning</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="warning fill icon">
+			<p>Warning</p>
+		</g-message>
+	</g-html-viewer>
+
+
+	<g-html-viewer>
+		<g-message class="question">
+			<p>Question</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class='question icon'>
+			<p>Question</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="question fill">
+			<p>Question</p>
+		</g-message>
+	</g-html-viewer>
+	<g-html-viewer>
+		<g-message class="question fill icon">
+			<p>Question</p>
+		</g-message>
+	</g-html-viewer>
+</div>

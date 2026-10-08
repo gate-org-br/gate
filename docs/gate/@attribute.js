@@ -1,0 +1,3 @@
+import"./trigger.js";import f from"./dom.js";import h from"./data-url.js";import p from"./request-builder.js";import b from"./response-handler.js";window.addEventListener("@attribute",function(t){let o=t.composedPath(),{method:m,action:c,form:d,parameters:[e],signal:s}=t.detail,i=e.lastIndexOf(":");if(i===-1)throw new Error("Missing attribute name");let l=e.substring(i+1),n=f.navigate(t,e.substring(0,i)).orElseThrow(`${e} is not a valid selector`);fetch(p.build(m,c,d),{signal:s}).then(r=>{const u=r.headers.get("content-type");return b.auto(r).then(a=>{if(s?.aborted||!document.contains(n))return t.resolve(o);a?n.setAttribute(l,a):n.removeAttribute(l),t.success(o,new h(u,a).toString())})}).catch(r=>t.failure(o,r))});
+
+//# sourceMappingURL=@attribute.js.map
