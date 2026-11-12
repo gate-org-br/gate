@@ -74,10 +74,12 @@ public class OIDCAuthenticator implements Authenticator
 		authorizationEndpoint = Cache.builder(() -> config.getProperty("oidc.authorization_endpoint")
 				.orElseGet(() -> getEndpoint("authorization_endpoint"))).build();
 		tokenEndpoint = Cache
-				.builder(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint"))).build();
+				.builder(() -> config.getProperty("oidc.token_endpoint").orElseGet(() -> getEndpoint("token_endpoint")))
+				.build();
 		userInfoEndpoint = Cache.builder(() -> config.getProperty("oidc.userinfo_endpoint")
 				.orElseGet(() -> getEndpoint("userinfo_endpoint"))).build();
-		jwksUri = Cache.builder(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri"))).build();
+		jwksUri = Cache.builder(() -> config.getProperty("oidc.jwks_uri").orElseGet(() -> getEndpoint("jwks_uri")))
+				.build();
 		issuer = Cache.builder(() -> configuration.get().getString("issuer")
 				.orElseThrow(() -> new AuthenticatorException("Error trying to get issuer from provider"))).build();
 		publicKeys = Cache.builder(this::fetchPublicKeys).ttl(KEY_TIMEOUT).build();
@@ -103,9 +105,9 @@ public class OIDCAuthenticator implements Authenticator
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
 		return request.getParameter("code") != null
-		       || request.getParameter("error") != null
-		       || request.getAuthentication() instanceof BearerAuthentication
-		       || request.getAuthentication() instanceof BasicAuthentication;
+				|| request.getParameter("error") != null
+				|| request.getAuthorization() instanceof BearerAuthentication
+				|| request.getAuthorization() instanceof BasicAuthentication;
 	}
 
 	@Override
@@ -124,9 +126,9 @@ public class OIDCAuthenticator implements Authenticator
 		{
 			if (request.getParameter("code") != null)
 				return authorizationCodeFlow(request);
-			else if (request.getAuthentication() instanceof BearerAuthentication bearerAuthorization)
+			else if (request.getAuthorization() instanceof BearerAuthentication bearerAuthorization)
 				return clientCredentialsFlow(bearerAuthorization);
-			else if (request.getAuthentication() instanceof BasicAuthentication basicAuthorization)
+			else if (request.getAuthorization() instanceof BasicAuthentication basicAuthorization)
 				return resourceOwnerPasswordCredentialsFlow(basicAuthorization);
 			else
 				throw new AuthenticationException("Attempt to authenticate without supplying credentials");

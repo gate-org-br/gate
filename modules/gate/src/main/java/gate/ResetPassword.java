@@ -63,7 +63,8 @@ public class ResetPassword extends HttpServlet
 
 				messenger.post(user.getEmail(), MimeMail.builder()
 						.subject("Redefinição de senha")
-						.content(gate.type.mime.MimeText.of("Utilize este token para redefinir sua senha: " + createToken(user)))
+						.content(gate.type.mime.MimeText.of("Utilize este token para redefinir sua senha: " + createToken(
+								user)))
 						.build());
 
 			} catch (BadRequestException | InvalidUsernamePasswordException ex)
@@ -91,7 +92,7 @@ public class ResetPassword extends HttpServlet
 
 			try
 			{
-				if (request.getAuthentication() instanceof BearerAuthentication authorization)
+				if (request.getAuthorization() instanceof BearerAuthentication authorization)
 				{
 					User user = parseToken(authorization.token());
 					control.update(user, request.getBody().trim());

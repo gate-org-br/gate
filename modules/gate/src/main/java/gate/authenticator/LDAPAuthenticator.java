@@ -32,7 +32,8 @@ public class LDAPAuthenticator implements Authenticator
 	public LDAPAuthenticator(AuthConfig config, UserCatalog userCatalog)
 	{
 		this.userCatalog = userCatalog;
-		this.server = config.getProperty("ldap.server").orElseThrow(() -> new AuthenticatorException("Missing ldap.server"));
+		this.server = config.getProperty("ldap.server")
+				.orElseThrow(() -> new AuthenticatorException("Missing ldap.server"));
 		this.securityProtocol = config.getProperty("ldap.security_protocol").orElse(null);
 		this.clientUsername = config.getProperty("ldap.client_username").orElse(null);
 		this.clientPassword = config.getProperty("ldap.client_password").orElse(null);
@@ -51,7 +52,7 @@ public class LDAPAuthenticator implements Authenticator
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws gate.error.AuthenticationException
 	{
-		return request.getAuthentication() instanceof BasicAuthentication;
+		return request.getAuthorization() instanceof BasicAuthentication;
 	}
 
 	private DirContext getDirContext(String username, String password) throws NamingException
@@ -81,11 +82,13 @@ public class LDAPAuthenticator implements Authenticator
 
 			SearchControls controls = new SearchControls();
 			controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext, "(|(dn={0})(cn={1})(mail={2}))",
+			NamingEnumeration<SearchResult> enumeration = serverContext.search(rootContext,
+					"(|(dn={0})(cn={1})(mail={2}))",
 					new Object[]
 							{
 									authorization.username(), authorization.username(), authorization.username()
-							}, controls);
+							},
+					controls);
 
 			return enumeration.hasMore() ? enumeration.next().getNameInNamespace() : null;
 		} finally
@@ -98,7 +101,7 @@ public class LDAPAuthenticator implements Authenticator
 	public User authenticate(ScreenServletRequest request,
 	                         HttpServletResponse response)
 	{
-		var authorization = (BasicAuthentication) request.getAuthentication();
+		var authorization = (BasicAuthentication) request.getAuthorization();
 
 		User user = userCatalog.select(authorization.username());
 
@@ -117,7 +120,9 @@ public class LDAPAuthenticator implements Authenticator
 						if (!MD5.of(user.getPassword())
 								.verify(authorization.password()))
 							throw new InvalidUsernamePasswordException();
-						userCatalog.update(user, gate.entity.User::getPassword, BCrypt.digest(authorization.password()));
+						userCatalog.update(user,
+								gate.entity.User::getPassword,
+								BCrypt.digest(authorization.password()));
 					} else if (!BCrypt.of(user.getPassword())
 							.verify(authorization.password()))
 						throw new InvalidUsernamePasswordException();

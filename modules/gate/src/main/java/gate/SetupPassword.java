@@ -47,7 +47,7 @@ public class SetupPassword extends HttpServlet
 			try
 			{
 
-				if (request.getAuthentication() instanceof BasicAuthentication)
+				if (request.getAuthorization() instanceof BasicAuthentication)
 				{
 					var user = authenticator.authenticate(request, response);
 					control.update(user, request.getBody().trim());

@@ -29,14 +29,14 @@ public class DatabaseAuthenticator implements Authenticator
 	@Override
 	public boolean hasCredentials(ScreenServletRequest request) throws AuthenticationException
 	{
-		return request.getAuthentication() instanceof BasicAuthentication;
+		return request.getAuthorization() instanceof BasicAuthentication;
 	}
 
 	@Override
 	public User authenticate(ScreenServletRequest request,
 	                         HttpServletResponse response)
 	{
-		var authorization = (BasicAuthentication) request.getAuthentication();
+		var authorization = (BasicAuthentication) request.getAuthorization();
 		if (authorization == null)
 			throw new BadRequestException("Missing user credentials");
 

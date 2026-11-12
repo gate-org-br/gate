@@ -6,6 +6,7 @@ import gate.http.BearerAuthentication;
 import gate.http.CookieAuthentication;
 import gate.http.ScreenServletRequest;
 import gate.http.ScreenServletResponse;
+import gate.security.Claims;
 import gate.security.Credentials;
 import jakarta.inject.Inject;
 import jakarta.servlet.*;
@@ -32,15 +33,23 @@ public class SlidingSessionFilter implements Filter
 		servletResponse.setLocale(servletRequest.getLocale());
 
 		if (servletRequest instanceof HttpServletRequest httpServletRequest
-		    && servletResponse instanceof HttpServletResponse httpServletResponse)
+				&& servletResponse instanceof HttpServletResponse httpServletResponse)
 		{
 			var request = new ScreenServletRequest(httpServletRequest);
 			if (!request.isStaticRequest())
 			{
-				var authorization = request.getAuthentication();
+				var authorization = request.getAuthorization();
 				if (authorization != null)
 				{
 					var token = authorization.token();
+
+					// A bearer token issued for another audience (e.g. an application
+					// API token) is not a gate session: let the request through without
+					// a user and leave the decision to the endpoint.
+					if (authorization instanceof BearerAuthentication
+							&& !Claims.audiences(token).contains(Credentials.AUDIENCE))
+						token = null;
+
 					if (token != null)
 					{
 						var response = new ScreenServletResponse(httpServletResponse);

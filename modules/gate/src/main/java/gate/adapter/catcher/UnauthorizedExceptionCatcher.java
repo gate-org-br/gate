@@ -19,7 +19,7 @@ public class UnauthorizedExceptionCatcher implements Catcher
 	public void catches(ScreenServletRequest request,
 	                    ScreenServletResponse response, Throwable exception)
 	{
-		if (request.getAuthentication() instanceof CookieAuthentication)
+		if (request.getAuthorization() instanceof CookieAuthentication)
 			response.revokeSessionCookie(request);
 
 		if ("navigate".equalsIgnoreCase(request.getHeader("Sec-Fetch-Mode")))

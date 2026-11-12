@@ -106,6 +106,40 @@ class CredentialsTest
 	}
 
 	@Test
+	public void testSessionTokenHasGateAudience()
+	{
+		var token = Credentials.create(ID.valueOf(1), null, null).toString();
+		Assertions.assertEquals(java.util.Set.of(Credentials.AUDIENCE), Claims.audiences(token));
+	}
+
+	@Test
+	public void testRejectsTokenWithoutGateAudience()
+	{
+		var withoutAudience = new Claims()
+				.sub("1")
+				.iat(java.time.Instant.now())
+				.exp(java.time.Instant.now().plusSeconds(60))
+				.toString();
+		Assertions.assertThrows(gate.error.UnauthorizedException.class, () -> Credentials.parse(withoutAudience));
+
+		var otherAudience = new Claims()
+				.aud("application-api")
+				.sub("1")
+				.iat(java.time.Instant.now())
+				.exp(java.time.Instant.now().plusSeconds(60))
+				.toString();
+		Assertions.assertThrows(gate.error.UnauthorizedException.class, () -> Credentials.parse(otherAudience));
+	}
+
+	@Test
+	public void testAudiencesOfInvalidToken()
+	{
+		Assertions.assertEquals(java.util.Set.of(), Claims.audiences(null));
+		Assertions.assertEquals(java.util.Set.of(), Claims.audiences("garbage"));
+		Assertions.assertEquals(java.util.Set.of(), Claims.audiences("a.b.c"));
+	}
+
+	@Test
 	public void testRevocable()
 	{
 		var token = Credentials.create(ID.valueOf(1), ID.valueOf(1), null).toString();

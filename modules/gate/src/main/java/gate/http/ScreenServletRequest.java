@@ -177,9 +177,9 @@ public class ScreenServletRequest extends HttpServletRequestWrapper
 		}
 	}
 
-	public Authentication getAuthentication() throws AuthenticationException
+	public Authentication getAuthorization() throws AuthenticationException
 	{
-		String header = getHeader("Authentication");
+		String header = getHeader("Authorization");
 		if (header == null)
 		{
 			String username = getParameter("$username");

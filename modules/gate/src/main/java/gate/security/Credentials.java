@@ -20,6 +20,12 @@ import java.util.stream.Stream;
 
 public final class Credentials
 {
+	/**
+	 * Audience of gate session tokens. Tokens issued for any other audience
+	 * (e.g. application API tokens) are not sessions and are rejected here.
+	 */
+	public static final String AUDIENCE = "gate";
+
 	private static final SessionPolicy POLICY = SessionPolicy.CURRENT;
 
 	private final LocalDateTime iat;
@@ -58,6 +64,7 @@ public final class Credentials
 	public String toString()
 	{
 		return new Claims()
+				.aud(AUDIENCE)
 				.sub(sub.toString())
 				.iat(iat.toInstant(ZoneOffset.UTC))
 				.exp(exp.toInstant(ZoneOffset.UTC))
@@ -111,6 +118,9 @@ public final class Credentials
 			throws HierarchyException, UnauthorizedException
 	{
 		var claims = gate.security.Claims.valueOf(token);
+
+		if (!claims.aud().contains(AUDIENCE))
+			throw new UnauthorizedException("Attempt to authenticate with a token that is not a session token");
 
 		var iat = claims.iat().map(e -> LocalDateTime.ofInstant(e, ZoneOffset.UTC))
 				.orElseThrow(() -> new UnauthorizedException("Attempt to authenticate with invalid token"));

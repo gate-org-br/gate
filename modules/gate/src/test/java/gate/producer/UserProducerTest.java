@@ -66,7 +66,7 @@ class UserProducerTest
 		var token = Credentials.create(embeddedUser.getId(), null, embeddedUser).toString();
 		var request = TestServletSupport.request(
 				java.util.Map.of(),
-				java.util.Map.of("Authentication", "Bearer " + token),
+				java.util.Map.of("Authorization", "Bearer " + token),
 				null,
 				"GET",
 				"/Gate");

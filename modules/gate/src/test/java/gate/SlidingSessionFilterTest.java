@@ -4,11 +4,13 @@ import gate.entity.User;
 import gate.http.TestServletSupport;
 import gate.security.Credentials;
 import gate.type.ID;
+import io.jsonwebtoken.Jwts;
 import jakarta.enterprise.inject.Instance;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Proxy;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +47,7 @@ class SlidingSessionFilterTest
 		var token = Credentials.create(ID.valueOf(1), null, null).toString();
 		var request = TestServletSupport.request(
 				java.util.Map.of(),
-				java.util.Map.of("Authentication", "Bearer " + token),
+				java.util.Map.of("Authorization", "Bearer " + token),
 				null,
 				"GET",
 				"/Gate");
@@ -57,6 +59,58 @@ class SlidingSessionFilterTest
 
 		assertTrue(chain.wasCalled());
 		assertNotNull(response.header("X-Access-Token"));
+	}
+
+	@Test
+	void testIgnoresBearerOfOtherAudience()
+			throws Exception
+	{
+		var token = Jwts.builder()
+				.audience().add("application-api").and()
+				.subject("1")
+				.issuedAt(new Date())
+				.expiration(new Date(System.currentTimeMillis() + 60_000))
+				.signWith(Jwts.SIG.HS256.key().build())
+				.compact();
+		var request = TestServletSupport.request(
+				java.util.Map.of(),
+				java.util.Map.of("Authorization", "Bearer " + token),
+				null,
+				"GET",
+				"/service/api/v1/resource");
+		var response = TestServletSupport.response();
+		var chain = TestServletSupport.chain();
+
+		new SlidingSessionFilter().doFilter(request.request(), response.response(), chain.chain());
+
+		assertTrue(chain.wasCalled());
+		assertNull(response.header("X-Access-Token"));
+		assertNull(request.attributes().get(Credentials.class.getName()));
+	}
+
+	@Test
+	void testRejectsInvalidSessionBearer()
+			throws Exception
+	{
+		var token = Jwts.builder()
+				.audience().add(Credentials.AUDIENCE).and()
+				.subject("1")
+				.issuedAt(new Date())
+				.expiration(new Date(System.currentTimeMillis() + 60_000))
+				.signWith(Jwts.SIG.HS256.key().build())
+				.compact();
+		var request = TestServletSupport.request(
+				java.util.Map.of(),
+				java.util.Map.of("Authorization", "Bearer " + token),
+				null,
+				"GET",
+				"/Gate");
+		var response = TestServletSupport.response();
+		var chain = TestServletSupport.chain();
+
+		new SlidingSessionFilter().doFilter(request.request(), response.response(), chain.chain());
+
+		assertFalse(chain.wasCalled());
 	}
 
 	@Test

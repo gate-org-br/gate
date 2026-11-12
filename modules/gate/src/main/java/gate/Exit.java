@@ -65,7 +65,7 @@ public class Exit extends HttpServlet
 		if (user != null && user.getId() != null)
 		{
 			response.revokeSessionCookie(request);
-			sessionCatalog.revoke(request.getAuthentication().token());
+			sessionCatalog.revoke(request.getAuthorization().token());
 			event.fire(new LogoffEvent(user));
 		} else
 			handlers.select(HTMLCommandHandler.class)
