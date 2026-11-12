@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.time.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SqlColumnMapperRegistrar implements ColumnMapperRegistrar
 {
@@ -64,6 +65,7 @@ public class SqlColumnMapperRegistrar implements ColumnMapperRegistrar
 		registry.put(JsonScalar.class, new JsonElementColumnMapper());
 		registry.put(JsonString.class, new JsonElementColumnMapper());
 		registry.put(Path.class, new PathColumnMapper());
+		registry.put(Pattern.class, new PatternColumnMapper());
 
 		return registry;
 	}
