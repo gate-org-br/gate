@@ -95,4 +95,28 @@ public class CryptoKeys
 	public static final Cache<SecretKey> JWS_KEY = Cache.builder(() -> Keys.hmacShaKeyFor(derive(MASTER_KEY.get(), "gate-hmac-jwt-signature"))).build();
 
 	public static final Cache<SecretKeySpec> STATE_KEY = Cache.builder(() -> new SecretKeySpec(Arrays.copyOf(derive(MASTER_KEY.get(), "gate-aes-state-encryption"), 32), "AES")).build();
+
+	/**
+	 * HMAC key derived from the master key for an application specific purpose
+	 * (e.g. signing API tokens). Different purposes ({@code info}) produce
+	 * independent keys, none of which matches the keys used by the gate itself.
+	 * <p>
+	 * The derivation is {@code HmacSHA256(master key, info)}.
+	 */
+	public static SecretKey derive(String info)
+	{
+		return Keys.hmacShaKeyFor(derive(MASTER_KEY.get(), info));
+	}
+
+	/**
+	 * @return true if the master key is configured. Without configuration the
+	 * gate uses a random key that changes on every startup, so everything signed
+	 * with it becomes invalid after a restart.
+	 */
+	public static boolean isConfigured()
+	{
+		return SystemProperty.get("gate.key-store.file").isPresent()
+		       || SystemProperty.get("gate.secret-key-file").isPresent()
+		       || SystemProperty.get("gate.secret-key").isPresent();
+	}
 }
