@@ -19,9 +19,27 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import org.slf4j.LoggerFactory;
 
 public abstract class Screen extends Base
 {
+
+	private static final String NAME = "[A-Za-z_][A-Za-z0-9_$]*";
+	private static final String METHOD = "(?!(?:getClass|wait|notify|notifyAll|hashCode|clone|finalize|toString)\\(\\))[A-Za-z_][A-Za-z0-9_$]*\\(\\)";
+	private static final String SEGMENT = "(?:this|" + METHOD + "|" + NAME + ")(?:\\[[0-9]+\\])*";
+
+	/**
+	 * Accepted format for the orderBy parameter: an optional {@code +} or
+	 * {@code -} sign followed by a dot separated property path whose segments
+	 * are {@code this}, a name, a method call without arguments (except the
+	 * {@code Object} methods {@code getClass}, {@code wait}, {@code notify},
+	 * {@code notifyAll}, {@code hashCode}, {@code clone}, {@code finalize} and
+	 * {@code toString}) or a numeric index, with up to 128 characters. Examples:
+	 * {@code date}, {@code -Central.id}, {@code items.size()},
+	 * {@code getDuration()}, {@code duration()}, {@code this[0]}.
+	 */
+	static final Pattern ORDER_BY = Pattern.compile("^(?=.{1,128}$)[+-]?" + SEGMENT + "(?:\\." + SEGMENT + ")*$");
 
 	private String orderBy;
 	private Integer pageSize;
@@ -123,7 +141,22 @@ public abstract class Screen extends Base
 	public void setPageIndx(Integer pageIndx) {this.pageIndx = pageIndx;}
 	public Integer getPageSize() {return pageSize == null ? pageSize = getDefaultPageSize() : pageSize;}
 	public void setPageSize(Integer pageSize) {this.pageSize = pageSize;}
-	public String getOrderBy() {return orderBy;}
+	/**
+	 * The orderBy comes from the request and is used both in SQL (ordernate,
+	 * which concatenates it) and in in-memory sorting (PropertyComparator, which
+	 * evaluates it by reflection and accepts method calls). Values that do not
+	 * match {@link #ORDER_BY} are discarded to prevent SQL injection and the
+	 * invocation of arbitrary methods.
+	 */
+	public String getOrderBy()
+	{
+		if (orderBy == null || orderBy.isEmpty() || ORDER_BY.matcher(orderBy).matches())
+			return orderBy;
+
+		LoggerFactory.getLogger(Screen.class).warn("Invalid orderBy discarded in {}: {}", getClass().getName(), orderBy);
+		return null;
+	}
+
 	public void setOrderBy(String orderBy) {this.orderBy = orderBy;}
 
 	public <R> Page<R> paginate(List<R> data) {return new Paginator<>(data, getPageSize()).getPage(getPageIndx());}
