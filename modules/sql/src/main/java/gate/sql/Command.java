@@ -243,6 +243,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		}
 	}
 
+	public Command setChar(char value)
+	{
+		setIndex(setChar(getIndex(), value));
+		return this;
+	}
+
 	public int setBoolean(int index, boolean value)
 	{
 		try
@@ -253,6 +259,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		{
 			throw new IllegalStateException("Failed to bind boolean parameter on command", ex);
 		}
+	}
+
+	public Command setBoolean(boolean value)
+	{
+		setIndex(setBoolean(getIndex(), value));
+		return this;
 	}
 
 	public int setByte(int index, byte value)
@@ -267,6 +279,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		}
 	}
 
+	public Command setByte(byte value)
+	{
+		setIndex(setByte(getIndex(), value));
+		return this;
+	}
+
 	public int setShort(int index, short value)
 	{
 		try
@@ -277,6 +295,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		{
 			throw new IllegalStateException("Failed to bind short parameter on command", ex);
 		}
+	}
+
+	public Command setShort(short value)
+	{
+		setIndex(setShort(getIndex(), value));
+		return this;
 	}
 
 	public int setInt(int index, int value)
@@ -291,6 +315,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		}
 	}
 
+	public Command setInt(int value)
+	{
+		setIndex(setInt(getIndex(), value));
+		return this;
+	}
+
 	public int setLong(int index, long value)
 	{
 		try
@@ -301,6 +331,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		{
 			throw new IllegalStateException("Failed to bind long parameter on command", ex);
 		}
+	}
+
+	public Command setLong(long value)
+	{
+		setIndex(setLong(getIndex(), value));
+		return this;
 	}
 
 	public int setFloat(int index, float value)
@@ -315,6 +351,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		}
 	}
 
+	public Command setFloat(float value)
+	{
+		setIndex(setFloat(getIndex(), value));
+		return this;
+	}
+
 	public int setDouble(int index, double value)
 	{
 		try
@@ -327,6 +369,30 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		}
 	}
 
+	public Command setDouble(double value)
+	{
+		setIndex(setDouble(getIndex(), value));
+		return this;
+	}
+
+	public int setObject(int index, Object value)
+	{
+		try
+		{
+			ps.setObject(index, value);
+			return index++;
+		} catch (SQLException ex)
+		{
+			throw new IllegalStateException("Failed to bind object parameter on command", ex);
+		}
+	}
+
+	public Command setObject(Object object)
+	{
+		setIndex(setObject(getIndex(), object));
+		return this;
+	}
+
 	public int setNull(int index)
 	{
 		try
@@ -337,6 +403,12 @@ public class Command implements AutoCloseable, Fetchable, ColumnWriter
 		{
 			throw new IllegalStateException("Failed to bind null parameter on command", e);
 		}
+	}
+
+	public Command setNull()
+	{
+		setIndex(setNull(getIndex()));
+		return this;
 	}
 
 	public int setParameter(Class<?> type, int index, Object object)
