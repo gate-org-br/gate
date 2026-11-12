@@ -50,10 +50,11 @@ public class LinkProcessor extends AnchorProcessor
 			return;
 		}
 
+		var method = method(attributes);
 		if ("POST".equalsIgnoreCase(method(attributes)))
 			renderButton(context, model, handler, element, call, attributes, parameters);
 		else
-			renderLink(context, model, handler, element, call, attributes, parameters);
+			renderLink(context, model, handler, element, method, call, attributes, parameters);
 	}
 
 	private void renderButton(
@@ -80,11 +81,14 @@ public class LinkProcessor extends AnchorProcessor
 			IModel model,
 			IElementModelStructureHandler handler,
 			IProcessableElementTag element,
+			String method,
 			Call call,
 			Attributes attributes,
 			Parameters parameters)
 	{
 		attributes.put("href", call.command().toString(parameters));
+		if (!"GET".equalsIgnoreCase(method))
+			attributes.put("data-method", method);
 
 		target(call, attributes)
 				.ifPresent(t -> attributes.put("target", t));
