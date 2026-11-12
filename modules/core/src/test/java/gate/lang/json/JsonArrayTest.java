@@ -1,10 +1,11 @@
 package gate.lang.json;
 
 import gate.error.ConversionException;
+import gate.type.Sex;
+import gate.util.Reflection;
 import mock.MockFactory;
 import mock.UserMock;
 import org.junit.jupiter.api.Test;
-import gate.util.Reflection;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -123,6 +124,18 @@ public class JsonArrayTest
 
 		assertEquals(List.of(1, 2, 2), list);
 		assertEquals(new LinkedHashSet<>(List.of(1, 2)), set);
+	}
+
+	@Test
+	public void shouldDecodeEnumToListAndSet()
+	{
+		JsonArray array = JsonArray.of(JsonString.wrap(Sex.MALE.name()), JsonString.wrap(Sex.FEMALE.name()));
+
+		List<Sex> list = array.decode(type(List.class, Sex.class));
+		Set<Sex> set = array.decode(type(Set.class, Sex.class));
+
+		assertEquals(List.of(Sex.MALE, Sex.FEMALE), list);
+		assertEquals(new LinkedHashSet<>(List.of(Sex.MALE, Sex.FEMALE)), set);
 	}
 
 	private static Type type(Class<?> rawType, Type elementType)

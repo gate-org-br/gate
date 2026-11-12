@@ -1,6 +1,7 @@
 package gate.util;
 
 import gate.adapter.collector.Collector;
+import gate.adapter.mapCollector.MapCollector;
 import gate.error.PropertyError;
 
 import java.lang.reflect.Constructor;
@@ -17,37 +18,7 @@ public final class Instance
 		if (Collection.class.isAssignableFrom(type))
 			return Collector.fromArray(type, new Object[0]);
 		if (Map.class.isAssignableFrom(type))
-			return createMap(type);
-		return createDefault(type);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static <T extends Map<?, ?>> T createMap(Class<?> type)
-	{
-		if (type == Map.class || type == LinkedHashMap.class)
-			return (T) new LinkedHashMap<>();
-		if (type == HashMap.class)
-			return (T) new HashMap<>();
-		if (type == SortedMap.class || type == NavigableMap.class || type == TreeMap.class)
-			return (T) new TreeMap<>();
-		if (type == java.util.concurrent.ConcurrentMap.class
-				|| type == java.util.concurrent.ConcurrentHashMap.class)
-			return (T) new java.util.concurrent.ConcurrentHashMap<>();
-		if (type == java.util.concurrent.ConcurrentNavigableMap.class
-				|| type == java.util.concurrent.ConcurrentSkipListMap.class)
-			return (T) new java.util.concurrent.ConcurrentSkipListMap<>();
-		if (type == Hashtable.class)
-			return (T) new Hashtable<>();
-		if (type == Properties.class)
-			return (T) new Properties();
-
-		if (!Map.class.isAssignableFrom(type))
-			throw new PropertyError("%s is not a map type.", type.getName());
-		return (T) createDefault(type);
-	}
-
-	public static Object createDefault(Class<?> type)
-	{
+			return MapCollector.fromMap(type, Map.of());
 		try
 		{
 			Constructor<?> constructor = Stream.of(type.getConstructors())

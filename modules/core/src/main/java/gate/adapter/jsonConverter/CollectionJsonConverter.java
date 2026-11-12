@@ -1,6 +1,6 @@
 package gate.adapter.jsonConverter;
 
-import gate.util.Instance;
+import gate.adapter.collector.Collector;
 import gate.adapter.registry.JsonConverterRegistry;
 import gate.lang.json.JsonArray;
 import gate.lang.json.JsonElement;
@@ -17,17 +17,14 @@ public class CollectionJsonConverter implements JsonConverter
 	ThreadLocal<Deque<Object>> stack = ThreadLocal.withInitial(LinkedList::new);
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	@Override public Object ofJson(Type genericType, JsonElement element)
+	@Override
+	public Object ofJson(Type genericType, JsonElement element)
 	{
 		if (!(element instanceof JsonArray jsonArray))
 			return null;
-
-		var rawType = Reflection.getRawType(genericType);
 		var elementType = Reflection.getElementGenericType(genericType);
-		var result = (Collection) Instance.create(rawType);
-		for (var item : jsonArray)
-			result.add(JsonConverter.fromJson(elementType, item));
-		return result;
+		var values = jsonArray.stream().map(e -> JsonConverter.fromJson(elementType, e)).toArray();
+		return Collector.fromArray(genericType, values);
 	}
 
 	@Override
