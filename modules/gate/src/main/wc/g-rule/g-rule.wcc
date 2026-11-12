@@ -1,0 +1,236 @@
+/* global customElements, template, CSS */
+
+/**
+ * g-rule — declarative visibility/enablement rules bound to the value of a
+ * master field (usually a select).
+ *
+ * Two entry points, one engine. The attribute is syntactic sugar for the
+ * component: handier, but limited to one master and one value (no OR, no AND).
+ *
+ *   <g-rule type="live" master="TYPE" slave="TARGET" value="QUEUE"></g-rule>
+ *   <span id="TARGET" data-master="TYPE" data-live-when="QUEUE">
+ *
+ * Types: visible/hidden, enabled/disabled, live/dead.
+ * live = visible and enabled; dead = hidden and disabled.
+ * Same master = OR. Different masters = AND.
+ * Declaring one side closes the set: everything else is the complement.
+ * live/dead is a regime of its own and cannot be mixed with the other types.
+ *
+ * Disabling an element that is not a form control disables the controls
+ * inside it.
+ *
+ * Always write <g-rule ...></g-rule>: browsers ignore "/>" on custom
+ * elements, so whatever came after a <g-rule/> would become its child and be
+ * hidden.
+ *
+ * Rules are evaluated when the master changes and when a master, slave or rule
+ * is connected to the page (gate connected event), including content loaded
+ * later. Nothing is kept between evaluations: everything is read from the DOM.
+ * Invalid rules are reported to the console and ignored.
+ */
+
+customElements.define('g-rule', class extends HTMLElement
+{
+	constructor()
+	{
+		super();
+		this.attachShadow({mode: "open"});
+		this.shadowRoot.appendChild(template.content.cloneNode(true));
+	}
+});
+
+const CONTROLS = "input, select, textarea, button, fieldset";
+const MASTERS = "input[id], select[id], textarea[id]";
+
+const TYPES =
+	{
+		visible: {axis: "hidden", positive: true},
+		hidden: {axis: "hidden", positive: false},
+		enabled: {axis: "disabled", positive: true},
+		disabled: {axis: "disabled", positive: false},
+		live: {axis: "both", positive: true},
+		dead: {axis: "both", positive: false}
+	};
+
+const reported = new WeakSet();
+
+function report(message, element)
+{
+	if (!reported.has(element))
+	{
+		reported.add(element);
+		console.error(`[g-rule] ${message}`, element);
+	}
+}
+
+/**
+ * A reference may not be in the DOM yet when an element is connected: report
+ * it only if it is still missing after loading finishes.
+ */
+function missing(id, what, element)
+{
+	setTimeout(() =>
+	{
+		if (element.isConnected && !document.getElementById(id))
+			report(`${what} "${id}" does not exist`, element);
+	});
+}
+
+function rules(slave)
+{
+	const result = [];
+
+	if (slave.hasAttribute("data-master"))
+	{
+		const master = slave.getAttribute("data-master");
+		let found = false;
+
+		for (const type in TYPES)
+		{
+			const value = slave.getAttribute(`data-${type}-when`);
+			if (value !== null)
+			{
+				result.push({master, type, value, source: slave});
+				found = true;
+			}
+		}
+
+		if (!found)
+			report("data-master without any data-<type>-when", slave);
+	}
+
+	if (slave.id)
+		for (const rule of document.querySelectorAll(`g-rule[slave="${CSS.escape(slave.id)}"]`))
+		{
+			const type = rule.getAttribute("type");
+			const value = rule.getAttribute("value");
+
+			if (!Object.hasOwn(TYPES, type))
+				report(`unknown type "${type}" (use: ${Object.keys(TYPES).join(", ")})`, rule);
+			else if (value === null)
+				report("rule without a value attribute", rule);
+			else
+				result.push({master: rule.getAttribute("master"), type, value, source: rule});
+		}
+
+	return result;
+}
+
+function satisfied(group)
+{
+	// same master: OR. Polarity is unique (guaranteed by validation).
+	const matched = group.some(rule => rule.element.value === rule.value);
+	return group[0].positive ? matched : !matched;
+}
+
+function evaluate(own, axis)
+{
+	const relevant = own.filter(rule => rule.axis === axis);
+	if (relevant.length === 0)
+		return null;
+
+	// different masters: AND.
+	const groups = new Map();
+	for (const rule of relevant)
+	{
+		if (!groups.has(rule.master))
+			groups.set(rule.master, []);
+		groups.get(rule.master).push(rule);
+	}
+
+	return [...groups.values()].every(satisfied);
+}
+
+function setDisabled(element, disabled)
+{
+	if (element.matches(CONTROLS))
+		element.disabled = disabled;   // fieldset already cascades natively
+	else
+		for (const field of element.querySelectorAll(CONTROLS))
+			field.disabled = disabled;
+}
+
+function apply(slave)
+{
+	const own = [];
+	for (const rule of rules(slave))
+	{
+		const element = document.getElementById(rule.master);
+		if (element)
+			own.push({...rule, ...TYPES[rule.type], element});
+		else
+			missing(rule.master, "master", rule.source);
+	}
+
+	if (own.length === 0)
+		return;
+
+	if (own.some(rule => rule.axis === "both") && own.some(rule => rule.axis !== "both"))
+		return report("live/dead cannot be mixed with visible/hidden/enabled/disabled on the same element", slave);
+
+	for (const f of own)
+		for (const g of own)
+			if (f.master === g.master && f.axis === g.axis && f.positive !== g.positive)
+				return report(`contradictory rules ("${f.type}" and "${g.type}") for master "${f.master}"`, slave);
+
+	const both = evaluate(own, "both");
+	if (both !== null)
+	{
+		slave.hidden = !both;
+		setDisabled(slave, !both);
+		return;
+	}
+
+	const visible = evaluate(own, "hidden");
+	if (visible !== null)
+		slave.hidden = !visible;
+
+	const enabled = evaluate(own, "disabled");
+	if (enabled !== null)
+		setDisabled(slave, !enabled);
+}
+
+function dependents(master)
+{
+	const id = CSS.escape(master.id);
+	const result = new Set(document.querySelectorAll(`[data-master="${id}"]`));
+
+	for (const rule of document.querySelectorAll(`g-rule[master="${id}"]`))
+	{
+		const slave = document.getElementById(rule.getAttribute("slave"));
+		if (slave)
+			result.add(slave);
+		else
+			missing(rule.getAttribute("slave"), "slave", rule);
+	}
+
+	return result;
+}
+
+// --- runtime -----------------------------------------------------------------
+
+window.addEventListener("change", event =>
+{
+	if (event.target.matches?.(MASTERS))
+		dependents(event.target).forEach(apply);
+});
+
+window.addEventListener("connected", event =>
+{
+	const element = event.target;
+
+	if (element.matches?.(MASTERS))
+		dependents(element).forEach(apply);
+
+	if (element.hasAttribute?.("data-master"))
+		apply(element);
+
+	if (element.tagName === "G-RULE")
+	{
+		const slave = document.getElementById(element.getAttribute("slave"));
+		if (slave)
+			apply(slave);
+		else
+			missing(element.getAttribute("slave"), "slave", element);
+	}
+});

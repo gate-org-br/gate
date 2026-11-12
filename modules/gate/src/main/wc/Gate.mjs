@@ -90,7 +90,7 @@ import './g-drawer.js';
 
 import './event-source.js';
 
-import './master-select.js';
+import './g-rule.js';
 
 import './g-theme-selector.js';
 
